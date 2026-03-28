@@ -48,7 +48,7 @@ export function TestTriggerButton({ triggerType, flowId, testing, onTest }: Test
   if (!triggerType || !flowId) return null;
   return (
     <Button variant="outline" size="sm" onClick={onTest} disabled={testing} className="h-7 text-xs">
-      <Zap className="mr-1 h-3 w-3" />
+      <Zap className="me-1 h-3 w-3" />
       {testing ? __('Testing...', 'wp-sms') : __('Test trigger', 'wp-sms')}
     </Button>
   );

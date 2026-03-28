@@ -76,7 +76,7 @@ export function MessagingButtonPage({ section }: MessagingButtonPageProps) {
               className="xl:hidden"
               onClick={() => setDrawerOpen(true)}
             >
-              <Eye className="mr-1.5 h-3.5 w-3.5" />
+              <Eye className="me-1.5 h-3.5 w-3.5" />
               {__('Preview', 'wp-sms')}
             </Button>
             <label className="flex items-center gap-2 text-sm text-muted-foreground">

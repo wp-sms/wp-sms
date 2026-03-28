@@ -24,7 +24,7 @@ function StatusCard({ href, icon: Icon, iconVariant, label, value, badge }) {
                 <div className="wsms-auth-status-card__value">{value}</div>
                 {badge && <div>{badge}</div>}
             </div>
-            <ChevronRight className="wsms-auth-status-card__chevron" />
+            <ChevronRight className="wsms-auth-status-card__chevron wsms-icon-flip" />
         </a>
     );
 }

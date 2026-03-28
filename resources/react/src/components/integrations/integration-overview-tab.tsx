@@ -92,7 +92,7 @@ function CredentialForm({ detail, onConfigChange }: { detail: IntegrationDetail;
         <SchemaForm schema={schema} values={credentials} onChange={setCredentials} />
         {error && <p className="text-sm text-destructive">{error}</p>}
         <Button size="sm" onClick={handleConnect} disabled={connecting}>
-          {connecting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {connecting && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
           Connect
         </Button>
 

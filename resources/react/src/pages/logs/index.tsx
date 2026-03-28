@@ -53,7 +53,7 @@ export function LogsPage({ embedded, setHeaderMeta, setHeaderActions }: LogsPage
       disabled={clearing}
       className="text-destructive hover:text-destructive"
     >
-      <Trash2 className="mr-1 h-3.5 w-3.5" />
+      <Trash2 className="me-1 h-3.5 w-3.5" />
       {clearing ? 'Clearing...' : 'Clear Logs'}
     </Button>
   ) : undefined;

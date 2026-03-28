@@ -241,7 +241,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
                         </Button>
                       </div>
                       {invalidTime && (
-                        <p className="mt-1 ml-1 flex items-center gap-1 text-xs text-amber-600">
+                        <p className="mt-1 ms-1 flex items-center gap-1 text-xs text-amber-600">
                           <AlertTriangle className="h-3 w-3" />
                           Open time should be before close time
                         </p>
@@ -251,7 +251,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
                 })}
                 {business_hours.schedule.length < 7 && (
                   <Button variant="outline" size="sm" onClick={addScheduleDay}>
-                    <Plus className="mr-1 h-3 w-3" /> {__('Add Day', 'wp-sms')}
+                    <Plus className="me-1 h-3 w-3" /> {__('Add Day', 'wp-sms')}
                   </Button>
                 )}
               </Field>

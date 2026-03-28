@@ -132,7 +132,7 @@ export function Campaigns() {
         metadata={pluralize(total, 'campaign')}
         actions={
           <Button size="sm" onClick={() => setView({ mode: 'create' })}>
-            <Plus className="mr-1.5 h-3.5 w-3.5" />
+            <Plus className="me-1.5 h-3.5 w-3.5" />
             {__('New Campaign', 'wp-sms')}
           </Button>
         }
@@ -191,7 +191,7 @@ export function Campaigns() {
             description={__('Create your first campaign to start broadcasting messages.', 'wp-sms')}
             action={
               <Button size="sm" onClick={() => setView({ mode: 'create' })}>
-                <Plus className="mr-1.5 h-3.5 w-3.5" />
+                <Plus className="me-1.5 h-3.5 w-3.5" />
                 {__('New Campaign', 'wp-sms')}
               </Button>
             }
@@ -205,8 +205,8 @@ export function Campaigns() {
               <TableHead>{__('Name', 'wp-sms')}</TableHead>
               <TableHead>{__('Channel', 'wp-sms')}</TableHead>
               <TableHead>{__('Status', 'wp-sms')}</TableHead>
-              <TableHead className="text-right">{__('Recipients', 'wp-sms')}</TableHead>
-              <TableHead className="text-right">{__('Sent', 'wp-sms')}</TableHead>
+              <TableHead className="text-end">{__('Recipients', 'wp-sms')}</TableHead>
+              <TableHead className="text-end">{__('Sent', 'wp-sms')}</TableHead>
               <TableHead>{__('Scheduled', 'wp-sms')}</TableHead>
               <TableHead className="w-[70px]" />
             </TableRow>
@@ -222,10 +222,10 @@ export function Campaigns() {
                   </NameCell>
                   <TableCell><ChannelBadge channel={campaign.channel} /></TableCell>
                   <TableCell><CampaignStatusBadge status={campaign.status} /></TableCell>
-                  <TableCell className="text-right text-sm tabular-nums">
+                  <TableCell className="text-end text-sm tabular-nums">
                     {campaign.total_recipients > 0 ? campaign.total_recipients.toLocaleString() : '\u2014'}
                   </TableCell>
-                  <TableCell className="text-right text-sm tabular-nums">
+                  <TableCell className="text-end text-sm tabular-nums">
                     {campaign.sent_count > 0 ? campaign.sent_count.toLocaleString() : '\u2014'}
                   </TableCell>
                   <TableCell className="text-sm">
@@ -233,12 +233,12 @@ export function Campaigns() {
                   </TableCell>
                   <ActionsCell>
                     <DropdownMenuItem onClick={() => setView({ mode: 'detail', campaign })}>
-                      <Eye className="h-4 w-4 mr-2" />
+                      <Eye className="h-4 w-4 me-2" />
                       {__('View', 'wp-sms')}
                     </DropdownMenuItem>
                     {canEdit && (
                       <DropdownMenuItem onClick={() => setView({ mode: 'edit', campaign })}>
-                        <Pencil className="h-4 w-4 mr-2" />
+                        <Pencil className="h-4 w-4 me-2" />
                         {__('Edit', 'wp-sms')}
                       </DropdownMenuItem>
                     )}
@@ -246,7 +246,7 @@ export function Campaigns() {
                       onClick={() => void handleDuplicate(campaign.id)}
                       disabled={duplicating === campaign.id}
                     >
-                      <Copy className="h-4 w-4 mr-2" />
+                      <Copy className="h-4 w-4 me-2" />
                       {__('Duplicate', 'wp-sms')}
                     </DropdownMenuItem>
                     {canDelete && (
@@ -257,7 +257,7 @@ export function Campaigns() {
                           disabled={deleting === campaign.id}
                           className="text-destructive focus:text-destructive"
                         >
-                          <Trash2 className="h-4 w-4 mr-2" />
+                          <Trash2 className="h-4 w-4 me-2" />
                           {__('Delete', 'wp-sms')}
                         </DropdownMenuItem>
                       </>

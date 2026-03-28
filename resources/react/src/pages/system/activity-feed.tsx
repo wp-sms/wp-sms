@@ -79,7 +79,7 @@ export function ActivityFeed({ data }: ActivityFeedProps) {
         return (
           <div key={`${group.job_type}-${group.status}-${i}`} className="relative flex gap-3 pb-3 last:pb-0">
             {!isLast && (
-              <div className="absolute left-[5px] top-3 bottom-0 w-px bg-border" />
+              <div className="absolute start-[5px] top-3 bottom-0 w-px bg-border" />
             )}
             <div className="relative mt-1.5 flex-shrink-0">
               <span className={cn('block h-2.5 w-2.5 rounded-full', dotColor)} />

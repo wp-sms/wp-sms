@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useIsRtl } from '@/hooks/use-is-rtl';
 import { __ } from '@wordpress/i18n';
 import { LogIn, Paintbrush, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Settings2, MessageSquare, ClipboardList, Webhook, Bell, Sparkles, Contact, FileText, type LucideIcon } from 'lucide-react';
 import { Logo } from '@/components/logo';
@@ -147,6 +148,7 @@ function CollapsedGroupItem({ item, activeSection, isActive, onNavigate }: {
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const Icon = item.icon;
+  const isRtl = useIsRtl();
 
   useEffect(() => () => clearTimeout(closeTimer.current), []);
 
@@ -170,11 +172,11 @@ function CollapsedGroupItem({ item, activeSection, isActive, onNavigate }: {
           <SidebarMenuButton tooltip={!open ? item.label : undefined} isActive={isActive}>
             <Icon />
             <span>{item.label}</span>
-            <ChevronRight className="ml-auto" />
+            <ChevronRight className="ms-auto rtl:scale-x-[-1]" />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          side="right"
+          side={isRtl ? "left" : "right"}
           align="start"
           sideOffset={4}
           onMouseEnter={scheduleOpen}
@@ -248,7 +250,7 @@ function NavMenu({ activeSection, onNavigate, items }: { activeSection: string; 
                 <SidebarMenuButton tooltip={item.label}>
                   <Icon />
                   <span>{item.label}</span>
-                  <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                  <ChevronRight className="ms-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
               <CollapsibleContent>
@@ -301,7 +303,7 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
 
       <SidebarInset>
         <header className="flex h-14 items-center justify-end gap-2 border-b-2 border-foreground bg-sidebar px-6">
-          <SidebarTrigger className="-ml-1 mr-auto" />
+          <SidebarTrigger className="-ms-1 me-auto" />
           <Button variant="ghost" size="sm"
             className="bg-primary/10 text-xs font-medium text-primary hover:bg-primary/15 hover:text-primary">
             <Sparkles className="size-3" />
@@ -309,7 +311,7 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
           </Button>
           <Button variant="ghost" size="icon-sm" className="relative text-muted-foreground hover:text-foreground">
             <Bell className="size-4" />
-            <span className="absolute top-1 right-1.5 size-2 rounded-full bg-destructive ring-2 ring-background" />
+            <span className="absolute top-1 end-1.5 size-2 rounded-full bg-destructive ring-2 ring-background" />
             <span className="sr-only">{__('Notifications', 'wp-sms')}</span>
           </Button>
         </header>

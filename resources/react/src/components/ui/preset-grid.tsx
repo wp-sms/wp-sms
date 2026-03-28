@@ -24,7 +24,7 @@ export function PresetGrid<T extends { id: string; name: string }>({
           title={preset.name}
           onClick={() => onSelect(preset)}
           className={cn(
-            'group relative flex flex-col overflow-hidden rounded-lg border p-2 text-left transition-all',
+            'group relative flex flex-col overflow-hidden rounded-lg border p-2 text-start transition-all',
             activePresetId === preset.id
               ? 'border-primary bg-primary/10 ring-2 ring-primary/20'
               : 'border-input hover:border-foreground/20',

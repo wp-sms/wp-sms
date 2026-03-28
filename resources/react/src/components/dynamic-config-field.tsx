@@ -272,7 +272,7 @@ export function DynamicConfigField({
                 <button
                   key={opt.value}
                   type="button"
-                  className={`w-full text-left px-2 py-1.5 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground cursor-pointer ${
+                  className={`w-full text-start px-2 py-1.5 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground cursor-pointer ${
                     opt.value === currentValue ? 'bg-accent text-accent-foreground' : ''
                   }`}
                   onClick={() => {

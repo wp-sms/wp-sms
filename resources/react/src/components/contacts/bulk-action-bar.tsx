@@ -28,7 +28,7 @@ export function BulkActionBar({ count, tags, onBulkAction, onClear }: BulkAction
   };
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 rounded-lg border bg-background px-4 py-2.5 shadow-lg">
+    <div className="fixed bottom-4 start-1/2 -translate-x-1/2 z-40 flex items-center gap-3 rounded-lg border bg-background px-4 py-2.5 shadow-lg">
       <span className="text-sm font-medium">{count} selected</span>
 
       <div className="h-4 w-px bg-border" />
@@ -74,7 +74,7 @@ export function BulkActionBar({ count, tags, onBulkAction, onClear }: BulkAction
           onClick={() => { setConfirming(true); setTimeout(() => setConfirming(false), 3000); }}
           disabled={acting}
         >
-          <Trash2 className="mr-1 h-3.5 w-3.5" /> {__('Delete', 'wp-sms')}
+          <Trash2 className="me-1 h-3.5 w-3.5" /> {__('Delete', 'wp-sms')}
         </Button>
       )}
 

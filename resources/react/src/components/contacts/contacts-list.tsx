@@ -49,7 +49,7 @@ function OptOutIndicator({ optOuts }: { optOuts?: Record<string, string | null> 
   if (active.length === 0) return null;
   const labels = active.map(([ch]) => ch.toUpperCase()).join(', ');
   return (
-    <span className="text-[11px] text-muted-foreground ml-1.5">
+    <span className="text-[11px] text-muted-foreground ms-1.5">
       ({labels} opted out)
     </span>
   );
@@ -125,9 +125,9 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
       {/* Filters */}
       <div className="mb-4 flex items-center gap-3">
         <div className="relative flex-1 max-w-xs">
-          <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute start-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
-            className="pl-8 h-9"
+            className="ps-8 h-9"
             placeholder={__('Search contacts...', 'wp-sms')}
             value={filters.search}
             onChange={(e) => setFilter('search', e.target.value)}
@@ -157,7 +157,7 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
             description={__('Add your first contact to get started.', 'wp-sms')}
             action={
               <Button size="sm" onClick={handleCreate}>
-                <Plus className="mr-1.5 h-3.5 w-3.5" /> {__('New Contact', 'wp-sms')}
+                <Plus className="me-1.5 h-3.5 w-3.5" /> {__('New Contact', 'wp-sms')}
               </Button>
             }
           />
@@ -205,11 +205,11 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
                 </TableCell>
                 <ActionsCell>
                   <DropdownMenuItem onClick={() => handleViewDetail(contact.id)}>
-                    <Eye className="h-4 w-4 mr-2" />
+                    <Eye className="h-4 w-4 me-2" />
                     {__('View', 'wp-sms')}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleEdit(contact)}>
-                    <Pencil className="h-4 w-4 mr-2" />
+                    <Pencil className="h-4 w-4 me-2" />
                     {__('Edit', 'wp-sms')}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -217,7 +217,7 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
                     onClick={() => void handleDelete(contact.id)}
                     className="text-destructive focus:text-destructive"
                   >
-                    <Trash2 className="h-4 w-4 mr-2" />
+                    <Trash2 className="h-4 w-4 me-2" />
                     {__('Delete', 'wp-sms')}
                   </DropdownMenuItem>
                 </ActionsCell>
@@ -246,15 +246,15 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
               </div>
               <div className="flex items-center gap-2">
                 <Button variant="outline" size="sm" onClick={onImport}>
-                  <Upload className="mr-1.5 h-3.5 w-3.5" /> {__('Import', 'wp-sms')}
+                  <Upload className="me-1.5 h-3.5 w-3.5" /> {__('Import', 'wp-sms')}
                 </Button>
                 <ExportDialog onExport={hook.exportContacts}>
                   <Button variant="outline" size="sm">
-                    <Download className="mr-1.5 h-3.5 w-3.5" /> {__('Export', 'wp-sms')}
+                    <Download className="me-1.5 h-3.5 w-3.5" /> {__('Export', 'wp-sms')}
                   </Button>
                 </ExportDialog>
                 <Button size="sm" onClick={handleCreate}>
-                  <Plus className="mr-1.5 h-3.5 w-3.5" /> {__('New Contact', 'wp-sms')}
+                  <Plus className="me-1.5 h-3.5 w-3.5" /> {__('New Contact', 'wp-sms')}
                 </Button>
               </div>
             </div>

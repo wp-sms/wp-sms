@@ -179,7 +179,7 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
             onClick={handleDeactivate}
             disabled={deactivating || saving}
           >
-            <Pause className="mr-1.5 h-4 w-4" />
+            <Pause className="me-1.5 h-4 w-4" />
             {deactivating ? 'Deactivating...' : 'Deactivate'}
           </Button>
         )}
@@ -189,12 +189,12 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
             onClick={handlePublish}
             disabled={publishing || saving}
           >
-            <Rocket className="mr-1.5 h-4 w-4" />
+            <Rocket className="me-1.5 h-4 w-4" />
             {publishing ? 'Publishing...' : 'Publish'}
           </Button>
         )}
         <Button onClick={handleSave} disabled={saving || publishing || deactivating}>
-          <Save className="mr-1.5 h-4 w-4" />
+          <Save className="me-1.5 h-4 w-4" />
           {saving ? 'Saving...' : isEdit ? 'Update Flow' : 'Create Flow'}
         </Button>
       </div>
@@ -205,7 +205,7 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
     <div className="space-y-4">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={() => void guardedBack()}>
-          <ArrowLeft className="mr-1 h-4 w-4" />
+          <ArrowLeft className="me-1 h-4 w-4 rtl:scale-x-[-1]" />
           {__('Back', 'wp-sms')}
         </Button>
         <h2 className="text-base font-semibold">{isEdit ? 'Edit Flow' : 'Create Flow'}</h2>

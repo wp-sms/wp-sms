@@ -122,7 +122,7 @@ function SelectContent({
             <button
               key={opt.value}
               type="button"
-              className="flex w-full rounded px-2 py-1.5 text-left text-sm hover:bg-accent transition-colors"
+              className="flex w-full rounded px-2 py-1.5 text-start text-sm hover:bg-accent transition-colors"
               onClick={() => { onSelect(opt.value); onClose(); }}
             >
               {opt.label}
@@ -304,7 +304,7 @@ function UnresolvedVarWarning({ value, payloadSchema }: { value: string; payload
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <AlertTriangle className="ml-1 h-3 w-3 text-amber-500 shrink-0" />
+        <AlertTriangle className="ms-1 h-3 w-3 text-amber-500 shrink-0" />
       </TooltipTrigger>
       <TooltipContent side="top" className="max-w-xs">
         <p className="text-xs">

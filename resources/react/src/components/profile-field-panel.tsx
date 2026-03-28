@@ -133,7 +133,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="h-full w-[420px] rounded-none border-l" aria-describedby="field-panel-desc">
+      <DrawerContent className="h-full w-[420px] rounded-none border-s" aria-describedby="field-panel-desc">
         <DrawerHeader>
           <DrawerTitle>{title}</DrawerTitle>
           <DrawerDescription id="field-panel-desc">
@@ -150,12 +150,12 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
           {mode === 'meta' && !selectedMeta && (
             <div className="space-y-3">
               <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute start-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder={__('Search meta keys...', 'wp-sms')}
                   value={metaSearch}
                   onInput={(e) => setMetaSearch((e.target as HTMLInputElement).value)}
-                  className="pl-9"
+                  className="ps-9"
                 />
               </div>
               {metaLoading ? (
@@ -166,7 +166,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                     <button
                       key={mk.key}
                       type="button"
-                      className="w-full text-left px-3 py-2.5 hover:bg-muted/50 transition-colors"
+                      className="w-full text-start px-3 py-2.5 hover:bg-muted/50 transition-colors"
                       onClick={() => handleSelectMeta(mk)}
                     >
                       <div className="flex items-center justify-between">
@@ -265,7 +265,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                       </div>
                     ))}
                     <Button variant="outline" size="sm" onClick={addOption}>
-                      <Plus className="mr-1 h-3.5 w-3.5" />
+                      <Plus className="me-1 h-3.5 w-3.5" />
                       {__('Add Option', 'wp-sms')}
                     </Button>
                   </div>

@@ -14,6 +14,7 @@ function mountWidget(container) {
     shadow.appendChild(styleEl);
 
     const mountEl = document.createElement('div');
+    mountEl.dir = document.documentElement.dir || 'ltr';
     shadow.appendChild(mountEl);
 
     render(

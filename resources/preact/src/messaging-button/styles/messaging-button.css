@@ -107,7 +107,7 @@
     content: '';
     position: absolute;
     top: 2px;
-    right: 2px;
+    inset-inline-end: 2px;
     width: 12px;
     height: 12px;
     background: var(--mb-error);
@@ -151,7 +151,7 @@
 .wsms-mb-greeting__close {
     position: absolute;
     top: 6px;
-    right: 6px;
+    inset-inline-end: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -174,7 +174,7 @@
 .wsms-mb-greeting__tail {
     position: absolute;
     bottom: -6px;
-    right: 24px;
+    inset-inline-end: 24px;
     width: 12px;
     height: 12px;
     background: var(--mb-bg);
@@ -183,8 +183,8 @@
 }
 
 .wsms-mb-greeting__tail--left {
-    right: auto;
-    left: 24px;
+    inset-inline-end: auto;
+    inset-inline-start: 24px;
 }
 
 @media (max-width: 480px) {
@@ -311,7 +311,7 @@
     cursor: pointer;
     transition: background 0.15s ease;
     flex-shrink: 0;
-    margin-left: 12px;
+    margin-inline-start: 12px;
 }
 
 .wsms-mb-panel__close:hover {
@@ -432,7 +432,7 @@
     color: var(--mb-text);
     cursor: pointer;
     transition: border-color 0.15s ease, background 0.15s ease;
-    text-align: left;
+    text-align: start;
 }
 
 .wsms-mb-welcome__cta:hover {
@@ -465,7 +465,7 @@
 }
 
 .wsms-mb-welcome__arrow {
-    margin-left: auto;
+    margin-inline-start: auto;
     color: var(--mb-text-secondary);
     flex-shrink: 0;
 }
@@ -486,7 +486,7 @@
     background: none;
     font-family: var(--mb-font);
     cursor: pointer;
-    text-align: left;
+    text-align: start;
 }
 
 .wsms-mb-welcome__avatars {
@@ -506,11 +506,11 @@
     font-weight: 600;
     overflow: hidden;
     border: 2px solid var(--mb-bg);
-    margin-left: -8px;
+    margin-inline-start: -8px;
 }
 
 .wsms-mb-welcome__avatar:first-child {
-    margin-left: 0;
+    margin-inline-start: 0;
 }
 
 .wsms-mb-welcome__avatar img {
@@ -654,8 +654,11 @@
     padding: 10px 12px;
     background: var(--mb-bg);
     border: none;
-    border-left: 3px solid var(--mb-error);
-    border-radius: 0 var(--mb-radius-sm) var(--mb-radius-sm) 0;
+    border-inline-start: 3px solid var(--mb-error);
+    border-start-start-radius: 0;
+    border-start-end-radius: var(--mb-radius-sm);
+    border-end-end-radius: var(--mb-radius-sm);
+    border-end-start-radius: 0;
     color: var(--mb-error);
     font-size: 13px;
 }
@@ -1000,4 +1003,9 @@
     .wsms-mb-fab--hidden-mobile {
         display: none;
     }
+}
+
+/* RTL: flip navigational icons */
+:dir(rtl) .wsms-icon-flip {
+    transform: scaleX(-1);
 }

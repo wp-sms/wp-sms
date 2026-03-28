@@ -359,7 +359,7 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
       {/* Header */}
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={() => void guardedBack()}>
-          <ArrowLeft className="mr-1 h-4 w-4" />
+          <ArrowLeft className="me-1 h-4 w-4 rtl:scale-x-[-1]" />
           {__('Back', 'wp-sms')}
         </Button>
         <h2 className="text-lg font-semibold">
@@ -448,7 +448,7 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
           onClick={() => handleStepChange(currentStep - 1)}
           disabled={currentStep === 0}
         >
-          <ArrowLeft className="mr-1 h-4 w-4" />
+          <ArrowLeft className="me-1 h-4 w-4 rtl:scale-x-[-1]" />
           {__('Previous', 'wp-sms')}
         </Button>
         <div className="flex gap-2">
@@ -465,7 +465,7 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
               disabled={!canProceed(currentStep)}
             >
               Next
-              <ArrowRight className="ml-1 h-4 w-4" />
+              <ArrowRight className="ms-1 h-4 w-4 rtl:scale-x-[-1]" />
             </Button>
           )}
         </div>
@@ -543,7 +543,7 @@ function BasicsStep({
                 <button
                   key={ch}
                   type="button"
-                  className={`rounded-lg border p-3 text-sm text-left transition-colors ${
+                  className={`rounded-lg border p-3 text-sm text-start transition-colors ${
                     isSelected ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'
                   }`}
                   onClick={() => onChannelChange(ch, defaultGateway.id)}
@@ -711,7 +711,7 @@ function AudienceStep({
                 >
                   {tag.name}
                   {tag.contact_count !== undefined && (
-                    <span className="ml-1 text-xs text-muted-foreground">({tag.contact_count})</span>
+                    <span className="ms-1 text-xs text-muted-foreground">({tag.contact_count})</span>
                   )}
                 </button>
               );
@@ -972,7 +972,7 @@ function ScheduleStep({
         <div className="flex gap-3">
           <button
             type="button"
-            className={`flex-1 rounded-lg border p-4 text-left transition-colors ${
+            className={`flex-1 rounded-lg border p-4 text-start transition-colors ${
               draft.send_mode === 'now' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'
             }`}
             onClick={() => updateDraft('send_mode', 'now')}
@@ -983,7 +983,7 @@ function ScheduleStep({
           </button>
           <button
             type="button"
-            className={`flex-1 rounded-lg border p-4 text-left transition-colors ${
+            className={`flex-1 rounded-lg border p-4 text-start transition-colors ${
               draft.send_mode === 'scheduled' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'
             }`}
             onClick={() => updateDraft('send_mode', 'scheduled')}
@@ -1024,11 +1024,11 @@ function ScheduleStep({
           />
           Enable quiet hours
         </label>
-        <p className="text-xs text-muted-foreground ml-6">
+        <p className="text-xs text-muted-foreground ms-6">
           Delay messages during restricted hours (e.g., 9 PM - 8 AM) for TCPA compliance.
         </p>
         {draft.quiet_hours && (
-          <div className="flex gap-3 ml-6">
+          <div className="flex gap-3 ms-6">
             <div className="space-y-1">
               <Label className="text-xs">{__('Start', 'wp-sms')}</Label>
               <Input
@@ -1192,12 +1192,12 @@ function ReviewStep({
       <div className="flex justify-end gap-3 pt-4 border-t">
         {draft.send_mode === 'now' ? (
           <Button onClick={() => void onSendNow()} disabled={sending} size="lg">
-            {sending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
+            {sending ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <Send className="me-2 h-4 w-4" />}
             Send Now {audienceCount !== null && `(${audienceCount.toLocaleString()} recipients)`}
           </Button>
         ) : (
           <Button onClick={() => void onSchedule()} disabled={sending || !draft.send_at} size="lg">
-            {sending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Clock className="mr-2 h-4 w-4" />}
+            {sending ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <Clock className="me-2 h-4 w-4" />}
             Schedule Campaign
           </Button>
         )}

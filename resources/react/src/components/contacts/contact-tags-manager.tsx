@@ -48,7 +48,7 @@ export function ContactTagsManager({ contactId, tags, allTags, onAdd, onRemove }
         </Select>
       ) : (
         <Button variant="outline" size="sm" className="h-7" onClick={() => setAdding(true)}>
-          <Plus className="mr-1 h-3 w-3" /> {__('Add tag', 'wp-sms')}
+          <Plus className="me-1 h-3 w-3" /> {__('Add tag', 'wp-sms')}
         </Button>
       )}
     </div>

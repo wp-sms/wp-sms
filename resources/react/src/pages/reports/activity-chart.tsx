@@ -93,7 +93,7 @@ export function ActivityChart({ data }: ActivityChartProps) {
         <CardDescription>{__('Logins, failures, and registrations over time', 'wp-sms')}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div ref={containerRef} className="relative h-72">
+        <div ref={containerRef} className="relative h-72" dir="ltr">
           <div ref={ref} className="h-full w-full">
             {width > 0 && (
               <svg width={width} height={height} className="overflow-visible">

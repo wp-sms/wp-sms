@@ -130,7 +130,7 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
               {__('Pick Meta Key', 'wp-sms')}
             </Button>
             <Button size="sm" onClick={() => handleAdd('create')}>
-              <Plus className="mr-1 h-3.5 w-3.5" />
+              <Plus className="me-1 h-3.5 w-3.5" />
               {__('Add Field', 'wp-sms')}
             </Button>
           </div>

@@ -36,7 +36,7 @@ export function ChartTooltip({ x, y, title, rows, containerRef }: ChartTooltipPr
         <div key={row.label} className="flex items-center gap-2">
           <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: row.color }} />
           <span className="text-muted-foreground">{row.label}</span>
-          <span className="ml-auto font-medium tabular-nums">{row.value.toLocaleString()}</span>
+          <span className="ms-auto font-medium tabular-nums">{row.value.toLocaleString()}</span>
         </div>
       ))}
     </div>

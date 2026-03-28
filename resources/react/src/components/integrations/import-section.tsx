@@ -279,7 +279,7 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
 
         {/* Save button */}
         <Button size="sm" onClick={handleSave} disabled={saving}>
-          {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {saving && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
           Save Settings
         </Button>
 
@@ -319,8 +319,8 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
           {/* Import button */}
           <Button variant="outline" size="sm" onClick={handleImport} disabled={isImporting}>
             {isImporting
-              ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              : <RefreshCw className="mr-2 h-4 w-4" />}
+              ? <Loader2 className="me-2 h-4 w-4 animate-spin" />
+              : <RefreshCw className="me-2 h-4 w-4" />}
             {isImporting ? 'Importing...' : 'Import Now'}
           </Button>
         </div>

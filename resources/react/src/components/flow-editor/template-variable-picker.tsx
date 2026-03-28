@@ -77,12 +77,12 @@ function VariableButton({
   return (
     <button
       type="button"
-      className="flex w-full flex-col rounded px-2 py-1.5 text-left text-sm hover:bg-accent transition-colors"
+      className="flex w-full flex-col rounded px-2 py-1.5 text-start text-sm hover:bg-accent transition-colors"
       onClick={() => onInsert(`{{${path}}}`)}
     >
       <div className="flex w-full items-center justify-between">
         <span className="font-mono text-xs">{`{{${path}}}`}</span>
-        <span className="ml-2 text-xs text-muted-foreground truncate">{label}</span>
+        <span className="ms-2 text-xs text-muted-foreground truncate">{label}</span>
       </div>
       <span className="text-[10px] text-muted-foreground/70">
         {type}{example ? ` · ${example}` : ''}

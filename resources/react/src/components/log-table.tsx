@@ -145,7 +145,7 @@ export function LogTable({ logs, total, page, perPage, onPageChange, loading }: 
                         {meta && Object.keys(meta).length > 0 && (
                           <div className="flex flex-col gap-1">
                             <span className="font-medium text-muted-foreground">Metadata:</span>
-                            <div className="grid gap-1 pl-2">
+                            <div className="grid gap-1 ps-2">
                               {Object.entries(meta).map(([key, value]) => (
                                 <div key={key} className="flex gap-2">
                                   <span className="font-medium text-muted-foreground">{formatLabel(key)}:</span>

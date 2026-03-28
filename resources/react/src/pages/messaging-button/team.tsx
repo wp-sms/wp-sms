@@ -94,7 +94,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                 icon={Users}
                 title={__('No team members yet', 'wp-sms')}
                 description={__('Add team members to display in the widget with their contact channels.', 'wp-sms')}
-                action={<Button onClick={addMember}><Plus className="mr-1 h-4 w-4" /> {__('Add Team Member', 'wp-sms')}</Button>}
+                action={<Button onClick={addMember}><Plus className="me-1 h-4 w-4" /> {__('Add Team Member', 'wp-sms')}</Button>}
                 compact
               />
             )}
@@ -118,7 +118,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                     >
                       <ChevronDown className="h-4 w-4" />
                     </Button>
-                    <span className="ml-1 text-sm font-medium text-muted-foreground">
+                    <span className="ms-1 text-sm font-medium text-muted-foreground">
                       Member {i + 1}
                     </span>
                   </div>
@@ -178,7 +178,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                         className="text-muted-foreground"
                         onClick={() => updateMember(i, 'avatar_url', '')}
                       >
-                        <X className="mr-1 h-3 w-3" /> {__('Remove', 'wp-sms')}
+                        <X className="me-1 h-3 w-3" /> {__('Remove', 'wp-sms')}
                       </Button>
                     )}
                   </div>
@@ -218,14 +218,14 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                     </div>
                   ))}
                   <Button variant="outline" size="sm" onClick={() => addContactMethod(i)}>
-                    <Plus className="mr-1 h-3 w-3" /> {__('Add Method', 'wp-sms')}
+                    <Plus className="me-1 h-3 w-3" /> {__('Add Method', 'wp-sms')}
                   </Button>
                 </div>
               </div>
             ))}
 
             <Button variant="outline" onClick={addMember}>
-              <Plus className="mr-1 h-4 w-4" /> {__('Add Team Member', 'wp-sms')}
+              <Plus className="me-1 h-4 w-4" /> {__('Add Team Member', 'wp-sms')}
             </Button>
           </div>
         </CardContent>

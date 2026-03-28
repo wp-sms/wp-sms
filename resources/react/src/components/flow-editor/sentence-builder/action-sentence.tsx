@@ -278,13 +278,13 @@ export function ActionSentence({ step, onChange, payloadSchema, triggerType, sam
 
       {/* Sentence template lines OR fallback SchemaForm */}
       {step.action && template && schema?.properties && (
-        <div className="ml-4 space-y-1.5">
+        <div className="ms-4 space-y-1.5">
           {template.lines.map((line, i) => renderTemplateLine(line, i))}
         </div>
       )}
 
       {step.action && !template && schema?.properties && Object.keys(schema.properties).length > 0 && (
-        <div className="ml-4">
+        <div className="ms-4">
           <SchemaForm
             schema={schema}
             values={step.config}
@@ -299,7 +299,7 @@ export function ActionSentence({ step, onChange, payloadSchema, triggerType, sam
 
       {/* Advanced fields (collapsible) */}
       {step.action && template && advancedSchema && (
-        <div className="ml-4">
+        <div className="ms-4">
           <button
             type="button"
             className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"

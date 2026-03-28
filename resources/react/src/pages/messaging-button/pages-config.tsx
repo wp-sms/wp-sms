@@ -202,7 +202,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                   icon={Link}
                   title={__('No links yet', 'wp-sms')}
                   description={__('Add helpful links and resources to display in the widget.', 'wp-sms')}
-                  action={<Button onClick={addResourceLink}><Plus className="mr-1 h-4 w-4" /> {__('Add Link', 'wp-sms')}</Button>}
+                  action={<Button onClick={addResourceLink}><Plus className="me-1 h-4 w-4" /> {__('Add Link', 'wp-sms')}</Button>}
                   compact
                 />
               )}
@@ -234,7 +234,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
               ))}
               {pages.resources.links.length > 0 && (
                 <Button variant="outline" size="sm" onClick={addResourceLink}>
-                  <Plus className="mr-1 h-4 w-4" /> {__('Add Link', 'wp-sms')}
+                  <Plus className="me-1 h-4 w-4" /> {__('Add Link', 'wp-sms')}
                 </Button>
               )}
             </div>

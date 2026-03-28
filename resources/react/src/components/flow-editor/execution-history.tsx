@@ -43,7 +43,7 @@ export function ExecutionHistory({ flowId }: ExecutionHistoryProps) {
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">{total} execution{total !== 1 ? 's' : ''}</p>
           <Button variant="ghost" size="sm" onClick={refetch}>
-            <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
+            <RefreshCw className="me-1.5 h-3.5 w-3.5" />
             {__('Refresh', 'wp-sms')}
           </Button>
         </div>

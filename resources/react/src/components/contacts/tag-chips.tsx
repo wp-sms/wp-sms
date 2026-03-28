@@ -30,7 +30,7 @@ export function TagChips({ tags, onRemove, size = 'default', maxItems }: TagChip
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onRemove(tag.id); }}
-              className="ml-0.5 hover:opacity-70"
+              className="ms-0.5 hover:opacity-70"
             >
               <X className="h-2.5 w-2.5" />
             </button>

@@ -13,7 +13,7 @@ export function PhoneInput({ value, onChange, disabled }: PhoneInputProps) {
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
   return (
-    <div ref={setContainer} className="wsms-phone-input">
+    <div ref={setContainer} className="wsms-phone-input" dir="ltr">
       {container && (
         <LitePhoneInput
           initialValue={value}

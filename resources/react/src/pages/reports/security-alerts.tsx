@@ -47,7 +47,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                   <TableRow>
                     <TableHead>{__('IP Address', 'wp-sms')}</TableHead>
                     <TableHead>{__('Country', 'wp-sms')}</TableHead>
-                    <TableHead className="text-right">{__('Failed Attempts', 'wp-sms')}</TableHead>
+                    <TableHead className="text-end">{__('Failed Attempts', 'wp-sms')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -55,7 +55,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                     <TableRow key={entry.ip}>
                       <TableCell className="font-mono text-xs tracking-tight">{entry.ip}</TableCell>
                       <TableCell className="text-sm">{formatCountry(entry.country)}</TableCell>
-                      <TableCell className="text-right">{entry.count}</TableCell>
+                      <TableCell className="text-end">{entry.count}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -74,7 +74,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                     <TableHead>{__('User', 'wp-sms')}</TableHead>
                     <TableHead>{__('IP Address', 'wp-sms')}</TableHead>
                     <TableHead>{__('Country', 'wp-sms')}</TableHead>
-                    <TableHead className="text-right">{__('Locked At', 'wp-sms')}</TableHead>
+                    <TableHead className="text-end">{__('Locked At', 'wp-sms')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -83,7 +83,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                       <TableCell>{entry.display_name}</TableCell>
                       <TableCell className="font-mono text-xs tracking-tight">{entry.ip || '-'}</TableCell>
                       <TableCell className="text-sm">{formatCountry(entry.country)}</TableCell>
-                      <TableCell className="text-right text-sm">
+                      <TableCell className="text-end text-sm">
                         {formatDateTime(entry.locked_at)}
                       </TableCell>
                     </TableRow>
@@ -104,7 +104,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                     <TableHead>{__('User', 'wp-sms')}</TableHead>
                     <TableHead>{__('IP Address', 'wp-sms')}</TableHead>
                     <TableHead>{__('Country', 'wp-sms')}</TableHead>
-                    <TableHead className="text-right">{__('Suspended At', 'wp-sms')}</TableHead>
+                    <TableHead className="text-end">{__('Suspended At', 'wp-sms')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -113,7 +113,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                       <TableCell>{entry.display_name}</TableCell>
                       <TableCell className="font-mono text-xs tracking-tight">{entry.ip || '-'}</TableCell>
                       <TableCell className="text-sm">{formatCountry(entry.country)}</TableCell>
-                      <TableCell className="text-right text-sm">
+                      <TableCell className="text-end text-sm">
                         {formatDateTime(entry.suspended_at)}
                       </TableCell>
                     </TableRow>

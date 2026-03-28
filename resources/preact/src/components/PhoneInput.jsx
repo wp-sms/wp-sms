@@ -34,7 +34,7 @@ export function PhoneInput({ value = '', onChange, disabled, autoFocus = false, 
     }, []);
 
     return (
-        <div ref={containerRef} className="wsms-phone-input">
+        <div ref={containerRef} className="wsms-phone-input" dir="ltr">
             {dropdownTarget && (
                 <LitePhoneInput
                     initialValue={value}

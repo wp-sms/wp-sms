@@ -26,7 +26,7 @@ export function JsonViewer({ data, label, defaultExpanded = false }: JsonViewerP
         {!expanded && <span className="text-[10px] text-muted-foreground/70">{keyCount} keys</span>}
       </button>
       {expanded && (
-        <pre className="mt-1 rounded border bg-muted/30 p-2 text-[11px] font-mono max-h-60 overflow-auto whitespace-pre-wrap break-all">
+        <pre dir="ltr" className="mt-1 rounded border bg-muted/30 p-2 text-[11px] font-mono max-h-60 overflow-auto whitespace-pre-wrap break-all">
           {formatted}
         </pre>
       )}

@@ -86,7 +86,7 @@ export function TriggerSentence({
       </div>
 
       {filterSchema && (
-        <div className="ml-8 rounded-md border border-border/50 p-3">
+        <div className="ms-8 rounded-md border border-border/50 p-3">
           <SchemaForm
             schema={filterSchema}
             values={triggerConfig}

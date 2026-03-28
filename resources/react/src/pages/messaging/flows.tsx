@@ -227,12 +227,12 @@ export function Flows() {
           <div className="flex items-center gap-2">
             {!templatesLoading && templates.length > 0 && (
               <Button variant="outline" size="sm" onClick={handleOpenTemplates}>
-                <LayoutTemplate className="mr-1.5 h-3.5 w-3.5" />
+                <LayoutTemplate className="me-1.5 h-3.5 w-3.5" />
                 {__('From Template', 'wp-sms')}
               </Button>
             )}
             <Button size="sm" onClick={() => setView({ mode: 'create' })}>
-              <Plus className="mr-1.5 h-3.5 w-3.5" />
+              <Plus className="me-1.5 h-3.5 w-3.5" />
               {__('New Flow', 'wp-sms')}
             </Button>
           </div>
@@ -263,7 +263,7 @@ export function Flows() {
             description={__('Create your first automation flow to get started.', 'wp-sms')}
             action={
               <Button size="sm" onClick={() => setView({ mode: 'create' })}>
-                <Plus className="mr-1.5 h-3.5 w-3.5" />
+                <Plus className="me-1.5 h-3.5 w-3.5" />
                 {__('New Flow', 'wp-sms')}
               </Button>
             }
@@ -305,11 +305,11 @@ export function Flows() {
                 </TableCell>
                 <ActionsCell>
                   <DropdownMenuItem onClick={() => setView({ mode: 'edit', flow })}>
-                    <Pencil className="h-4 w-4 mr-2" />
+                    <Pencil className="h-4 w-4 me-2" />
                     {__('Edit', 'wp-sms')}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setView({ mode: 'edit', flow, tab: 'history' })}>
-                    <History className="h-4 w-4 mr-2" />
+                    <History className="h-4 w-4 me-2" />
                     {__('Execution History', 'wp-sms')}
                   </DropdownMenuItem>
                   {flow.status === 'active' ? (
@@ -317,7 +317,7 @@ export function Flows() {
                       onClick={() => void handleDeactivate(flow.id)}
                       disabled={deactivating === flow.id}
                     >
-                      <Pause className="h-4 w-4 mr-2" />
+                      <Pause className="h-4 w-4 me-2" />
                       {__('Pause', 'wp-sms')}
                     </DropdownMenuItem>
                   ) : (
@@ -325,7 +325,7 @@ export function Flows() {
                       onClick={() => void handlePublish(flow.id)}
                       disabled={publishing === flow.id}
                     >
-                      <Rocket className="h-4 w-4 mr-2" />
+                      <Rocket className="h-4 w-4 me-2" />
                       {__('Publish', 'wp-sms')}
                     </DropdownMenuItem>
                   )}
@@ -335,7 +335,7 @@ export function Flows() {
                     disabled={deleting === flow.id}
                     className="text-destructive focus:text-destructive"
                   >
-                    <Trash2 className="h-4 w-4 mr-2" />
+                    <Trash2 className="h-4 w-4 me-2" />
                     {__('Delete', 'wp-sms')}
                   </DropdownMenuItem>
                 </ActionsCell>
@@ -356,9 +356,9 @@ export function Flows() {
           {/* Search + category filter */}
           <div className="flex items-center gap-3 pb-3">
             <div className="relative flex-1">
-              <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+              <Search className="absolute start-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
               <Input
-                className="pl-8 h-9"
+                className="ps-8 h-9"
                 placeholder={__('Search templates...', 'wp-sms')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -378,7 +378,7 @@ export function Flows() {
           </div>
 
           {/* Template grid */}
-          <div className="overflow-y-auto pr-1 -mr-1 flex-1 min-h-0">
+          <div className="overflow-y-auto pe-1 -me-1 flex-1 min-h-0">
             {filteredTemplates.length === 0 ? (
               <p className="py-8 text-center text-sm text-muted-foreground">{__('No templates match your filters.', 'wp-sms')}</p>
             ) : (
@@ -396,7 +396,7 @@ export function Flows() {
                     <button
                       key={template.id}
                       type="button"
-                      className="flex flex-col rounded-lg border border-border/50 p-3.5 text-left transition-colors hover:border-primary/30 hover:bg-accent/50"
+                      className="flex flex-col rounded-lg border border-border/50 p-3.5 text-start transition-colors hover:border-primary/30 hover:bg-accent/50"
                       onClick={() => handleUseTemplate(template)}
                     >
                       <div className="flex items-start gap-2.5">

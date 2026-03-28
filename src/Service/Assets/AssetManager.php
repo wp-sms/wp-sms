@@ -72,6 +72,7 @@ class AssetManager
             'phoneInput'        => $this->restrictionSettings->getPhoneInputDisplayConfig(),
             'currentUserHasMfa' => (bool) get_user_meta($currentUser->ID, UserMeta::MFA_ENABLED, true),
             'currentUserRoles'  => $currentUser->roles,
+            'isRtl'             => is_rtl(),
         ];
     }
 

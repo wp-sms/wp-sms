@@ -188,7 +188,7 @@ export function ConditionBuilder({ rules, onChange, payloadSchema, triggerType }
         onClick={addRule}
         className="w-full"
       >
-        <Plus className="mr-1 h-3.5 w-3.5" />
+        <Plus className="me-1 h-3.5 w-3.5" />
         {__('Add condition', 'wp-sms')}
       </Button>
     </div>

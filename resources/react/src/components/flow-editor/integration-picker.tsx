@@ -53,7 +53,7 @@ export function IntegrationPickerToken({
       <TokenBadge hasValue={!!value} onClick={() => setOpen(true)}>
         {selected ? (
           <>
-            <IntegrationIcon icon={selected.icon} size="sm" className="mr-1.5" />
+            <IntegrationIcon icon={selected.icon} size="sm" className="me-1.5" />
             {selected.label}
           </>
         ) : (
@@ -240,7 +240,7 @@ export function IntegrationPicker({
       ref={navIndex >= 0 ? (el) => { if (el) { itemRefs.current.set(navIndex, el); } else { itemRefs.current.delete(navIndex); } } : undefined}
       type="button"
       className={cn(
-        'flex w-full items-center gap-3 rounded-lg px-2 py-2.5 text-left transition-colors',
+        'flex w-full items-center gap-3 rounded-lg px-2 py-2.5 text-start transition-colors',
         opts?.stagger && 'animate-fade-up',
         navIndex >= 0 && focusIndex === navIndex
           ? 'bg-accent ring-1 ring-ring/30'
@@ -338,15 +338,15 @@ export function IntegrationPicker({
               </div>
 
               {/* Desktop: vertical sidebar */}
-              <div className="hidden sm:block w-48 shrink-0 overflow-y-auto border-r p-1.5 picker-scroll">
+              <div className="hidden sm:block w-48 shrink-0 overflow-y-auto border-e p-1.5 picker-scroll">
                 {groups.map((group) => (
                   <button
                     key={group.name}
                     type="button"
                     className={cn(
-                      'flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-left text-sm transition-colors',
+                      'flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-start text-sm transition-colors',
                       activeGroup === group.name
-                        ? 'bg-primary/5 font-medium border-l-2 border-primary'
+                        ? 'bg-primary/5 font-medium border-s-2 border-primary'
                         : 'hover:bg-accent/50 text-muted-foreground',
                     )}
                     onClick={() => setActiveGroup(group.name)}

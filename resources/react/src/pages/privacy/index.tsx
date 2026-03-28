@@ -184,7 +184,7 @@ export function PrivacyPage() {
                   <CardTitle className="flex items-center gap-2 text-base">
                     <User className="size-4" />
                     {[contact.first_name, contact.last_name].filter(Boolean).join(' ') || 'Unnamed Contact'}
-                    <Badge variant="outline" className="ml-auto font-normal">
+                    <Badge variant="outline" className="ms-auto font-normal">
                       {contact.status}
                     </Badge>
                   </CardTitle>

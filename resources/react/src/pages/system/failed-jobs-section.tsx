@@ -89,7 +89,7 @@ export function FailedJobsSection({ data, onMutate }: FailedJobsSectionProps) {
               <TableHead>{__('Error', 'wp-sms')}</TableHead>
               <TableHead>{__('Severity', 'wp-sms')}</TableHead>
               <TableHead>{__('Failed', 'wp-sms')}</TableHead>
-              <TableHead className="text-right">{__('Actions', 'wp-sms')}</TableHead>
+              <TableHead className="text-end">{__('Actions', 'wp-sms')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -121,7 +121,7 @@ export function FailedJobsSection({ data, onMutate }: FailedJobsSectionProps) {
                     <TooltipContent>{formatDateTime(job.failed_at)}</TooltipContent>
                   </Tooltip>
                 </TableCell>
-                <TableCell className="text-right">
+                <TableCell className="text-end">
                   <div className="flex items-center justify-end gap-1">
                     <Button
                       variant="ghost"

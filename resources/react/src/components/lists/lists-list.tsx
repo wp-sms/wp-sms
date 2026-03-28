@@ -81,7 +81,7 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
           description={__('Create lists to segment your contacts.', 'wp-sms')}
           action={
             <Button size="sm" onClick={handleCreate}>
-              <Plus className="mr-1.5 h-3.5 w-3.5" /> {__('New List', 'wp-sms')}
+              <Plus className="me-1.5 h-3.5 w-3.5" /> {__('New List', 'wp-sms')}
             </Button>
           }
         />
@@ -112,7 +112,7 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
               </TableCell>
               <ActionsCell>
                 <DropdownMenuItem onClick={() => handleEdit(list)}>
-                  <Pencil className="h-4 w-4 mr-2" />
+                  <Pencil className="h-4 w-4 me-2" />
                   {__('Edit', 'wp-sms')}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -120,7 +120,7 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
                   onClick={() => void handleDelete(list.id)}
                   className="text-destructive focus:text-destructive"
                 >
-                  <Trash2 className="h-4 w-4 mr-2" />
+                  <Trash2 className="h-4 w-4 me-2" />
                   {__('Delete', 'wp-sms')}
                 </DropdownMenuItem>
               </ActionsCell>
@@ -142,7 +142,7 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
           description={pluralize(lists.length, 'list')}
           actions={
             <Button size="sm" onClick={handleCreate}>
-              <Plus className="mr-1.5 h-3.5 w-3.5" /> {__('New List', 'wp-sms')}
+              <Plus className="me-1.5 h-3.5 w-3.5" /> {__('New List', 'wp-sms')}
             </Button>
           }
         >

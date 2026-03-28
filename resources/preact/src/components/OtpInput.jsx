@@ -58,7 +58,7 @@ export function OtpInput({ length = 6, onComplete, disabled, autoFocus = false, 
             pasteTransformer={stripNonDigits}
             containerClassName={cfg.container}
             render={({ slots }) => (
-                <div className={cfg.slots}>
+                <div className={cfg.slots} dir="ltr">
                     {slots.slice(0, half).map((slot, i) => (
                         <SlotComponent key={i} {...slot} />
                     ))}

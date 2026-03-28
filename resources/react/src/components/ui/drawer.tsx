@@ -64,8 +64,8 @@ function DrawerContent({
           "group/drawer-content fixed z-[100100] flex h-auto flex-col bg-background",
           "data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-lg data-[vaul-drawer-direction=top]:border-b-2 data-[vaul-drawer-direction=top]:border-b-foreground",
           "data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-lg data-[vaul-drawer-direction=bottom]:border-t-2 data-[vaul-drawer-direction=bottom]:border-t-foreground",
-          "data-[vaul-drawer-direction=right]:top-[var(--wp-admin--admin-bar--height,32px)] data-[vaul-drawer-direction=right]:bottom-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:border-l-2 data-[vaul-drawer-direction=right]:border-l-foreground data-[vaul-drawer-direction=right]:sm:max-w-sm",
-          "data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:border-r-2 data-[vaul-drawer-direction=left]:border-r-foreground data-[vaul-drawer-direction=left]:sm:max-w-sm",
+          "data-[vaul-drawer-direction=right]:top-[var(--wp-admin--admin-bar--height,32px)] data-[vaul-drawer-direction=right]:bottom-0 data-[vaul-drawer-direction=right]:end-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:border-s-2 data-[vaul-drawer-direction=right]:border-s-foreground data-[vaul-drawer-direction=right]:sm:max-w-sm",
+          "data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:start-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:border-e-2 data-[vaul-drawer-direction=left]:border-e-foreground data-[vaul-drawer-direction=left]:sm:max-w-sm",
           className
         )}
         {...props}
@@ -73,7 +73,7 @@ function DrawerContent({
         <div className="mx-auto mt-4 hidden h-2 w-[100px] shrink-0 rounded-md bg-muted group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
         {children}
         {showCloseButton && (
-          <DrawerPrimitive.Close className="absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
+          <DrawerPrimitive.Close className="absolute top-4 end-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
             <XIcon className="size-4" />
             <span className="sr-only">Close</span>
           </DrawerPrimitive.Close>
@@ -88,7 +88,7 @@ function DrawerHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="drawer-header"
       className={cn(
-        "flex flex-col gap-0.5 p-4 group-data-[vaul-drawer-direction=bottom]/drawer-content:text-center group-data-[vaul-drawer-direction=top]/drawer-content:text-center md:gap-1.5 md:text-left",
+        "flex flex-col gap-0.5 p-4 group-data-[vaul-drawer-direction=bottom]/drawer-content:text-center group-data-[vaul-drawer-direction=top]/drawer-content:text-center md:gap-1.5 md:text-start",
         className
       )}
       {...props}

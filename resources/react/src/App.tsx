@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import { useIsRtl } from '@/hooks/use-is-rtl';
 import { AppShell, getParentSection, VALID_SECTIONS } from '@/components/layout/app-shell';
 import { SaveBarProvider } from '@/contexts/save-bar-context';
 import { useSettings } from '@/hooks/use-settings';
@@ -33,6 +34,7 @@ const { roles, version } = getConfig();
 export default function App() {
   const [section, setSection, subTab] = useHashSection(DEFAULT_SECTION, VALID_SECTIONS);
   const { settings, updateSetting, isDirty, saveStatus, save, loading, error } = useSettings();
+  const isRtl = useIsRtl();
   const handleSave = useCallback(() => { void save(); }, [save]);
   const defaultSaveBarState = useMemo(
     () => ({ isDirty, saveStatus, onSave: handleSave }),
@@ -119,7 +121,7 @@ export default function App() {
               </AppShell>
             </div>
 
-            <Toaster richColors position="bottom-right" />
+            <Toaster richColors position={isRtl ? "bottom-left" : "bottom-right"} />
           </div>
         </SaveBarProvider>
       </ConfirmProvider>

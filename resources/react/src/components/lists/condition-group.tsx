@@ -54,7 +54,7 @@ export function ConditionGroupComponent({ group, tags, onChange, depth = 0 }: Co
   };
 
   return (
-    <div className={`space-y-2 ${depth > 0 ? 'ml-4 pl-3 border-l-2 border-border/50' : ''}`}>
+    <div className={`space-y-2 ${depth > 0 ? 'ms-4 ps-3 border-s-2 border-border/50' : ''}`}>
       <div className="flex items-center gap-2">
         <span className="text-xs text-muted-foreground">{__('Match', 'wp-sms')}</span>
         <Select value={group.match} onValueChange={(v) => onChange({ ...group, match: v as 'all' | 'any' })}>
@@ -84,7 +84,7 @@ export function ConditionGroupComponent({ group, tags, onChange, depth = 0 }: Co
           <Button
             variant="ghost"
             size="sm"
-            className="absolute -right-1 -top-1 h-5 w-5 p-0 text-muted-foreground"
+            className="absolute -end-1 -top-1 h-5 w-5 p-0 text-muted-foreground"
             onClick={() => removeGroup(i)}
           >
             x
@@ -100,11 +100,11 @@ export function ConditionGroupComponent({ group, tags, onChange, depth = 0 }: Co
 
       <div className="flex items-center gap-2">
         <Button variant="outline" size="sm" className="h-7 text-xs" onClick={addCondition}>
-          <Plus className="mr-1 h-3 w-3" /> {__('Condition', 'wp-sms')}
+          <Plus className="me-1 h-3 w-3" /> {__('Condition', 'wp-sms')}
         </Button>
         {depth < MAX_DEPTH && (
           <Button variant="outline" size="sm" className="h-7 text-xs" onClick={addGroup}>
-            <Plus className="mr-1 h-3 w-3" /> {__('Group', 'wp-sms')}
+            <Plus className="me-1 h-3 w-3" /> {__('Group', 'wp-sms')}
           </Button>
         )}
       </div>

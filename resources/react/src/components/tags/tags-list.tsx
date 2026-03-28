@@ -79,7 +79,7 @@ export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
           description={__('Create tags to organize your contacts.', 'wp-sms')}
           action={
             <Button size="sm" onClick={handleCreate}>
-              <Plus className="mr-1.5 h-3.5 w-3.5" /> {__('New Tag', 'wp-sms')}
+              <Plus className="me-1.5 h-3.5 w-3.5" /> {__('New Tag', 'wp-sms')}
             </Button>
           }
         />
@@ -106,7 +106,7 @@ export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
               <TableCell className="text-sm">{tag.contact_count ?? 0}</TableCell>
               <ActionsCell>
                 <DropdownMenuItem onClick={() => handleEdit(tag)}>
-                  <Pencil className="h-4 w-4 mr-2" />
+                  <Pencil className="h-4 w-4 me-2" />
                   {__('Edit', 'wp-sms')}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -114,7 +114,7 @@ export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
                   onClick={() => void handleDelete(tag.id)}
                   className="text-destructive focus:text-destructive"
                 >
-                  <Trash2 className="h-4 w-4 mr-2" />
+                  <Trash2 className="h-4 w-4 me-2" />
                   {__('Delete', 'wp-sms')}
                 </DropdownMenuItem>
               </ActionsCell>
@@ -136,7 +136,7 @@ export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
           description={pluralize(tags.length, 'tag')}
           actions={
             <Button size="sm" onClick={handleCreate}>
-              <Plus className="mr-1.5 h-3.5 w-3.5" /> {__('New Tag', 'wp-sms')}
+              <Plus className="me-1.5 h-3.5 w-3.5" /> {__('New Tag', 'wp-sms')}
             </Button>
           }
         >

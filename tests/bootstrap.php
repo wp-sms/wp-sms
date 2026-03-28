@@ -127,8 +127,15 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
                 'name'        => 'Test Site',
                 'url'         => 'http://localhost',
                 'description' => 'Just a test site',
+                'language'    => 'en-US',
                 default       => '',
             };
+        }
+    }
+
+    if (!function_exists('is_rtl')) {
+        function is_rtl(): bool {
+            return false;
         }
     }
 

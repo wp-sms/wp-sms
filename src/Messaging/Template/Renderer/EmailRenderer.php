@@ -87,6 +87,8 @@ HTML;
 
         $preheader = esc_html($siteName);
         $wsmsLogoUrl = esc_url(WP_SMS_URL . 'public/images/icon-128x128.png');
+        $dir = is_rtl() ? 'rtl' : 'ltr';
+        $lang = get_bloginfo('language');
 
         $unsubscribeHtml = '';
         if (!empty($unsubscribeUrl)) {
@@ -98,7 +100,7 @@ HTML;
 
         return <<<HTML
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{$lang}" dir="{$dir}">
 <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /></head>
 <body style="margin:0;padding:0;background-color:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#f3f4f6;">

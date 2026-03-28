@@ -28,6 +28,7 @@ function createShadowMount(host, mountId) {
 
     const mountEl = document.createElement('div');
     mountEl.id = mountId;
+    mountEl.dir = document.documentElement.dir || 'ltr';
     // Reset inherited typography so host page styles don't leak into shadow DOM.
     mountEl.style.cssText = 'font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.5; color: oklch(0.147 0.004 49.25);';
     shadow.appendChild(mountEl);

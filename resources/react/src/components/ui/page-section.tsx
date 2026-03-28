@@ -84,7 +84,7 @@ export function PageSection({
               {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
               {title}
               <ChevronDown className={cn(
-                "ml-auto h-4 w-4 text-muted-foreground transition-transform",
+                "ms-auto h-4 w-4 text-muted-foreground transition-transform",
                 open && "rotate-180"
               )} />
             </CardTitle>

@@ -34,10 +34,10 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
 
   const filtersButton = (
     <Button variant="outline" size="sm" onClick={() => setFiltersOpen(v => !v)}>
-      <SlidersHorizontal className="mr-1.5 h-3.5 w-3.5" />
+      <SlidersHorizontal className="me-1.5 h-3.5 w-3.5" />
       Filters
       {activeFilterCount > 0 && (
-        <Badge variant="default" className="ml-1.5 h-5 px-1.5 text-[10px]">{activeFilterCount}</Badge>
+        <Badge variant="default" className="ms-1.5 h-5 px-1.5 text-[10px]">{activeFilterCount}</Badge>
       )}
     </Button>
   );

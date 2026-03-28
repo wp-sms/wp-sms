@@ -37,10 +37,10 @@ function StepDetail({ step }: { step: ProcessedStep }) {
         <span className="font-mono text-xs text-muted-foreground">{step.nodeId}</span>
         <span className="text-xs text-muted-foreground capitalize">({step.type})</span>
         {step.duration && (
-          <span className="ml-auto text-[10px] text-muted-foreground">{step.duration}</span>
+          <span className="ms-auto text-[10px] text-muted-foreground">{step.duration}</span>
         )}
         {step.status === 'running' && (
-          <span className="ml-auto text-[10px] text-blue-600">{__('In progress', 'wp-sms')}</span>
+          <span className="ms-auto text-[10px] text-blue-600">{__('In progress', 'wp-sms')}</span>
         )}
       </div>
 

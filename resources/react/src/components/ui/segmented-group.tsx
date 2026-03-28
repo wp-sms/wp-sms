@@ -44,8 +44,8 @@ export function SegmentedGroup<T extends string | number>({
               active
                 ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:text-foreground hover:bg-muted',
-              i === 0 && 'rounded-l-md',
-              i === options.length - 1 && 'rounded-r-md',
+              i === 0 && 'rounded-s-md',
+              i === options.length - 1 && 'rounded-e-md',
             )}
           >
             {isLabeled ? (

@@ -26,7 +26,7 @@ export function WelcomePage({ config, enabledPages, teamMembers, onNavigate }) {
                             <span>{ctaLabel}</span>
                             {ctaDescription && <p class="wsms-mb-welcome__cta-desc">{ctaDescription}</p>}
                         </div>
-                        <ChevronRightIcon size={16} class="wsms-mb-welcome__arrow" />
+                        <ChevronRightIcon size={16} class="wsms-mb-welcome__arrow wsms-icon-flip" />
                     </button>
                 )}
             </div>
@@ -52,7 +52,7 @@ export function WelcomePage({ config, enabledPages, teamMembers, onNavigate }) {
                         </div>
                         <span class="wsms-mb-welcome__team-text">
                             {__('Meet our team', 'wp-sms')}
-                            <ChevronRightIcon size={14} />
+                            <ChevronRightIcon size={14} class="wsms-icon-flip" />
                         </span>
                     </button>
                 </div>

@@ -62,7 +62,7 @@ export function BrandingPage({ branding, onChange, authBaseUrl }: BrandingPagePr
               className="xl:hidden"
               onClick={() => setDrawerOpen(true)}
             >
-              <Eye className="mr-1.5 h-3.5 w-3.5" />
+              <Eye className="me-1.5 h-3.5 w-3.5" />
               {__('Preview', 'wp-sms')}
             </Button>
             <Button
@@ -72,13 +72,13 @@ export function BrandingPage({ branding, onChange, authBaseUrl }: BrandingPagePr
               onClick={() => setPreviewVisible((v) => !v)}
             >
               {previewVisible ? (
-                <><EyeOff className="mr-1.5 h-3.5 w-3.5" /> Hide Preview</>
+                <><EyeOff className="me-1.5 h-3.5 w-3.5" /> Hide Preview</>
               ) : (
-                <><Eye className="mr-1.5 h-3.5 w-3.5" /> Show Preview</>
+                <><Eye className="me-1.5 h-3.5 w-3.5" /> Show Preview</>
               )}
             </Button>
             <Button variant="outline" size="sm" onClick={handleReset}>
-              <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+              <RotateCcw className="me-1.5 h-3.5 w-3.5" />
               {__('Reset', 'wp-sms')}
             </Button>
           </>

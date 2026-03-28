@@ -41,7 +41,7 @@ function IntegrationCard({ integration, onClick }: {
           </div>
           <div className="flex items-center gap-2">
             <IntegrationStatusBadge connected={integration.connected} available={integration.available} />
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            <ChevronRight className="h-4 w-4 text-muted-foreground rtl:scale-x-[-1]" />
           </div>
         </div>
         {integration.description && (
@@ -114,8 +114,8 @@ function AppDetailPage({ integrationId, settings, onUpdate, onBack }: {
   if (loading || !detail) {
     return (
       <div className="space-y-6">
-        <Button variant="ghost" size="sm" className="-ml-2" onClick={onBack}>
-          <ArrowLeft className="mr-1 h-4 w-4" />
+        <Button variant="ghost" size="sm" className="-ms-2" onClick={onBack}>
+          <ArrowLeft className="me-1 h-4 w-4 rtl:scale-x-[-1]" />
           {__('Back to Integrations', 'wp-sms')}
         </Button>
         <IntegrationHeroSkeleton />
@@ -127,8 +127,8 @@ function AppDetailPage({ integrationId, settings, onUpdate, onBack }: {
 
   return (
     <div className="space-y-6">
-      <Button variant="ghost" size="sm" className="-ml-2" onClick={onBack}>
-        <ArrowLeft className="mr-1 h-4 w-4" />
+      <Button variant="ghost" size="sm" className="-ms-2" onClick={onBack}>
+        <ArrowLeft className="me-1 h-4 w-4 rtl:scale-x-[-1]" />
         {__('Back to Integrations', 'wp-sms')}
       </Button>
 
@@ -239,13 +239,13 @@ export function IntegrationsPage({ settings, onUpdate }: AppsProps) {
       <PageHeader icon={Blocks} title={__('Integrations', 'wp-sms')} metadata={pluralize(integrations.length, 'integration')} />
       <div className="flex items-center gap-3">
         <div className="relative flex-1 max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
             placeholder={__('Search apps...', 'wp-sms')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
+            className="ps-9"
           />
         </div>
         {allCategories.length > 1 && (

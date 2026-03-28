@@ -249,7 +249,7 @@ function AutoReplySection({ label, description, enabled, text, onToggle, onTextC
           value={text}
           onChange={(e) => onTextChange(e.target.value)}
           rows={2}
-          className="ml-0"
+          className="ms-0"
         />
       )}
     </div>
@@ -280,7 +280,7 @@ function KeywordSection({ label, description, defaultKeywords, customKeywords, n
             <button
               type="button"
               onClick={() => onRemove(kw)}
-              className="ml-0.5 rounded-md hover:bg-muted p-0.5"
+              className="ms-0.5 rounded-md hover:bg-muted p-0.5"
             >
               <X className="h-3 w-3" />
             </button>

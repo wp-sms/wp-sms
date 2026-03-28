@@ -13,7 +13,7 @@ function Card({ className, active, ...props }: CardProps) {
       data-slot="card"
       className={cn(
         "flex flex-col gap-6 rounded-lg border-2 border-border bg-card py-6 text-card-foreground",
-        active && "border-l-[3px] border-l-primary",
+        active && "border-s-[3px] border-s-primary",
         className
       )}
       {...props}

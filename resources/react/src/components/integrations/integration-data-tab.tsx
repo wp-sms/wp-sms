@@ -119,11 +119,11 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
   const actions = (
     <div className="flex gap-2">
       <Button variant="outline" size="sm" onClick={handleSyncNow} disabled={syncing}>
-        {syncing ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-1 h-4 w-4" />}
+        {syncing ? <Loader2 className="me-1 h-4 w-4 animate-spin" /> : <RefreshCw className="me-1 h-4 w-4" />}
         Sync Now
       </Button>
       <Button variant="outline" size="sm" onClick={handlePollNow} disabled={polling}>
-        {polling ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-1 h-4 w-4" />}
+        {polling ? <Loader2 className="me-1 h-4 w-4 animate-spin" /> : <RefreshCw className="me-1 h-4 w-4" />}
         Poll Now
       </Button>
     </div>
@@ -212,7 +212,7 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
         />
 
         {settings.poll_enabled && (
-          <div className="space-y-1.5 pl-4">
+          <div className="space-y-1.5 ps-4">
             <label className="text-sm font-medium">Poll interval</label>
             <Select value={String(settings.poll_interval)} onValueChange={(v) => update('poll_interval', Number(v))}>
               <SelectTrigger className="w-40">
@@ -238,7 +238,7 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
         />
 
         <Button size="sm" onClick={handleSave} disabled={saving}>
-          {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {saving && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
           Save Settings
         </Button>
       </div>

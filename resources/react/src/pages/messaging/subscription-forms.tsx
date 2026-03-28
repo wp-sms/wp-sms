@@ -224,7 +224,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
             metadata={pluralize(forms.length, 'form')}
             actions={
               <Button onClick={openCreate} size="sm">
-                <Plus className="mr-1 h-3.5 w-3.5" />
+                <Plus className="me-1 h-3.5 w-3.5" />
                 {__('Create Form', 'wp-sms')}
               </Button>
             }
@@ -240,7 +240,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
               description={__('Create your first subscription form to collect contacts from visitors without requiring WordPress registration.', 'wp-sms')}
               action={
                 <Button onClick={openCreate} size="sm">
-                  <Plus className="mr-1 h-3.5 w-3.5" />
+                  <Plus className="me-1 h-3.5 w-3.5" />
                   {__('Create Form', 'wp-sms')}
                 </Button>
               }
@@ -280,15 +280,15 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                   </TableCell>
                   <ActionsCell>
                     <DropdownMenuItem onClick={() => openEdit(form)}>
-                      <Pencil className="h-4 w-4 mr-2" />
+                      <Pencil className="h-4 w-4 me-2" />
                       {__('Edit', 'wp-sms')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => copyShortcode(form.slug)}>
-                      <ClipboardCopy className="h-4 w-4 mr-2" />
+                      <ClipboardCopy className="h-4 w-4 me-2" />
                       {__('Copy Shortcode', 'wp-sms')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => duplicate(form.id)}>
-                      <Copy className="h-4 w-4 mr-2" />
+                      <Copy className="h-4 w-4 me-2" />
                       {__('Duplicate', 'wp-sms')}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -296,7 +296,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                       onClick={() => handleDelete(form.id)}
                       className="text-destructive focus:text-destructive"
                     >
-                      <Trash2 className="h-4 w-4 mr-2" />
+                      <Trash2 className="h-4 w-4 me-2" />
                       {__('Delete', 'wp-sms')}
                     </DropdownMenuItem>
                   </ActionsCell>
@@ -377,7 +377,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                         )}
                       </div>
                       {included && (
-                        <label className="flex items-center gap-1.5 text-xs ml-2 cursor-pointer">
+                        <label className="flex items-center gap-1.5 text-xs ms-2 cursor-pointer">
                           <Checkbox
                             checked={included.required}
                             onCheckedChange={() => toggleFieldRequired(af.key)}

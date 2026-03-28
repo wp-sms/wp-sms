@@ -22,7 +22,7 @@ export function IntegrationAutomationTab({ triggers, actions }: AutomationTabPro
           <PageSection icon={Zap} title={`Triggers (${triggers.length})`}>
             <div className="space-y-2">
               {triggers.map((item) => (
-                <div key={item.id} className="rounded-md border border-l-2 border-l-amber-400 p-3">
+                <div key={item.id} className="rounded-md border border-s-2 border-s-amber-400 p-3">
                   <div className="text-sm font-medium">{item.name}</div>
                   <div className="text-xs text-muted-foreground mt-0.5">{item.description}</div>
                 </div>
@@ -35,7 +35,7 @@ export function IntegrationAutomationTab({ triggers, actions }: AutomationTabPro
           <PageSection icon={Play} title={`Actions (${actions.length})`}>
             <div className="space-y-2">
               {actions.map((item) => (
-                <div key={item.id} className="rounded-md border border-l-2 border-l-blue-400 p-3">
+                <div key={item.id} className="rounded-md border border-s-2 border-s-blue-400 p-3">
                   <div className="text-sm font-medium">{item.name}</div>
                   <div className="text-xs text-muted-foreground mt-0.5">{item.description}</div>
                 </div>

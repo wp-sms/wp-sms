@@ -197,7 +197,7 @@
 }
 
 .wsms-vw.wsms-vw .wsms-vw-error-box {
-    border-left: 3px solid var(--wsms-vw-error);
+    border-inline-start: 3px solid var(--wsms-vw-error);
     padding: 8px 12px;
     margin-bottom: 4px;
 }
@@ -275,7 +275,7 @@
     margin-top: 10px;
     padding-top: 8px;
     border-top: 1px solid var(--wsms-vw-border);
-    text-align: right;
+    text-align: end;
     font-size: 10px;
     letter-spacing: 0.02em;
     color: var(--wsms-vw-text-muted);

@@ -117,7 +117,7 @@ function HeroAction({ detail, disconnecting, onDisconnect }: {
     <div className="flex items-center gap-2 shrink-0">
       {label && <span className="text-xs text-muted-foreground">{label}</span>}
       <Button variant="outline" size="sm" onClick={onDisconnect} disabled={disconnecting}>
-        {disconnecting && <Loader2 className="mr-1 h-4 w-4 animate-spin" />}
+        {disconnecting && <Loader2 className="me-1 h-4 w-4 animate-spin" />}
         Disconnect
       </Button>
     </div>

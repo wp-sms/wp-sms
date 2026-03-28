@@ -59,19 +59,19 @@ export function QueueOverview({ data }: QueueOverviewProps) {
           <TableHeader>
             <TableRow>
               <TableHead>{__('Type', 'wp-sms')}</TableHead>
-              <TableHead className="text-right">{__('Pending', 'wp-sms')}</TableHead>
-              <TableHead className="text-right">{__('In Progress', 'wp-sms')}</TableHead>
+              <TableHead className="text-end">{__('Pending', 'wp-sms')}</TableHead>
+              <TableHead className="text-end">{__('In Progress', 'wp-sms')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.by_type.map((row) => (
               <TableRow key={row.type} className="even:bg-muted/30">
                 <TableCell className="font-mono text-sm">{row.type}</TableCell>
-                <TableCell className="text-right tabular-nums">{row.pending}</TableCell>
-                <TableCell className="text-right tabular-nums">
+                <TableCell className="text-end tabular-nums">{row.pending}</TableCell>
+                <TableCell className="text-end tabular-nums">
                   {row.in_progress}
                   {data.stuck_jobs.some((s) => s.job_type === row.type) && (
-                    <Badge variant="warning" className="ml-2">stuck</Badge>
+                    <Badge variant="warning" className="ms-2">stuck</Badge>
                   )}
                 </TableCell>
               </TableRow>

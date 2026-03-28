@@ -47,7 +47,7 @@ export function SentenceBuilder({
           icon={Radio}
           iconBg="bg-emerald-100"
           iconFg="text-emerald-600"
-          borderColor="border-l-emerald-400"
+          borderColor="border-s-emerald-400"
           label={__('Trigger', 'wp-sms')}
           summary={triggerSummary}
           statusColor={triggerType ? 'bg-emerald-400' : 'bg-amber-400'}

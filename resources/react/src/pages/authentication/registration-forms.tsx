@@ -206,7 +206,7 @@ export function RegistrationForms() {
           metadata={pluralize(forms.length, 'form')}
           actions={
             <Button onClick={openCreate} size="sm">
-              <Plus className="mr-1 h-3.5 w-3.5" />
+              <Plus className="me-1 h-3.5 w-3.5" />
               {__('Create Form', 'wp-sms')}
             </Button>
           }
@@ -221,7 +221,7 @@ export function RegistrationForms() {
               description={__('Create your first registration form to collect different information for different user types.', 'wp-sms')}
               action={
                 <Button onClick={openCreate} size="sm">
-                  <Plus className="mr-1 h-3.5 w-3.5" />
+                  <Plus className="me-1 h-3.5 w-3.5" />
                   {__('Create Form', 'wp-sms')}
                 </Button>
               }
@@ -261,19 +261,19 @@ export function RegistrationForms() {
                   </TableCell>
                   <ActionsCell>
                     <DropdownMenuItem onClick={() => openEdit(form)}>
-                      <Pencil className="h-4 w-4 mr-2" />
+                      <Pencil className="h-4 w-4 me-2" />
                       {__('Edit', 'wp-sms')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => copyPopupShortcode(form.slug)}>
-                      <ClipboardCopy className="h-4 w-4 mr-2" />
+                      <ClipboardCopy className="h-4 w-4 me-2" />
                       {__('Copy Popup Shortcode', 'wp-sms')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => copyEmbedShortcode(form.slug)}>
-                      <ClipboardCopy className="h-4 w-4 mr-2" />
+                      <ClipboardCopy className="h-4 w-4 me-2" />
                       {__('Copy Embed Shortcode', 'wp-sms')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => duplicate(form.id)}>
-                      <Copy className="h-4 w-4 mr-2" />
+                      <Copy className="h-4 w-4 me-2" />
                       {__('Duplicate', 'wp-sms')}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -281,7 +281,7 @@ export function RegistrationForms() {
                       onClick={() => handleDelete(form.id)}
                       className="text-destructive focus:text-destructive"
                     >
-                      <Trash2 className="h-4 w-4 mr-2" />
+                      <Trash2 className="h-4 w-4 me-2" />
                       {__('Delete', 'wp-sms')}
                     </DropdownMenuItem>
                   </ActionsCell>
@@ -383,7 +383,7 @@ export function RegistrationForms() {
                           >
                             <ArrowDown className="h-3.5 w-3.5" />
                           </Button>
-                          <label className="flex items-center gap-1.5 text-xs ml-2 cursor-pointer">
+                          <label className="flex items-center gap-1.5 text-xs ms-2 cursor-pointer">
                             <Checkbox
                               checked={included.required}
                               onCheckedChange={() => toggleFieldRequired(sf.id)}

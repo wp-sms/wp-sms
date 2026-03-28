@@ -24,9 +24,9 @@ export function createNode(type: StepType): FlowNode {
 }
 
 export const STEP_COLORS = {
-  action:    { border: 'border-l-blue-400',   iconBg: 'bg-blue-100',   iconFg: 'text-blue-600'   },
-  condition: { border: 'border-l-purple-400', iconBg: 'bg-purple-100', iconFg: 'text-purple-600' },
-  delay:     { border: 'border-l-amber-400',  iconBg: 'bg-amber-100',  iconFg: 'text-amber-600'  },
+  action:    { border: 'border-s-blue-400',   iconBg: 'bg-blue-100',   iconFg: 'text-blue-600'   },
+  condition: { border: 'border-s-purple-400', iconBg: 'bg-purple-100', iconFg: 'text-purple-600' },
+  delay:     { border: 'border-s-amber-400',  iconBg: 'bg-amber-100',  iconFg: 'text-amber-600'  },
 } as const;
 
 export const STEP_LABELS = {

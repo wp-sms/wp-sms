@@ -75,7 +75,7 @@ function GatewayCard({ gateway, getCredit, onConfigure }: {
               ? <Badge variant="success" dot className="text-xs">{__('Active', 'wp-sms')}</Badge>
               : <Badge variant="outline" className="text-xs text-muted-foreground">{__('Not configured', 'wp-sms')}</Badge>
             }
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            <ChevronRight className="h-4 w-4 text-muted-foreground rtl:scale-x-[-1]" />
           </div>
         </div>
         {gateway.metadata.description && (
@@ -224,13 +224,13 @@ export function Gateways() {
       {/* Filter Bar */}
       <div className="flex items-center gap-3">
         <div className="relative flex-1 max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
             placeholder={__('Search gateways...', 'wp-sms')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
+            className="ps-9"
           />
         </div>
         {allChannels.length > 1 && (

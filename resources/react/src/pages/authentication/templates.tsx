@@ -180,10 +180,10 @@ function PreviewDialog({
             <div className="flex justify-center p-6">
               <div className="w-full max-w-xs">
                 {/* Phone-style message bubble */}
-                <div className="rounded-2xl rounded-tl-sm bg-muted px-4 py-3 shadow-sm">
+                <div className="rounded-2xl rounded-ss-sm bg-muted px-4 py-3 shadow-sm">
                   <p className="text-sm whitespace-pre-wrap leading-relaxed">{preview.body}</p>
                 </div>
-                <p className="text-[10px] text-muted-foreground mt-1.5 ml-1">
+                <p className="text-[10px] text-muted-foreground mt-1.5 ms-1">
                   {channelLabel} · just now
                 </p>
               </div>
@@ -516,7 +516,7 @@ function ProviderTemplatePicker({
                     {templateVariables.map((v) => (
                       <SelectItem key={v.key} value={v.key}>
                         {v.label}
-                        <span className="ml-1 text-xs text-muted-foreground">({v.example})</span>
+                        <span className="ms-1 text-xs text-muted-foreground">({v.example})</span>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -530,7 +530,7 @@ function ProviderTemplatePicker({
       {selectedTemplate && (
         <Field>
           <FieldLabel>Preview</FieldLabel>
-          <div className="rounded-2xl rounded-tl-sm bg-muted px-4 py-3 shadow-sm">
+          <div className="rounded-2xl rounded-ss-sm bg-muted px-4 py-3 shadow-sm">
             <p className="text-sm whitespace-pre-wrap leading-relaxed">{previewBody}</p>
           </div>
         </Field>
@@ -925,12 +925,12 @@ function TemplateEditor({
                         {saving ? 'Saving...' : 'Save'}
                       </Button>
                       <Button variant="outline" onClick={handlePreview} disabled={previewing}>
-                        <Eye className="h-3.5 w-3.5 mr-1.5" />
+                        <Eye className="h-3.5 w-3.5 me-1.5" />
                         {previewing ? 'Loading...' : 'Preview'}
                       </Button>
                       {hasOverride && (
                         <Button variant="ghost" onClick={handleReset}>
-                          <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+                          <RotateCcw className="h-3.5 w-3.5 me-1.5" />
                           {__('Reset', 'wp-sms')}
                         </Button>
                       )}

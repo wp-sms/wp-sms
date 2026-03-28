@@ -464,7 +464,7 @@ function CountryPicker({ countries, selected, onChange, buttonLabel = 'Add count
               <button
                 type="button"
                 onClick={() => onChange(selected.filter((c) => c !== code))}
-                className="ml-0.5 rounded-md hover:bg-muted p-0.5"
+                className="ms-0.5 rounded-md hover:bg-muted p-0.5"
               >
                 <X className="h-3 w-3" />
               </button>
@@ -544,7 +544,7 @@ function CountryDropdown({ countries, buttonLabel, isSelected, onSelect, indicat
                     {selected && <Check className="h-3 w-3" />}
                   </div>
                   <span className="truncate">{name}</span>
-                  <span className="ml-auto text-xs text-muted-foreground">{code}</span>
+                  <span className="ms-auto text-xs text-muted-foreground">{code}</span>
                 </button>
               );
             })
@@ -598,9 +598,9 @@ function NumberTypeBlockingCard({ draft, dbStatus, updateSection, onDownload, do
                   disabled={downloading}
                 >
                   {downloading ? (
-                    <><Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> Downloading...</>
+                    <><Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" /> Downloading...</>
                   ) : (
-                    <><Download className="mr-1.5 h-3.5 w-3.5" /> Download Database</>
+                    <><Download className="me-1.5 h-3.5 w-3.5" /> Download Database</>
                   )}
                 </Button>
               </div>
@@ -674,11 +674,11 @@ function EnhancedDatabaseCard({ dbStatus, autoUpdate, onToggleAutoUpdate, onDown
           disabled={downloading}
         >
           {downloading ? (
-            <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Downloading...</>
+            <><Loader2 className="me-2 h-4 w-4 animate-spin" /> Downloading...</>
           ) : dbStatus?.installed ? (
-            <><RefreshCw className="mr-2 h-4 w-4" /> Re-download Latest</>
+            <><RefreshCw className="me-2 h-4 w-4" /> Re-download Latest</>
           ) : (
-            <><Download className="mr-2 h-4 w-4" /> Download Database</>
+            <><Download className="me-2 h-4 w-4" /> Download Database</>
           )}
         </Button>
 

@@ -61,7 +61,7 @@ export function ExportDialog({ children, onExport }: ExportDialogProps) {
             </SelectContent>
           </Select>
           <Button className="w-full" onClick={handleExport} disabled={loading}>
-            <Download className="mr-1.5 h-3.5 w-3.5" />
+            <Download className="me-1.5 h-3.5 w-3.5" />
             {loading ? 'Exporting...' : 'Download CSV'}
           </Button>
         </div>

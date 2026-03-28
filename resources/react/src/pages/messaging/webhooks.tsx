@@ -152,7 +152,7 @@ export function Webhooks() {
         metadata={pluralize(webhooks.length, 'webhook')}
         actions={
           <Button size="sm" onClick={() => setView({ mode: 'create' })}>
-            <Plus className="mr-1.5 h-3.5 w-3.5" />
+            <Plus className="me-1.5 h-3.5 w-3.5" />
             {__('Create Webhook', 'wp-sms')}
           </Button>
         }
@@ -168,7 +168,7 @@ export function Webhooks() {
             description={__('Create your first webhook to push events to external services like Zapier, Make.com, or n8n.', 'wp-sms')}
             action={
               <Button size="sm" onClick={() => setView({ mode: 'create' })}>
-                <Plus className="mr-1.5 h-3.5 w-3.5" />
+                <Plus className="me-1.5 h-3.5 w-3.5" />
                 {__('Create Webhook', 'wp-sms')}
               </Button>
             }
@@ -210,14 +210,14 @@ export function Webhooks() {
                 </TableCell>
                 <ActionsCell>
                   <DropdownMenuItem onClick={() => setView({ mode: 'edit', webhook: wh })}>
-                    <Pencil className="h-4 w-4 mr-2" />
+                    <Pencil className="h-4 w-4 me-2" />
                     {__('Edit', 'wp-sms')}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => void handleTest(wh.id)}
                     disabled={testing === wh.id}
                   >
-                    <Zap className="h-4 w-4 mr-2" />
+                    <Zap className="h-4 w-4 me-2" />
                     {__('Test Connection', 'wp-sms')}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -226,7 +226,7 @@ export function Webhooks() {
                     disabled={deleting === wh.id}
                     className="text-destructive focus:text-destructive"
                   >
-                    <Trash2 className="h-4 w-4 mr-2" />
+                    <Trash2 className="h-4 w-4 me-2" />
                     {__('Delete', 'wp-sms')}
                   </DropdownMenuItem>
                 </ActionsCell>
@@ -343,7 +343,7 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
     <div className="space-y-4">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}>
-          <ArrowLeft className="mr-1 h-4 w-4" />
+          <ArrowLeft className="me-1 h-4 w-4 rtl:scale-x-[-1]" />
           {__('Back', 'wp-sms')}
         </Button>
         <h2 className="text-lg font-semibold">{isEdit ? __('Edit Webhook', 'wp-sms') : __('Create Webhook', 'wp-sms')}</h2>
@@ -410,7 +410,7 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
                     <CollapsibleContent>
                       <div className="divide-y">
                         {events.map((evt) => (
-                          <div key={evt.name} className="px-3 py-2 pl-8">
+                          <div key={evt.name} className="px-3 py-2 ps-8">
                             <div className="flex items-start gap-2">
                               <Checkbox
                                 checked={selectedEvents.has(evt.name)}
@@ -474,7 +474,7 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
                 className="shrink-0"
                 onClick={() => void handleRegenerateSecret()}
               >
-                <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
+                <RefreshCw className="h-3.5 w-3.5 me-1.5" />
                 {__('Regenerate', 'wp-sms')}
               </Button>
             </div>
@@ -497,12 +497,12 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
 
         <div className="flex items-center gap-3 pt-2">
           <Button onClick={() => void handleSubmit()} disabled={saving}>
-            {saving && <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />}
+            {saving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
             {isEdit ? __('Save Changes', 'wp-sms') : __('Create Webhook', 'wp-sms')}
           </Button>
           {isEdit && onTest && (
             <Button variant="outline" onClick={onTest} disabled={testing}>
-              {testing ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> : <Zap className="h-4 w-4 mr-1.5" />}
+              {testing ? <Loader2 className="h-4 w-4 me-1.5 animate-spin" /> : <Zap className="h-4 w-4 me-1.5" />}
               {__('Test Connection', 'wp-sms')}
             </Button>
           )}

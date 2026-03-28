@@ -150,7 +150,7 @@
 #wpsms-app {
   @apply relative h-auto;
   @apply bg-background text-foreground;
-  margin-left: -20px;
+  margin-inline-start: -20px;
   width: calc(100% + 20px);
 }
 
@@ -178,7 +178,7 @@
 
 #wpsms-app ul,
 #wpsms-app ol {
-  @apply list-none pl-0 m-0;
+  @apply list-none ps-0 m-0;
 }
 
 /* Reset form elements — clear WP admin button/input backgrounds, borders, shadows */
@@ -253,10 +253,17 @@
     transparent var(--sidebar-width)
   ) !important;
 }
+[dir="rtl"] #wpsms-app [data-slot="sidebar-wrapper"] {
+  background-image: linear-gradient(
+    to left,
+    var(--sidebar) var(--sidebar-width),
+    transparent var(--sidebar-width)
+  ) !important;
+}
 
 /* Sidebar structural ink border */
 #wpsms-app [data-slot="sidebar-container"] {
-  border-right: 2px solid var(--foreground);
+  border-inline-end: 2px solid var(--foreground);
 }
 
 /* Off-white content area behind cards */
@@ -274,7 +281,7 @@
 #wpsms-app [data-slot="sidebar-menu-button"][data-active="true"] {
   background-color: var(--sidebar-accent);
   color: var(--sidebar-accent-foreground);
-  border-left: 3px solid var(--primary);
+  border-inline-start: 3px solid var(--primary);
 }
 #wpsms-app [data-slot="sidebar-menu-button"][data-active="true"] svg {
   color: var(--sidebar-accent-foreground);
@@ -302,7 +309,7 @@
 #wpsms-app [data-slot="sidebar-menu-sub-button"][data-active="true"]::before {
   content: "";
   position: absolute;
-  left: -0.5rem;
+  inset-inline-start: -0.5rem;
   top: 0.25rem;
   bottom: 0.25rem;
   width: 2px;

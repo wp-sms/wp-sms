@@ -69,7 +69,7 @@ export function ContactCustomFields({ fields, onChange, readOnly = false }: Cont
         </div>
       ))}
       <Button variant="outline" size="sm" className="h-7" onClick={handleAdd}>
-        <Plus className="mr-1 h-3 w-3" /> {__('Add field', 'wp-sms')}
+        <Plus className="me-1 h-3 w-3" /> {__('Add field', 'wp-sms')}
       </Button>
     </div>
   );

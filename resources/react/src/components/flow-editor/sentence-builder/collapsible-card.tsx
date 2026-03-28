@@ -52,7 +52,7 @@ export function CollapsibleCard({
     <Collapsible open={isExpanded} onOpenChange={onToggle}>
       <div
         className={cn(
-          'rounded-lg border bg-card transition-shadow border-l-4',
+          'rounded-lg border bg-card transition-shadow border-s-4',
           borderColor,
           isExpanded && 'shadow-sm',
         )}

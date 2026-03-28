@@ -77,6 +77,7 @@ function ensureMounted() {
 
     const mountEl = document.createElement('div');
     mountEl.id = 'wsms-messaging-button';
+    mountEl.dir = document.documentElement.dir || 'ltr';
     shadow.appendChild(mountEl);
 
     render(<MessagingButtonApp />, mountEl);

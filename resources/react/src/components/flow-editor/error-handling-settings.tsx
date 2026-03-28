@@ -44,7 +44,7 @@ export function ErrorHandlingSettings({ value, onChange }: ErrorHandlingSettings
         {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
         Error Handling
         {config.behavior !== 'stop' && (
-          <span className="ml-auto text-xs font-normal text-muted-foreground/70">
+          <span className="ms-auto text-xs font-normal text-muted-foreground/70">
             {config.behavior === 'continue' ? 'Continue on fail' : `Retry ${config.maxRetries ?? 3}x`}
           </span>
         )}

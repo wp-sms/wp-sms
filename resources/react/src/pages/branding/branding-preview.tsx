@@ -132,7 +132,7 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
         <select
           value={page}
           onChange={(e) => handlePageChange(e.target.value as PageRoute)}
-          className="h-9 appearance-none rounded-md border border-input bg-background bg-[length:16px_16px] bg-[right_8px_center] bg-no-repeat pl-3 pr-8 text-sm"
+          className="h-9 appearance-none rounded-md border border-input bg-background bg-[length:16px_16px] bg-[right_8px_center] rtl:bg-[left_8px_center] bg-no-repeat ps-3 pe-8 text-sm"
           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")` }}
         >
           {PAGE_OPTIONS.map((opt) => (

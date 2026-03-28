@@ -96,19 +96,19 @@ export function CampaignDetail({ campaign: initialCampaign, onBack }: CampaignDe
     <>
       {data.status === 'sending' && (
         <Button variant="outline" size="sm" onClick={() => void handleAction('pause')} disabled={!!actionLoading}>
-          <Pause className="mr-1 h-3.5 w-3.5" />
+          <Pause className="me-1 h-3.5 w-3.5" />
           {__('Pause', 'wp-sms')}
         </Button>
       )}
       {data.status === 'paused' && (
         <Button variant="outline" size="sm" onClick={() => void handleAction('resume')} disabled={!!actionLoading}>
-          <Play className="mr-1 h-3.5 w-3.5" />
+          <Play className="me-1 h-3.5 w-3.5" />
           {__('Resume', 'wp-sms')}
         </Button>
       )}
       {(data.status === 'sending' || data.status === 'scheduled') && (
         <Button variant="outline" size="sm" onClick={() => void handleAction('cancel')} disabled={!!actionLoading}>
-          <Ban className="mr-1 h-3.5 w-3.5" />
+          <Ban className="me-1 h-3.5 w-3.5" />
           {__('Cancel', 'wp-sms')}
         </Button>
       )}
@@ -119,7 +119,7 @@ export function CampaignDetail({ campaign: initialCampaign, onBack }: CampaignDe
     <div className="space-y-4">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}>
-          <ArrowLeft className="mr-1 h-4 w-4" />
+          <ArrowLeft className="me-1 h-4 w-4 rtl:scale-x-[-1]" />
           {__('Back', 'wp-sms')}
         </Button>
       </div>
@@ -525,7 +525,7 @@ function TimelineSection({ data }: { data: Campaign }) {
           return (
             <div key={`${event.type}-${i}`} className="relative flex gap-3 pb-4 last:pb-0">
               {!isLast && (
-                <div className="absolute left-[5px] top-3 bottom-0 w-px bg-border" />
+                <div className="absolute start-[5px] top-3 bottom-0 w-px bg-border" />
               )}
               <div className="relative mt-1.5 flex-shrink-0">
                 {isSending ? (
@@ -620,7 +620,7 @@ function RecipientsSection({
               <TabsTrigger key={tab.value} value={tab.value}>
                 {tab.label}
                 {tab.count > 0 && (
-                  <span className="ml-1 text-xs text-muted-foreground">({tab.count.toLocaleString()})</span>
+                  <span className="ms-1 text-xs text-muted-foreground">({tab.count.toLocaleString()})</span>
                 )}
               </TabsTrigger>
             ))}
@@ -630,12 +630,12 @@ function RecipientsSection({
             className="relative"
             onSubmit={(e) => { e.preventDefault(); setRecipientSearch(searchInput); }}
           >
-            <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute start-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={__('Search recipient...', 'wp-sms')}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="h-8 w-52 pl-8"
+              className="h-8 w-52 ps-8"
             />
           </form>
         </div>
