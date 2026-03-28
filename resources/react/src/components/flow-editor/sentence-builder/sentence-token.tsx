@@ -295,7 +295,7 @@ function DynamicSelectToken({
 
 function UnresolvedVarWarning({ value, payloadSchema }: { value: string; payloadSchema?: JsonSchema }) {
   const unresolved = useMemo(() => {
-    if (!value.includes('{{')) return [];
+    if (!value.includes('{{') || !payloadSchema) return [];
     return findUnresolvedVariables(value, buildMergedSchema(payloadSchema));
   }, [value, payloadSchema]);
 
