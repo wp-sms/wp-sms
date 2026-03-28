@@ -48,6 +48,7 @@ class CleanupScheduler
         $retentionDays = (int) ($messagingSettings['message_log_retention_days'] ?? 90);
         $this->cleanOldFlowExecutions($retentionDays);
         $this->cleanOldMessageLogs($retentionDays);
+        $this->cleanOldExportFiles();
     }
 
     private function cleanExpiredVerifications(): void
@@ -109,5 +110,24 @@ class CleanupScheduler
     private function cleanOldMessageLogs(int $days): void
     {
         $this->messageLogger->deleteOlderThan($days);
+    }
+
+    private function cleanOldExportFiles(): void
+    {
+        $uploadDir = wp_upload_dir();
+        $exportDir = $uploadDir['basedir'] . '/wsms-exports';
+
+        if (!is_dir($exportDir)) {
+            return;
+        }
+
+        $maxAge = 3600; // 1 hour
+        $now = time();
+
+        foreach (glob($exportDir . '/*.csv') ?: [] as $file) {
+            if (($now - filemtime($file)) > $maxAge) {
+                wp_delete_file($file);
+            }
+        }
     }
 }

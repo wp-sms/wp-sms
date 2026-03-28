@@ -205,6 +205,24 @@ class AuthServiceProvider implements ServiceProvider
                 'exporter_friendly_name' => __('WSMS Avatar', 'wp-sms'),
                 'callback'               => [$avatarManager, 'exportPersonalData'],
             ];
+            $exporters['wsms-contact'] = [
+                'exporter_friendly_name' => __('WSMS Contact Data', 'wp-sms'),
+                'callback'               => function (string $email, int $page) use ($container) {
+                    return (new \WSms\Privacy\ContactDataExporter(
+                        $container->get('contact.repository'),
+                        $container->get(Connection::class),
+                    ))->export($email, $page);
+                },
+            ];
+            $exporters['wsms-message-log'] = [
+                'exporter_friendly_name' => __('WSMS Message History', 'wp-sms'),
+                'callback'               => function (string $email, int $page) use ($container) {
+                    return (new \WSms\Privacy\MessageLogHandler(
+                        $container->get('contact.repository'),
+                        $container->get(Connection::class),
+                    ))->export($email, $page);
+                },
+            ];
 
             return $exporters;
         });
@@ -220,8 +238,45 @@ class AuthServiceProvider implements ServiceProvider
                 'eraser_friendly_name' => __('WSMS Avatar', 'wp-sms'),
                 'callback'             => [$avatarManager, 'erasePersonalData'],
             ];
+            $erasers['wsms-contact'] = [
+                'eraser_friendly_name' => __('WSMS Contact Data', 'wp-sms'),
+                'callback'             => function (string $email, int $page) use ($container) {
+                    return (new \WSms\Privacy\ContactDataEraser(
+                        $container->get('contact.repository'),
+                        $container->get(Connection::class),
+                    ))->erase($email, $page);
+                },
+            ];
+            $erasers['wsms-message-log'] = [
+                'eraser_friendly_name' => __('WSMS Message History', 'wp-sms'),
+                'callback'             => function (string $email, int $page) use ($container) {
+                    return (new \WSms\Privacy\MessageLogHandler(
+                        $container->get('contact.repository'),
+                        $container->get(Connection::class),
+                    ))->erase($email, $page);
+                },
+            ];
+            $erasers['wsms-auth-log'] = [
+                'eraser_friendly_name' => __('WSMS Authentication Logs', 'wp-sms'),
+                'callback'             => function (string $email, int $page) use ($container) {
+                    return (new \WSms\Privacy\AuthLogEraser(
+                        $container->get(Connection::class),
+                    ))->erase($email, $page);
+                },
+            ];
 
             return $erasers;
+        });
+
+        // Privacy policy suggested text.
+        add_action('admin_init', function () {
+            if (!function_exists('wp_add_privacy_policy_content')) {
+                return;
+            }
+            wp_add_privacy_policy_content(
+                'WP SMS',
+                wp_kses_post($this->buildPrivacyPolicyText()),
+            );
         });
 
         // Inject settings into MFA manager and channels for consistent config access.
@@ -281,6 +336,50 @@ class AuthServiceProvider implements ServiceProvider
         }
 
         return ['data' => $exportItems, 'done' => true];
+    }
+
+    private function buildPrivacyPolicyText(): string
+    {
+        $authSettings = get_option('wsms_auth_settings', []);
+        $messagingSettings = get_option('wsms_messaging_settings', []);
+
+        $logRetentionDays = (int) ($authSettings['log_retention_days'] ?? 30);
+        $messageLogRetentionDays = (int) ($messagingSettings['message_log_retention_days'] ?? 90);
+        $logVerbosity = $authSettings['log_verbosity'] ?? 'standard';
+        $trustedDevicesEnabled = !empty($authSettings['trusted_devices']['enabled'] ?? false);
+
+        $text = '<h2>' . __('Subscription & Contact Data', 'wp-sms') . '</h2>';
+        $text .= '<p>' . __('When you subscribe through our forms, we collect your name, email address, and/or phone number. We use this data to send you the communications you opted into. Your subscription status, source, and any tags are stored to manage your preferences.', 'wp-sms') . '</p>';
+
+        $text .= '<h2>' . __('Message History', 'wp-sms') . '</h2>';
+        $text .= '<p>' . sprintf(
+            __('We log messages sent to you (channel, status, and date) for delivery tracking and troubleshooting. Message logs are automatically deleted after %d days.', 'wp-sms'),
+            $messageLogRetentionDays,
+        ) . '</p>';
+
+        $text .= '<h2>' . __('Authentication Logs', 'wp-sms') . '</h2>';
+        if ($logVerbosity === 'minimal') {
+            $text .= '<p>' . sprintf(
+                __('We record login events and their status for security purposes. Authentication logs are automatically deleted after %d days.', 'wp-sms'),
+                $logRetentionDays,
+            ) . '</p>';
+        } else {
+            $text .= '<p>' . sprintf(
+                __('We record login events including IP address, browser information, and approximate location for security purposes. Authentication logs are automatically deleted after %d days.', 'wp-sms'),
+                $logRetentionDays,
+            ) . '</p>';
+        }
+
+        if ($trustedDevicesEnabled) {
+            $text .= '<h2>' . __('Trusted Devices', 'wp-sms') . '</h2>';
+            $text .= '<p>' . __('When you choose to trust a device, we store a cookie on your browser to skip multi-factor authentication on future visits. You can remove trusted devices from your profile at any time.', 'wp-sms') . '</p>';
+        }
+
+        $text .= '<h2>' . __('Data Retention & Your Rights', 'wp-sms') . '</h2>';
+        $text .= '<p>' . __('You may request export or deletion of your personal data through the WordPress privacy tools (Tools → Export/Erase Personal Data). Upon an erasure request, your contact record and associated tags are deleted, message log recipients are anonymized, and authentication logs are removed.', 'wp-sms') . '</p>';
+        $text .= '<p>' . __('You can unsubscribe at any time by replying STOP to SMS messages or clicking the unsubscribe link in emails.', 'wp-sms') . '</p>';
+
+        return $text;
     }
 
     private function eraseProfileFieldData(ServiceContainer $container, string $email, int $page): array

@@ -363,6 +363,16 @@ class ContactController extends Controller
             $exportDir = $uploadDir['basedir'] . '/wsms-exports';
             wp_mkdir_p($exportDir);
 
+            // Protect export directory from direct HTTP access.
+            $htaccessPath = $exportDir . '/.htaccess';
+            if (!file_exists($htaccessPath)) {
+                file_put_contents($htaccessPath, "deny from all\n");
+            }
+            $indexPath = $exportDir . '/index.php';
+            if (!file_exists($indexPath)) {
+                file_put_contents($indexPath, "<?php\n// Silence is golden.\n");
+            }
+
             $filename = 'contacts-' . gmdate('Y-m-d-His') . '-' . wp_generate_password(8, false) . '.csv';
             $filePath = $exportDir . '/' . $filename;
 
