@@ -33,6 +33,14 @@ class SubscriptionHandler
             return SubmissionResult::success($form->getSuccessMessage());
         }
 
+        // Validate consent if required.
+        if ($this->isConsentRequired($form) && empty($data['consent'])) {
+            return SubmissionResult::failed(
+                'consent_required',
+                __('You must agree to the terms before subscribing.', 'wp-sms'),
+            );
+        }
+
         $email = !empty($data['email']) ? strtolower(sanitize_email($data['email'])) : null;
         $phone = !empty($data['phone']) ? sanitize_text_field($data['phone']) : null;
 
@@ -254,6 +262,18 @@ class SubscriptionHandler
         }
 
         return true;
+    }
+
+    private function isConsentRequired(SubscriptionForm $form): bool
+    {
+        $formRequired = $form->isConsentRequired();
+        if ($formRequired !== null) {
+            return $formRequired;
+        }
+
+        $authSettings = get_option('wsms_auth_settings', []);
+
+        return !empty($authSettings['subscription_consent_required']);
     }
 
     private function sessionTokenToKey(string $sessionToken): string

@@ -59,6 +59,33 @@
   overflow: hidden;
 }
 
+/* Consent checkbox */
+.wsms-sub-form__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: #374151;
+  margin-bottom: 8px;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.wsms-sub-form__consent input[type="checkbox"] {
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--wsms-sub-primary);
+}
+
+.wsms-sub-form__consent a {
+  color: var(--wsms-sub-primary);
+  text-decoration: underline;
+}
+
+.wsms-sub-form__consent a:hover {
+  text-decoration: none;
+}
+
 .wsms-sub-form__btn {
   width: 100%;
   padding: 10px 16px;

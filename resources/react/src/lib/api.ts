@@ -222,6 +222,9 @@ export interface AuthSettings {
   terms_url?: string;
   privacy_url?: string;
   trusted_devices?: TrustedDevicesSettings;
+  subscription_consent_text?: string;
+  subscription_consent_required?: boolean;
+  subscription_consent_privacy_url?: string;
 }
 
 export interface TrustedDevicesSettings {
@@ -489,6 +492,9 @@ export interface SubscriptionFormData {
   appearance: Record<string, string>;
   success_message: string;
   redirect_url: string | null;
+  consent_text: string | null;
+  consent_required: boolean | null;
+  privacy_url: string | null;
   created_by: number | null;
   created_at: string | null;
   updated_at: string | null;

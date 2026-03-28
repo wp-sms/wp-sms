@@ -30,6 +30,9 @@ class SubscriptionFormController extends Controller
             'appearance'      => ['required' => false, 'type' => 'object'],
             'success_message' => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
             'redirect_url'    => ['required' => false, 'type' => ['string', 'null']],
+            'consent_text'    => ['required' => false, 'type' => ['string', 'null']],
+            'consent_required' => ['required' => false, 'type' => ['boolean', 'null']],
+            'privacy_url'     => ['required' => false, 'type' => ['string', 'null']],
         ];
 
         register_rest_route(self::NAMESPACE, '/subscription-forms', [
@@ -112,6 +115,9 @@ class SubscriptionFormController extends Controller
                 appearance: $params['appearance'] ?? [],
                 successMessage: $params['success_message'] ?? '',
                 redirectUrl: !empty($params['redirect_url']) ? esc_url_raw($params['redirect_url']) : null,
+                consentText: isset($params['consent_text']) ? ($params['consent_text'] ? wp_kses_post($params['consent_text']) : null) : null,
+                consentRequired: array_key_exists('consent_required', $params) ? $params['consent_required'] : null,
+                privacyUrl: isset($params['privacy_url']) ? ($params['privacy_url'] ? esc_url_raw($params['privacy_url']) : null) : null,
                 createdBy: get_current_user_id(),
             );
 
@@ -154,6 +160,9 @@ class SubscriptionFormController extends Controller
                 appearance: $params['appearance'] ?? $existing->getAppearance(),
                 successMessage: $params['success_message'] ?? $existing->getSuccessMessage(),
                 redirectUrl: isset($params['redirect_url']) ? ($params['redirect_url'] ? esc_url_raw($params['redirect_url']) : null) : $existing->getRedirectUrl(),
+                consentText: array_key_exists('consent_text', $params) ? ($params['consent_text'] ? wp_kses_post($params['consent_text']) : $params['consent_text']) : $existing->getConsentText(),
+                consentRequired: array_key_exists('consent_required', $params) ? $params['consent_required'] : $existing->isConsentRequired(),
+                privacyUrl: array_key_exists('privacy_url', $params) ? ($params['privacy_url'] ? esc_url_raw($params['privacy_url']) : $params['privacy_url']) : $existing->getPrivacyUrl(),
                 createdBy: $existing->getCreatedBy(),
                 createdAt: $existing->getCreatedAt(),
                 updatedAt: gmdate('c'),
@@ -206,6 +215,9 @@ class SubscriptionFormController extends Controller
                 appearance: $original->getAppearance(),
                 successMessage: $original->getSuccessMessage(),
                 redirectUrl: $original->getRedirectUrl(),
+                consentText: $original->getConsentText(),
+                consentRequired: $original->isConsentRequired(),
+                privacyUrl: $original->getPrivacyUrl(),
                 createdBy: get_current_user_id(),
             );
 

@@ -3,6 +3,7 @@ import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
@@ -70,6 +71,9 @@ interface FormEditorState {
   appearance: Record<string, string>;
   success_message: string;
   redirect_url: string;
+  consent_text: string | null;
+  consent_required: boolean | null;
+  privacy_url: string | null;
 }
 
 const EMPTY_FORM: FormEditorState = {
@@ -84,6 +88,9 @@ const EMPTY_FORM: FormEditorState = {
   appearance: { button_text: 'Subscribe' },
   success_message: 'Thanks for subscribing!',
   redirect_url: '',
+  consent_text: null,
+  consent_required: null,
+  privacy_url: null,
 };
 
 interface SubscriptionFormsProps {
@@ -118,6 +125,9 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
         appearance: editingForm.appearance,
         success_message: editingForm.success_message,
         redirect_url: editingForm.redirect_url || '',
+        consent_text: editingForm.consent_text,
+        consent_required: editingForm.consent_required,
+        privacy_url: editingForm.privacy_url,
       });
       setSlugManual(true);
     } else {
@@ -509,6 +519,69 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
 
             <Separator />
 
+            {/* Consent & Privacy */}
+            <Field orientation="horizontal">
+              <FieldLabel>Use custom consent</FieldLabel>
+              <Switch
+                checked={formState.consent_text !== null}
+                onCheckedChange={(checked) => {
+                  setFormState((prev) => ({
+                    ...prev,
+                    consent_text: checked ? '' : null,
+                    consent_required: checked ? false : null,
+                    privacy_url: checked ? '' : null,
+                  }));
+                }}
+              />
+            </Field>
+            {formState.consent_text !== null ? (
+              <div className="space-y-3">
+                <Field>
+                  <FieldLabel htmlFor="sf-consent-text">Consent Text</FieldLabel>
+                  <Textarea
+                    id="sf-consent-text"
+                    rows={3}
+                    value={formState.consent_text}
+                    onChange={(e) =>
+                      setFormState((prev) => ({ ...prev, consent_text: e.target.value }))
+                    }
+                    placeholder='I agree to receive messages and accept the <a href="{privacy_url}">Privacy Policy</a>.'
+                  />
+                  <FieldDescription>
+                    HTML allowed. Use <code>{'{privacy_url}'}</code> as a placeholder for the privacy policy link. Leave empty to disable the checkbox for this form.
+                  </FieldDescription>
+                </Field>
+
+                <Field>
+                  <FieldLabel htmlFor="sf-privacy-url">Privacy Policy URL</FieldLabel>
+                  <Input
+                    id="sf-privacy-url"
+                    value={formState.privacy_url ?? ''}
+                    onChange={(e) =>
+                      setFormState((prev) => ({ ...prev, privacy_url: e.target.value || null }))
+                    }
+                    placeholder="Leave empty to use WordPress privacy page"
+                  />
+                </Field>
+
+                <Field orientation="horizontal">
+                  <FieldLabel className="flex-1">Consent required</FieldLabel>
+                  <Switch
+                    checked={formState.consent_required ?? false}
+                    onCheckedChange={(checked) =>
+                      setFormState((prev) => ({ ...prev, consent_required: checked }))
+                    }
+                  />
+                </Field>
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground rounded-md bg-muted/50 p-3">
+                Inheriting consent settings from global defaults.
+              </p>
+            )}
+
+            <Separator />
+
             <Field orientation="horizontal">
               <div className="flex-1">
                 <FieldLabel>Active</FieldLabel>
@@ -530,6 +603,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
+
     </>
   );
 }

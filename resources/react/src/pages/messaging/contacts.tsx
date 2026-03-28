@@ -103,7 +103,13 @@ export function Contacts({ subTab, onNavigate }: ContactsProps) {
       </TabsContent>
 
       <TabsContent value="forms">
-        {activeTab === 'forms' && <SubscriptionForms embedded hook={formsHook} createTrigger={formCreate} />}
+        {activeTab === 'forms' && (
+          <SubscriptionForms
+            embedded
+            hook={formsHook}
+            createTrigger={formCreate}
+          />
+        )}
       </TabsContent>
 
       <ImportWizard

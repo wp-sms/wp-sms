@@ -34,6 +34,7 @@ class SubscriptionFormPublicController extends Controller
                     'first_name' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'last_name'  => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     '_hp'        => ['type' => 'string'],
+                    'consent'    => ['type' => 'boolean'],
                 ],
             ],
         ]);
@@ -77,6 +78,7 @@ class SubscriptionFormPublicController extends Controller
                 'first_name' => $request->get_param('first_name') ?? '',
                 'last_name'  => $request->get_param('last_name') ?? '',
                 '_hp'        => $request->get_param('_hp') ?? '',
+                'consent'    => !empty($request->get_param('consent')),
             ];
 
             $result = $this->handler->submit($form, $data);

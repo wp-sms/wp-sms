@@ -1,9 +1,10 @@
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Field, FieldLabel, FieldDescription, SwitchField } from '@/components/ui/field';
 import { PageSection } from '@/components/ui/page-section';
 import { PageHeader } from '@/components/layout/page-header';
-import { SlidersHorizontal, Phone, Globe, Scale, UserPlus, ScrollText } from 'lucide-react';
+import { SlidersHorizontal, Phone, Globe, Scale, UserPlus, ScrollText, ShieldCheck } from 'lucide-react';
 import { SITE_PHONE_CHANNELS, LOG_VERBOSITY } from '@/lib/constants';
 import type { AuthSettings, SitePhoneChannel } from '@/lib/api';
 
@@ -136,6 +137,46 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
                 When set, a consent line appears on the registration page.
               </FieldDescription>
             </Field>
+          </div>
+      </PageSection>
+
+      <PageSection
+        icon={ShieldCheck}
+        title="Subscription Consent"
+        description="Default consent checkbox shown on subscription forms. Individual forms can override these settings. Leave consent text empty to disable."
+      >
+          <div className="space-y-4 max-w-md">
+            <Field>
+              <FieldLabel htmlFor="subscription_consent_text">Consent Text</FieldLabel>
+              <Textarea
+                id="subscription_consent_text"
+                rows={3}
+                value={settings.subscription_consent_text}
+                onChange={(e) => onUpdate('subscription_consent_text', e.target.value)}
+                placeholder='I agree to receive messages and accept the <a href="{privacy_url}">Privacy Policy</a>.'
+              />
+              <FieldDescription>
+                HTML allowed. Use <code>{'{privacy_url}'}</code> as a placeholder for the privacy policy link.
+              </FieldDescription>
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="subscription_consent_privacy_url">Privacy Policy URL</FieldLabel>
+              <Input
+                id="subscription_consent_privacy_url"
+                value={settings.subscription_consent_privacy_url}
+                onChange={(e) => onUpdate('subscription_consent_privacy_url', e.target.value)}
+                placeholder="Leave empty to use WordPress privacy page"
+              />
+            </Field>
+
+            <SwitchField
+              id="subscription_consent_required"
+              label="Consent Required"
+              description="Block submission if the consent checkbox is not checked"
+              checked={settings.subscription_consent_required}
+              onCheckedChange={(checked) => onUpdate('subscription_consent_required', checked)}
+            />
           </div>
       </PageSection>
 

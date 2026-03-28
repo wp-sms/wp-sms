@@ -122,6 +122,25 @@ class SubscriptionFormRenderer
             $config['primaryColor'] = sanitize_hex_color($primaryColor);
         }
 
+        // Resolve consent config: per-form override > global settings > WP privacy page.
+        $authSettings = get_option('wsms_auth_settings', []);
+        $consentText = $form->getConsentText() ?? ($authSettings['subscription_consent_text'] ?? '');
+        $consentRequired = $form->isConsentRequired() ?? ($authSettings['subscription_consent_required'] ?? false);
+        $privacyUrl = $form->getPrivacyUrl() ?? ($authSettings['subscription_consent_privacy_url'] ?? '');
+        if (!$privacyUrl && function_exists('get_privacy_policy_url')) {
+            $privacyUrl = get_privacy_policy_url();
+        }
+
+        if ($consentText !== '') {
+            $config['consent'] = [
+                'text'     => wp_kses_post($consentText),
+                'required' => (bool) $consentRequired,
+            ];
+            if ($privacyUrl) {
+                $config['consent']['text'] = str_replace('{privacy_url}', esc_url($privacyUrl), $config['consent']['text']);
+            }
+        }
+
         $phoneInputConfig = $this->restrictionSettings->getPhoneInputDisplayConfig();
         $phoneInputConfig['restUrl'] = rest_url('wsms/v1/');
         $config['phoneInput'] = $phoneInputConfig;

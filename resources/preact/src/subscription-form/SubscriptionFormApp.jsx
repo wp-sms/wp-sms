@@ -25,12 +25,13 @@ export function SubscriptionFormApp({ config }) {
     const [state, setState] = useState(STATE.FORM);
     const [error, setError] = useState(null);
     const [values, setValues] = useState({});
+    const [consentChecked, setConsentChecked] = useState(false);
     const [sessionToken, setSessionToken] = useState(null);
     const [maskedIdentifier, setMaskedIdentifier] = useState('');
     const [verifying, setVerifying] = useState(false);
     const [cooldown, resetCooldown] = useResendCooldown(0);
 
-    const { fields, buttonText, successMessage, redirectUrl, restUrl, nonce, captcha } = config;
+    const { fields, buttonText, successMessage, redirectUrl, restUrl, nonce, captcha, consent } = config;
     const slug = config.slug;
     const submittingRef = useRef(false);
     const cap = useFormCaptcha(captcha, 'subscribe');
@@ -59,6 +60,9 @@ export function SubscriptionFormApp({ config }) {
         const hpField = e.target.querySelector('[name="_hp"]');
         if (hpField) {
             data._hp = hpField.value;
+        }
+        if (consent && consentChecked) {
+            data.consent = true;
         }
 
         try {
@@ -91,7 +95,7 @@ export function SubscriptionFormApp({ config }) {
         } finally {
             submittingRef.current = false;
         }
-    }, [values, apiCall, redirectUrl, resetCooldown, cap]);
+    }, [values, apiCall, redirectUrl, resetCooldown, cap, consent, consentChecked]);
 
     const handleVerify = useCallback(async (code) => {
         setError(null);
@@ -223,7 +227,23 @@ export function SubscriptionFormApp({ config }) {
                     />
                 )}
 
-                <button type="submit" class="wsms-sub-form__btn" disabled={isSubmitting || (cap.enabled && !cap.token)}>
+                {consent && (
+                    <label class="wsms-sub-form__consent">
+                        <input
+                            type="checkbox"
+                            checked={consentChecked}
+                            onChange={(e) => setConsentChecked(e.target.checked)}
+                            disabled={isSubmitting}
+                        />
+                        <span dangerouslySetInnerHTML={{ __html: consent.text }} />
+                    </label>
+                )}
+
+                <button
+                    type="submit"
+                    class="wsms-sub-form__btn"
+                    disabled={isSubmitting || (cap.enabled && !cap.token) || (consent?.required && !consentChecked)}
+                >
                     {isSubmitting && <span class="wsms-sub-form__spinner" />}
                     {buttonText || 'Subscribe'}
                 </button>

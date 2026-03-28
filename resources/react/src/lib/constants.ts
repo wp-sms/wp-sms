@@ -231,6 +231,9 @@ export const DEFAULTS: Required<AuthSettings> = {
   site_phone_channel: 'sms',
   terms_url: '',
   privacy_url: '',
+  subscription_consent_text: '',
+  subscription_consent_required: false,
+  subscription_consent_privacy_url: '',
 };
 
 export type ChannelId = 'phone' | 'email' | 'password';

@@ -23,6 +23,9 @@ class SubscriptionForm
         private array $appearance = [],
         private string $successMessage = '',
         private ?string $redirectUrl = null,
+        private ?string $consentText = null,
+        private ?bool $consentRequired = null,
+        private ?string $privacyUrl = null,
         private ?int $createdBy = null,
         private ?string $createdAt = null,
         private ?string $updatedAt = null,
@@ -132,6 +135,21 @@ class SubscriptionForm
         return $this->redirectUrl;
     }
 
+    public function getConsentText(): ?string
+    {
+        return $this->consentText;
+    }
+
+    public function isConsentRequired(): ?bool
+    {
+        return $this->consentRequired;
+    }
+
+    public function getPrivacyUrl(): ?string
+    {
+        return $this->privacyUrl;
+    }
+
     public function getCreatedBy(): ?int
     {
         return $this->createdBy;
@@ -162,6 +180,9 @@ class SubscriptionForm
             'appearance'      => $this->appearance,
             'success_message' => $this->successMessage,
             'redirect_url'    => $this->redirectUrl,
+            'consent_text'    => $this->consentText,
+            'consent_required' => $this->consentRequired,
+            'privacy_url'     => $this->privacyUrl,
             'created_by'      => $this->createdBy,
             'created_at'      => $this->createdAt,
             'updated_at'      => $this->updatedAt,
@@ -183,6 +204,9 @@ class SubscriptionForm
             appearance: $data['appearance'] ?? [],
             successMessage: $data['success_message'] ?? '',
             redirectUrl: $data['redirect_url'] ?? null,
+            consentText: $data['consent_text'] ?? null,
+            consentRequired: isset($data['consent_required']) ? (bool) $data['consent_required'] : null,
+            privacyUrl: $data['privacy_url'] ?? null,
             createdBy: isset($data['created_by']) ? (int) $data['created_by'] : null,
             createdAt: $data['created_at'] ?? null,
             updatedAt: $data['updated_at'] ?? null,
