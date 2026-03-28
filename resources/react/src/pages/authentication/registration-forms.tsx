@@ -368,8 +368,7 @@ export function RegistrationForms() {
                         <div className="flex items-center gap-1">
                           <Button
                             variant="ghost"
-                            size="icon"
-                            className="h-7 w-7"
+                            size="icon-md"
                             disabled={fieldIdx === 0}
                             onClick={() => moveField(sf.id, 'up')}
                           >
@@ -377,8 +376,7 @@ export function RegistrationForms() {
                           </Button>
                           <Button
                             variant="ghost"
-                            size="icon"
-                            className="h-7 w-7"
+                            size="icon-md"
                             disabled={fieldIdx === formState.fields.length - 1}
                             onClick={() => moveField(sf.id, 'down')}
                           >

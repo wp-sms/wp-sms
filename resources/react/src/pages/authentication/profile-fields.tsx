@@ -161,17 +161,17 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
                 </p>
               </div>
               <div className="flex items-center gap-1">
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleMoveUp(index)} disabled={index === 0}>
+                <Button variant="ghost" size="icon-md" onClick={() => handleMoveUp(index)} disabled={index === 0}>
                   <ArrowUp className="h-3.5 w-3.5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleMoveDown(index)} disabled={index === allFields.length - 1}>
+                <Button variant="ghost" size="icon-md" onClick={() => handleMoveDown(index)} disabled={index === allFields.length - 1}>
                   <ArrowDown className="h-3.5 w-3.5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleEdit(field)}>
+                <Button variant="ghost" size="icon-md" onClick={() => handleEdit(field)}>
                   <Pencil className="h-3.5 w-3.5" />
                 </Button>
                 {field.source !== 'system' && (
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => handleDelete(field.id)}>
+                  <Button variant="ghost" size="icon-md" className="text-destructive" onClick={() => handleDelete(field.id)}>
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 )}

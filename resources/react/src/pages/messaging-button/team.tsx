@@ -103,8 +103,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                   <div className="flex items-center gap-1">
                     <Button
                       variant="ghost"
-                      size="icon"
-                      className="h-7 w-7"
+                      size="icon-md"
                       onClick={() => moveMember(i, -1)}
                       disabled={i === 0}
                     >
@@ -112,8 +111,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                     </Button>
                     <Button
                       variant="ghost"
-                      size="icon"
-                      className="h-7 w-7"
+                      size="icon-md"
                       onClick={() => moveMember(i, 1)}
                       disabled={i === members.length - 1}
                     >
@@ -123,7 +121,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                       Member {i + 1}
                     </span>
                   </div>
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeMember(i)}>
+                  <Button variant="ghost" size="icon-md" onClick={() => removeMember(i)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>

@@ -11,6 +11,7 @@ import { SmsSegmentCounter, calculateSegments } from '@/components/campaigns/sms
 import { SegmentBuilder } from '@/components/lists/segment-builder';
 import { TemplateVariablePicker } from '@/components/flow-editor/template-variable-picker';
 import { channelLabel } from '@/components/gateway-config-form';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -1154,17 +1155,10 @@ function ReviewStep({
       {warnings.length > 0 && (
         <div className="space-y-2">
           {warnings.map((w, i) => (
-            <div
-              key={i}
-              className={`flex items-start gap-2 rounded-lg p-3 text-sm ${
-                w.severity === 'warning'
-                  ? 'bg-amber-50 text-amber-800 border border-amber-200'
-                  : 'bg-blue-50 text-blue-800 border border-blue-200'
-              }`}
-            >
-              <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
-              <span>{w.message}</span>
-            </div>
+            <Alert key={i} variant={w.severity === 'warning' ? 'warning' : 'info'} role="status">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>{w.message}</AlertDescription>
+            </Alert>
           ))}
         </div>
       )}

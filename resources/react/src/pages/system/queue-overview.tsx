@@ -44,10 +44,10 @@ export function QueueOverview({ data }: QueueOverviewProps) {
       </div>
 
       {data.stuck_jobs.length > 0 && (
-        <div className="flex items-center gap-2.5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+        <div className="flex items-center gap-2.5 rounded-lg border border-warning/40 bg-warning/[0.06] px-4 py-2.5 text-sm text-warning">
           <span className="relative flex h-2 w-2 shrink-0">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-warning opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-warning" />
           </span>
           <span>{data.stuck_jobs.length} possibly stuck {data.stuck_jobs.length === 1 ? 'job' : 'jobs'} (in-progress for &gt;5 min)</span>
         </div>

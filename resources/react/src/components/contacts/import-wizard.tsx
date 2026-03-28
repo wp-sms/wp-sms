@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { MATCH_FIELD_OPTIONS, DUPLICATE_HANDLING_OPTIONS, ATTRIBUTE_FIELDS } from '@/lib/constants';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Upload, CheckCircle, AlertCircle } from 'lucide-react';
 
 type Step = 'upload' | 'map' | 'options' | 'preview' | 'results';
@@ -243,15 +244,13 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
           {/* Step: Results */}
           {step === 'results' && result && (
             <div className="space-y-4">
-              <div className="flex items-center gap-3 p-4 rounded-lg bg-emerald-50 text-emerald-700">
-                <CheckCircle className="h-5 w-5 shrink-0" />
-                <div>
-                  <p className="font-medium">Import complete</p>
-                  <p className="text-sm mt-1">
-                    {result.imported} created, {result.updated} updated, {result.skipped} skipped
-                  </p>
-                </div>
-              </div>
+              <Alert variant="success">
+                <CheckCircle className="h-4 w-4" />
+                <AlertTitle>Import complete</AlertTitle>
+                <AlertDescription>
+                  {result.imported} created, {result.updated} updated, {result.skipped} skipped
+                </AlertDescription>
+              </Alert>
               {result.errors.length > 0 && (
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-amber-700">

@@ -3,6 +3,7 @@ import { groupStepLogs, computeDuration, type ProcessedStep } from '@/lib/execut
 import { STEP_ICONS } from './sentence-builder/step-card';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { JsonViewer } from '@/components/ui/json-viewer';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ExecutionStatusBadge } from './execution-status-badge';
 import { Layers, AlertCircle } from 'lucide-react';
 
@@ -91,9 +92,9 @@ export function ExecutionDetailPanel({ execution, onClose }: ExecutionDetailPane
 
             <div className="p-4 space-y-5">
               {execution.error && (
-                <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-                  {execution.error}
-                </div>
+                <Alert variant="destructive">
+                  <AlertDescription>{execution.error}</AlertDescription>
+                </Alert>
               )}
 
               <section>

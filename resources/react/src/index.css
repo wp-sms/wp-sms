@@ -67,7 +67,12 @@
 :root {
   --radius: 0.25rem;
 
-  /* Shadows — brutalist offset */
+  /* Shadow strategy:
+   * --shadow-brutalist (4px 4px): Modal overlays (Dialog, AlertDialog) — high prominence
+   * --shadow-lg (3px 3px): Tooltips, floating bars — medium prominence, brutalist
+   * shadow-md (Tailwind default): Inline popovers, selects, dropdowns — low prominence, soft
+   * Split is intentional: brutalist for decision surfaces, soft for transient hints.
+   */
   --shadow-lg: 3px 3px 0 #d4d0cc;
   --shadow-save-bar: 0 -3px 0 0 #d4d0cc;
 

@@ -230,7 +230,7 @@ function CopyButton({ text, label }: { text: string; label?: string }) {
 
   return (
     <Button variant="ghost" size="sm" onClick={handleCopy} className="h-7 px-2">
-      {copied ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Copy className="h-3.5 w-3.5" />}
+      {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
       {label && <span className="ml-1 text-xs">{label}</span>}
     </Button>
   );
@@ -334,8 +334,8 @@ function WebhookEndpointsSection({ onConfigChange }: { onConfigChange: () => voi
         )}
 
         {newEndpoint?.secret && (
-          <div className="rounded-md border border-amber-300 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-800 p-4 space-y-3">
-            <p className="text-sm font-medium text-amber-900 dark:text-amber-200">
+          <div className="rounded-md border border-warning/40 bg-warning/[0.06] p-4 space-y-3">
+            <p className="text-sm font-medium text-warning">
               Save your signing secret now — it won&apos;t be shown again.
             </p>
             <div className="flex items-center gap-2">
@@ -384,8 +384,8 @@ function WebhookEndpointsSection({ onConfigChange }: { onConfigChange: () => voi
                   </span>
                   <Button
                     variant="ghost"
-                    size="sm"
-                    className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive"
+                    size="icon-md"
+                    className="text-muted-foreground hover:text-destructive"
                     onClick={() => handleDelete(ep.id)}
                     disabled={deletingId === ep.id}
                   >
@@ -438,8 +438,8 @@ function CapabilitiesSection({ capabilities }: { capabilities: IntegrationCapabi
               <span className="flex items-center gap-1.5">
                 {cap.supported ? (
                   <>
-                    <Check className="h-3.5 w-3.5 text-green-600" />
-                    <span className="text-green-700">{cap.note ?? 'Supported'}</span>
+                    <Check className="h-3.5 w-3.5 text-success" />
+                    <span className="text-success">{cap.note ?? 'Supported'}</span>
                   </>
                 ) : (
                   <>

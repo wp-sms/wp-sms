@@ -36,8 +36,8 @@ export function TemplateVariablePicker({ payloadSchema, variables: variablesProp
         <Button
           type="button"
           variant="ghost"
-          size="sm"
-          className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
+          size="icon-md"
+          className="text-muted-foreground hover:text-foreground"
           title="Insert template variable"
         >
           <Braces className="h-3.5 w-3.5" />

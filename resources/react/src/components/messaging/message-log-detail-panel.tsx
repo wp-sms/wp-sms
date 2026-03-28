@@ -2,6 +2,7 @@ import { formatDateTime } from '@/lib/format';
 import type { MessageLogEntry } from '@/lib/api';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { Separator } from '@/components/ui/separator';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { StatusBadge, ChannelBadge } from '@/components/messaging/message-badges';
 import { formatLabel } from '@/lib/constants';
 
@@ -44,9 +45,9 @@ export function MessageLogDetailPanel({ log, onClose }: MessageLogDetailPanelPro
 
               {/* Error callout */}
               {log.error && (
-                <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-                  {log.error}
-                </div>
+                <Alert variant="destructive">
+                  <AlertDescription>{log.error}</AlertDescription>
+                </Alert>
               )}
 
               {/* Content section */}

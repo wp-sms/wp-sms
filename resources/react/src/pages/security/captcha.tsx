@@ -84,7 +84,7 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium">{p.label}</span>
-                        {p.comingSoon && <Badge variant="outline">Coming Soon</Badge>}
+                        {p.comingSoon && <Badge variant="secondary" className="text-[10px] px-1.5 py-0">Coming Soon</Badge>}
                       </div>
                       <p className="text-xs text-muted-foreground">{p.description}</p>
                     </div>

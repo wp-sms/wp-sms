@@ -47,8 +47,8 @@ type View =
 function HealthIndicator({ lastTest }: { lastTest: OutboundWebhook['last_test'] }) {
   if (!lastTest) return <Minus className="h-4 w-4 text-muted-foreground" />;
   return lastTest.success
-    ? <Check className="h-4 w-4 text-green-600" />
-    : <X className="h-4 w-4 text-red-600" />;
+    ? <Check className="h-4 w-4 text-success" />
+    : <X className="h-4 w-4 text-destructive" />;
 }
 
 function truncateUrl(url: string, maxLen = 40): string {

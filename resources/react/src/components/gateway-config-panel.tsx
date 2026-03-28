@@ -204,8 +204,8 @@ export function GatewayConfigPanel({
 
               {connectionResult && (
                 connectionResult.success ? (
-                  <Alert>
-                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <Alert variant="success">
+                    <CheckCircle2 className="h-4 w-4" />
                     <AlertTitle>{connectionResult.message}</AlertTitle>
                     {Object.keys(connectionResult.details).length > 0 && (
                       <AlertDescription>
@@ -293,8 +293,8 @@ export function GatewayConfigPanel({
 
                 {testResult && (
                   testResult.success ? (
-                    <Alert>
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    <Alert variant="success">
+                      <CheckCircle2 className="h-4 w-4" />
                       <AlertTitle>Sent successfully</AlertTitle>
                       {testResult.data.provider_id && (
                         <AlertDescription>Provider ID: {testResult.data.provider_id}</AlertDescription>
