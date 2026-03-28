@@ -123,7 +123,7 @@ function PreviewDialog({
 
   return (
     <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className={`z-[10000] max-h-[85vh] flex flex-col gap-0 p-0 overflow-hidden ${isEmail ? 'max-w-3xl' : 'max-w-md'}`}>
+      <DialogContent className={`max-h-[85vh] flex flex-col gap-0 p-0 overflow-hidden ${isEmail ? 'max-w-3xl' : 'max-w-md'}`}>
         {/* Header bar */}
         <div className="flex items-center gap-3 border-b px-5 py-3.5">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted">
@@ -426,7 +426,7 @@ function WhatsAppTemplatePicker({
             <SelectTrigger>
               <SelectValue placeholder="None (free-form fallback)" />
             </SelectTrigger>
-            <SelectContent className="z-[10000]">
+            <SelectContent>
               {providerTemplates.map((pt) => (
                 <SelectItem key={pt.id} value={pt.id}>
                   <span className="flex items-center gap-2">
@@ -473,7 +473,7 @@ function WhatsAppTemplatePicker({
                   <SelectTrigger className="flex-1">
                     <SelectValue placeholder="Select variable" />
                   </SelectTrigger>
-                  <SelectContent className="z-[10000]">
+                  <SelectContent>
                     {templateVariables.map((v) => (
                       <SelectItem key={v.key} value={v.key}>
                         {v.label}
@@ -666,7 +666,7 @@ function TemplateEditor({
                                 <FieldLabel>Subject</FieldLabel>
                                 <TemplateVariablePicker
                                   variables={fieldOptions}
-                                  popoverClassName="z-[10000] w-72 p-2"
+                                  popoverClassName="w-72 p-2"
                                   onInsert={(v) => insertVariableAtCursor(subjectRef.current, v, currentDraft.subject ?? '', (val) => updateDraft('subject', val))}
                                 />
                               </div>
@@ -684,7 +684,7 @@ function TemplateEditor({
                               <FieldLabel>Body</FieldLabel>
                               <TemplateVariablePicker
                                 variables={fieldOptions}
-                                popoverClassName="z-[10000] w-72 p-2"
+                                popoverClassName="w-72 p-2"
                                 onInsert={(v) => insertVariableAtCursor(bodyRef.current, v, currentDraft.body, (val) => updateDraft('body', val))}
                               />
                             </div>
@@ -706,7 +706,7 @@ function TemplateEditor({
                                   <FieldLabel>CTA Button Text</FieldLabel>
                                   <TemplateVariablePicker
                                     variables={fieldOptions}
-                                    popoverClassName="z-[10000] w-72 p-2"
+                                    popoverClassName="w-72 p-2"
                                     onInsert={(v) => insertVariableAtCursor(ctaRef.current, v, currentDraft.cta ?? '', (val) => updateDraft('cta', val))}
                                   />
                                 </div>
@@ -726,7 +726,7 @@ function TemplateEditor({
                                   <FieldLabel>CTA Button URL</FieldLabel>
                                   <TemplateVariablePicker
                                     variables={fieldOptions}
-                                    popoverClassName="z-[10000] w-72 p-2"
+                                    popoverClassName="w-72 p-2"
                                     onInsert={(v) => insertVariableAtCursor(ctaUrlRef.current, v, currentDraft.cta_url ?? '', (val) => updateDraft('cta_url', val))}
                                   />
                                 </div>
