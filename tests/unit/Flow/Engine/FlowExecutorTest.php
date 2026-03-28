@@ -711,6 +711,68 @@ class FlowExecutorTest extends TestCase
         $this->assertSame('original@example.com', $receivedPayload['contact']['email']);
     }
 
+    // --- Deferred Work Flag Tests ---
+
+    public function testParallelNodeMarksDeferredWork(): void
+    {
+        $context = new ExecutionContext([]);
+        $this->assertFalse($context->hasDeferredWork());
+
+        $this->executor->executeNode([
+            'id'       => 'par_1',
+            'type'     => 'parallel',
+            'branches' => [
+                [['id' => 'a', 'type' => 'action', 'action' => 'test', 'config' => []]],
+            ],
+        ], $context, 'exec-1');
+
+        $this->assertTrue($context->hasDeferredWork());
+    }
+
+    public function testDelayNodeMarksDeferredWork(): void
+    {
+        $context = new ExecutionContext([]);
+
+        $this->executor->executeNode([
+            'id'       => 'delay_1',
+            'type'     => 'delay',
+            'duration' => 60,
+            'then'     => [
+                ['id' => 'after', 'type' => 'action', 'action' => 'test', 'config' => []],
+            ],
+        ], $context, 'exec-1');
+
+        $this->assertTrue($context->hasDeferredWork());
+    }
+
+    public function testSequentialFlowDoesNotMarkDeferredWork(): void
+    {
+        $this->actionRegistry->register($this->makeAction('simple', function () {
+            return ActionResult::success(['ok' => true]);
+        }));
+
+        $context = new ExecutionContext([]);
+        $this->executor->execute('exec-1', [
+            ['id' => 's1', 'type' => 'action', 'action' => 'simple', 'config' => []],
+        ], $context);
+
+        $this->assertFalse($context->hasDeferredWork());
+    }
+
+    public function testEmptyDelayDoesNotMarkDeferredWork(): void
+    {
+        $context = new ExecutionContext([]);
+
+        $this->executor->executeNode([
+            'id'       => 'delay_1',
+            'type'     => 'delay',
+            'duration' => 60,
+            'then'     => [],
+        ], $context, 'exec-1');
+
+        $this->assertFalse($context->hasDeferredWork());
+    }
+
     // --- Helpers ---
 
     private function makeAction(string $id, \Closure $execute): ActionInterface

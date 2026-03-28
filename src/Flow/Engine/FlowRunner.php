@@ -3,6 +3,7 @@
 namespace WSms\Flow\Engine;
 
 use WSms\Dependencies\Psr\Log\LoggerInterface;
+use WSms\Enums\ExecutionStatus;
 use WSms\Event\Contracts\EventDispatcherInterface;
 use WSms\Event\Events\FlowStartedEvent;
 use WSms\Flow\Contracts\FlowRepositoryInterface;
@@ -92,6 +93,13 @@ class FlowRunner
 
         try {
             $this->flowExecutor->execute($executionId, $steps, $context);
+
+            $execution = $this->executionRepository->find($executionId);
+            $currentStatus = $execution['status'] ?? '';
+
+            if ($currentStatus === ExecutionStatus::Running->value && !$context->hasDeferredWork()) {
+                $this->flowExecutor->markCompleted($executionId, $flow->getId());
+            }
         } catch (\Throwable $e) {
             $this->logger->error("Flow execution failed: {$e->getMessage()}", [
                 'flow_id'      => $flow->getId(),

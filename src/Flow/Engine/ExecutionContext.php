@@ -7,6 +7,7 @@ defined('ABSPATH') || exit;
 class ExecutionContext
 {
     private array $actionOutputs = [];
+    private bool $hasDeferredWork = false;
 
     public function __construct(
         private array $payload,
@@ -32,6 +33,16 @@ class ExecutionContext
     public function setActionOutput(string $actionId, array $output): void
     {
         $this->actionOutputs[$actionId] = $output;
+    }
+
+    public function markDeferredWork(): void
+    {
+        $this->hasDeferredWork = true;
+    }
+
+    public function hasDeferredWork(): bool
+    {
+        return $this->hasDeferredWork;
     }
 
     /** Merge additional data into payload (entity expansion, event data). */

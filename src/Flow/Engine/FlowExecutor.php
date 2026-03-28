@@ -183,6 +183,7 @@ class FlowExecutor
             $this->queue->dispatch(new ExecuteFlowStepJob($executionId, $branchNode, $contextData));
         }
 
+        $context->markDeferredWork();
         $this->flowLogger->logStepComplete($executionId, $nodeId, 'parallel');
     }
 
@@ -206,6 +207,7 @@ class FlowExecutor
             $this->queue->schedule(new ExecuteFlowStepJob($executionId, $step, $contextData), $runAt);
         }
 
+        $context->markDeferredWork();
         $this->flowLogger->logStepComplete($executionId, $nodeId, 'delay', ['scheduled_at' => $runAt->format('Y-m-d H:i:s')]);
     }
 

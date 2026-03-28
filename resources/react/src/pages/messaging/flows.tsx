@@ -1,6 +1,7 @@
 import { formatDate } from '@/lib/format';
 import { useState, useEffect, useMemo } from 'react';
 import { useFlows } from '@/hooks/use-flows';
+import { useTriggers } from '@/hooks/use-triggers';
 import { FlowEditor } from './flow-editor';
 import type { Flow, FlowTemplate } from '@/lib/api';
 import { api } from '@/lib/api';
@@ -76,6 +77,11 @@ export function Flows() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
 
+  const { triggers } = useTriggers();
+  const triggerNameMap = useMemo(
+    () => new Map(triggers.map((t) => [t.id, t.name])),
+    [triggers],
+  );
   const confirm = useConfirm();
   const totalPages = Math.ceil(total / perPage);
 
@@ -281,7 +287,7 @@ export function Flows() {
                 <TableCell className="text-sm">
                   <span className="inline-flex items-center gap-1.5">
                     {(() => { const TIcon = getTriggerIcon(flow.trigger_type); return <TIcon className="h-3.5 w-3.5 text-muted-foreground" />; })()}
-                    {formatLabel(flow.trigger_type)}
+                    {triggerNameMap.get(flow.trigger_type) ?? formatLabel(flow.trigger_type)}
                   </span>
                 </TableCell>
                 <TableCell>
