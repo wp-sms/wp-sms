@@ -67,8 +67,8 @@ export function ContactFormPanel({ open, onOpenChange, contact, onSave }: Contac
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="sm:max-w-md overflow-y-auto">
         <DrawerHeader>
-          <DrawerTitle>{isEdit ? 'Edit Contact' : 'New Contact'}</DrawerTitle>
-          <DrawerDescription>{isEdit ? 'Update contact details.' : 'Add a new contact.'}</DrawerDescription>
+          <DrawerTitle>{isEdit ? __('Edit Contact', 'wp-sms') : __('New Contact', 'wp-sms')}</DrawerTitle>
+          <DrawerDescription>{isEdit ? __('Update contact details.', 'wp-sms') : __('Add a new contact.', 'wp-sms')}</DrawerDescription>
         </DrawerHeader>
 
         <div className="space-y-4 px-4">
@@ -152,7 +152,7 @@ export function ContactFormPanel({ open, onOpenChange, contact, onSave }: Contac
 
         <DrawerFooter>
           <Button onClick={handleSubmit} disabled={saving || (!form.email && !form.phone)}>
-            {saving ? 'Saving...' : isEdit ? 'Update' : 'Create'}
+            {saving ? __('Saving...', 'wp-sms') : isEdit ? __('Update', 'wp-sms') : __('Create', 'wp-sms')}
           </Button>
         </DrawerFooter>
       </DrawerContent>

@@ -23,7 +23,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { Plus, Search, Users, Pencil, Trash2, Eye, Upload, Download } from 'lucide-react';
-import { CONTACT_STATUSES, formatLabel } from '@/lib/constants';
+import { CONTACT_STATUSES, contactStatusLabel } from '@/lib/constants';
 import { TagChips } from './tag-chips';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
@@ -194,7 +194,7 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
                 <TableCell className="text-sm">{contact.phone || '\u2014'}</TableCell>
                 <TableCell>
                   <Badge variant={STATUS_VARIANTS[contact.status] || 'neutral'}>
-                    {formatLabel(contact.status)}
+                    {contactStatusLabel(contact.status)}
                   </Badge>
                   <OptOutIndicator optOuts={contact.channel_opt_outs} />
                 </TableCell>

@@ -347,6 +347,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                 placeholder="newsletter"
               />
               <FieldDescription>
+                {/* eslint-disable-next-line react/jsx-no-literals */}
                 {__('Shortcode:', 'wp-sms')}{' '}<code>{'[wsms_subscribe id="'}{formState.slug || '...'}{'"]'}</code>
               </FieldDescription>
             </Field>

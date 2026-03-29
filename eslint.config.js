@@ -32,6 +32,7 @@ export default [
       "public/",
       "packages/",
       "tests/",
+      "**/__tests__/**",
       "*.config.*",
     ],
   },
@@ -98,9 +99,9 @@ export default [
       "react/no-direct-mutation-state": "error",
       "react/no-children-prop": "error",
       "react/jsx-no-literals": ["warn", {
-        noStrings: false,
+        noStrings: true,
         ignoreProps: true,
-        allowedStrings: ["·", "|", ":", "/", "+", "×", "-", "*", "(", ")", "@", ".", "✓", "%", "&ndash;", "&mdash;", "—", "#"],
+        allowedStrings: ["·", "|", ":", "/", "+", "×", "-", "*", "(", ")", "@", ".", "✓", "%", "&ndash;", "&mdash;", "—", "#", "WSMS", "VeronaLabs", "wsms.io"],
       }],
     },
   },
@@ -127,7 +128,7 @@ export default [
       ...a11yOverrides,
       "react/jsx-uses-vars": "error",
       "react/jsx-no-literals": ["warn", {
-        noStrings: false,
+        noStrings: true,
         ignoreProps: true,
         allowedStrings: ["·", "|", ":", "/", "+", "×", "-", "*", "(", ")", "@", ".", "✓", "%", "&ndash;", "&mdash;", "—", "#"],
       }],

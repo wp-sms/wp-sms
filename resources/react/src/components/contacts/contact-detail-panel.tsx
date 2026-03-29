@@ -9,7 +9,7 @@ import { ContactTagsManager } from './contact-tags-manager';
 import { ContactCustomFields } from './contact-custom-fields';
 import { ContactWpUserInfo } from './contact-wp-user-info';
 import { ContactActivity } from './contact-activity';
-import { formatLabel } from '@/lib/constants';
+import { contactStatusLabel } from '@/lib/constants';
 import { formatDate } from '@/lib/format';
 import { SourceLabel } from './source-label';
 import { CheckCircle2, XCircle } from 'lucide-react';
@@ -115,7 +115,7 @@ export function ContactDetailPanel({
                 )}
               </div>
               <div className="mt-2 flex items-center gap-2">
-                <Badge variant="outline">{formatLabel(contact.status)}</Badge>
+                <Badge variant="outline">{contactStatusLabel(contact.status)}</Badge>
                 {contact.source && (
                   <SourceLabel source={contact.source} sourceRef={contact.source_ref} />
                 )}

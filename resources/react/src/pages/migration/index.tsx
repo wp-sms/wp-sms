@@ -269,6 +269,7 @@ function DetectionStep({ available, onSelect, status, onViewResults, onViewProgr
                 <CardTitle className="flex items-center gap-2">
                   {plugin.id === 'digits' ? 'Digits' : plugin.id}
                   {plugin.active && <Badge variant="secondary">{__('Active', 'wp-sms')}</Badge>}
+                  {/* eslint-disable-next-line react/jsx-no-literals */}
                   {plugin.version && <Badge variant="outline">{'v'}{plugin.version}</Badge>}
                 </CardTitle>
                 <CardDescription className="mt-1">

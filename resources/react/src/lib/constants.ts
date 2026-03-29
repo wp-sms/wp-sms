@@ -275,6 +275,10 @@ export const CONTACT_STATUSES = [
   { value: 'complained', label: __('Complained', 'wp-sms') },
 ] as const;
 
+export function contactStatusLabel(status: string): string {
+  return CONTACT_STATUSES.find(s => s.value === status)?.label ?? formatLabel(status);
+}
+
 export const OPT_OUT_CHANNELS = [
   { value: 'sms', label: __('SMS', 'wp-sms') },
   { value: 'email', label: __('Email', 'wp-sms') },

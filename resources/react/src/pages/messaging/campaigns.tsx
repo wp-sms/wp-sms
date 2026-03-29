@@ -32,6 +32,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
+import { ChannelBadge } from '@/components/messaging/message-badges';
 import { CHANNEL_LABELS } from '@/components/gateway-config-form';
 import { Plus, Megaphone, Pencil, Trash2, Copy, Eye } from 'lucide-react';
 import { toast } from 'sonner';
@@ -42,14 +43,6 @@ type View =
   | { mode: 'create' }
   | { mode: 'edit'; campaign: Campaign }
   | { mode: 'detail'; campaign: Campaign };
-
-function ChannelBadge({ channel }: { channel: string }) {
-  return (
-    <Badge variant="outline">
-      {CHANNEL_LABELS[channel] ?? channel}
-    </Badge>
-  );
-}
 
 export function Campaigns() {
   const {
@@ -219,7 +212,7 @@ export function Campaigns() {
                   <NameCell onClick={() => setView({ mode: 'detail', campaign })}>
                     {campaign.name}
                   </NameCell>
-                  <TableCell><ChannelBadge channel={campaign.channel} /></TableCell>
+                  <TableCell><ChannelBadge channel={campaign.channel} variant="outline" /></TableCell>
                   <TableCell><CampaignStatusBadge status={campaign.status} /></TableCell>
                   <TableCell className="text-end text-sm tabular-nums">
                     {campaign.total_recipients > 0 ? campaign.total_recipients.toLocaleString() : '\u2014'}

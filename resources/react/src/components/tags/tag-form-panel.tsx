@@ -60,8 +60,8 @@ export function TagFormPanel({ open, onOpenChange, tag, onSave }: TagFormPanelPr
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="sm:max-w-lg overflow-y-auto">
         <DrawerHeader>
-          <DrawerTitle>{isEdit ? 'Edit Tag' : 'New Tag'}</DrawerTitle>
-          <DrawerDescription>{isEdit ? 'Update tag details.' : 'Create a new tag to organize contacts.'}</DrawerDescription>
+          <DrawerTitle>{isEdit ? __('Edit Tag', 'wp-sms') : __('New Tag', 'wp-sms')}</DrawerTitle>
+          <DrawerDescription>{isEdit ? __('Update tag details.', 'wp-sms') : __('Create a new tag to organize contacts.', 'wp-sms')}</DrawerDescription>
         </DrawerHeader>
 
         <div className="space-y-4 px-4">
@@ -74,6 +74,7 @@ export function TagFormPanel({ open, onOpenChange, tag, onSave }: TagFormPanelPr
             <FieldLabel htmlFor="tag-slug">{__('Slug', 'wp-sms')}</FieldLabel>
             <Input
               id="tag-slug"
+              dir="ltr"
               value={slug}
               onChange={(e) => { setSlug(e.target.value); setSlugTouched(true); }}
               placeholder="vip"
@@ -100,7 +101,7 @@ export function TagFormPanel({ open, onOpenChange, tag, onSave }: TagFormPanelPr
 
         <DrawerFooter>
           <Button onClick={handleSubmit} disabled={saving || !name.trim()}>
-            {saving ? 'Saving...' : isEdit ? 'Update' : 'Create'}
+            {saving ? __('Saving...', 'wp-sms') : isEdit ? __('Update', 'wp-sms') : __('Create', 'wp-sms')}
           </Button>
         </DrawerFooter>
       </DrawerContent>

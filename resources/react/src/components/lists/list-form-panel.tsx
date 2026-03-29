@@ -67,8 +67,8 @@ export function ListFormPanel({ open, onOpenChange, list, tags, onSave }: ListFo
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="sm:max-w-lg overflow-y-auto">
         <DrawerHeader>
-          <DrawerTitle>{isEdit ? 'Edit List' : 'New List'}</DrawerTitle>
-          <DrawerDescription>{isEdit ? 'Update list configuration.' : 'Create a new contact list.'}</DrawerDescription>
+          <DrawerTitle>{isEdit ? __('Edit List', 'wp-sms') : __('New List', 'wp-sms')}</DrawerTitle>
+          <DrawerDescription>{isEdit ? __('Update list configuration.', 'wp-sms') : __('Create a new contact list.', 'wp-sms')}</DrawerDescription>
         </DrawerHeader>
 
         <div className="space-y-4 px-4">
@@ -126,7 +126,7 @@ export function ListFormPanel({ open, onOpenChange, list, tags, onSave }: ListFo
 
         <DrawerFooter>
           <Button onClick={handleSubmit} disabled={saving || !name.trim()}>
-            {saving ? 'Saving...' : isEdit ? 'Update' : 'Create'}
+            {saving ? __('Saving...', 'wp-sms') : isEdit ? __('Update', 'wp-sms') : __('Create', 'wp-sms')}
           </Button>
         </DrawerFooter>
       </DrawerContent>

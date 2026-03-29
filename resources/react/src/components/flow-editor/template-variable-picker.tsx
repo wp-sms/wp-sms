@@ -81,6 +81,7 @@ function VariableButton({
       onClick={() => onInsert(`{{${path}}}`)}
     >
       <div className="flex w-full items-center justify-between">
+        {/* eslint-disable-next-line react/jsx-no-literals */}
         <span className="font-mono text-xs">{`{{${path}}}`}</span>
         <span className="ms-2 text-xs text-muted-foreground truncate">{label}</span>
       </div>

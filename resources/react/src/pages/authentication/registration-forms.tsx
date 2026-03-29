@@ -331,9 +331,11 @@ export function RegistrationForms() {
                 placeholder="vendor-registration"
               />
               <FieldDescription>
+                {/* eslint-disable react/jsx-no-literals */}
                 {__('Popup:', 'wp-sms')}{' '}<code>{'[wsms_auth id="'}{formState.slug || '...'}{'" view="register"]'}</code>
                 <br />
                 {__('Embed:', 'wp-sms')}{' '}<code>{'[wsms_auth id="'}{formState.slug || '...'}{'" view="register" mode="embed"]'}</code>
+                {/* eslint-enable react/jsx-no-literals */}
               </FieldDescription>
             </Field>
 

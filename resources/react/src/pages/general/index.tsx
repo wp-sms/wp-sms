@@ -54,6 +54,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
 
             {settings.redirect_login && (
               <p className="text-xs text-muted-foreground mt-3 rounded-md bg-muted/50 p-3">
+                {/* eslint-disable-next-line react/jsx-no-literals */}
                 {__('When enabled, visitors to', 'wp-sms')}{' '}<code className="rounded bg-muted px-1 py-0.5 font-mono text-[0.6875rem]">{'wp-login.php'}</code>{' '}{__('will be redirected to', 'wp-sms')}{' '}<code className="rounded bg-muted px-1 py-0.5 font-mono text-[0.6875rem]">{settings.auth_base_url}{'/login'}</code>
               </p>
             )}

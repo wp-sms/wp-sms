@@ -87,7 +87,7 @@ export function ConditionGroupComponent({ group, tags, onChange, depth = 0 }: Co
             className="absolute -end-1 -top-1 h-5 w-5 p-0 text-muted-foreground"
             onClick={() => removeGroup(i)}
           >
-            {'x'}
+            {'×'}
           </Button>
           <ConditionGroupComponent
             group={subGroup}

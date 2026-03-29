@@ -21,6 +21,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { DataTable } from '@/components/ui/data-table';
 import { Mail, MessageSquare, Send, Smartphone, Eye, RotateCcw, Settings, RefreshCw, AlertTriangle, ExternalLink, FileText } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
+import { CHANNEL_LABELS } from '@/components/gateway-config-form';
 
 interface VariableInfo {
   name: string;
@@ -111,12 +112,6 @@ const CHANNEL_ICONS: Record<string, React.ReactNode> = {
   telegram: <Send className="h-4 w-4" />,
 };
 
-const CHANNEL_LABELS: Record<string, string> = {
-  email: __('Email', 'wp-sms'),
-  sms: __('SMS', 'wp-sms'),
-  whatsapp: __('WhatsApp', 'wp-sms'),
-  telegram: __('Telegram', 'wp-sms'),
-};
 
 function toFieldOptions(variables: Record<string, VariableInfo>): FieldOption[] {
   return Object.values(variables).map((v) => ({
