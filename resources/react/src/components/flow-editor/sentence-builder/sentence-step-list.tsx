@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useMemo } from 'react';
 import type { FlowNode, JsonSchema, JsonSchemaProperty } from '@/lib/api';
 import { createNode, type StepType } from '@/lib/flow-utils';
@@ -57,7 +58,7 @@ export function SentenceStepList({
           ...payloadSchema?.properties,
           actions: {
             type: 'object' as const,
-            title: 'Previous Actions',
+            title: __('Previous Actions', 'wp-sms'),
             properties: { ...accumulated },
           },
         },

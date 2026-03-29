@@ -1,4 +1,4 @@
-import { __, sprintf } from '@wordpress/i18n';
+import { __, sprintf, _n } from '@wordpress/i18n';
 import { formatDateTime, formatRelativeTime, formatDuration, formatFutureRelativeTime } from '@/lib/format';
 import { useCampaignDetail } from '@/hooks/use-campaign-detail';
 import type { Campaign, CampaignRecipient, CampaignStats } from '@/lib/api';
@@ -20,7 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { cn, pluralize } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { channelLabel } from '@/components/gateway-config-form';
 import {
   ArrowLeft, CheckCircle, XCircle, Clock, Users,
@@ -70,9 +70,9 @@ export function CampaignDetail({ campaign: initialCampaign, onBack }: CampaignDe
   const handleAction = async (action: string) => {
     if (action === 'cancel') {
       const ok = await confirm({
-        title: 'Cancel campaign?',
-        description: 'This will stop the campaign and no further messages will be sent. This cannot be undone.',
-        confirmLabel: 'Cancel Campaign',
+        title: __('Cancel campaign?', 'wp-sms'),
+        description: __('This will stop the campaign and no further messages will be sent. This cannot be undone.', 'wp-sms'),
+        confirmLabel: __('Cancel Campaign', 'wp-sms'),
         variant: 'destructive',
       });
       if (!ok) return;
@@ -180,7 +180,7 @@ function StatsSection({ data, stats, deliveryRate }: {
   const showCost = stats.total_cost > 0;
   const hasDeliveryTracking = stats.supports_delivery_receipt;
 
-  const heroLabel = hasDeliveryTracking ? 'Delivery Rate' : 'Send Rate';
+  const heroLabel = hasDeliveryTracking ? __('Delivery Rate', 'wp-sms') : __('Send Rate', 'wp-sms');
   const heroRate = hasDeliveryTracking
     ? deliveryRate
     : stats.total > 0
@@ -208,7 +208,7 @@ function StatsSection({ data, stats, deliveryRate }: {
             )}
             {hasDeliveryTracking && deliveryRate === 0 && stats.sent > 0 && !isAllFailed && (
               <p className="mt-1 text-xs text-muted-foreground">
-                {pluralize(stats.sent, 'message')} sent, awaiting delivery confirmation
+                {sprintf(_n('%d message sent, awaiting delivery confirmation', '%d messages sent, awaiting delivery confirmation', stats.sent, 'wp-sms'), stats.sent)}
               </p>
             )}
             {!hasDeliveryTracking && (
@@ -223,7 +223,7 @@ function StatsSection({ data, stats, deliveryRate }: {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-amber-500" />
               </span>
-              Sending...
+              {__('Sending...', 'wp-sms')}
             </div>
           )}
         </div>
@@ -291,15 +291,15 @@ function SegmentedStatusBar({ stats, hasDeliveryTracking }: { stats: CampaignSta
 
   const segments = hasDeliveryTracking
     ? [
-        { key: 'delivered', count: stats.delivered, color: 'bg-emerald-500', label: 'Delivered' },
-        { key: 'sent', count: stats.sent, color: 'bg-blue-500', label: 'Sent' },
-        { key: 'queued', count: stats.queued, color: 'bg-gray-300 dark:bg-gray-600', label: 'Queued' },
-        { key: 'failed', count: stats.failed, color: 'bg-destructive', label: 'Failed' },
+        { key: 'delivered', count: stats.delivered, color: 'bg-emerald-500', label: __('Delivered', 'wp-sms') },
+        { key: 'sent', count: stats.sent, color: 'bg-blue-500', label: __('Sent', 'wp-sms') },
+        { key: 'queued', count: stats.queued, color: 'bg-gray-300 dark:bg-gray-600', label: __('Queued', 'wp-sms') },
+        { key: 'failed', count: stats.failed, color: 'bg-destructive', label: __('Failed', 'wp-sms') },
       ].filter(s => s.count > 0)
     : [
-        { key: 'sent', count: stats.delivered + stats.sent, color: 'bg-emerald-500', label: 'Sent' },
-        { key: 'queued', count: stats.queued, color: 'bg-gray-300 dark:bg-gray-600', label: 'Queued' },
-        { key: 'failed', count: stats.failed, color: 'bg-destructive', label: 'Failed' },
+        { key: 'sent', count: stats.delivered + stats.sent, color: 'bg-emerald-500', label: __('Sent', 'wp-sms') },
+        { key: 'queued', count: stats.queued, color: 'bg-gray-300 dark:bg-gray-600', label: __('Queued', 'wp-sms') },
+        { key: 'failed', count: stats.failed, color: 'bg-destructive', label: __('Failed', 'wp-sms') },
       ].filter(s => s.count > 0);
 
   return (
@@ -329,19 +329,19 @@ function SegmentedStatusBar({ stats, hasDeliveryTracking }: { stats: CampaignSta
 function NoMessagesSentNotice({ status }: { status: string }) {
   const messages: Record<string, { title: string; description: string; icon: React.ComponentType<{ className?: string }> }> = {
     cancelled: {
-      title: 'Campaign was cancelled',
-      description: 'This campaign was cancelled before any messages were sent.',
+      title: __('Campaign was cancelled', 'wp-sms'),
+      description: __('This campaign was cancelled before any messages were sent.', 'wp-sms'),
       icon: Ban,
     },
     failed: {
-      title: 'Campaign failed to start',
-      description: 'An error occurred before any messages could be sent.',
+      title: __('Campaign failed to start', 'wp-sms'),
+      description: __('An error occurred before any messages could be sent.', 'wp-sms'),
       icon: AlertTriangle,
     },
   };
   const msg = messages[status] ?? {
-    title: 'No messages sent',
-    description: 'This campaign has not sent any messages yet.',
+    title: __('No messages sent', 'wp-sms'),
+    description: __('This campaign has not sent any messages yet.', 'wp-sms'),
     icon: Info,
   };
 
@@ -357,18 +357,18 @@ function NoMessagesSentNotice({ status }: { status: string }) {
 function CampaignDetailsSection({ data, defaultOpen }: { data: Campaign; defaultOpen: boolean }) {
   const audienceSummary = data.audience.sources
     .map(s => {
-      if (s.type === 'tags') return `Tags (${s.tag_ids?.length ?? 0})`;
-      if (s.type === 'wp_roles') return `Roles (${s.roles?.join(', ')})`;
-      if (s.type === 'manual') return `Manual (${s.recipients?.length ?? 0})`;
-      if (s.type === 'segment') return 'Segment';
+      if (s.type === 'tags') return sprintf(__('Tags (%d)', 'wp-sms'), s.tag_ids?.length ?? 0);
+      if (s.type === 'wp_roles') return sprintf(__('Roles (%s)', 'wp-sms'), s.roles?.join(', ') ?? '');
+      if (s.type === 'manual') return sprintf(__('Manual (%d)', 'wp-sms'), s.recipients?.length ?? 0);
+      if (s.type === 'segment') return __('Segment', 'wp-sms');
       return s.type;
     })
-    .join(', ') || 'None';
+    .join(', ') || __('None', 'wp-sms');
 
   const sectionDescription = [
     channelLabel(data.channel),
-    data.gateway_id ? `via ${data.gateway_id}` : null,
-    data.total_recipients > 0 ? pluralize(data.total_recipients, 'recipient') : null,
+    data.gateway_id ? sprintf(__('via %s', 'wp-sms'), data.gateway_id) : null,
+    data.total_recipients > 0 ? sprintf(_n('%d recipient', '%d recipients', data.total_recipients, 'wp-sms'), data.total_recipients) : null,
   ].filter(Boolean).join(' \u00b7 ');
 
   return (
@@ -472,7 +472,7 @@ function TimelineSection({ data }: { data: Campaign }) {
 
   if (data.send_at && data.status === 'scheduled') {
     events.push({
-      label: 'Scheduled for',
+      label: __('Scheduled for', 'wp-sms'),
       time: data.send_at,
       type: 'scheduled',
       detail: formatFutureRelativeTime(data.send_at),
@@ -480,35 +480,35 @@ function TimelineSection({ data }: { data: Campaign }) {
   }
 
   if (data.started_at) {
-    events.push({ label: 'Sending started', time: data.started_at, type: 'started' });
+    events.push({ label: __('Sending started', 'wp-sms'), time: data.started_at, type: 'started' });
   }
 
   if (data.status === 'paused' && data.started_at) {
-    events.push({ label: 'Paused', time: data.started_at, type: 'paused' });
+    events.push({ label: __('Paused', 'wp-sms'), time: data.started_at, type: 'paused' });
   }
 
   if (data.cancelled_at) {
     const duration = data.started_at ? formatDuration(data.started_at, data.cancelled_at) : undefined;
     events.push({
-      label: 'Cancelled',
+      label: __('Cancelled', 'wp-sms'),
       time: data.cancelled_at,
       type: 'cancelled',
-      detail: duration ? `After ${duration}` : undefined,
+      detail: duration ? sprintf(__('After %s', 'wp-sms'), duration) : undefined,
     });
   }
 
   if (data.completed_at) {
     const duration = data.started_at ? formatDuration(data.started_at, data.completed_at) : undefined;
     events.push({
-      label: 'Completed',
+      label: __('Completed', 'wp-sms'),
       time: data.completed_at,
       type: 'completed',
-      detail: duration ? `Completed in ${duration}` : undefined,
+      detail: duration ? sprintf(__('Completed in %s', 'wp-sms'), duration) : undefined,
     });
   }
 
   if (events.length === 0) {
-    events.push({ label: 'Draft created', time: '', type: 'created' });
+    events.push({ label: __('Draft created', 'wp-sms'), time: '', type: 'created' });
   }
 
   return (
@@ -590,19 +590,19 @@ function RecipientsSection({
   };
 
   const tabs = [
-    { value: 'all', label: 'All', count: stats?.total ?? 0 },
-    { value: 'delivered', label: 'Delivered', count: stats?.delivered ?? 0 },
-    { value: 'failed', label: 'Failed', count: stats?.failed ?? 0 },
-    { value: 'sent', label: 'Sent', count: stats?.sent ?? 0 },
-    { value: 'queued', label: 'Queued', count: stats?.queued ?? 0 },
+    { value: 'all', label: __('All', 'wp-sms'), count: stats?.total ?? 0 },
+    { value: 'delivered', label: __('Delivered', 'wp-sms'), count: stats?.delivered ?? 0 },
+    { value: 'failed', label: __('Failed', 'wp-sms'), count: stats?.failed ?? 0 },
+    { value: 'sent', label: __('Sent', 'wp-sms'), count: stats?.sent ?? 0 },
+    { value: 'queued', label: __('Queued', 'wp-sms'), count: stats?.queued ?? 0 },
   ];
 
   const emptyMessages: Record<string, { title: string; description: string }> = {
-    all: { title: 'No recipients yet', description: 'Recipients will appear here once the campaign starts sending.' },
-    delivered: { title: 'No delivered messages', description: 'Messages that are successfully delivered will appear here.' },
-    failed: { title: 'No failed messages', description: 'Great news \u2014 no messages have failed.' },
-    sent: { title: 'No sent messages', description: 'Messages that have been sent but not yet confirmed will appear here.' },
-    queued: { title: 'No queued messages', description: 'All messages have been processed.' },
+    all: { title: __('No recipients yet', 'wp-sms'), description: __('Recipients will appear here once the campaign starts sending.', 'wp-sms') },
+    delivered: { title: __('No delivered messages', 'wp-sms'), description: __('Messages that are successfully delivered will appear here.', 'wp-sms') },
+    failed: { title: __('No failed messages', 'wp-sms'), description: __('Great news \u2014 no messages have failed.', 'wp-sms') },
+    sent: { title: __('No sent messages', 'wp-sms'), description: __('Messages that have been sent but not yet confirmed will appear here.', 'wp-sms') },
+    queued: { title: __('No queued messages', 'wp-sms'), description: __('All messages have been processed.', 'wp-sms') },
   };
 
   const empty = emptyMessages[tabValue] ?? emptyMessages.all;
@@ -611,7 +611,7 @@ function RecipientsSection({
     <PageSection
       icon={Users}
       title={__('Recipients', 'wp-sms')}
-      description={`${recipientsTotal.toLocaleString()} ${statusFilter ? statusFilter : 'total'}`}
+      description={`${recipientsTotal.toLocaleString()} ${statusFilter ? statusFilter : __('total', 'wp-sms')}`}
       className="animate-fade-up"
       style={{ animationDelay: '240ms' }}
     >

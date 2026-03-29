@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import { IntegrationIcon } from '@/components/integration-icon';
@@ -306,7 +306,7 @@ export function IntegrationPicker({
               {searchResults.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <Search className="h-10 w-10 text-muted-foreground/30 mb-3" />
-                  <p className="text-sm font-medium text-foreground">No results for &ldquo;{search}&rdquo;</p>
+                  <p className="text-sm font-medium text-foreground">{sprintf(__('No results for "%s"', 'wp-sms'), search)}</p>
                   <p className="text-xs text-muted-foreground mt-1">{__('Try a different search term', 'wp-sms')}</p>
                 </div>
               ) : (

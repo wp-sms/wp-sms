@@ -1,3 +1,4 @@
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { useState, useRef, useEffect, useMemo, forwardRef } from 'react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -308,8 +309,10 @@ function UnresolvedVarWarning({ value, payloadSchema }: { value: string; payload
       </TooltipTrigger>
       <TooltipContent side="top" className="max-w-xs">
         <p className="text-xs">
-          Unknown variable{unresolved.length > 1 ? 's' : ''}:{' '}
-          {unresolved.map((v) => `{{${v}}}`).join(', ')}
+          {sprintf(
+            _n('Unknown variable: %s', 'Unknown variables: %s', unresolved.length, 'wp-sms'),
+            unresolved.map((v) => `{{${v}}}`).join(', '),
+          )}
         </p>
       </TooltipContent>
     </Tooltip>

@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -36,9 +36,9 @@ export function FailedJobsSection({ data, onMutate }: FailedJobsSectionProps) {
 
   async function handleDismiss(actionId: number) {
     const ok = await confirm({
-      title: 'Dismiss failed job',
-      description: 'This will permanently delete this failed job entry. This cannot be undone.',
-      confirmLabel: 'Dismiss',
+      title: __('Dismiss failed job', 'wp-sms'),
+      description: __('This will permanently delete this failed job entry. This cannot be undone.', 'wp-sms'),
+      confirmLabel: __('Dismiss', 'wp-sms'),
       variant: 'destructive',
     });
     if (!ok) return;
@@ -99,10 +99,10 @@ export function FailedJobsSection({ data, onMutate }: FailedJobsSectionProps) {
                 <TableCell className="max-w-xs">
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="block truncate text-sm">{job.error_message || 'No error message'}</span>
+                      <span className="block truncate text-sm">{job.error_message || __('No error message', 'wp-sms')}</span>
                     </TooltipTrigger>
                     <TooltipContent side="bottom" className="max-w-md break-words">
-                      {job.error_message || 'No error message'}
+                      {job.error_message || __('No error message', 'wp-sms')}
                     </TooltipContent>
                   </Tooltip>
                 </TableCell>
@@ -130,7 +130,7 @@ export function FailedJobsSection({ data, onMutate }: FailedJobsSectionProps) {
                       disabled={busy[job.action_id]}
                     >
                       <RotateCcw className="h-3.5 w-3.5" />
-                      <span className="sr-only">Retry</span>
+                      <span className="sr-only">{__('Retry', 'wp-sms')}</span>
                     </Button>
                     <Button
                       variant="ghost"
@@ -139,7 +139,7 @@ export function FailedJobsSection({ data, onMutate }: FailedJobsSectionProps) {
                       disabled={busy[job.action_id]}
                     >
                       <Trash2 className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span className="sr-only">Dismiss</span>
+                      <span className="sr-only">{__('Dismiss', 'wp-sms')}</span>
                     </Button>
                   </div>
                 </TableCell>
@@ -151,7 +151,7 @@ export function FailedJobsSection({ data, onMutate }: FailedJobsSectionProps) {
 
       {data.total > data.items.length && (
         <p className="text-xs text-muted-foreground text-center">
-          Showing {data.items.length} of {data.total} failed jobs
+          {sprintf(__('Showing %1$d of %2$d failed jobs', 'wp-sms'), data.items.length, data.total)}
         </p>
       )}
     </div>

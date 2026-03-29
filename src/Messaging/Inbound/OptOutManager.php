@@ -192,14 +192,14 @@ class OptOutManager
     {
         return [
             'auto_reply_stop_enabled'       => true,
-            'auto_reply_stop_text'          => 'You have been unsubscribed. Reply START to re-subscribe.',
+            'auto_reply_stop_text'          => __('You have been unsubscribed. Reply START to re-subscribe.', 'wp-sms'),
             'auto_reply_start_enabled'      => true,
-            'auto_reply_start_text'         => 'You have been re-subscribed. Reply STOP to unsubscribe.',
+            'auto_reply_start_text'         => __('You have been re-subscribed. Reply STOP to unsubscribe.', 'wp-sms'),
             'auto_reply_help_enabled'       => true,
-            'auto_reply_help_text'          => 'Reply STOP to unsubscribe. Reply START to re-subscribe.',
+            'auto_reply_help_text'          => __('Reply STOP to unsubscribe. Reply START to re-subscribe.', 'wp-sms'),
             'custom_stop_keywords'          => [],
             'custom_start_keywords'         => [],
-            'default_campaign_opt_out_text' => 'Reply STOP to unsubscribe',
+            'default_campaign_opt_out_text' => __('Reply STOP to unsubscribe', 'wp-sms'),
         ];
     }
 }

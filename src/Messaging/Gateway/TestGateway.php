@@ -66,7 +66,7 @@ class TestGateway implements GatewayInterface
     public function getMetadata(): array
     {
         return [
-            'description' => 'Test gateway for development — stores messages in memory instead of sending',
+            'description' => __('Test gateway for development — stores messages in memory instead of sending', 'wp-sms'),
         ];
     }
 

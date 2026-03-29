@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useResourceSettings, type SaveStatus } from '@/hooks/use-resource-settings';
 
 export type { SaveStatus };
@@ -81,29 +82,29 @@ const DEFAULTS: MessagingButtonSettings = {
   button: {
     position: 'bottom-right',
     style: 'icon-text',
-    text: 'Chat with us',
+    text: __('Chat with us', 'wp-sms'),
     primary_color: null,
     text_color: '#ffffff',
     attention: 'none',
   },
   widget: {
-    title: 'Hi there!',
-    subtitle: 'How can we help?',
+    title: __('Hi there!', 'wp-sms'),
+    subtitle: __('How can we help?', 'wp-sms'),
     theme: 'light',
   },
   pages: {
-    welcome: { enabled: true, greeting: 'Welcome! Choose an option below to get started.', cta_label: 'Send a message' },
+    welcome: { enabled: true, greeting: __('Welcome! Choose an option below to get started.', 'wp-sms'), cta_label: __('Send a message', 'wp-sms') },
     contact_form: { enabled: true, fields: ['name', 'email', 'phone', 'message'], required_fields: ['email', 'message'], channel: 'email', gateway_id: null, notification_recipients: [], auto_tag: null, auto_list: null },
     team: { enabled: true },
     resources: { enabled: false, links: [] },
   },
   team_members: [],
   display_rules: { auto_inject: true, include_urls: [], exclude_urls: [], visibility: 'everyone' },
-  greeting_bubble: { enabled: false, message: 'Need help? We\'re online!', delay: 3, duration: 8, open_on_click: true },
+  greeting_bubble: { enabled: false, message: __('Need help? We\'re online!', 'wp-sms'), delay: 3, duration: 8, open_on_click: true },
   default_message: '',
   triggers: { auto_open_delay: 0, scroll_percent: 0, exit_intent: false },
-  business_hours: { enabled: false, schedule: [], offline_message: 'We are currently offline.' },
-  gdpr: { enabled: false, consent_text: 'I agree to the privacy policy.', link_url: '' },
+  business_hours: { enabled: false, schedule: [], offline_message: __('We are currently offline.', 'wp-sms') },
+  gdpr: { enabled: false, consent_text: __('I agree to the privacy policy.', 'wp-sms'), link_url: '' },
 };
 
 interface MBSettingsResponse {

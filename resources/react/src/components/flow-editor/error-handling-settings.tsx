@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useState } from 'react';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
@@ -42,10 +42,10 @@ export function ErrorHandlingSettings({ value, onChange }: ErrorHandlingSettings
         onClick={() => setOpen(!open)}
       >
         {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-        Error Handling
+        {__('Error Handling', 'wp-sms')}
         {config.behavior !== 'stop' && (
           <span className="ms-auto text-xs font-normal text-muted-foreground/70">
-            {config.behavior === 'continue' ? 'Continue on fail' : `Retry ${config.maxRetries ?? 3}x`}
+            {config.behavior === 'continue' ? __('Continue on fail', 'wp-sms') : sprintf(__('Retry %dx', 'wp-sms'), config.maxRetries ?? 3)}
           </span>
         )}
       </button>
@@ -53,7 +53,7 @@ export function ErrorHandlingSettings({ value, onChange }: ErrorHandlingSettings
       {open && (
         <div className="space-y-3 border-t border-border/50 px-4 py-3">
           <Field>
-            <FieldLabel htmlFor="error-behavior">On failure</FieldLabel>
+            <FieldLabel htmlFor="error-behavior">{__('On failure', 'wp-sms')}</FieldLabel>
             <Select value={config.behavior} onValueChange={handleBehaviorChange}>
               <SelectTrigger id="error-behavior">
                 <SelectValue />
@@ -65,16 +65,16 @@ export function ErrorHandlingSettings({ value, onChange }: ErrorHandlingSettings
               </SelectContent>
             </Select>
             <FieldDescription>
-              {config.behavior === 'stop' && 'The flow will stop if this action fails.'}
-              {config.behavior === 'continue' && 'The flow will continue to the next step even if this action fails.'}
-              {config.behavior === 'retry' && 'The action will be retried before giving up.'}
+              {config.behavior === 'stop' && __('The flow will stop if this action fails.', 'wp-sms')}
+              {config.behavior === 'continue' && __('The flow will continue to the next step even if this action fails.', 'wp-sms')}
+              {config.behavior === 'retry' && __('The action will be retried before giving up.', 'wp-sms')}
             </FieldDescription>
           </Field>
 
           {config.behavior === 'retry' && (
             <>
               <Field>
-                <FieldLabel htmlFor="max-retries">Max retries</FieldLabel>
+                <FieldLabel htmlFor="max-retries">{__('Max retries', 'wp-sms')}</FieldLabel>
                 <Input
                   id="max-retries"
                   type="number"
@@ -86,7 +86,7 @@ export function ErrorHandlingSettings({ value, onChange }: ErrorHandlingSettings
               </Field>
 
               <Field>
-                <FieldLabel htmlFor="retry-interval">Retry interval (seconds)</FieldLabel>
+                <FieldLabel htmlFor="retry-interval">{__('Retry interval (seconds)', 'wp-sms')}</FieldLabel>
                 <Input
                   id="retry-interval"
                   type="number"
@@ -98,7 +98,7 @@ export function ErrorHandlingSettings({ value, onChange }: ErrorHandlingSettings
               </Field>
 
               <Field orientation="horizontal">
-                <FieldLabel htmlFor="continue-on-exhausted">Continue after retries exhausted</FieldLabel>
+                <FieldLabel htmlFor="continue-on-exhausted">{__('Continue after retries exhausted', 'wp-sms')}</FieldLabel>
                 <Switch
                   id="continue-on-exhausted"
                   checked={config.continueOnExhausted ?? false}

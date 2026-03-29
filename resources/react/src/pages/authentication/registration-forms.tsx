@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf, _n } from '@wordpress/i18n';
 import { useState, useEffect } from 'react';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
@@ -135,9 +135,9 @@ export function RegistrationForms() {
 
   async function handleDelete(id: string) {
     const ok = await confirm({
-      title: 'Delete Registration Form',
-      description: 'This will permanently delete this registration form. Existing users registered through this form will not be affected.',
-      confirmLabel: 'Delete',
+      title: __('Delete Registration Form', 'wp-sms'),
+      description: __('This will permanently delete this registration form. Existing users registered through this form will not be affected.', 'wp-sms'),
+      confirmLabel: __('Delete', 'wp-sms'),
       variant: 'destructive',
     });
     if (ok) {
@@ -246,7 +246,7 @@ export function RegistrationForms() {
                   <TableCell>
                     <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{form.slug}</code>
                   </TableCell>
-                  <TableCell>{form.fields.length} fields</TableCell>
+                  <TableCell>{sprintf(_n('%d field', '%d fields', form.fields.length, 'wp-sms'), form.fields.length)}</TableCell>
                   <TableCell>
                     {form.user_role ? (
                       <Badge variant="outline">{roles.find((r) => r.value === form.user_role)?.label || form.user_role}</Badge>
@@ -295,15 +295,15 @@ export function RegistrationForms() {
       <Drawer open={panelOpen} onOpenChange={setPanelOpen}>
         <DrawerContent className="sm:max-w-lg overflow-y-auto">
           <DrawerHeader>
-            <DrawerTitle>{isEdit ? 'Edit Form' : 'Create Registration Form'}</DrawerTitle>
+            <DrawerTitle>{isEdit ? __('Edit Form', 'wp-sms') : __('Create Registration Form', 'wp-sms')}</DrawerTitle>
             <DrawerDescription>
-              {isEdit ? 'Update the registration form settings.' : 'Configure a new registration form with custom fields and settings.'}
+              {isEdit ? __('Update the registration form settings.', 'wp-sms') : __('Configure a new registration form with custom fields and settings.', 'wp-sms')}
             </DrawerDescription>
           </DrawerHeader>
 
           <div className="space-y-4 px-4">
             <Field>
-              <FieldLabel htmlFor="rf-name">Name *</FieldLabel>
+              <FieldLabel htmlFor="rf-name">{__('Name *', 'wp-sms')}</FieldLabel>
               <Input
                 id="rf-name"
                 value={formState.name}
@@ -320,7 +320,7 @@ export function RegistrationForms() {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="rf-slug">Slug</FieldLabel>
+              <FieldLabel htmlFor="rf-slug">{__('Slug', 'wp-sms')}</FieldLabel>
               <Input
                 id="rf-slug"
                 value={formState.slug}
@@ -331,14 +331,14 @@ export function RegistrationForms() {
                 placeholder="vendor-registration"
               />
               <FieldDescription>
-                Popup: <code>[wsms_auth id="{formState.slug || '...'}" view="register"]</code>
+                {__('Popup:', 'wp-sms')} <code>[wsms_auth id="{formState.slug || '...'}" view="register"]</code>
                 <br />
-                Embed: <code>[wsms_auth id="{formState.slug || '...'}" view="register" mode="embed"]</code>
+                {__('Embed:', 'wp-sms')} <code>[wsms_auth id="{formState.slug || '...'}" view="register" mode="embed"]</code>
               </FieldDescription>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="rf-desc">Description</FieldLabel>
+              <FieldLabel htmlFor="rf-desc">{__('Description', 'wp-sms')}</FieldLabel>
               <Textarea
                 id="rf-desc"
                 value={formState.description}
@@ -352,7 +352,7 @@ export function RegistrationForms() {
 
             {/* Fields */}
             <div>
-              <p className="text-sm font-medium mb-1">Fields *</p>
+              <p className="text-sm font-medium mb-1">{__('Fields *', 'wp-sms')}</p>
               <p className="text-xs text-muted-foreground mb-3">{__('Select which fields to include and mark them as required.', 'wp-sms')}</p>
               <div className="rounded-lg border border-border/50 divide-y divide-border/50">
                 {SYSTEM_FIELD_OPTIONS.map((sf) => {
@@ -388,7 +388,7 @@ export function RegistrationForms() {
                               checked={included.required}
                               onCheckedChange={() => toggleFieldRequired(sf.id)}
                             />
-                            Required
+                            {__('Required', 'wp-sms')}
                           </label>
                         </div>
                       )}
@@ -436,7 +436,7 @@ export function RegistrationForms() {
 
                   return (
                     <Field key={channel} orientation="horizontal">
-                      <FieldLabel className="capitalize flex-1">{channel} verify at signup</FieldLabel>
+                      <FieldLabel className="capitalize flex-1">{sprintf(__('%s verify at signup', 'wp-sms'), channel)}</FieldLabel>
                       <Select
                         value={selectValue}
                         onValueChange={(v) => {
@@ -477,7 +477,7 @@ export function RegistrationForms() {
             <Separator />
 
             <Field>
-              <FieldLabel htmlFor="rf-redirect">Redirect URL</FieldLabel>
+              <FieldLabel htmlFor="rf-redirect">{__('Redirect URL', 'wp-sms')}</FieldLabel>
               <Input
                 id="rf-redirect"
                 value={formState.redirect_url}
@@ -488,7 +488,7 @@ export function RegistrationForms() {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="rf-color">Primary Color</FieldLabel>
+              <FieldLabel htmlFor="rf-color">{__('Primary Color', 'wp-sms')}</FieldLabel>
               <div className="flex gap-2">
                 <Input
                   id="rf-color"
@@ -549,7 +549,7 @@ export function RegistrationForms() {
 
           <DrawerFooter>
             <Button onClick={handleSave} disabled={saving || !formState.name || formState.fields.length === 0}>
-              {saving ? 'Saving...' : isEdit ? 'Update' : 'Create'}
+              {saving ? __('Saving...', 'wp-sms') : isEdit ? __('Update', 'wp-sms') : __('Create', 'wp-sms')}
             </Button>
           </DrawerFooter>
         </DrawerContent>

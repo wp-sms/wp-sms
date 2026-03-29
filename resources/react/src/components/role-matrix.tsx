@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import {
   Table,
   TableBody,
@@ -43,7 +43,7 @@ export function RoleMatrix({ roles, selectedRoles, onToggleRole }: RoleMatrixPro
                 <Switch
                   checked={selectedRoles.includes(key)}
                   onCheckedChange={(checked) => onToggleRole(key, checked)}
-                  aria-label={`Require MFA for ${name}`}
+                  aria-label={sprintf(__('Require MFA for %s', 'wp-sms'), name)}
                 />
               </TableCell>
             </TableRow>

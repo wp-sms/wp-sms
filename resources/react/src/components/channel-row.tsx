@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import type { LucideIcon } from 'lucide-react';
 import { Settings } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
@@ -73,7 +73,7 @@ export function ChannelRow({
           type="button"
           onClick={onConfigure}
           className="shrink-0 rounded-md p-1.5 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-          aria-label={`Configure ${title}`}
+          aria-label={sprintf(__('Configure %s', 'wp-sms'), title)}
         >
           <Settings className="h-4 w-4" />
         </button>
@@ -83,7 +83,7 @@ export function ChannelRow({
         <Switch
           checked={enabled}
           onCheckedChange={onToggle}
-          aria-label={`Toggle ${title}`}
+          aria-label={sprintf(__('Toggle %s', 'wp-sms'), title)}
           className="shrink-0"
         />
       )}

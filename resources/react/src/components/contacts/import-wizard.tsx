@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useState, useRef } from 'react';
 import type { ImportPreview, ImportResult } from '@/lib/api';
 import { useConfirm } from '@/components/confirm-provider';
@@ -15,9 +15,9 @@ import { Upload, CheckCircle, AlertCircle } from 'lucide-react';
 type Step = 'upload' | 'map' | 'options' | 'preview' | 'results';
 
 const CONTACT_FIELDS = [
-  { value: '', label: 'Skip' },
+  { value: '', label: __('Skip', 'wp-sms') },
   ...ATTRIBUTE_FIELDS,
-  { value: 'custom', label: 'Custom field...' },
+  { value: 'custom', label: __('Custom field...', 'wp-sms') },
 ];
 
 interface ImportWizardProps {
@@ -58,7 +58,7 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
     try {
       const p = await onPreview(selectedFile);
       if (p.rows.length === 0) {
-        setUploadError('CSV file has no data rows.');
+        setUploadError(__('CSV file has no data rows.', 'wp-sms'));
         setFile(null);
         setLoading(false);
         return;
@@ -102,9 +102,9 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
     <Drawer open={open} onOpenChange={async (o) => {
       if (!o && step !== 'upload' && step !== 'results') {
         const ok = await confirm({
-          title: 'Close import wizard?',
-          description: 'Your import progress will be lost.',
-          confirmLabel: 'Close',
+          title: __('Close import wizard?', 'wp-sms'),
+          description: __('Your import progress will be lost.', 'wp-sms'),
+          confirmLabel: __('Close', 'wp-sms'),
           variant: 'destructive',
         });
         if (!ok) return;
@@ -217,7 +217,7 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
           {step === 'preview' && preview && (
             <div className="space-y-3">
               <p className="text-sm">
-                Ready to import <span className="font-medium">{preview.rows.length}+</span> rows
+                {sprintf(__('Ready to import %s+ rows', 'wp-sms'), preview.rows.length)}
               </p>
               <div className="rounded-lg border overflow-x-auto">
                 <Table>
@@ -249,14 +249,14 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
                 <CheckCircle className="h-4 w-4" />
                 <AlertTitle>{__('Import complete', 'wp-sms')}</AlertTitle>
                 <AlertDescription>
-                  {result.imported} created, {result.updated} updated, {result.skipped} skipped
+                  {sprintf(__('%1$d created, %2$d updated, %3$d skipped', 'wp-sms'), result.imported, result.updated, result.skipped)}
                 </AlertDescription>
               </Alert>
               {result.errors.length > 0 && (
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-amber-700">
                     <AlertCircle className="h-4 w-4" />
-                    <span className="text-sm font-medium">{result.errors.length} errors</span>
+                    <span className="text-sm font-medium">{sprintf(__('%d errors', 'wp-sms'), result.errors.length)}</span>
                   </div>
                   <div className="max-h-40 overflow-y-auto rounded-lg border p-2 text-xs space-y-1">
                     {result.errors.map((err, i) => (

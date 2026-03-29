@@ -59,9 +59,9 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
 
   const handleDelete = async (id: string) => {
     const ok = await confirm({
-      title: 'Delete list?',
-      description: 'This list will be permanently removed. Contacts in this list will not be deleted.',
-      confirmLabel: 'Delete',
+      title: __('Delete list?', 'wp-sms'),
+      description: __('This list will be permanently removed. Contacts in this list will not be deleted.', 'wp-sms'),
+      confirmLabel: __('Delete', 'wp-sms'),
       variant: 'destructive',
     });
     if (!ok) return;
@@ -103,7 +103,7 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
               <NameCell onClick={() => handleEdit(list)}>{list.name}</NameCell>
               <TableCell>
                 <Badge variant={list.type === 'dynamic' ? 'info' : 'purple'}>
-                  {list.type === 'dynamic' ? 'Dynamic' : 'Static'}
+                  {list.type === 'dynamic' ? __('Dynamic', 'wp-sms') : __('Static', 'wp-sms')}
                 </Badge>
               </TableCell>
               <TableCell className="text-sm">{list.contact_count}</TableCell>

@@ -31,9 +31,9 @@ export function LogsPage({ embedded, setHeaderMeta, setHeaderActions }: LogsPage
 
   const handleClearLogs = async () => {
     const ok = await confirm({
-      title: 'Clear all logs?',
-      description: 'This will permanently delete all event log entries. This action cannot be undone.',
-      confirmLabel: 'Clear Logs',
+      title: __('Clear all logs?', 'wp-sms'),
+      description: __('This will permanently delete all event log entries. This action cannot be undone.', 'wp-sms'),
+      confirmLabel: __('Clear Logs', 'wp-sms'),
       variant: 'destructive',
     });
     if (!ok) return;
@@ -54,7 +54,7 @@ export function LogsPage({ embedded, setHeaderMeta, setHeaderActions }: LogsPage
       className="text-destructive hover:text-destructive"
     >
       <Trash2 className="me-1 h-3.5 w-3.5" />
-      {clearing ? 'Clearing...' : 'Clear Logs'}
+      {clearing ? __('Clearing...', 'wp-sms') : __('Clear Logs', 'wp-sms')}
     </Button>
   ) : undefined;
 
@@ -88,7 +88,7 @@ export function LogsPage({ embedded, setHeaderMeta, setHeaderActions }: LogsPage
       )}
       <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <Field>
-          <FieldLabel htmlFor="filter-event">Event Type</FieldLabel>
+          <FieldLabel htmlFor="filter-event">{__('Event Type', 'wp-sms')}</FieldLabel>
           <Select
             value={filters.event || 'all'}
             onValueChange={(value) => setFilter('event', value === 'all' ? '' : value)}
@@ -107,7 +107,7 @@ export function LogsPage({ embedded, setHeaderMeta, setHeaderActions }: LogsPage
           </Select>
         </Field>
         <Field>
-          <FieldLabel htmlFor="filter-status">Status</FieldLabel>
+          <FieldLabel htmlFor="filter-status">{__('Status', 'wp-sms')}</FieldLabel>
           <Select
             value={filters.status || 'all'}
             onValueChange={(value) => setFilter('status', value === 'all' ? '' : value)}
@@ -123,7 +123,7 @@ export function LogsPage({ embedded, setHeaderMeta, setHeaderActions }: LogsPage
           </Select>
         </Field>
         <Field>
-          <FieldLabel htmlFor="filter-user">User ID</FieldLabel>
+          <FieldLabel htmlFor="filter-user">{__('User ID', 'wp-sms')}</FieldLabel>
           <Input
             id="filter-user"
             type="text"
@@ -133,7 +133,7 @@ export function LogsPage({ embedded, setHeaderMeta, setHeaderActions }: LogsPage
           />
         </Field>
         <Field>
-          <FieldLabel htmlFor="filter-date-from">From Date</FieldLabel>
+          <FieldLabel htmlFor="filter-date-from">{__('From Date', 'wp-sms')}</FieldLabel>
           <Input
             id="filter-date-from"
             type="date"
@@ -142,7 +142,7 @@ export function LogsPage({ embedded, setHeaderMeta, setHeaderActions }: LogsPage
           />
         </Field>
         <Field>
-          <FieldLabel htmlFor="filter-date-to">To Date</FieldLabel>
+          <FieldLabel htmlFor="filter-date-to">{__('To Date', 'wp-sms')}</FieldLabel>
           <Input
             id="filter-date-to"
             type="date"

@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -39,21 +39,21 @@ function getChannelSummary(channelId: 'phone' | 'email', settings: PhoneChannelS
 
   const methods = settings.verification_methods ?? ['otp'];
   if (methods.includes('otp') && methods.includes('magic_link')) {
-    parts.push('OTP + Magic Link');
+    parts.push(__('OTP + Magic Link', 'wp-sms'));
   } else if (methods.includes('magic_link')) {
-    parts.push('Magic Link');
+    parts.push(__('Magic Link', 'wp-sms'));
   } else {
-    parts.push('OTP');
+    parts.push(__('OTP', 'wp-sms'));
   }
 
   if (settings.code_length && methods.includes('otp')) {
-    parts.push(`${settings.code_length}-digit`);
+    parts.push(sprintf(__('%d-digit', 'wp-sms'), settings.code_length));
   }
 
   if (channelId === 'phone') {
     const phone = settings as PhoneChannelSettings;
     if (phone.delivery_channel) {
-      parts.push(`via ${phone.delivery_channel.toUpperCase()}`);
+      parts.push(sprintf(__('via %s', 'wp-sms'), phone.delivery_channel.toUpperCase()));
     }
   }
 
@@ -62,19 +62,19 @@ function getChannelSummary(channelId: 'phone' | 'email', settings: PhoneChannelS
 
 function getTelegramMfaSummary(tg: TelegramSettings): string {
   if (!tg.enabled) {
-    return 'Send verification codes via Telegram bot message';
+    return __('Send verification codes via Telegram bot message', 'wp-sms');
   }
   if (tg.bot_username) {
-    return `@${tg.bot_username} · ${tg.code_length ?? 6}-digit OTP`;
+    return sprintf(__('@%1$s · %2$d-digit OTP', 'wp-sms'), tg.bot_username, tg.code_length ?? 6);
   }
-  return 'OTP via Telegram bot';
+  return __('OTP via Telegram bot', 'wp-sms');
 }
 
 function getLineMfaSummary(line: LineSettings): string {
   if (!line.enabled) {
-    return 'Send verification codes via LINE Official Account';
+    return __('Send verification codes via LINE Official Account', 'wp-sms');
   }
-  return `${line.code_length ?? 6}-digit OTP via LINE`;
+  return sprintf(__('%d-digit OTP via LINE', 'wp-sms'), line.code_length ?? 6);
 }
 
 export function Channels({ settings, onUpdate }: ChannelsProps) {
@@ -137,9 +137,9 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                   }
                 }}
                 onConfigure={() => setEditingChannel('phone')}
-                crossRefLabel={phoneInMfa ? 'Currently used for MFA' : undefined}
+                crossRefLabel={phoneInMfa ? __('Currently used for MFA', 'wp-sms') : undefined}
                 onCrossRefAction={phoneInMfa ? () => updatePhone({ usage: 'login' }) : undefined}
-                crossRefActionLabel={phoneInMfa ? 'Move to sign-in' : undefined}
+                crossRefActionLabel={phoneInMfa ? __('Move to sign-in', 'wp-sms') : undefined}
               />
 
               <Separator />
@@ -158,9 +158,9 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                   }
                 }}
                 onConfigure={() => setEditingChannel('email')}
-                crossRefLabel={emailInMfa ? 'Currently used for MFA' : undefined}
+                crossRefLabel={emailInMfa ? __('Currently used for MFA', 'wp-sms') : undefined}
                 onCrossRefAction={emailInMfa ? () => updateEmail({ usage: 'login' }) : undefined}
-                crossRefActionLabel={emailInMfa ? 'Move to sign-in' : undefined}
+                crossRefActionLabel={emailInMfa ? __('Move to sign-in', 'wp-sms') : undefined}
               />
 
               <Separator />
@@ -202,7 +202,7 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                         onUpdate('social', social);
                       }}
                       onConfigure={method.comingSoon ? undefined : () => setEditingSocial(method.id)}
-                      description={isEnabled && providerSettings.client_id ? 'Configured' : undefined}
+                      description={isEnabled && providerSettings.client_id ? __('Configured', 'wp-sms') : undefined}
                     />
                   </div>
                 );
@@ -258,9 +258,9 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                   }
                 }}
                 onConfigure={() => setEditingChannel('phone')}
-                crossRefLabel={phoneInLogin ? 'Currently used for sign-in' : undefined}
+                crossRefLabel={phoneInLogin ? __('Currently used for sign-in', 'wp-sms') : undefined}
                 onCrossRefAction={phoneInLogin ? () => updatePhone({ usage: 'mfa' }) : undefined}
-                crossRefActionLabel={phoneInLogin ? 'Move to MFA' : undefined}
+                crossRefActionLabel={phoneInLogin ? __('Move to MFA', 'wp-sms') : undefined}
               />
 
               <Separator />
@@ -279,9 +279,9 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                   }
                 }}
                 onConfigure={() => setEditingChannel('email')}
-                crossRefLabel={emailInLogin ? 'Currently used for sign-in' : undefined}
+                crossRefLabel={emailInLogin ? __('Currently used for sign-in', 'wp-sms') : undefined}
                 onCrossRefAction={emailInLogin ? () => updateEmail({ usage: 'mfa' }) : undefined}
-                crossRefActionLabel={emailInLogin ? 'Move to MFA' : undefined}
+                crossRefActionLabel={emailInLogin ? __('Move to MFA', 'wp-sms') : undefined}
               />
 
               <Separator />
@@ -314,7 +314,7 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
               <ChannelRow
                 icon={KeyRound}
                 title={__('Authenticator App', 'wp-sms')}
-                description={settings.totp.enabled ? 'TOTP — Google Authenticator, Authy, 1Password' : undefined}
+                description={settings.totp.enabled ? __('TOTP — Google Authenticator, Authy, 1Password', 'wp-sms') : undefined}
                 enabled={settings.totp.enabled}
                 onToggle={(v) => onUpdate('totp', { ...settings.totp, enabled: v })}
               />
@@ -325,7 +325,7 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
               <ChannelRow
                 icon={Fingerprint}
                 title={__('Passkey', 'wp-sms')}
-                description={settings.passkey?.enabled ? 'Fingerprint, Face ID, or security key' : undefined}
+                description={settings.passkey?.enabled ? __('Fingerprint, Face ID, or security key', 'wp-sms') : undefined}
                 enabled={!!settings.passkey?.enabled}
                 onToggle={(v) => onUpdate('passkey', { ...settings.passkey, enabled: v })}
               />
@@ -374,11 +374,11 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
               className="flex items-center gap-2 text-sm text-primary hover:underline"
             >
               <ExternalLink className="h-3.5 w-3.5" />
-              Create a bot with @BotFather
+              {__('Create a bot with @BotFather', 'wp-sms')}
             </a>
 
             <Field>
-              <FieldLabel htmlFor="tg-bot-token">Bot Token</FieldLabel>
+              <FieldLabel htmlFor="tg-bot-token">{__('Bot Token', 'wp-sms')}</FieldLabel>
               <Input
                 id="tg-bot-token"
                 type="password"
@@ -387,30 +387,30 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                 placeholder="123456789:ABCdefGhIjKlmNoPqRsTuVwXyZ"
               />
               <FieldDescription>
-                The API token from @BotFather. Go to BotFather {'>'} select your bot {'>'} API Token.
+                {__('The API token from @BotFather. Go to BotFather > select your bot > API Token.', 'wp-sms')}
               </FieldDescription>
             </Field>
 
             {telegramSettings.bot_username && (
               <div className="rounded-md border bg-muted/50 p-3">
-                <div className="text-xs font-medium text-muted-foreground">Connected Bot</div>
+                <div className="text-xs font-medium text-muted-foreground">{__('Connected Bot', 'wp-sms')}</div>
                 <div className="text-sm font-medium mt-1">@{telegramSettings.bot_username}</div>
               </div>
             )}
 
             <div className="rounded-md border bg-muted/50 p-3 space-y-1.5">
-              <div className="text-xs font-medium text-muted-foreground">How it works</div>
+              <div className="text-xs font-medium text-muted-foreground">{__('How it works', 'wp-sms')}</div>
               <ul className="list-disc list-inside space-y-1">
-                <li className="text-xs text-muted-foreground">Users who sign in with Telegram Login are auto-enrolled for Telegram MFA</li>
-                <li className="text-xs text-muted-foreground">Other users can link their Telegram account by clicking a deep link to your bot</li>
-                <li className="text-xs text-muted-foreground">During MFA, a verification code is sent as a bot message in Telegram</li>
+                <li className="text-xs text-muted-foreground">{__('Users who sign in with Telegram Login are auto-enrolled for Telegram MFA', 'wp-sms')}</li>
+                <li className="text-xs text-muted-foreground">{__('Other users can link their Telegram account by clicking a deep link to your bot', 'wp-sms')}</li>
+                <li className="text-xs text-muted-foreground">{__('During MFA, a verification code is sent as a bot message in Telegram', 'wp-sms')}</li>
               </ul>
             </div>
 
             <Separator />
 
             <Field>
-              <FieldLabel htmlFor="tg-code-length">Code Length</FieldLabel>
+              <FieldLabel htmlFor="tg-code-length">{__('Code Length', 'wp-sms')}</FieldLabel>
               <div className="flex gap-2">
                 {[4, 6].map((len) => (
                   <button
@@ -419,14 +419,14 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                     onClick={() => updateTelegram({ code_length: len })}
                     className={`rounded-md border px-3 py-1.5 text-sm transition-colors ${(telegramSettings.code_length ?? 6) === len ? 'border-primary bg-primary/10 text-primary' : 'border-border hover:bg-accent'}`}
                   >
-                    {len} digits
+                    {sprintf(__('%d digits', 'wp-sms'), len)}
                   </button>
                 ))}
               </div>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="tg-expiry">Code Expiry (seconds)</FieldLabel>
+              <FieldLabel htmlFor="tg-expiry">{__('Code Expiry (seconds)', 'wp-sms')}</FieldLabel>
               <Input
                 id="tg-expiry"
                 type="number"
@@ -436,12 +436,12 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                 onChange={(e) => updateTelegram({ expiry: parseInt(e.target.value) || 300 })}
               />
               <FieldDescription>
-                How long a verification code is valid. Default: 300 seconds (5 minutes).
+                {__('How long a verification code is valid. Default: 300 seconds (5 minutes).', 'wp-sms')}
               </FieldDescription>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="tg-cooldown">Cooldown (seconds)</FieldLabel>
+              <FieldLabel htmlFor="tg-cooldown">{__('Cooldown (seconds)', 'wp-sms')}</FieldLabel>
               <Input
                 id="tg-cooldown"
                 type="number"
@@ -451,7 +451,7 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                 onChange={(e) => updateTelegram({ cooldown: parseInt(e.target.value) || 60 })}
               />
               <FieldDescription>
-                Minimum wait time between code requests. Prevents abuse.
+                {__('Minimum wait time between code requests. Prevents abuse.', 'wp-sms')}
               </FieldDescription>
             </Field>
           </div>
@@ -481,11 +481,11 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
               className="flex items-center gap-2 text-sm text-primary hover:underline"
             >
               <ExternalLink className="h-3.5 w-3.5" />
-              LINE Developers Console
+              {__('LINE Developers Console', 'wp-sms')}
             </a>
 
             <Field>
-              <FieldLabel htmlFor="line-bot-id">Bot Basic ID</FieldLabel>
+              <FieldLabel htmlFor="line-bot-id">{__('Bot Basic ID', 'wp-sms')}</FieldLabel>
               <Input
                 id="line-bot-id"
                 type="text"
@@ -494,23 +494,23 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                 placeholder={__('@123abcde', 'wp-sms')}
               />
               <FieldDescription>
-                Found in LINE Developers Console under your Messaging API channel. Used for enrollment deep links.
+                {__('Found in LINE Developers Console under your Messaging API channel. Used for enrollment deep links.', 'wp-sms')}
               </FieldDescription>
             </Field>
 
             <div className="rounded-md border bg-muted/50 p-3 space-y-1.5">
-              <div className="text-xs font-medium text-muted-foreground">How it works</div>
+              <div className="text-xs font-medium text-muted-foreground">{__('How it works', 'wp-sms')}</div>
               <ul className="list-disc list-inside space-y-1">
-                <li className="text-xs text-muted-foreground">Users who sign in with LINE Login are auto-enrolled for LINE MFA</li>
-                <li className="text-xs text-muted-foreground">Other users can link their LINE account by clicking a deep link to your Official Account</li>
-                <li className="text-xs text-muted-foreground">During MFA, a verification code is sent as a message in LINE</li>
+                <li className="text-xs text-muted-foreground">{__('Users who sign in with LINE Login are auto-enrolled for LINE MFA', 'wp-sms')}</li>
+                <li className="text-xs text-muted-foreground">{__('Other users can link their LINE account by clicking a deep link to your Official Account', 'wp-sms')}</li>
+                <li className="text-xs text-muted-foreground">{__('During MFA, a verification code is sent as a message in LINE', 'wp-sms')}</li>
               </ul>
             </div>
 
             <Separator />
 
             <Field>
-              <FieldLabel htmlFor="line-code-length">Code Length</FieldLabel>
+              <FieldLabel htmlFor="line-code-length">{__('Code Length', 'wp-sms')}</FieldLabel>
               <div className="flex gap-2">
                 {[4, 6].map((len) => (
                   <button
@@ -519,14 +519,14 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                     onClick={() => updateLine({ code_length: len })}
                     className={`rounded-md border px-3 py-1.5 text-sm transition-colors ${(lineSettings.code_length ?? 6) === len ? 'border-primary bg-primary/10 text-primary' : 'border-border hover:bg-accent'}`}
                   >
-                    {len} digits
+                    {sprintf(__('%d digits', 'wp-sms'), len)}
                   </button>
                 ))}
               </div>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="line-expiry">Code Expiry (seconds)</FieldLabel>
+              <FieldLabel htmlFor="line-expiry">{__('Code Expiry (seconds)', 'wp-sms')}</FieldLabel>
               <Input
                 id="line-expiry"
                 type="number"
@@ -536,12 +536,12 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                 onChange={(e) => updateLine({ expiry: parseInt(e.target.value) || 300 })}
               />
               <FieldDescription>
-                How long a verification code is valid. Default: 300 seconds (5 minutes).
+                {__('How long a verification code is valid. Default: 300 seconds (5 minutes).', 'wp-sms')}
               </FieldDescription>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="line-cooldown">Cooldown (seconds)</FieldLabel>
+              <FieldLabel htmlFor="line-cooldown">{__('Cooldown (seconds)', 'wp-sms')}</FieldLabel>
               <Input
                 id="line-cooldown"
                 type="number"
@@ -551,7 +551,7 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                 onChange={(e) => updateLine({ cooldown: parseInt(e.target.value) || 60 })}
               />
               <FieldDescription>
-                Minimum wait time between code requests. Prevents abuse.
+                {__('Minimum wait time between code requests. Prevents abuse.', 'wp-sms')}
               </FieldDescription>
             </Field>
           </div>

@@ -77,6 +77,24 @@ class MessagingButtonSettings
         ],
     ];
 
+    /**
+     * Return translated default texts (cannot use __() inside class constants).
+     */
+    public static function getTranslatedDefaults(): array
+    {
+        $defaults = self::DEFAULTS;
+        $defaults['button']['text'] = __('Chat with us', 'wp-sms');
+        $defaults['widget']['title'] = __('Hi there!', 'wp-sms');
+        $defaults['widget']['subtitle'] = __('How can we help?', 'wp-sms');
+        $defaults['pages']['welcome']['greeting'] = __('Welcome! Choose an option below to get started.', 'wp-sms');
+        $defaults['pages']['welcome']['cta_label'] = __('Send a message', 'wp-sms');
+        $defaults['greeting_bubble']['message'] = __('Need help? We\'re online!', 'wp-sms');
+        $defaults['business_hours']['offline_message'] = __('We are currently offline.', 'wp-sms');
+        $defaults['gdpr']['consent_text'] = __('I agree to the privacy policy.', 'wp-sms');
+
+        return $defaults;
+    }
+
     public function all(): array
     {
         if ($this->cached !== null) {
@@ -89,7 +107,7 @@ class MessagingButtonSettings
             $raw = [];
         }
 
-        $merged = $this->mergeDefaults($raw);
+        $merged = $this->mergeDefaults($raw, self::getTranslatedDefaults());
 
         // Always use the WordPress timezone
         $merged['business_hours']['timezone'] = wp_timezone_string();
@@ -147,11 +165,12 @@ class MessagingButtonSettings
         return $all;
     }
 
-    private function mergeDefaults(array $raw): array
+    private function mergeDefaults(array $raw, array $defaults = null): array
     {
+        $defaults = $defaults ?? self::DEFAULTS;
         $result = [];
 
-        foreach (self::DEFAULTS as $key => $default) {
+        foreach ($defaults as $key => $default) {
             if (!isset($raw[$key])) {
                 $result[$key] = $default;
             } elseif (is_array($default) && is_array($raw[$key])) {

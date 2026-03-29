@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import type { LucideIcon } from 'lucide-react';
 import { Pencil, ChevronUp, Trash2 } from 'lucide-react';
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
@@ -40,9 +41,9 @@ export function CollapsibleCard({
   const handleDelete = async () => {
     if (!onDelete) return;
     const ok = await confirm({
-      title: 'Delete step?',
-      description: 'This step will be permanently removed from the flow.',
-      confirmLabel: 'Delete',
+      title: __('Delete step?', 'wp-sms'),
+      description: __('This step will be permanently removed from the flow.', 'wp-sms'),
+      confirmLabel: __('Delete', 'wp-sms'),
       variant: 'destructive',
     });
     if (ok) onDelete();

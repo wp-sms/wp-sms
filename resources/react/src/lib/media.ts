@@ -1,3 +1,5 @@
+import { __ } from '@wordpress/i18n';
+
 /**
  * Open the WordPress media library picker.
  *
@@ -13,7 +15,7 @@ export function openMediaLibrary(title: string, onSelect: (url: string) => void)
 
   const frame = media({
     title,
-    button: { text: 'Use this image' },
+    button: { text: __('Use this image', 'wp-sms') },
     multiple: false,
     library: { type: 'image' },
   });

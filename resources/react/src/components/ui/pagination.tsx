@@ -1,4 +1,5 @@
 import * as React from "react"
+import { __ } from '@wordpress/i18n'
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -11,7 +12,7 @@ function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
     <nav
       role="navigation"
-      aria-label="pagination"
+      aria-label={__('pagination', 'wp-sms')}
       data-slot="pagination"
       className={cn("mx-auto flex w-full justify-center", className)}
       {...props}
@@ -66,12 +67,12 @@ function PaginationPrevious({
 }: React.ComponentProps<typeof PaginationLink>) {
   return (
     <PaginationLink
-      aria-label="Go to previous page"
+      aria-label={__('Go to previous page', 'wp-sms')}
       className={cn("gap-1 px-2.5", className)}
       {...props}
     >
       <ChevronLeftIcon className="size-3.5 rtl:scale-x-[-1]" />
-      <span className="hidden sm:block">Previous</span>
+      <span className="hidden sm:block">{__('Previous', 'wp-sms')}</span>
     </PaginationLink>
   )
 }
@@ -82,11 +83,11 @@ function PaginationNext({
 }: React.ComponentProps<typeof PaginationLink>) {
   return (
     <PaginationLink
-      aria-label="Go to next page"
+      aria-label={__('Go to next page', 'wp-sms')}
       className={cn("gap-1 px-2.5", className)}
       {...props}
     >
-      <span className="hidden sm:block">Next</span>
+      <span className="hidden sm:block">{__('Next', 'wp-sms')}</span>
       <ChevronRightIcon className="size-3.5 rtl:scale-x-[-1]" />
     </PaginationLink>
   )
@@ -104,7 +105,7 @@ function PaginationEllipsis({
       {...props}
     >
       <MoreHorizontalIcon className="size-4" />
-      <span className="sr-only">More pages</span>
+      <span className="sr-only">{__('More pages', 'wp-sms')}</span>
     </span>
   )
 }

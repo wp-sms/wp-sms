@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { useEffect } from 'react';
 import type { SegmentConditionGroup, Tag } from '@/lib/api';
 import { useSegmentPreview } from '@/hooks/use-segment-preview';
@@ -52,7 +52,7 @@ export function SegmentBuilder({ conditions, tags, onChange, hideCount }: Segmen
               <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
             ) : (
               <Badge variant="secondary" className="text-xs">
-                {count} {count === 1 ? 'contact' : 'contacts'} match
+                {sprintf(_n('%d contact matches', '%d contacts match', count, 'wp-sms'), count)}
               </Badge>
             )}
           </div>

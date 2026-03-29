@@ -36,9 +36,9 @@ export function BrandingPage({ branding, onChange, authBaseUrl }: BrandingPagePr
 
   const handleReset = useCallback(async () => {
     const ok = await confirm({
-      title: 'Reset branding?',
-      description: 'All branding settings will be restored to their defaults.',
-      confirmLabel: 'Reset',
+      title: __('Reset branding?', 'wp-sms'),
+      description: __('All branding settings will be restored to their defaults.', 'wp-sms'),
+      confirmLabel: __('Reset', 'wp-sms'),
       variant: 'destructive',
     });
     if (ok) {
@@ -72,9 +72,9 @@ export function BrandingPage({ branding, onChange, authBaseUrl }: BrandingPagePr
               onClick={() => setPreviewVisible((v) => !v)}
             >
               {previewVisible ? (
-                <><EyeOff className="me-1.5 h-3.5 w-3.5" /> Hide Preview</>
+                <><EyeOff className="me-1.5 h-3.5 w-3.5" /> {__('Hide Preview', 'wp-sms')}</>
               ) : (
-                <><Eye className="me-1.5 h-3.5 w-3.5" /> Show Preview</>
+                <><Eye className="me-1.5 h-3.5 w-3.5" /> {__('Show Preview', 'wp-sms')}</>
               )}
             </Button>
             <Button variant="outline" size="sm" onClick={handleReset}>
@@ -107,7 +107,7 @@ export function BrandingPage({ branding, onChange, authBaseUrl }: BrandingPagePr
               <>
                 <SplitPanelCard branding={branding} onChange={handleBrandingChange} />
                 <p className="text-xs text-muted-foreground rounded-md bg-muted/50 p-3">
-                  Background image/color applies to the centered layout. In split layout, use the panel background above instead.
+                  {__('Background image/color applies to the centered layout. In split layout, use the panel background above instead.', 'wp-sms')}
                 </p>
               </>
             )}

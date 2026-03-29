@@ -16,12 +16,12 @@ interface ProfileFieldsProps {
 }
 
 const SYSTEM_FIELDS: ProfileFieldDefinition[] = [
-  { id: 'email', type: 'text', label: 'Email', source: 'system', meta_key: 'user_email', visibility: 'both', required: true, sort_order: 1 },
-  { id: 'password', type: 'text', label: 'Password', source: 'system', meta_key: 'user_pass', visibility: 'registration', required: true, sort_order: 2 },
-  { id: 'phone', type: 'text', label: 'Phone Number', source: 'system', meta_key: 'wsms_phone', visibility: 'both', required: false, sort_order: 3 },
-  { id: 'first_name', type: 'text', label: 'First Name', source: 'system', meta_key: 'first_name', visibility: 'both', required: false, sort_order: 4 },
-  { id: 'last_name', type: 'text', label: 'Last Name', source: 'system', meta_key: 'last_name', visibility: 'both', required: false, sort_order: 5 },
-  { id: 'display_name', type: 'text', label: 'Display Name', source: 'system', meta_key: 'display_name', visibility: 'both', required: false, sort_order: 6 },
+  { id: 'email', type: 'text', label: __('Email', 'wp-sms'), source: 'system', meta_key: 'user_email', visibility: 'both', required: true, sort_order: 1 },
+  { id: 'password', type: 'text', label: __('Password', 'wp-sms'), source: 'system', meta_key: 'user_pass', visibility: 'registration', required: true, sort_order: 2 },
+  { id: 'phone', type: 'text', label: __('Phone Number', 'wp-sms'), source: 'system', meta_key: 'wsms_phone', visibility: 'both', required: false, sort_order: 3 },
+  { id: 'first_name', type: 'text', label: __('First Name', 'wp-sms'), source: 'system', meta_key: 'first_name', visibility: 'both', required: false, sort_order: 4 },
+  { id: 'last_name', type: 'text', label: __('Last Name', 'wp-sms'), source: 'system', meta_key: 'last_name', visibility: 'both', required: false, sort_order: 5 },
+  { id: 'display_name', type: 'text', label: __('Display Name', 'wp-sms'), source: 'system', meta_key: 'display_name', visibility: 'both', required: false, sort_order: 6 },
 ];
 
 function getSourceBadgeVariant(source: string) {
@@ -84,9 +84,9 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
 
   async function handleDelete(id: string) {
     const ok = await confirm({
-      title: 'Delete field?',
-      description: 'This field will be removed from registration and profile forms.',
-      confirmLabel: 'Delete',
+      title: __('Delete field?', 'wp-sms'),
+      description: __('This field will be removed from registration and profile forms.', 'wp-sms'),
+      confirmLabel: __('Delete', 'wp-sms'),
       variant: 'destructive',
     });
     if (!ok) return;
@@ -153,7 +153,7 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
                   )}
                   {field.required && (
                     <Badge variant="warning" className="text-[10px] px-1.5 py-0">
-                      required
+                      {__('required', 'wp-sms')}
                     </Badge>
                   )}
                 </div>

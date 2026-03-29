@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { __, sprintf } from '@wordpress/i18n';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel } from '@/components/ui/field';
 
@@ -22,7 +23,7 @@ export function ColorPickerField({ id, label, value, placeholder, onChange }: Co
           type="color"
           value={value || '#000000'}
           onChange={(e) => onChange(e.target.value)}
-          aria-label={`Pick ${label} color`}
+          aria-label={sprintf(__('Pick %s color', 'wp-sms'), label)}
           className="h-6 w-6 shrink-0 cursor-pointer rounded border-2 border-input p-0 transition-colors hover:ring-2 hover:ring-ring/20 [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded [&::-webkit-color-swatch]:border-0 [&::-moz-color-swatch]:rounded [&::-moz-color-swatch]:border-0"
         />
         <Input

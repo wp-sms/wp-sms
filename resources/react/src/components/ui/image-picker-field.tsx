@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { X, Image } from 'lucide-react';
 import { openMediaLibrary } from '@/lib/media';
 
@@ -20,7 +21,7 @@ export function ImagePickerField({ value, title, onSelect, onClear, alt = '' }: 
       >
         <img src={value} alt={alt} className="h-full w-full object-cover" />
         <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-          <span className="text-xs font-medium text-white">Change</span>
+          <span className="text-xs font-medium text-white">{__('Change', 'wp-sms')}</span>
         </div>
         <button
           type="button"
@@ -39,7 +40,7 @@ export function ImagePickerField({ value, title, onSelect, onClear, alt = '' }: 
       onClick={handleOpen}
     >
       <Image className="h-5 w-5 text-muted-foreground/50" />
-      <span className="text-xs text-muted-foreground">Click to upload</span>
+      <span className="text-xs text-muted-foreground">{__('Click to upload', 'wp-sms')}</span>
     </div>
   );
 }

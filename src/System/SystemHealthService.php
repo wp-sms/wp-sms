@@ -19,6 +19,19 @@ class SystemHealthService
         'wsms_suppression_poll'          => ['label' => 'Suppression Sync',   'interval' => 3600,   'tolerance' => 2],
     ];
 
+    /**
+     * Translate task labels (cannot use __() inside class constants).
+     */
+    private static function getTranslatedTaskLabels(): array
+    {
+        return [
+            'Campaign Scheduler' => __('Campaign Scheduler', 'wp-sms'),
+            'Daily Cleanup'      => __('Daily Cleanup', 'wp-sms'),
+            'Phone DB Update'    => __('Phone DB Update', 'wp-sms'),
+            'Suppression Sync'   => __('Suppression Sync', 'wp-sms'),
+        ];
+    }
+
     private const HIGH_SEVERITY_TYPES = ['send_message', 'execute_flow_step', 'evaluate_trigger'];
 
     public function __construct(private readonly Connection $db)
@@ -153,6 +166,8 @@ class SystemHealthService
             if ($row['next_run']) $nextRunMap[$row['hook']] = $row['next_run'];
         }
 
+        $translatedLabels = self::getTranslatedTaskLabels();
+
         $heartbeat = [];
         foreach (self::RECURRING_TASKS as $hook => $meta) {
             $lastRun = $lastRunMap[$hook] ?? null;
@@ -162,7 +177,7 @@ class SystemHealthService
 
             $heartbeat[] = [
                 'hook'     => $hook,
-                'label'    => $meta['label'],
+                'label'    => $translatedLabels[$meta['label']] ?? $meta['label'],
                 'status'   => $status,
                 'last_run' => $lastRun,
                 'next_run' => $nextRun,

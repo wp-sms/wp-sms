@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf, _n } from '@wordpress/i18n';
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import type {
   Campaign, CampaignAudience, CampaignAudienceSource, CampaignCompliance,
@@ -45,11 +45,11 @@ function isSmsChannel(ch: string): boolean {
 const CAMPAIGN_VARIABLE_SCHEMA: JsonSchema = {
   type: 'object',
   properties: {
-    first_name: { type: 'string', title: 'First Name', example: 'John' },
-    last_name:  { type: 'string', title: 'Last Name', example: 'Doe' },
-    phone:      { type: 'string', title: 'Phone', example: '+1234567890' },
-    email:      { type: 'string', title: 'Email', example: 'john@example.com' },
-    contact_id: { type: 'string', title: 'Contact ID', example: '01HX...' },
+    first_name: { type: 'string', title: __('First Name', 'wp-sms'), example: 'John' },
+    last_name:  { type: 'string', title: __('Last Name', 'wp-sms'), example: 'Doe' },
+    phone:      { type: 'string', title: __('Phone', 'wp-sms'), example: '+1234567890' },
+    email:      { type: 'string', title: __('Email', 'wp-sms'), example: 'john@example.com' },
+    contact_id: { type: 'string', title: __('Contact ID', 'wp-sms'), example: '01HX...' },
   },
 };
 
@@ -88,11 +88,11 @@ interface CampaignEditorProps {
 }
 
 const STEPS = [
-  { id: 'basics', label: 'Basics', icon: Settings },
-  { id: 'audience', label: 'Audience', icon: Users },
-  { id: 'message', label: 'Message', icon: MessageSquare },
-  { id: 'schedule', label: 'Schedule', icon: Clock },
-  { id: 'review', label: 'Review', icon: FileText },
+  { id: 'basics', label: __('Basics', 'wp-sms'), icon: Settings },
+  { id: 'audience', label: __('Audience', 'wp-sms'), icon: Users },
+  { id: 'message', label: __('Message', 'wp-sms'), icon: MessageSquare },
+  { id: 'schedule', label: __('Schedule', 'wp-sms'), icon: Clock },
+  { id: 'review', label: __('Review', 'wp-sms'), icon: FileText },
 ];
 
 function getDefaultDraft(campaign?: Campaign): CampaignDraft {
@@ -161,9 +161,9 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
     const prev = draftRef.current;
     if (prev.body && prev.channel && prev.channel !== ch) {
       const ok = await confirm({
-        title: 'Switch channel?',
-        description: 'Switching channels will keep your message text but the format may differ.',
-        confirmLabel: 'Switch',
+        title: __('Switch channel?', 'wp-sms'),
+        description: __('Switching channels will keep your message text but the format may differ.', 'wp-sms'),
+        confirmLabel: __('Switch', 'wp-sms'),
       });
       if (!ok) return;
     }
@@ -248,11 +248,11 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
   const handleSendNow = async () => {
     const count = audienceCount ?? 0;
     const ok = await confirm({
-      title: 'Send campaign now?',
+      title: __('Send campaign now?', 'wp-sms'),
       description: count > 0
-        ? `This will immediately send messages to ${count.toLocaleString()} recipient${count === 1 ? '' : 's'}.`
-        : 'This will immediately start sending the campaign.',
-      confirmLabel: 'Send Now',
+        ? sprintf(_n('This will immediately send messages to %s recipient.', 'This will immediately send messages to %s recipients.', count, 'wp-sms'), count.toLocaleString())
+        : __('This will immediately start sending the campaign.', 'wp-sms'),
+      confirmLabel: __('Send Now', 'wp-sms'),
     });
     if (!ok) return;
 
@@ -363,7 +363,7 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
           {__('Back', 'wp-sms')}
         </Button>
         <h2 className="text-lg font-semibold">
-          {campaign ? 'Edit Campaign' : 'New Campaign'}
+          {campaign ? __('Edit Campaign', 'wp-sms') : __('New Campaign', 'wp-sms')}
         </h2>
         {saving && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
       </div>
@@ -464,7 +464,7 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
               onClick={() => handleStepChange(currentStep + 1)}
               disabled={!canProceed(currentStep)}
             >
-              Next
+              {__('Next', 'wp-sms')}
               <ArrowRight className="ms-1 h-4 w-4 rtl:scale-x-[-1]" />
             </Button>
           )}
@@ -514,7 +514,7 @@ function BasicsStep({
   return (
     <div className="space-y-6 max-w-lg">
       <div className="space-y-2">
-        <Label htmlFor="campaign-name">Campaign Name <span className="text-destructive">*</span></Label>
+        <Label htmlFor="campaign-name">{__('Campaign Name', 'wp-sms')} <span className="text-destructive">*</span></Label>
         <Input
           id="campaign-name"
           placeholder={__('e.g., Summer Sale Announcement', 'wp-sms')}
@@ -524,7 +524,7 @@ function BasicsStep({
       </div>
 
       <div className="space-y-2">
-        <Label>Channel <span className="text-destructive">*</span></Label>
+        <Label>{__('Channel', 'wp-sms')} <span className="text-destructive">*</span></Label>
         {gatewaysLoading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {[1, 2, 3].map((i) => <Skeleton key={i} className="h-20 rounded-lg" />)}
@@ -550,7 +550,7 @@ function BasicsStep({
                 >
                   <span className="block font-medium">{channelLabel(ch)}</span>
                   <span className="block text-xs text-muted-foreground mt-0.5">
-                    via {currentGw.name}
+                    {sprintf(__('via %s', 'wp-sms'), currentGw.name)}
                   </span>
                   {isSelected && gws.length > 1 && (
                     <span
@@ -560,7 +560,7 @@ function BasicsStep({
                         setGatewayDropdownOpen(gatewayDropdownOpen === ch ? null : ch);
                       }}
                     >
-                      Change
+                      {__('Change', 'wp-sms')}
                     </span>
                   )}
                 </button>
@@ -633,17 +633,17 @@ function AudienceStep({
   const rolesSource = getSourceByType('wp_roles');
   const manualSource = getSourceByType('manual');
 
-  const TAB_LABELS: Record<string, string> = { segment: 'Segment', tags: 'Tags', roles: 'User Roles', manual: 'Manual' };
+  const TAB_LABELS: Record<string, string> = { segment: __('Segment', 'wp-sms'), tags: __('Tags', 'wp-sms'), roles: __('User Roles', 'wp-sms'), manual: __('Manual', 'wp-sms') };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">Audience <span className="text-destructive">*</span></span>
+          <span className="text-sm font-medium">{__('Audience', 'wp-sms')} <span className="text-destructive">*</span></span>
           {audienceLoading ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
           ) : audienceCount !== null ? (
-            <Badge variant="secondary">{audienceCount.toLocaleString()} recipients</Badge>
+            <Badge variant="secondary">{sprintf(_n('%s recipient', '%s recipients', audienceCount, 'wp-sms'), audienceCount.toLocaleString())}</Badge>
           ) : null}
         </div>
         <label className="flex items-center gap-2 text-sm">
@@ -651,7 +651,7 @@ function AudienceStep({
             checked={draft.audience.exclude_unsubscribed !== false}
             onCheckedChange={(checked) => updateDraft('audience', { ...draft.audience, exclude_unsubscribed: !!checked })}
           />
-          Exclude opted-out contacts
+          {__('Exclude opted-out contacts', 'wp-sms')}
         </label>
       </div>
 
@@ -752,7 +752,7 @@ function AudienceStep({
       {activeTab === 'manual' && (
         <div className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            Enter recipient numbers or addresses, one per line or comma-separated.
+            {__('Enter recipient numbers or addresses, one per line or comma-separated.', 'wp-sms')}
           </p>
           <Textarea
             rows={6}
@@ -826,7 +826,7 @@ function MessageStep({
         <div className="space-y-4">
           {isEmail && (
             <div className="space-y-2">
-              <Label htmlFor="subject">Subject <span className="text-destructive">*</span></Label>
+              <Label htmlFor="subject">{__('Subject', 'wp-sms')} <span className="text-destructive">*</span></Label>
               <Input
                 id="subject"
                 placeholder={__('Email subject line', 'wp-sms')}
@@ -838,7 +838,7 @@ function MessageStep({
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="body">Message <span className="text-destructive">*</span></Label>
+              <Label htmlFor="body">{__('Message', 'wp-sms')} <span className="text-destructive">*</span></Label>
               <TemplateVariablePicker
                 payloadSchema={CAMPAIGN_VARIABLE_SCHEMA}
                 onInsert={insertVariable}
@@ -906,7 +906,7 @@ function MessageStep({
                     updateDraft('compliance', { ...compliance, append_opt_out: !!checked })
                   }
                 />
-                Append opt-out instructions
+                {__('Append opt-out instructions', 'wp-sms')}
               </label>
               {compliance.append_opt_out && (
                 <>
@@ -919,7 +919,7 @@ function MessageStep({
                   />
                   {selectedGateway && !selectedGateway.features.incoming && (
                     <p className="text-xs text-amber-600">
-                      This gateway does not support inbound SMS. Recipients won&apos;t be able to reply STOP to unsubscribe automatically.
+                      {__('This gateway does not support inbound SMS. Recipients won\'t be able to reply STOP to unsubscribe automatically.', 'wp-sms')}
                     </p>
                   )}
                 </>
@@ -997,7 +997,7 @@ function ScheduleStep({
 
       {draft.send_mode === 'scheduled' && (
         <div className="space-y-2">
-          <Label htmlFor="send-at">Date & Time <span className="text-destructive">*</span></Label>
+          <Label htmlFor="send-at">{__('Date & Time', 'wp-sms')} <span className="text-destructive">*</span></Label>
           <Input
             id="send-at"
             type="datetime-local"
@@ -1005,7 +1005,7 @@ function ScheduleStep({
             onChange={(e) => updateDraft('send_at', e.target.value)}
           />
           <p className="text-xs text-muted-foreground">
-            Times are in your site's timezone ({wpTz})
+            {sprintf(__('Times are in your site\'s timezone (%s)', 'wp-sms'), wpTz)}
           </p>
         </div>
       )}
@@ -1022,10 +1022,10 @@ function ScheduleStep({
               )
             }
           />
-          Enable quiet hours
+          {__('Enable quiet hours', 'wp-sms')}
         </label>
         <p className="text-xs text-muted-foreground ms-6">
-          Delay messages during restricted hours (e.g., 9 PM - 8 AM) for TCPA compliance.
+          {__('Delay messages during restricted hours (e.g., 9 PM - 8 AM) for TCPA compliance.', 'wp-sms')}
         </p>
         {draft.quiet_hours && (
           <div className="flex gap-3 ms-6">
@@ -1086,28 +1086,28 @@ function ReviewStep({
 
   if (isSms && !draft.compliance.append_opt_out) {
     warnings.push({
-      message: 'SMS campaigns should include opt-out instructions (e.g., "Reply STOP to unsubscribe") for TCPA compliance.',
+      message: __('SMS campaigns should include opt-out instructions (e.g., "Reply STOP to unsubscribe") for TCPA compliance.', 'wp-sms'),
       severity: 'warning',
     });
   }
 
   if (segmentInfo && segmentInfo.segmentCount > 3) {
     warnings.push({
-      message: `Your message will be split into ${segmentInfo.segmentCount} segments, increasing cost per recipient.`,
+      message: sprintf(__('Your message will be split into %d segments, increasing cost per recipient.', 'wp-sms'), segmentInfo.segmentCount),
       severity: 'warning',
     });
   }
 
   if (segmentInfo && segmentInfo.encoding === 'Unicode') {
     warnings.push({
-      message: 'Unicode characters detected — SMS capacity reduced from 160 to 70 chars per segment.',
+      message: __('Unicode characters detected \u2014 SMS capacity reduced from 160 to 70 chars per segment.', 'wp-sms'),
       severity: 'info',
     });
   }
 
   if ((audienceCount ?? 0) > 1000) {
     warnings.push({
-      message: `Consider sending a test message before sending to ${(audienceCount ?? 0).toLocaleString()} recipients.`,
+      message: sprintf(__('Consider sending a test message before sending to %s recipients.', 'wp-sms'), (audienceCount ?? 0).toLocaleString()),
       severity: 'info',
     });
   }
@@ -1182,7 +1182,7 @@ function ReviewStep({
               onClick={() => void handleTestSend()}
               disabled={!testRecipient || testSending}
             >
-              {testSending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Send Test'}
+              {testSending ? <Loader2 className="h-4 w-4 animate-spin" /> : __('Send Test', 'wp-sms')}
             </Button>
           </div>
         </CardContent>
@@ -1193,12 +1193,12 @@ function ReviewStep({
         {draft.send_mode === 'now' ? (
           <Button onClick={() => void onSendNow()} disabled={sending} size="lg">
             {sending ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <Send className="me-2 h-4 w-4" />}
-            Send Now {audienceCount !== null && `(${audienceCount.toLocaleString()} recipients)`}
+            {audienceCount !== null ? sprintf(_n('Send Now (%s recipient)', 'Send Now (%s recipients)', audienceCount, 'wp-sms'), audienceCount.toLocaleString()) : __('Send Now', 'wp-sms')}
           </Button>
         ) : (
           <Button onClick={() => void onSchedule()} disabled={sending || !draft.send_at} size="lg">
             {sending ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <Clock className="me-2 h-4 w-4" />}
-            Schedule Campaign
+            {__('Schedule Campaign', 'wp-sms')}
           </Button>
         )}
       </div>

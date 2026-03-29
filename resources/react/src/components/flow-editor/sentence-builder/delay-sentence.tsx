@@ -18,10 +18,10 @@ const UNIT_SECONDS: Record<TimeUnit, number> = {
 };
 
 const UNIT_OPTIONS = [
-  { value: 'seconds', label: 'seconds' },
-  { value: 'minutes', label: 'minutes' },
-  { value: 'hours', label: 'hours' },
-  { value: 'days', label: 'days' },
+  { value: 'seconds', label: __('seconds', 'wp-sms') },
+  { value: 'minutes', label: __('minutes', 'wp-sms') },
+  { value: 'hours', label: __('hours', 'wp-sms') },
+  { value: 'days', label: __('days', 'wp-sms') },
 ];
 
 function detectUnit(seconds: number): TimeUnit {
@@ -59,7 +59,7 @@ export function DelaySentence({ step, onChange }: DelaySentenceProps) {
         value={unit}
         options={UNIT_OPTIONS}
         onChange={handleUnitChange}
-        placeholder="unit"
+        placeholder={__('unit', 'wp-sms')}
       />
     </div>
   );

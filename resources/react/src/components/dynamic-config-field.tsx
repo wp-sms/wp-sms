@@ -265,7 +265,7 @@ export function DynamicConfigField({
               </div>
             ) : filtered.length === 0 ? (
               <p className="p-3 text-sm text-muted-foreground text-center">
-                {options.length === 0 ? 'No options found on your account' : 'No matching results'}
+                {options.length === 0 ? __('No options found on your account', 'wp-sms') : __('No matching results', 'wp-sms')}
               </p>
             ) : (
               filtered.map((opt) => (
@@ -290,7 +290,7 @@ export function DynamicConfigField({
           {options.length >= 100 && (
             <div className="border-t px-3 py-2">
               <p className="text-xs text-muted-foreground">
-                Showing first 100 results — type in the field to enter others
+                {__('Showing first 100 results — type in the field to enter others', 'wp-sms')}
               </p>
             </div>
           )}
@@ -304,7 +304,7 @@ export function DynamicConfigField({
       {error && !open && (
         <p className="text-xs text-destructive flex items-center gap-1">
           <AlertCircle className="h-3 w-3" />
-          Could not load options — you can type a value manually
+          {__('Could not load options — you can type a value manually', 'wp-sms')}
         </p>
       )}
 

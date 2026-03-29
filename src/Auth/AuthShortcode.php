@@ -44,7 +44,7 @@ class AuthShortcode
     {
         $atts = shortcode_atts([
             'view' => 'login',
-            'text' => 'Sign In',
+            'text' => __('Sign In', 'wp-sms'),
             'id'   => '',
             'mode' => 'popup',
         ], $atts, 'wsms_auth');
@@ -61,7 +61,7 @@ class AuthShortcode
     private function renderPopupTrigger(array $atts): string
     {
         $view = esc_attr($atts['view']);
-        $text = esc_html($atts['text'] ?: 'Sign In');
+        $text = esc_html($atts['text'] ?: __('Sign In', 'wp-sms'));
         $formAttr = $atts['id'] ? sprintf(' data-wsms-form-id="%s"', esc_attr($atts['id'])) : '';
 
         return sprintf(

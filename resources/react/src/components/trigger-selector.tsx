@@ -84,7 +84,7 @@ export function TriggerSelector({ triggerType, triggerConfig, onChangeTrigger, o
   return (
     <div className="space-y-4">
       <Field>
-        <FieldLabel htmlFor="trigger-type">Trigger</FieldLabel>
+        <FieldLabel htmlFor="trigger-type">{__('Trigger', 'wp-sms')}</FieldLabel>
         <Select
           value={triggerType}
           onValueChange={(v) => onChangeTrigger(v, {})}

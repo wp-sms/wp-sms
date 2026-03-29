@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import {
   Drawer,
   DrawerContent,
@@ -25,69 +25,69 @@ interface ProviderHelp {
 
 const PROVIDER_HELP: Record<string, ProviderHelp> = {
   google: {
-    description: 'Allow users to sign in with their Google account',
-    clientIdLabel: 'Client ID',
+    description: __('Allow users to sign in with their Google account', 'wp-sms'),
+    clientIdLabel: __('Client ID', 'wp-sms'),
     clientIdPlaceholder: '123456789.apps.googleusercontent.com',
-    clientIdHelp: 'From Google Cloud Console > APIs & Services > Credentials. Create an OAuth 2.0 Client ID.',
-    clientSecretHelp: 'The client secret from the same OAuth 2.0 credential.',
+    clientIdHelp: __('From Google Cloud Console > APIs & Services > Credentials. Create an OAuth 2.0 Client ID.', 'wp-sms'),
+    clientSecretHelp: __('The client secret from the same OAuth 2.0 credential.', 'wp-sms'),
     setupUrl: 'https://console.cloud.google.com/apis/credentials',
-    setupLabel: 'Google Cloud Console',
+    setupLabel: __('Google Cloud Console', 'wp-sms'),
     notes: [
-      'Set the authorized redirect URI to: {callback_url}',
-      'Enable the Google+ API or People API in your project.',
+      __('Set the authorized redirect URI to: {callback_url}', 'wp-sms'),
+      __('Enable the Google+ API or People API in your project.', 'wp-sms'),
     ],
   },
   github: {
-    description: 'Allow users to sign in with their GitHub account',
-    clientIdLabel: 'Client ID',
+    description: __('Allow users to sign in with their GitHub account', 'wp-sms'),
+    clientIdLabel: __('Client ID', 'wp-sms'),
     clientIdPlaceholder: 'Iv1.abc123def456',
-    clientIdHelp: 'From GitHub > Settings > Developer settings > OAuth Apps. Create a new OAuth App.',
-    clientSecretHelp: 'Generate a client secret in the same OAuth App settings page.',
+    clientIdHelp: __('From GitHub > Settings > Developer settings > OAuth Apps. Create a new OAuth App.', 'wp-sms'),
+    clientSecretHelp: __('Generate a client secret in the same OAuth App settings page.', 'wp-sms'),
     setupUrl: 'https://github.com/settings/developers',
-    setupLabel: 'GitHub Developer Settings',
+    setupLabel: __('GitHub Developer Settings', 'wp-sms'),
     notes: [
-      'Set the Authorization callback URL to: {callback_url}',
-      'The Homepage URL should be your WordPress site URL.',
-      'GitHub users with private emails will still be matched — the plugin fetches verified emails via the API.',
+      __('Set the Authorization callback URL to: {callback_url}', 'wp-sms'),
+      __('The Homepage URL should be your WordPress site URL.', 'wp-sms'),
+      __('GitHub users with private emails will still be matched — the plugin fetches verified emails via the API.', 'wp-sms'),
     ],
   },
   telegram: {
-    description: 'Allow users to sign in with their Telegram account via OpenID Connect',
-    clientIdLabel: 'Client ID (Bot ID)',
+    description: __('Allow users to sign in with their Telegram account via OpenID Connect', 'wp-sms'),
+    clientIdLabel: __('Client ID (Bot ID)', 'wp-sms'),
     clientIdPlaceholder: '123456789',
-    clientIdHelp: 'Open @BotFather on Telegram > Bot Settings > Web Login. Your Client ID (Bot ID) is displayed there.',
-    clientSecretHelp: 'The Client Secret shown in the same BotFather Web Login section. Keep this secret.',
+    clientIdHelp: __('Open @BotFather on Telegram > Bot Settings > Web Login. Your Client ID (Bot ID) is displayed there.', 'wp-sms'),
+    clientSecretHelp: __('The Client Secret shown in the same BotFather Web Login section. Keep this secret.', 'wp-sms'),
     setupUrl: 'https://t.me/botfather',
-    setupLabel: 'Open @BotFather',
+    setupLabel: __('Open @BotFather', 'wp-sms'),
     notes: [
-      'In BotFather > Bot Settings > Web Login, add your site origin and the callback URL: {callback_url}',
-      'Telegram provides the user\'s phone number (not email). Users with matching phone numbers will be auto-linked.',
-      'Request the "telegram:bot_access" scope to allow sending MFA codes via the bot.',
+      __('In BotFather > Bot Settings > Web Login, add your site origin and the callback URL: {callback_url}', 'wp-sms'),
+      __('Telegram provides the user\'s phone number (not email). Users with matching phone numbers will be auto-linked.', 'wp-sms'),
+      __('Request the "telegram:bot_access" scope to allow sending MFA codes via the bot.', 'wp-sms'),
     ],
   },
   line: {
-    description: 'Allow users to sign in with their LINE account via OpenID Connect',
-    clientIdLabel: 'Channel ID',
+    description: __('Allow users to sign in with their LINE account via OpenID Connect', 'wp-sms'),
+    clientIdLabel: __('Channel ID', 'wp-sms'),
     clientIdPlaceholder: '1234567890',
-    clientIdHelp: 'From LINE Developers Console > your LINE Login channel > Basic settings > Channel ID.',
-    clientSecretHelp: 'The Channel Secret from the same LINE Login channel settings.',
+    clientIdHelp: __('From LINE Developers Console > your LINE Login channel > Basic settings > Channel ID.', 'wp-sms'),
+    clientSecretHelp: __('The Channel Secret from the same LINE Login channel settings.', 'wp-sms'),
     setupUrl: 'https://developers.line.biz/console/',
-    setupLabel: 'LINE Developers Console',
+    setupLabel: __('LINE Developers Console', 'wp-sms'),
     notes: [
-      'Create a LINE Login channel (not Messaging API) in LINE Developers Console.',
-      'Set the callback URL to: {callback_url}',
-      'LINE Login provides email (optional) and profile info. No phone number is available via standard LINE Login.',
-      'Users who log in via LINE are auto-enrolled for LINE MFA if a Messaging API bot is configured.',
+      __('Create a LINE Login channel (not Messaging API) in LINE Developers Console.', 'wp-sms'),
+      __('Set the callback URL to: {callback_url}', 'wp-sms'),
+      __('LINE Login provides email (optional) and profile info. No phone number is available via standard LINE Login.', 'wp-sms'),
+      __('Users who log in via LINE are auto-enrolled for LINE MFA if a Messaging API bot is configured.', 'wp-sms'),
     ],
   },
 };
 
 const DEFAULT_HELP: ProviderHelp = {
-  description: 'Configure OAuth credentials for this provider',
-  clientIdLabel: 'Client ID',
-  clientIdPlaceholder: 'Enter client ID',
-  clientIdHelp: 'From your provider\'s developer console or dashboard.',
-  clientSecretHelp: 'Keep this secret. Never expose it in frontend code.',
+  description: __('Configure OAuth credentials for this provider', 'wp-sms'),
+  clientIdLabel: __('Client ID', 'wp-sms'),
+  clientIdPlaceholder: __('Enter client ID', 'wp-sms'),
+  clientIdHelp: __('From your provider\'s developer console or dashboard.', 'wp-sms'),
+  clientSecretHelp: __('Keep this secret. Never expose it in frontend code.', 'wp-sms'),
 };
 
 interface SocialSettingsPanelProps {
@@ -124,7 +124,7 @@ export function SocialSettingsPanel({
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted">
               <Icon className="h-4 w-4 text-muted-foreground" />
             </div>
-            {providerLabel} Settings
+            {sprintf(__('%s Settings', 'wp-sms'), providerLabel)}
           </DrawerTitle>
           <DrawerDescription>
             {help.description}
@@ -140,7 +140,7 @@ export function SocialSettingsPanel({
               className="flex items-center gap-2 text-sm text-primary hover:underline"
             >
               <ExternalLink className="h-3.5 w-3.5" />
-              {help.setupLabel ?? 'Setup Guide'}
+              {help.setupLabel ?? __('Setup Guide', 'wp-sms')}
             </a>
           )}
 
@@ -159,7 +159,7 @@ export function SocialSettingsPanel({
           </Field>
 
           <Field>
-            <FieldLabel htmlFor={`${providerId}-client-secret`}>Client Secret *</FieldLabel>
+            <FieldLabel htmlFor={`${providerId}-client-secret`}>{__('Client Secret', 'wp-sms')} *</FieldLabel>
             <Input
               id={`${providerId}-client-secret`}
               type="password"
@@ -186,13 +186,13 @@ export function SocialSettingsPanel({
               }}
             />
             <FieldDescription>
-              Copy this URL and add it to your {providerLabel} app configuration as the authorized redirect URI.
+              {sprintf(__('Copy this URL and add it to your %s app configuration as the authorized redirect URI.', 'wp-sms'), providerLabel)}
             </FieldDescription>
           </Field>
 
           {help.notes && help.notes.length > 0 && (
             <div className="rounded-md border bg-muted/50 p-3 space-y-1.5">
-              <div className="text-xs font-medium text-muted-foreground">Setup Notes</div>
+              <div className="text-xs font-medium text-muted-foreground">{__('Setup Notes', 'wp-sms')}</div>
               <ul className="list-disc list-inside space-y-1">
                 {help.notes.map((note, i) => (
                   <li key={i} className="text-xs text-muted-foreground">{interpolate(note)}</li>

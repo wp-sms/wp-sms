@@ -57,9 +57,9 @@ export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
 
   const handleDelete = async (id: string) => {
     const ok = await confirm({
-      title: 'Delete tag?',
-      description: 'This tag will be removed from all contacts.',
-      confirmLabel: 'Delete',
+      title: __('Delete tag?', 'wp-sms'),
+      description: __('This tag will be removed from all contacts.', 'wp-sms'),
+      confirmLabel: __('Delete', 'wp-sms'),
       variant: 'destructive',
     });
     if (!ok) return;

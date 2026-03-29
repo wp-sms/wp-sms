@@ -306,7 +306,7 @@ export function ActionSentence({ step, onChange, payloadSchema, triggerType, sam
             onClick={() => setShowAdvanced(!showAdvanced)}
           >
             {showAdvanced ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-            Settings
+            {__('Settings', 'wp-sms')}
           </button>
           {showAdvanced && (
             <div className="mt-2 rounded-md border border-border/50 p-3">

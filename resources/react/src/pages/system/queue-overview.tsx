@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Clock, Loader2, XCircle } from 'lucide-react';
@@ -50,7 +50,7 @@ export function QueueOverview({ data }: QueueOverviewProps) {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-warning opacity-75" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-warning" />
           </span>
-          <span>{data.stuck_jobs.length} possibly stuck {data.stuck_jobs.length === 1 ? 'job' : 'jobs'} (in-progress for &gt;5 min)</span>
+          <span>{sprintf(_n('%d possibly stuck job (in-progress for >5 min)', '%d possibly stuck jobs (in-progress for >5 min)', data.stuck_jobs.length, 'wp-sms'), data.stuck_jobs.length)}</span>
         </div>
       )}
 
@@ -71,7 +71,7 @@ export function QueueOverview({ data }: QueueOverviewProps) {
                 <TableCell className="text-end tabular-nums">
                   {row.in_progress}
                   {data.stuck_jobs.some((s) => s.job_type === row.type) && (
-                    <Badge variant="warning" className="ms-2">stuck</Badge>
+                    <Badge variant="warning" className="ms-2">{__('stuck', 'wp-sms')}</Badge>
                   )}
                 </TableCell>
               </TableRow>

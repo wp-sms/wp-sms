@@ -13,11 +13,11 @@ import { api } from '@/lib/api';
 import type { IntegrationDetail, SyncSettings, ProviderList } from '@/lib/api';
 
 const POLL_INTERVALS = [
-  { value: 900, label: '15 minutes' },
-  { value: 3600, label: '1 hour' },
-  { value: 21600, label: '6 hours' },
-  { value: 86400, label: 'Daily' },
-] as const;
+  { value: 900, label: __('15 minutes', 'wp-sms') },
+  { value: 3600, label: __('1 hour', 'wp-sms') },
+  { value: 21600, label: __('6 hours', 'wp-sms') },
+  { value: 86400, label: __('Daily', 'wp-sms') },
+];
 
 interface DataTabProps {
   detail: IntegrationDetail;
@@ -120,11 +120,11 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
     <div className="flex gap-2">
       <Button variant="outline" size="sm" onClick={handleSyncNow} disabled={syncing}>
         {syncing ? <Loader2 className="me-1 h-4 w-4 animate-spin" /> : <RefreshCw className="me-1 h-4 w-4" />}
-        Sync Now
+        {__('Sync Now', 'wp-sms')}
       </Button>
       <Button variant="outline" size="sm" onClick={handlePollNow} disabled={polling}>
         {polling ? <Loader2 className="me-1 h-4 w-4 animate-spin" /> : <RefreshCw className="me-1 h-4 w-4" />}
-        Poll Now
+        {__('Poll Now', 'wp-sms')}
       </Button>
     </div>
   );
@@ -167,7 +167,7 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
 
         {hasLists && (
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Default List</label>
+            <label className="text-sm font-medium">{__('Default List', 'wp-sms')}</label>
             {loadingLists ? (
               <Skeleton className="h-9 w-full" />
             ) : (
@@ -213,7 +213,7 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
 
         {settings.poll_enabled && (
           <div className="space-y-1.5 ps-4">
-            <label className="text-sm font-medium">Poll interval</label>
+            <label className="text-sm font-medium">{__('Poll interval', 'wp-sms')}</label>
             <Select value={String(settings.poll_interval)} onValueChange={(v) => update('poll_interval', Number(v))}>
               <SelectTrigger className="w-40">
                 <SelectValue />
@@ -239,7 +239,7 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
 
         <Button size="sm" onClick={handleSave} disabled={saving}>
           {saving && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
-          Save Settings
+          {__('Save Settings', 'wp-sms')}
         </Button>
       </div>
     </PageSection>

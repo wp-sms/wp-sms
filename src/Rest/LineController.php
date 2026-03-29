@@ -54,7 +54,7 @@ class LineController extends Controller
             $secret = LineGateway::resolveChannelSecret();
 
             if (empty($signature) || empty($secret) || !LineBotClient::verifySignature($body, $signature, $secret)) {
-                return new WP_REST_Response(['error' => 'Invalid signature'], 403);
+                return new WP_REST_Response(['error' => __('Invalid signature', 'wp-sms')], 403);
             }
 
             $data = json_decode($body, true);

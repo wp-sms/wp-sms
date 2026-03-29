@@ -1,4 +1,4 @@
-import { __, sprintf } from '@wordpress/i18n';
+import { __, sprintf, _n } from '@wordpress/i18n';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -113,10 +113,10 @@ const CHANNEL_ICONS: Record<string, React.ReactNode> = {
 };
 
 const CHANNEL_LABELS: Record<string, string> = {
-  email: 'Email',
-  sms: 'SMS',
-  whatsapp: 'WhatsApp',
-  telegram: 'Telegram',
+  email: __('Email', 'wp-sms'),
+  sms: __('SMS', 'wp-sms'),
+  whatsapp: __('WhatsApp', 'wp-sms'),
+  telegram: __('Telegram', 'wp-sms'),
 };
 
 function toFieldOptions(variables: Record<string, VariableInfo>): FieldOption[] {
@@ -153,7 +153,7 @@ function PreviewDialog({
           <DialogHeader className="flex-1 min-w-0 gap-0">
             <DialogTitle className="text-sm font-medium">{templateLabel}</DialogTitle>
             <DialogDescription className="text-xs">
-              {channelLabel} preview · example data
+              {sprintf(__('%s preview · example data', 'wp-sms'), channelLabel)}
             </DialogDescription>
           </DialogHeader>
         </div>
@@ -184,7 +184,7 @@ function PreviewDialog({
                   <p className="text-sm whitespace-pre-wrap leading-relaxed">{preview.body}</p>
                 </div>
                 <p className="text-[10px] text-muted-foreground mt-1.5 ms-1">
-                  {channelLabel} · just now
+                  {sprintf(__('%s · just now', 'wp-sms'), channelLabel)}
                 </p>
               </div>
             </div>
@@ -251,12 +251,12 @@ export function Templates() {
                       <div className="flex items-center gap-1.5">
                         {template.toggleable && !template.enabled && (
                           <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-muted-foreground">
-                            off
+                            {__('off', 'wp-sms')}
                           </Badge>
                         )}
                         {customizedChannels.length > 0 && (
                           <Badge variant="default" className="text-[10px] px-1.5 py-0">
-                            customized
+                            {__('customized', 'wp-sms')}
                           </Badge>
                         )}
                       </div>
@@ -266,7 +266,7 @@ export function Templates() {
                         type="button"
                         onClick={() => setEditingTemplate(template)}
                         className="shrink-0 rounded-md p-1.5 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                        aria-label={`Configure ${template.label}`}
+                        aria-label={sprintf(__('Configure %s', 'wp-sms'), template.label)}
                       >
                         <Settings className="h-4 w-4" />
                       </button>
@@ -357,7 +357,7 @@ function ProviderTemplatePicker({
         : await api.get<ProviderTemplateData[]>(endpoint);
       setProviderTemplates(data);
     } catch {
-      setLoadError('Failed to load templates from provider');
+      setLoadError(__('Failed to load templates from provider', 'wp-sms'));
     } finally {
       setLoadingTemplates(false);
     }
@@ -409,7 +409,7 @@ function ProviderTemplatePicker({
   return (
     <div className="space-y-4">
       <FieldDescription>
-        Select a provider template for {channelLabel} messages. If no mapping is configured, the plugin falls back to the body content above.
+        {sprintf(__('Select a provider template for %s messages. If no mapping is configured, the plugin falls back to the body content above.', 'wp-sms'), channelLabel)}
       </FieldDescription>
 
       {loadError && (
@@ -441,7 +441,7 @@ function ProviderTemplatePicker({
               onClick={() => setShowAddForm(true)}
               className="h-7 gap-1.5 text-xs"
             >
-              + Add
+              {__('+ Add', 'wp-sms')}
             </Button>
           </div>
         </div>
@@ -453,8 +453,8 @@ function ProviderTemplatePicker({
             <p>{__('No templates found.', 'wp-sms')}</p>
             <p className="mt-1 text-xs">
               {isFetchable
-                ? 'Create templates in your provider console, then refresh.'
-                : 'Click "+ Add" to manually enter a provider template.'}
+                ? __('Create templates in your provider console, then refresh.', 'wp-sms')
+                : __('Click "+ Add" to manually enter a provider template.', 'wp-sms')}
             </p>
           </div>
         ) : (
@@ -470,11 +470,11 @@ function ProviderTemplatePicker({
                     <span className="text-xs text-muted-foreground">({pt.language})</span>
                     {pt.variable_count > 0 && (
                       <Badge variant="outline" className="text-[10px] px-1 py-0">
-                        {pt.variable_count} var{pt.variable_count !== 1 ? 's' : ''}
+                        {sprintf(_n('%d var', '%d vars', pt.variable_count, 'wp-sms'), pt.variable_count)}
                       </Badge>
                     )}
                     {pt.source === 'manual' && (
-                      <Badge variant="secondary" className="text-[10px] px-1 py-0">manual</Badge>
+                      <Badge variant="secondary" className="text-[10px] px-1 py-0">{__('manual', 'wp-sms')}</Badge>
                     )}
                   </span>
                 </SelectItem>
@@ -539,7 +539,7 @@ function ProviderTemplatePicker({
       {selectedTemplate && (
         <div className="flex gap-2">
           <Button onClick={handleSaveMapping} disabled={saving} className="flex-1">
-            {saving ? 'Saving...' : 'Save Mapping'}
+            {saving ? __('Saving...', 'wp-sms') : __('Save Mapping', 'wp-sms')}
           </Button>
           {existingMapping && (
             <Button variant="ghost" onClick={handleRemoveMapping}>
@@ -648,7 +648,7 @@ function ManualTemplateForm({
               <Input
                 value={v.key}
                 onChange={(e) => updateVariable(i, 'key', e.target.value)}
-                placeholder={variableStyle === 'named' ? 'Variable name' : String(i + 1)}
+                placeholder={variableStyle === 'named' ? __('Variable name', 'wp-sms') : String(i + 1)}
                 className="flex-1 text-sm"
                 disabled={variableStyle === 'positional'}
               />
@@ -669,7 +669,7 @@ function ManualTemplateForm({
       </Field>
       <div className="flex gap-2">
         <Button onClick={handleSubmit} disabled={saving} size="sm">
-          {saving ? 'Adding...' : 'Add Template'}
+          {saving ? __('Adding...', 'wp-sms') : __('Add Template', 'wp-sms')}
         </Button>
         <Button variant="ghost" size="sm" onClick={onCancel}>{__('Cancel', 'wp-sms')}</Button>
       </div>
@@ -792,12 +792,12 @@ function TemplateEditor({
           {template.toggleable && (
             <div className="flex items-center justify-between px-4 pb-2">
               <span className="text-sm font-medium">
-                {enabled ? 'Enabled' : 'Disabled'}
+                {enabled ? __('Enabled', 'wp-sms') : __('Disabled', 'wp-sms')}
               </span>
               <Switch
                 checked={enabled}
                 onCheckedChange={setEnabled}
-                aria-label={enabled ? 'Disable template' : 'Enable template'}
+                aria-label={enabled ? __('Disable template', 'wp-sms') : __('Enable template', 'wp-sms')}
               />
             </div>
           )}
@@ -922,11 +922,11 @@ function TemplateEditor({
 
                     <div className="flex gap-2">
                       <Button onClick={handleSave} disabled={saving || !currentDraft} className="flex-1">
-                        {saving ? 'Saving...' : 'Save'}
+                        {saving ? __('Saving...', 'wp-sms') : __('Save', 'wp-sms')}
                       </Button>
                       <Button variant="outline" onClick={handlePreview} disabled={previewing}>
                         <Eye className="h-3.5 w-3.5 me-1.5" />
-                        {previewing ? 'Loading...' : 'Preview'}
+                        {previewing ? __('Loading...', 'wp-sms') : __('Preview', 'wp-sms')}
                       </Button>
                       {hasOverride && (
                         <Button variant="ghost" onClick={handleReset}>

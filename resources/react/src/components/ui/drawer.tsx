@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { __ } from '@wordpress/i18n'
 import { XIcon } from "lucide-react"
 import { Drawer as DrawerPrimitive } from "vaul"
 
@@ -77,7 +78,7 @@ function DrawerContent({
         {showCloseButton && (
           <DrawerPrimitive.Close className="absolute top-4 end-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
             <XIcon className="size-4" />
-            <span className="sr-only">Close</span>
+            <span className="sr-only">{__('Close', 'wp-sms')}</span>
           </DrawerPrimitive.Close>
         )}
       </DrawerPrimitive.Content>

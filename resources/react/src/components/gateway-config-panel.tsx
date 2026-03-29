@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useState, useEffect, useRef } from 'react';
 import { useConfirm } from '@/components/confirm-provider';
 import {
@@ -79,8 +79,8 @@ export function GatewayConfigPanel({
   const setupUrl = gateway.metadata.setup_url ?? gateway.metadata.website;
   const setupNotes = gateway.metadata.setup_notes;
   const setupLabel = gateway.metadata.setup_url
-    ? `Open ${gateway.name} Dashboard`
-    : 'Visit website';
+    ? sprintf(__('Open %s Dashboard', 'wp-sms'), gateway.name)
+    : __('Visit website', 'wp-sms');
 
   async function handleSave() {
     if (!gateway) return;
@@ -134,9 +134,9 @@ export function GatewayConfigPanel({
     <Drawer open={open} onOpenChange={async (o) => {
       if (!o && JSON.stringify(draftConfig) !== initialConfigRef.current) {
         const ok = await confirm({
-          title: 'Discard changes?',
-          description: 'You have unsaved configuration changes that will be lost.',
-          confirmLabel: 'Discard',
+          title: __('Discard changes?', 'wp-sms'),
+          description: __('You have unsaved configuration changes that will be lost.', 'wp-sms'),
+          confirmLabel: __('Discard', 'wp-sms'),
           variant: 'destructive',
         });
         if (!ok) return;
@@ -166,7 +166,7 @@ export function GatewayConfigPanel({
           {/* Setup Notes */}
           {setupNotes && setupNotes.length > 0 && (
             <div className="rounded-md border bg-muted/50 p-3 space-y-1.5">
-              <div className="text-xs font-medium text-muted-foreground">Setup Guide</div>
+              <div className="text-xs font-medium text-muted-foreground">{__('Setup Guide', 'wp-sms')}</div>
               <ul className="list-disc list-inside space-y-1">
                 {setupNotes.map((note, i) => (
                   <li key={i} className="text-xs text-muted-foreground">{note}</li>
@@ -196,7 +196,7 @@ export function GatewayConfigPanel({
                   disabled={!gateway.is_configured || connectionTesting}
                 >
                   {connectionTesting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plug className="h-4 w-4" />}
-                  Test Connection
+                  {__('Test Connection', 'wp-sms')}
                 </Button>
                 {!gateway.is_configured && (
                   <span className="text-xs text-muted-foreground">{__('Save configuration to enable connection testing', 'wp-sms')}</span>
@@ -234,7 +234,7 @@ export function GatewayConfigPanel({
               >
                 <span className="flex items-center gap-2">
                   <Send className="h-4 w-4" />
-                  Test Send
+                  {__('Test Send', 'wp-sms')}
                 </span>
                 <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
               </CollapsibleTrigger>
@@ -246,7 +246,7 @@ export function GatewayConfigPanel({
 
                 {gateway.supported_channels.length > 1 && (
                   <Field>
-                    <FieldLabel htmlFor="test-channel">Channel</FieldLabel>
+                    <FieldLabel htmlFor="test-channel">{__('Channel', 'wp-sms')}</FieldLabel>
                     <Select value={testChannel} onValueChange={setTestChannel}>
                       <SelectTrigger id="test-channel">
                         <SelectValue />
@@ -261,7 +261,7 @@ export function GatewayConfigPanel({
                 )}
 
                 <Field>
-                  <FieldLabel htmlFor="test-to">Recipient</FieldLabel>
+                  <FieldLabel htmlFor="test-to">{__('Recipient', 'wp-sms')}</FieldLabel>
                   <Input
                     id="test-to"
                     type="text"
@@ -272,7 +272,7 @@ export function GatewayConfigPanel({
                 </Field>
 
                 <Field>
-                  <FieldLabel htmlFor="test-body">Message</FieldLabel>
+                  <FieldLabel htmlFor="test-body">{__('Message', 'wp-sms')}</FieldLabel>
                   <Textarea
                     id="test-body"
                     value={testBody}
@@ -289,7 +289,7 @@ export function GatewayConfigPanel({
                   disabled={!testTo || testing}
                 >
                   {testing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                  Send Test
+                  {__('Send Test', 'wp-sms')}
                 </Button>
 
                 {testResult && (
@@ -321,7 +321,7 @@ export function GatewayConfigPanel({
         <DrawerFooter>
           <Button onClick={handleSave} disabled={saving}>
             {saving && <Loader2 className="h-4 w-4 animate-spin" />}
-            Save
+            {__('Save', 'wp-sms')}
           </Button>
         </DrawerFooter>
       </DrawerContent>

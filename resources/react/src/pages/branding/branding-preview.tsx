@@ -5,18 +5,18 @@ import { SegmentedGroup } from '@/components/ui/segmented-group';
 import type { BrandingSettings } from '@/lib/api';
 
 const PAGE_OPTIONS = [
-  { value: '/login', label: 'Login' },
-  { value: '/register', label: 'Register' },
-  { value: '/forgot-password', label: 'Forgot Password' },
-  { value: '/', label: 'Account' },
+  { value: '/login', label: __('Login', 'wp-sms') },
+  { value: '/register', label: __('Register', 'wp-sms') },
+  { value: '/forgot-password', label: __('Forgot Password', 'wp-sms') },
+  { value: '/', label: __('Account', 'wp-sms') },
 ] as const;
 
 type PageRoute = (typeof PAGE_OPTIONS)[number]['value'];
 
 const DEVICE_PRESETS = [
-  { value: 'mobile' as const, label: 'Mobile', width: 375, icon: <Smartphone className="h-4 w-4" /> },
-  { value: 'tablet' as const, label: 'Tablet', width: 768, icon: <Tablet className="h-4 w-4" /> },
-  { value: 'desktop' as const, label: 'Desktop', width: 1024, icon: <Monitor className="h-4 w-4" /> },
+  { value: 'mobile' as const, label: __('Mobile', 'wp-sms'), width: 375, icon: <Smartphone className="h-4 w-4" /> },
+  { value: 'tablet' as const, label: __('Tablet', 'wp-sms'), width: 768, icon: <Tablet className="h-4 w-4" /> },
+  { value: 'desktop' as const, label: __('Desktop', 'wp-sms'), width: 1024, icon: <Monitor className="h-4 w-4" /> },
 ];
 
 type DevicePreset = (typeof DEVICE_PRESETS)[number]['value'];
@@ -117,7 +117,7 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
             onClick={() => openBrandingPreview(previewUrl, branding)}
             className="mt-2 inline-block text-xs text-primary hover:underline"
           >
-            Open auth page in new tab
+            {__('Open auth page in new tab', 'wp-sms')}
           </button>
         </div>
       </div>

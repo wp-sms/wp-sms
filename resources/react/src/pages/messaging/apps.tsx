@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf, _n } from '@wordpress/i18n';
 import { useState, useEffect, useMemo } from 'react';
 import { useIntegrations, useIntegrationDetail } from '@/hooks/use-integrations';
 import { IntegrationIcon } from '@/components/integration-icon';
@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowLeft, Blocks, ChevronRight, Info, RefreshCw, Search, Settings2, Zap, type LucideIcon } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 import { INTEGRATION_CATEGORY_LABELS } from '@/lib/constants';
-import { pluralize } from '@/lib/utils';
+
 import { IntegrationHero, IntegrationHeroSkeleton } from '@/components/integrations/integration-hero';
 import { IntegrationOverviewTab } from '@/components/integrations/integration-overview-tab';
 import { IntegrationDataTab } from '@/components/integrations/integration-data-tab';
@@ -54,9 +54,9 @@ function IntegrationCard({ integration, onClick }: {
         </Badge>
 
         <div className="text-xs text-muted-foreground">
-          {pluralize(integration.triggers, 'Trigger')}
+          {sprintf(_n('%d Trigger', '%d Triggers', integration.triggers, 'wp-sms'), integration.triggers)}
           {' · '}
-          {pluralize(integration.actions, 'Action')}
+          {sprintf(_n('%d Action', '%d Actions', integration.actions, 'wp-sms'), integration.actions)}
         </div>
 
       </CardContent>
@@ -85,19 +85,19 @@ function AppDetailPage({ integrationId, settings, onUpdate, onBack }: {
 
     const needsOverview = detail.auth_type !== 'none' || detail.connected;
     if (needsOverview)
-      tabs.push({ id: 'overview', label: 'Overview', icon: Info });
+      tabs.push({ id: 'overview', label: __('Overview', 'wp-sms'), icon: Info });
 
     const hasImport = detail.capabilities?.some((c) => c.id === 'contact_import' && c.supported);
     const hasSync = detail.capabilities?.some((c) => c.id === 'contact_sync' && c.supported);
     if ((hasImport || hasSync) && detail.connected)
-      tabs.push({ id: 'data', label: 'Data Sync', icon: RefreshCw });
+      tabs.push({ id: 'data', label: __('Data Sync', 'wp-sms'), icon: RefreshCw });
 
     const hasCustomSettings = ['woocommerce', 'contactform7'].includes(detail.id);
     if (hasCustomSettings)
-      tabs.push({ id: 'settings', label: 'Settings', icon: Settings2 });
+      tabs.push({ id: 'settings', label: __('Settings', 'wp-sms'), icon: Settings2 });
 
     if (detail.triggers.length > 0 || detail.actions.length > 0)
-      tabs.push({ id: 'automation', label: 'Automation', icon: Zap });
+      tabs.push({ id: 'automation', label: __('Automation', 'wp-sms'), icon: Zap });
 
     return tabs;
   }, [detail]);
@@ -236,7 +236,7 @@ export function IntegrationsPage({ settings, onUpdate }: AppsProps) {
 
   return (
     <div className="space-y-6">
-      <PageHeader icon={Blocks} title={__('Integrations', 'wp-sms')} metadata={pluralize(integrations.length, 'integration')} />
+      <PageHeader icon={Blocks} title={__('Integrations', 'wp-sms')} metadata={sprintf(_n('%d integration', '%d integrations', integrations.length, 'wp-sms'), integrations.length)} />
       <div className="flex items-center gap-3">
         <div className="relative flex-1 max-w-xs">
           <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

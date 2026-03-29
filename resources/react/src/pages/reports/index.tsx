@@ -11,9 +11,9 @@ import { ChannelUsage } from './channel-usage';
 import { SecurityAlerts } from './security-alerts';
 
 const RANGES = [
-  { value: '7', label: '7 days' },
-  { value: '30', label: '30 days' },
-  { value: '90', label: '90 days' },
+  { value: '7', label: __('7 days', 'wp-sms') },
+  { value: '30', label: __('30 days', 'wp-sms') },
+  { value: '90', label: __('90 days', 'wp-sms') },
 ];
 
 export function ReportsPage({ embedded }: { embedded?: boolean }) {

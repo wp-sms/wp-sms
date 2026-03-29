@@ -96,9 +96,9 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
   const handlePublish = async () => {
     if (!flow?.id || !onPublish) return;
     const ok = await confirm({
-      title: 'Publish flow?',
-      description: 'This flow will become active and start processing events immediately.',
-      confirmLabel: 'Publish',
+      title: __('Publish flow?', 'wp-sms'),
+      description: __('This flow will become active and start processing events immediately.', 'wp-sms'),
+      confirmLabel: __('Publish', 'wp-sms'),
     });
     if (!ok) return;
     setPublishing(true);
@@ -137,7 +137,7 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
         </CardHeader>
         <CardContent className="space-y-4">
           <Field>
-            <FieldLabel htmlFor="flow-name">Name *</FieldLabel>
+            <FieldLabel htmlFor="flow-name">{__('Name', 'wp-sms')} *</FieldLabel>
             <Input
               id="flow-name"
               value={name}
@@ -146,7 +146,7 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
             />
           </Field>
           <Field>
-            <FieldLabel htmlFor="flow-description">Description</FieldLabel>
+            <FieldLabel htmlFor="flow-description">{__('Description', 'wp-sms')}</FieldLabel>
             <Input
               id="flow-description"
               value={description}
@@ -180,7 +180,7 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
             disabled={deactivating || saving}
           >
             <Pause className="me-1.5 h-4 w-4" />
-            {deactivating ? 'Deactivating...' : 'Deactivate'}
+            {deactivating ? __('Deactivating...', 'wp-sms') : __('Deactivate', 'wp-sms')}
           </Button>
         )}
         {isEdit && flow.status !== 'active' && onPublish && (
@@ -190,12 +190,12 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
             disabled={publishing || saving}
           >
             <Rocket className="me-1.5 h-4 w-4" />
-            {publishing ? 'Publishing...' : 'Publish'}
+            {publishing ? __('Publishing...', 'wp-sms') : __('Publish', 'wp-sms')}
           </Button>
         )}
         <Button onClick={handleSave} disabled={saving || publishing || deactivating}>
           <Save className="me-1.5 h-4 w-4" />
-          {saving ? 'Saving...' : isEdit ? 'Update Flow' : 'Create Flow'}
+          {saving ? __('Saving...', 'wp-sms') : isEdit ? __('Update Flow', 'wp-sms') : __('Create Flow', 'wp-sms')}
         </Button>
       </div>
     </>
@@ -208,7 +208,7 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
           <ArrowLeft className="me-1 h-4 w-4 rtl:scale-x-[-1]" />
           {__('Back', 'wp-sms')}
         </Button>
-        <h2 className="text-base font-semibold">{isEdit ? 'Edit Flow' : 'Create Flow'}</h2>
+        <h2 className="text-base font-semibold">{isEdit ? __('Edit Flow', 'wp-sms') : __('Create Flow', 'wp-sms')}</h2>
       </div>
 
       {isEdit ? (

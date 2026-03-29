@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useEffect, useCallback } from 'react';
 import { useConfirm } from '@/components/confirm-provider';
 
@@ -25,9 +26,9 @@ export function useUnsavedChanges({ isDirty, onLeave }: UseUnsavedChangesOptions
       return;
     }
     const ok = await confirm({
-      title: 'Unsaved changes',
-      description: 'You have unsaved changes that will be lost. Are you sure you want to leave?',
-      confirmLabel: 'Discard',
+      title: __('Unsaved changes', 'wp-sms'),
+      description: __('You have unsaved changes that will be lost. Are you sure you want to leave?', 'wp-sms'),
+      confirmLabel: __('Discard', 'wp-sms'),
       variant: 'destructive',
     });
     if (ok) onLeave();

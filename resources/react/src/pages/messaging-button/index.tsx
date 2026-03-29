@@ -65,7 +65,7 @@ export function MessagingButtonPage({ section }: MessagingButtonPageProps) {
         title={__('Messaging Button', 'wp-sms')}
         metadata={
           <Badge variant={settings.enabled ? 'success' : 'neutral'} dot>
-            {settings.enabled ? 'Active' : 'Inactive'}
+            {settings.enabled ? __('Active', 'wp-sms') : __('Inactive', 'wp-sms')}
           </Badge>
         }
         actions={
@@ -80,11 +80,11 @@ export function MessagingButtonPage({ section }: MessagingButtonPageProps) {
               {__('Preview', 'wp-sms')}
             </Button>
             <label className="flex items-center gap-2 text-sm text-muted-foreground">
-              Enable
+              {__('Enable', 'wp-sms')}
               <Switch
                 checked={settings.enabled}
                 onCheckedChange={(checked) => updateSettings('enabled', checked)}
-                aria-label="Toggle widget"
+                aria-label={__('Toggle widget', 'wp-sms')}
               />
             </label>
           </>

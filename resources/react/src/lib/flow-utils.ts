@@ -1,4 +1,4 @@
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import type { FlowNode, ActionNode, ConditionNode, DelayNode, ActionDefinition, JsonSchema, JsonSchemaProperty } from '@/lib/api';
 import { getOperatorLabel } from '@/lib/condition-utils';
 import { generateNodeId } from '@/lib/utils';
@@ -85,10 +85,19 @@ function getDelaySummary(step: DelayNode): string {
 }
 
 function formatDuration(seconds: number): string {
-  if (seconds >= 86400 && seconds % 86400 === 0) return `${seconds / 86400} day${seconds / 86400 !== 1 ? 's' : ''}`;
-  if (seconds >= 3600 && seconds % 3600 === 0) return `${seconds / 3600} hour${seconds / 3600 !== 1 ? 's' : ''}`;
-  if (seconds >= 60 && seconds % 60 === 0) return `${seconds / 60} minute${seconds / 60 !== 1 ? 's' : ''}`;
-  return `${seconds} second${seconds !== 1 ? 's' : ''}`;
+  if (seconds >= 86400 && seconds % 86400 === 0) {
+    const days = seconds / 86400;
+    return sprintf(_n('%d day', '%d days', days, 'wp-sms'), days);
+  }
+  if (seconds >= 3600 && seconds % 3600 === 0) {
+    const hours = seconds / 3600;
+    return sprintf(_n('%d hour', '%d hours', hours, 'wp-sms'), hours);
+  }
+  if (seconds >= 60 && seconds % 60 === 0) {
+    const minutes = seconds / 60;
+    return sprintf(_n('%d minute', '%d minutes', minutes, 'wp-sms'), minutes);
+  }
+  return sprintf(_n('%d second', '%d seconds', seconds, 'wp-sms'), seconds);
 }
 
 function truncate(str: string, max: number): string {
@@ -202,30 +211,30 @@ export const SYSTEM_VARIABLE_SCHEMA: JsonSchema = {
   properties: {
     site: {
       type: 'object',
-      title: 'Site',
+      title: __('Site', 'wp-sms'),
       properties: {
-        name:      { type: 'string', title: 'Site Name', example: 'My Website' },
-        url:       { type: 'string', title: 'Site URL', example: 'https://example.com' },
-        email:     { type: 'string', title: 'Admin Email', example: 'admin@example.com' },
-        phone:     { type: 'string', title: 'Site Phone', example: '+1234567890' },
-        login_url: { type: 'string', title: 'Login URL', example: 'https://example.com/wp-login.php' },
-        admin_url: { type: 'string', title: 'Admin URL', example: 'https://example.com/wp-admin/' },
-        tagline:   { type: 'string', title: 'Tagline', example: 'Just another WordPress site' },
+        name:      { type: 'string', title: __('Site Name', 'wp-sms'), example: 'My Website' },
+        url:       { type: 'string', title: __('Site URL', 'wp-sms'), example: 'https://example.com' },
+        email:     { type: 'string', title: __('Admin Email', 'wp-sms'), example: 'admin@example.com' },
+        phone:     { type: 'string', title: __('Site Phone', 'wp-sms'), example: '+1234567890' },
+        login_url: { type: 'string', title: __('Login URL', 'wp-sms'), example: 'https://example.com/wp-login.php' },
+        admin_url: { type: 'string', title: __('Admin URL', 'wp-sms'), example: 'https://example.com/wp-admin/' },
+        tagline:   { type: 'string', title: __('Tagline', 'wp-sms'), example: 'Just another WordPress site' },
       },
     },
     now: {
       type: 'object',
-      title: 'Date & Time',
+      title: __('Date & Time', 'wp-sms'),
       properties: {
-        date:       { type: 'string', title: 'Current Date', example: '2026-03-18' },
-        time:       { type: 'string', title: 'Current Time', example: '14:30' },
-        datetime:   { type: 'string', title: 'Current Date & Time', example: '2026-03-18 14:30:00' },
-        year:       { type: 'string', title: 'Current Year', example: '2026' },
-        day_name:   { type: 'string', title: 'Day Name', example: 'Monday' },
-        month_name: { type: 'string', title: 'Month Name', example: 'March' },
-        day:        { type: 'string', title: 'Day of Month', example: '20' },
-        month:      { type: 'string', title: 'Month Number', example: '03' },
-        hour:       { type: 'string', title: 'Current Hour', example: '14' },
+        date:       { type: 'string', title: __('Current Date', 'wp-sms'), example: '2026-03-18' },
+        time:       { type: 'string', title: __('Current Time', 'wp-sms'), example: '14:30' },
+        datetime:   { type: 'string', title: __('Current Date & Time', 'wp-sms'), example: '2026-03-18 14:30:00' },
+        year:       { type: 'string', title: __('Current Year', 'wp-sms'), example: '2026' },
+        day_name:   { type: 'string', title: __('Day Name', 'wp-sms'), example: 'Monday' },
+        month_name: { type: 'string', title: __('Month Name', 'wp-sms'), example: 'March' },
+        day:        { type: 'string', title: __('Day of Month', 'wp-sms'), example: '20' },
+        month:      { type: 'string', title: __('Month Number', 'wp-sms'), example: '03' },
+        hour:       { type: 'string', title: __('Current Hour', 'wp-sms'), example: '14' },
       },
     },
   },
@@ -234,63 +243,63 @@ export const SYSTEM_VARIABLE_SCHEMA: JsonSchema = {
 // Keep in sync with PayloadSchemas::extractWpUser() in src/Integration/PayloadSchemas.php
 export const USER_SCHEMA: JsonSchemaProperty = {
   type: 'object',
-  title: 'User',
+  title: __('User', 'wp-sms'),
   properties: {
-    email:        { type: 'string', title: 'Email', example: 'user@example.com' },
-    phone:        { type: 'string', title: 'Phone', example: '+1234567890' },
-    login:        { type: 'string', title: 'Username', example: 'johndoe' },
-    display_name: { type: 'string', title: 'Display Name', example: 'John Doe' },
-    first_name:   { type: 'string', title: 'First Name', example: 'John' },
-    last_name:    { type: 'string', title: 'Last Name', example: 'Doe' },
-    roles:        { type: 'array', title: 'Roles', example: ['subscriber'] },
+    email:        { type: 'string', title: __('Email', 'wp-sms'), example: 'user@example.com' },
+    phone:        { type: 'string', title: __('Phone', 'wp-sms'), example: '+1234567890' },
+    login:        { type: 'string', title: __('Username', 'wp-sms'), example: 'johndoe' },
+    display_name: { type: 'string', title: __('Display Name', 'wp-sms'), example: 'John Doe' },
+    first_name:   { type: 'string', title: __('First Name', 'wp-sms'), example: 'John' },
+    last_name:    { type: 'string', title: __('Last Name', 'wp-sms'), example: 'Doe' },
+    roles:        { type: 'array', title: __('Roles', 'wp-sms'), example: ['subscriber'] },
   },
 };
 
 export const AUTHOR_SCHEMA: JsonSchemaProperty = {
   type: 'object',
-  title: 'Author',
+  title: __('Author', 'wp-sms'),
   properties: {
-    email:        { type: 'string', title: 'Email', example: 'author@example.com' },
-    phone:        { type: 'string', title: 'Phone', example: '+1234567890' },
-    display_name: { type: 'string', title: 'Display Name', example: 'Jane Doe' },
+    email:        { type: 'string', title: __('Email', 'wp-sms'), example: 'author@example.com' },
+    phone:        { type: 'string', title: __('Phone', 'wp-sms'), example: '+1234567890' },
+    display_name: { type: 'string', title: __('Display Name', 'wp-sms'), example: 'Jane Doe' },
   },
 };
 
 // Keep in sync with PayloadSchemas::extractContact() in src/Integration/PayloadSchemas.php
 export const CONTACT_SCHEMA: JsonSchemaProperty = {
   type: 'object',
-  title: 'Contact',
+  title: __('Contact', 'wp-sms'),
   properties: {
-    email:      { type: 'string', title: 'Email', example: 'contact@example.com' },
-    phone:      { type: 'string', title: 'Phone', example: '+1234567890' },
-    first_name: { type: 'string', title: 'First Name', example: 'John' },
-    last_name:  { type: 'string', title: 'Last Name', example: 'Doe' },
+    email:      { type: 'string', title: __('Email', 'wp-sms'), example: 'contact@example.com' },
+    phone:      { type: 'string', title: __('Phone', 'wp-sms'), example: '+1234567890' },
+    first_name: { type: 'string', title: __('First Name', 'wp-sms'), example: 'John' },
+    last_name:  { type: 'string', title: __('Last Name', 'wp-sms'), example: 'Doe' },
     status:     {
       type: 'string',
-      title: 'Status',
+      title: __('Status', 'wp-sms'),
       example: 'subscribed',
       enum: ['subscribed', 'bounced', 'complained'],
       enumLabels: {
-        subscribed: 'Subscribed',
-        bounced: 'Bounced',
-        complained: 'Complained',
+        subscribed: __('Subscribed', 'wp-sms'),
+        bounced: __('Bounced', 'wp-sms'),
+        complained: __('Complained', 'wp-sms'),
       },
     },
-    source:     { type: 'string', title: 'Source', example: 'form' },
+    source:     { type: 'string', title: __('Source', 'wp-sms'), example: 'form' },
   },
 };
 
 // Keep in sync with PayloadSchemas::extractPost() in src/Integration/PayloadSchemas.php
 export const POST_SCHEMA: JsonSchemaProperty = {
   type: 'object',
-  title: 'Post',
+  title: __('Post', 'wp-sms'),
   properties: {
-    title:   { type: 'string', title: 'Title', example: 'My Post' },
-    url:     { type: 'string', title: 'URL', example: 'https://example.com/my-post' },
-    excerpt: { type: 'string', title: 'Excerpt', example: 'Post summary...' },
-    type:    { type: 'string', title: 'Type', example: 'post' },
-    status:  { type: 'string', title: 'Status', example: 'publish' },
-    date:    { type: 'string', title: 'Date', example: '2026-03-18 14:30:00' },
+    title:   { type: 'string', title: __('Title', 'wp-sms'), example: 'My Post' },
+    url:     { type: 'string', title: __('URL', 'wp-sms'), example: 'https://example.com/my-post' },
+    excerpt: { type: 'string', title: __('Excerpt', 'wp-sms'), example: 'Post summary...' },
+    type:    { type: 'string', title: __('Type', 'wp-sms'), example: 'post' },
+    status:  { type: 'string', title: __('Status', 'wp-sms'), example: 'publish' },
+    date:    { type: 'string', title: __('Date', 'wp-sms'), example: '2026-03-18 14:30:00' },
   },
 };
 

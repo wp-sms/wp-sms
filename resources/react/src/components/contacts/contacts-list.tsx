@@ -72,9 +72,9 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
 
   const handleDelete = async (id: string) => {
     const ok = await confirm({
-      title: 'Delete contact?',
-      description: 'This contact and all associated data will be permanently removed.',
-      confirmLabel: 'Delete',
+      title: __('Delete contact?', 'wp-sms'),
+      description: __('This contact and all associated data will be permanently removed.', 'wp-sms'),
+      confirmLabel: __('Delete', 'wp-sms'),
       variant: 'destructive',
     });
     if (!ok) return;

@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import type { FlowExecution } from '@/lib/api';
 import { groupStepLogs, computeDuration, type ProcessedStep } from '@/lib/execution-utils';
 import { STEP_ICONS } from './sentence-builder/step-card';
@@ -59,7 +59,7 @@ function StepDetail({ step }: { step: ProcessedStep }) {
           <p className="text-[10px] font-medium text-muted-foreground">{__('Retries', 'wp-sms')}</p>
           {step.retries.map((r, i) => (
             <div key={i} className="text-[11px] text-amber-700">
-              Attempt {r.attempt}/{r.maxAttempts}: {r.error}
+              {sprintf(__('Attempt %1$d/%2$d: %3$s', 'wp-sms'), r.attempt, r.maxAttempts, r.error)}
             </div>
           ))}
         </div>
@@ -105,7 +105,7 @@ export function ExecutionDetailPanel({ execution, onClose }: ExecutionDetailPane
 
               <section>
                 <h3 className="text-xs font-medium text-muted-foreground mb-2">
-                  Steps ({steps.length})
+                  {sprintf(__('Steps (%d)', 'wp-sms'), steps.length)}
                 </h3>
                 {steps.length === 0 ? (
                   <p className="text-xs text-muted-foreground">{__('No steps executed yet', 'wp-sms')}</p>

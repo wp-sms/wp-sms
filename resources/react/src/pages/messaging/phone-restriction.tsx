@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { formatDate } from '@/lib/format';
 import { useState, useEffect, useCallback, useMemo, useRef, Fragment } from 'react';
 import { toast } from 'sonner';
@@ -83,10 +83,10 @@ interface CheckResult {
 }
 
 const BLOCKABLE_TYPES = [
-  { id: 'premium_rate', label: 'Premium Rate', description: 'High-cost numbers used for paid services' },
-  { id: 'toll_free', label: 'Toll-Free', description: 'Free-to-call numbers, often used for businesses' },
-  { id: 'shared_cost', label: 'Shared Cost', description: 'Cost shared between caller and receiver' },
-] as const;
+  { id: 'premium_rate', label: __('Premium Rate', 'wp-sms'), description: __('High-cost numbers used for paid services', 'wp-sms') },
+  { id: 'toll_free', label: __('Toll-Free', 'wp-sms'), description: __('Free-to-call numbers, often used for businesses', 'wp-sms') },
+  { id: 'shared_cost', label: __('Shared Cost', 'wp-sms'), description: __('Cost shared between caller and receiver', 'wp-sms') },
+];
 
 export function PhoneRestriction({ embedded }: { embedded?: boolean }) {
   const [saved, setSaved] = useState<PhoneRestrictionSettings | null>(null);
@@ -224,8 +224,8 @@ const SOURCE_LABELS: Record<string, string> = {
 function GeoDetectionBanner({ geo }: { geo: GeoDetection }) {
   const Icon = geo.active ? Check : Info;
   const message = geo.active
-    ? `Visitor country auto-detected via ${SOURCE_LABELS[geo.source ?? ''] ?? geo.source} (detected: ${formatCountry(geo.country)} for this request)`
-    : 'Geo-detection not available — enable Cloudflare IP Geolocation or a similar CDN header to auto-detect visitor country for phone inputs and audit logs';
+    ? sprintf(__('Visitor country auto-detected via %1$s (detected: %2$s for this request)', 'wp-sms'), SOURCE_LABELS[geo.source ?? ''] ?? geo.source, formatCountry(geo.country))
+    : __('Geo-detection not available \u2014 enable Cloudflare IP Geolocation or a similar CDN header to auto-detect visitor country for phone inputs and audit logs', 'wp-sms');
 
   return (
     <div className="flex items-center gap-2 rounded-md border bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
@@ -270,7 +270,7 @@ function PhoneInputConfigCard({ draft, countries, updateSection }: {
             <div className="flex items-start gap-2 rounded-md border border-destructive/50 bg-destructive/10 p-3 mt-2">
               <AlertTriangle className="h-4 w-4 mt-0.5 text-destructive shrink-0" />
               <p className="text-sm text-destructive">
-                National mode works best with a default country set. Without one, the input will use the first available country which may confuse users.
+                {__('National mode works best with a default country set. Without one, the input will use the first available country which may confuse users.', 'wp-sms')}
               </p>
             </div>
           )}
@@ -394,8 +394,8 @@ function CountrySection({ label, description, enabled, mode, selectedCountries, 
   onCountriesChange: (v: string[]) => void;
 }) {
   const emptyHint = mode === 'allow'
-    ? 'No countries selected — all phone numbers will be blocked when this is enabled'
-    : 'No countries blocked — all countries are allowed';
+    ? __('No countries selected \u2014 all phone numbers will be blocked when this is enabled', 'wp-sms')
+    : __('No countries blocked \u2014 all countries are allowed', 'wp-sms');
 
   return (
     <div className="space-y-3">
@@ -598,9 +598,9 @@ function NumberTypeBlockingCard({ draft, dbStatus, updateSection, onDownload, do
                   disabled={downloading}
                 >
                   {downloading ? (
-                    <><Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" /> Downloading...</>
+                    <><Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" /> {__('Downloading...', 'wp-sms')}</>
                   ) : (
-                    <><Download className="me-1.5 h-3.5 w-3.5" /> Download Database</>
+                    <><Download className="me-1.5 h-3.5 w-3.5" /> {__('Download Database', 'wp-sms')}</>
                   )}
                 </Button>
               </div>
@@ -647,7 +647,7 @@ function EnhancedDatabaseCard({ dbStatus, autoUpdate, onToggleAutoUpdate, onDown
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">{__('Status', 'wp-sms')}</span>
             <Badge variant={dbStatus?.installed ? 'default' : 'outline'}>
-              {dbStatus?.installed ? 'Installed' : 'Not Installed'}
+              {dbStatus?.installed ? __('Installed', 'wp-sms') : __('Not Installed', 'wp-sms')}
             </Badge>
           </div>
           {dbStatus?.installed && (
@@ -674,11 +674,11 @@ function EnhancedDatabaseCard({ dbStatus, autoUpdate, onToggleAutoUpdate, onDown
           disabled={downloading}
         >
           {downloading ? (
-            <><Loader2 className="me-2 h-4 w-4 animate-spin" /> Downloading...</>
+            <><Loader2 className="me-2 h-4 w-4 animate-spin" /> {__('Downloading...', 'wp-sms')}</>
           ) : dbStatus?.installed ? (
-            <><RefreshCw className="me-2 h-4 w-4" /> Re-download Latest</>
+            <><RefreshCw className="me-2 h-4 w-4" /> {__('Re-download Latest', 'wp-sms')}</>
           ) : (
-            <><Download className="me-2 h-4 w-4" /> Download Database</>
+            <><Download className="me-2 h-4 w-4" /> {__('Download Database', 'wp-sms')}</>
           )}
         </Button>
 
@@ -747,17 +747,17 @@ function PhoneCheckerCard() {
           <div className="rounded-md border bg-muted/50 p-3 space-y-2">
             <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm max-w-md">
               <span className="text-muted-foreground">{__('Country', 'wp-sms')}</span>
-              <span>{result.country_name ? `${result.country_name} (${result.country})` : result.country ?? 'Unknown'}</span>
+              <span>{result.country_name ? `${result.country_name} (${result.country})` : result.country ?? __('Unknown', 'wp-sms')}</span>
               <span className="text-muted-foreground">{__('Number type', 'wp-sms')}</span>
-              <span>{result.number_type ?? 'Unknown'}</span>
+              <span>{result.number_type ?? __('Unknown', 'wp-sms')}</span>
               {(['auth', 'messaging'] as const).map((ctx) => (
                 <Fragment key={ctx}>
                   <span className="text-muted-foreground capitalize">{ctx}</span>
                   <span className="flex items-center gap-2">
                     {result[ctx].allowed ? (
-                      <Badge className="bg-primary hover:bg-primary">Allowed</Badge>
+                      <Badge className="bg-primary hover:bg-primary">{__('Allowed', 'wp-sms')}</Badge>
                     ) : (
-                      <Badge variant="destructive">Blocked</Badge>
+                      <Badge variant="destructive">{__('Blocked', 'wp-sms')}</Badge>
                     )}
                     {!result[ctx].allowed && result[ctx].reason && (
                       <span className="text-muted-foreground">{result[ctx].reason}</span>

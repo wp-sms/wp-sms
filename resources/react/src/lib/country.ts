@@ -1,4 +1,6 @@
-const SPECIAL: Record<string, string> = { T1: 'Tor', XX: 'Unknown' };
+import { __ } from '@wordpress/i18n';
+
+const SPECIAL: Record<string, string> = { T1: 'Tor', XX: __('Unknown', 'wp-sms') };
 
 export function countryFlag(code: string): string {
   if (SPECIAL[code]) return '';

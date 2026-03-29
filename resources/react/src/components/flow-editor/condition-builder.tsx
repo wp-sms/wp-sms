@@ -77,7 +77,7 @@ export function ConditionBuilder({ rules, onChange, payloadSchema, triggerType }
     <div className="space-y-3">
       {rules.length > 0 && (
         <p className="text-sm text-muted-foreground">
-          Only continue if <strong>all</strong> of these are true:
+          {__('Only continue if', 'wp-sms')} <strong>{__('all', 'wp-sms')}</strong> {__('of these are true:', 'wp-sms')}
         </p>
       )}
 

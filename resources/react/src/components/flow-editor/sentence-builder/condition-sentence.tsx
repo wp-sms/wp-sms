@@ -90,14 +90,14 @@ export function ConditionSentence({ step, onChange, payloadSchema, triggerType }
       {rules.map((rule, index) => (
         <div key={index} className="flex items-center gap-1.5 flex-wrap">
           <span className="text-sm font-medium text-muted-foreground">
-            {index === 0 ? 'Only if' : 'and'}
+            {index === 0 ? __('Only if', 'wp-sms') : __('and', 'wp-sms')}
           </span>
           <SentenceToken
             mode="select"
             value={rule.field}
             options={fieldOptions}
             onChange={(v) => updateRule(index, { field: v, operator: getDefaultOperator(fieldTypeOf(v)), value: '' })}
-            placeholder="field"
+            placeholder={__('field', 'wp-sms')}
           />
           {rule.field && (
             <>
@@ -106,7 +106,7 @@ export function ConditionSentence({ step, onChange, payloadSchema, triggerType }
                 value={rule.operator}
                 options={getOperatorOptions(rule.field)}
                 onChange={(v) => updateRule(index, { operator: v })}
-                placeholder="operator"
+                placeholder={__('operator', 'wp-sms')}
               />
               {!currentOpHidesValue(rule.operator) && (() => {
                 const opts = getValueOptions(rule.field);
@@ -117,7 +117,7 @@ export function ConditionSentence({ step, onChange, payloadSchema, triggerType }
                       value={rule.value}
                       options={opts.options}
                       onChange={(v) => updateRule(index, { value: v })}
-                      placeholder="value"
+                      placeholder={__('value', 'wp-sms')}
                     />
                   );
                 }
@@ -128,7 +128,7 @@ export function ConditionSentence({ step, onChange, payloadSchema, triggerType }
                       value={rule.value}
                       optionsUrl={opts.url}
                       onChange={(v) => updateRule(index, { value: v })}
-                      placeholder="value"
+                      placeholder={__('value', 'wp-sms')}
                     />
                   );
                 }
@@ -137,7 +137,7 @@ export function ConditionSentence({ step, onChange, payloadSchema, triggerType }
                     mode="text"
                     value={rule.value}
                     onChange={(v) => updateRule(index, { value: v })}
-                    placeholder="value"
+                    placeholder={__('value', 'wp-sms')}
                   />
                 );
               })()}
@@ -171,7 +171,7 @@ export function ConditionSentence({ step, onChange, payloadSchema, triggerType }
         className="text-xs text-muted-foreground hover:text-foreground transition-colors"
         onClick={addRule}
       >
-        + Add rule
+        {__('+ Add rule', 'wp-sms')}
       </button>
     </div>
   );

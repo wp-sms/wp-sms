@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf, _n } from '@wordpress/i18n';
 import { useState, useEffect, useCallback } from 'react';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
@@ -50,14 +50,14 @@ import type { useSubscriptionForms } from '@/hooks/use-subscription-forms';
 import { copyToClipboard, generateSlug } from '@/lib/utils';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/error-utils';
-import { pluralize } from '@/lib/utils';
+
 import type { SubscriptionFormField } from '@/lib/api';
 
 const AVAILABLE_FIELDS = [
-  { key: 'email', label: 'Email Address' },
-  { key: 'phone', label: 'Phone Number' },
-  { key: 'first_name', label: 'First Name' },
-  { key: 'last_name', label: 'Last Name' },
+  { key: 'email', label: __('Email Address', 'wp-sms') },
+  { key: 'phone', label: __('Phone Number', 'wp-sms') },
+  { key: 'first_name', label: __('First Name', 'wp-sms') },
+  { key: 'last_name', label: __('Last Name', 'wp-sms') },
 ];
 
 interface FormEditorState {
@@ -81,13 +81,13 @@ const EMPTY_FORM: FormEditorState = {
   name: '',
   slug: '',
   status: 'active',
-  fields: [{ key: 'email', required: true, label: 'Email Address' }],
+  fields: [{ key: 'email', required: true, label: __('Email Address', 'wp-sms') }],
   list_id: null,
   tag_id: null,
   double_optin: false,
   optin_channel: 'email',
-  appearance: { button_text: 'Subscribe' },
-  success_message: 'Thanks for subscribing!',
+  appearance: { button_text: __('Subscribe', 'wp-sms') },
+  success_message: __('Thanks for subscribing!', 'wp-sms'),
   redirect_url: '',
   consent_text: null,
   consent_required: null,
@@ -171,9 +171,9 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
 
   async function handleDelete(id: string) {
     const ok = await confirm({
-      title: 'Delete Subscription Form',
-      description: 'This will permanently delete this subscription form. Existing contacts collected through this form will not be affected.',
-      confirmLabel: 'Delete',
+      title: __('Delete Subscription Form', 'wp-sms'),
+      description: __('This will permanently delete this subscription form. Existing contacts collected through this form will not be affected.', 'wp-sms'),
+      confirmLabel: __('Delete', 'wp-sms'),
       variant: 'destructive',
     });
     if (ok) {
@@ -221,7 +221,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
           <PageHeader
             icon={ClipboardList}
             title={__('Subscription Forms', 'wp-sms')}
-            metadata={pluralize(forms.length, 'form')}
+            metadata={sprintf(_n('%d form', '%d forms', forms.length, 'wp-sms'), forms.length)}
             actions={
               <Button onClick={openCreate} size="sm">
                 <Plus className="me-1 h-3.5 w-3.5" />
@@ -265,7 +265,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                   <TableCell>
                     <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{form.slug}</code>
                   </TableCell>
-                  <TableCell>{form.fields.length} fields</TableCell>
+                  <TableCell>{sprintf(_n('%d field', '%d fields', form.fields.length, 'wp-sms'), form.fields.length)}</TableCell>
                   <TableCell>
                     {form.double_optin ? (
                       <Badge variant="outline">{form.optin_channel}</Badge>
@@ -310,15 +310,15 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
       <Drawer open={panelOpen} onOpenChange={setPanelOpen}>
         <DrawerContent className="sm:max-w-lg overflow-y-auto">
           <DrawerHeader>
-            <DrawerTitle>{isEdit ? 'Edit Form' : 'Create Subscription Form'}</DrawerTitle>
+            <DrawerTitle>{isEdit ? __('Edit Form', 'wp-sms') : __('Create Subscription Form', 'wp-sms')}</DrawerTitle>
             <DrawerDescription>
-              {isEdit ? 'Update the subscription form settings.' : 'Configure a new form to collect subscriber contacts.'}
+              {isEdit ? __('Update the subscription form settings.', 'wp-sms') : __('Configure a new form to collect subscriber contacts.', 'wp-sms')}
             </DrawerDescription>
           </DrawerHeader>
 
           <div className="space-y-4 px-4">
             <Field>
-              <FieldLabel htmlFor="sf-name">Name *</FieldLabel>
+              <FieldLabel htmlFor="sf-name">{__('Name', 'wp-sms')} *</FieldLabel>
               <Input
                 id="sf-name"
                 value={formState.name}
@@ -335,7 +335,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="sf-slug">Slug</FieldLabel>
+              <FieldLabel htmlFor="sf-slug">{__('Slug', 'wp-sms')}</FieldLabel>
               <Input
                 id="sf-slug"
                 value={formState.slug}
@@ -346,7 +346,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                 placeholder="newsletter"
               />
               <FieldDescription>
-                Shortcode: <code>[wsms_subscribe id="{formState.slug || '...'}"]</code>
+                {__('Shortcode:', 'wp-sms')} <code>[wsms_subscribe id="{formState.slug || '...'}"]</code>
               </FieldDescription>
             </Field>
 
@@ -354,7 +354,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
 
             {/* Fields */}
             <div>
-              <p className="text-sm font-medium mb-1">Fields *</p>
+              <p className="text-sm font-medium mb-1">{__('Fields', 'wp-sms')} *</p>
               <p className="text-xs text-muted-foreground mb-3">{__('Select which fields to include and mark them as required.', 'wp-sms')}</p>
               <div className="rounded-lg border border-border/50 divide-y divide-border/50">
                 {AVAILABLE_FIELDS.map((af) => {
@@ -382,7 +382,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                             checked={included.required}
                             onCheckedChange={() => toggleFieldRequired(af.key)}
                           />
-                          Required
+                          {__('Required', 'wp-sms')}
                         </label>
                       )}
                     </div>
@@ -422,7 +422,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
               </p>
               <div className="space-y-3">
                 <Field orientation="horizontal">
-                  <FieldLabel className="flex-1">Require verification</FieldLabel>
+                  <FieldLabel className="flex-1">{__('Require verification', 'wp-sms')}</FieldLabel>
                   <Switch
                     checked={formState.double_optin}
                     onCheckedChange={(checked) => setFormState((prev) => ({ ...prev, double_optin: checked }))}
@@ -440,7 +440,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                       </SelectTrigger>
                       <SelectContent>
                         {optinChannelOptions.map((ch) => (
-                          <SelectItem key={ch} value={ch}>{ch === 'email' ? 'Email' : 'Phone (SMS)'}</SelectItem>
+                          <SelectItem key={ch} value={ch}>{ch === 'email' ? __('Email', 'wp-sms') : __('Phone (SMS)', 'wp-sms')}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -452,7 +452,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
             <Separator />
 
             <Field>
-              <FieldLabel htmlFor="sf-btn-text">Button Text</FieldLabel>
+              <FieldLabel htmlFor="sf-btn-text">{__('Button Text', 'wp-sms')}</FieldLabel>
               <Input
                 id="sf-btn-text"
                 value={formState.appearance.button_text || ''}
@@ -498,7 +498,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
             )}
 
             <Field>
-              <FieldLabel htmlFor="sf-success-msg">Success Message</FieldLabel>
+              <FieldLabel htmlFor="sf-success-msg">{__('Success Message', 'wp-sms')}</FieldLabel>
               <Input
                 id="sf-success-msg"
                 value={formState.success_message}
@@ -508,7 +508,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="sf-redirect">Redirect URL</FieldLabel>
+              <FieldLabel htmlFor="sf-redirect">{__('Redirect URL', 'wp-sms')}</FieldLabel>
               <Input
                 id="sf-redirect"
                 value={formState.redirect_url}
@@ -538,7 +538,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
             {formState.consent_text !== null ? (
               <div className="space-y-3">
                 <Field>
-                  <FieldLabel htmlFor="sf-consent-text">Consent Text</FieldLabel>
+                  <FieldLabel htmlFor="sf-consent-text">{__('Consent Text', 'wp-sms')}</FieldLabel>
                   <Textarea
                     id="sf-consent-text"
                     rows={3}
@@ -549,12 +549,12 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                     placeholder='I agree to receive messages and accept the <a href="{privacy_url}">Privacy Policy</a>.'
                   />
                   <FieldDescription>
-                    HTML allowed. Use <code>{'{privacy_url}'}</code> as a placeholder for the privacy policy link. Leave empty to disable the checkbox for this form.
+                    {__('HTML allowed. Use {privacy_url} as a placeholder for the privacy policy link. Leave empty to disable the checkbox for this form.', 'wp-sms')}
                   </FieldDescription>
                 </Field>
 
                 <Field>
-                  <FieldLabel htmlFor="sf-privacy-url">Privacy Policy URL</FieldLabel>
+                  <FieldLabel htmlFor="sf-privacy-url">{__('Privacy Policy URL', 'wp-sms')}</FieldLabel>
                   <Input
                     id="sf-privacy-url"
                     value={formState.privacy_url ?? ''}
@@ -566,7 +566,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                 </Field>
 
                 <Field orientation="horizontal">
-                  <FieldLabel className="flex-1">Consent required</FieldLabel>
+                  <FieldLabel className="flex-1">{__('Consent required', 'wp-sms')}</FieldLabel>
                   <Switch
                     checked={formState.consent_required ?? false}
                     onCheckedChange={(checked) =>
@@ -599,7 +599,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
 
           <DrawerFooter>
             <Button onClick={handleSave} disabled={saving || !formState.name || formState.fields.length === 0}>
-              {saving ? 'Saving...' : isEdit ? 'Update' : 'Create'}
+              {saving ? __('Saving...', 'wp-sms') : isEdit ? __('Update', 'wp-sms') : __('Create', 'wp-sms')}
             </Button>
           </DrawerFooter>
         </DrawerContent>

@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -36,7 +37,7 @@ export function MethodCard({ title, description, enabled, onToggle, icon: Icon, 
               <CollapsibleTrigger asChild>
                 <button
                   className="rounded-md p-1.5 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                  aria-label="Toggle configuration"
+                  aria-label={__('Toggle configuration', 'wp-sms')}
                 >
                   <ChevronDown
                     className={cn('h-4 w-4 transition-transform', open && 'rotate-180')}
@@ -50,7 +51,7 @@ export function MethodCard({ title, description, enabled, onToggle, icon: Icon, 
                 if (!next) setOpen(false);
                 onToggle(next);
               }}
-              aria-label={`Toggle ${title}`}
+              aria-label={sprintf(__('Toggle %s', 'wp-sms'), title)}
             />
           </div>
         </CardHeader>

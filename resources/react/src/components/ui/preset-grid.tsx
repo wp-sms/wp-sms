@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { cn } from '@/lib/utils';
 
 interface PresetGridProps<T extends { id: string; name: string }> {
@@ -38,7 +39,7 @@ export function PresetGrid<T extends { id: string; name: string }>({
       ))}
       {activePresetId === 'custom' && (
         <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-input p-2">
-          <span className="text-[11px] font-medium text-muted-foreground">Custom</span>
+          <span className="text-[11px] font-medium text-muted-foreground">{__('Custom', 'wp-sms')}</span>
         </div>
       )}
     </div>

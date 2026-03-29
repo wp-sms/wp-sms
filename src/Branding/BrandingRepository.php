@@ -35,6 +35,18 @@ class BrandingRepository
         'split_subtitle'           => 'Sign in to continue',
     ];
 
+    /**
+     * Return translated default texts (cannot use __() inside class constants).
+     */
+    public static function getTranslatedDefaults(): array
+    {
+        $defaults = self::DEFAULTS;
+        $defaults['split_welcome_heading'] = __('Welcome back', 'wp-sms');
+        $defaults['split_subtitle'] = __('Sign in to continue', 'wp-sms');
+
+        return $defaults;
+    }
+
     public function all(): array
     {
         if ($this->cached !== null) {
@@ -47,7 +59,7 @@ class BrandingRepository
             $raw = [];
         }
 
-        return $this->cached = array_merge(self::DEFAULTS, $raw);
+        return $this->cached = array_merge(self::getTranslatedDefaults(), $raw);
     }
 
     public function get(string $key, $default = null)

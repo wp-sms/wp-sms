@@ -99,7 +99,7 @@ export function LogTable({ logs, total, page, perPage, onPageChange, loading }: 
                     {expandable && (
                       <button
                         type="button"
-                        aria-label={isExpanded ? 'Collapse details' : 'Expand details'}
+                        aria-label={isExpanded ? __('Collapse details', 'wp-sms') : __('Expand details', 'wp-sms')}
                         className="p-0.5 text-muted-foreground hover:text-foreground"
                       >
                         {isExpanded ? (
