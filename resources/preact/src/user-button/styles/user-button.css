@@ -14,7 +14,7 @@
     --ub-shadow: 0 4px 24px rgb(0 0 0 / 0.12), 0 1px 3px rgb(0 0 0 / 0.08);
 
     display: inline-block;
-    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-family: system-ui, -apple-system, sans-serif;
     font-size: 14px;
     line-height: 1.5;
     color: var(--ub-text);

@@ -27,8 +27,7 @@
     --input: oklch(0.82 0.004 48.717);
     --ring: oklch(0.709 0.01 56.259);
 
-    --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-sans: system-ui, -apple-system, sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
         "Liberation Mono", monospace;
 }
@@ -42,6 +41,17 @@
 #wsms-auth *::before,
 #wsms-auth *::after {
     box-sizing: border-box;
+}
+
+:host button,
+:host input,
+:host select,
+:host textarea,
+#wsms-auth button,
+#wsms-auth input,
+#wsms-auth select,
+#wsms-auth textarea {
+    font-family: inherit;
 }
 
 :host *:focus-visible,

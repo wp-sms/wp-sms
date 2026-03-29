@@ -155,7 +155,7 @@ export function generatePalette(config) {
     // Shared (non-color) vars
     const shared = {};
     if (font_family && font_family !== 'system-ui') {
-        shared['--font-sans'] = `"${font_family}", ui-sans-serif, system-ui, -apple-system, sans-serif`;
+        shared['--font-sans'] = `"${font_family}", system-ui, -apple-system, sans-serif`;
     }
     shared['--radius'] = `${border_radius / 16}rem`;
 
