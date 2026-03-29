@@ -56,7 +56,7 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
             </div>
 
             <Field>
-              <FieldLabel htmlFor="mb-button-text">Button Text</FieldLabel>
+              <FieldLabel htmlFor="mb-button-text">{__('Button Text', 'wp-sms')}</FieldLabel>
               <Input
                 id="mb-button-text"
                 value={button.text}

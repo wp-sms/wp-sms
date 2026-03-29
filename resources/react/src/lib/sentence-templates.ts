@@ -1,3 +1,5 @@
+import { __ } from '@wordpress/i18n';
+
 export interface SentenceTemplate {
   /** Each line is rendered as a sentence row. {field} becomes a token. */
   lines: string[];
@@ -8,21 +10,21 @@ export interface SentenceTemplate {
 export const SENTENCE_TEMPLATES: Record<string, SentenceTemplate> = {
   send_message: {
     lines: [
-      'Send {channel} to {recipient_mode} {to} {tag_id} {list_id}',
-      '{message_mode}: {body} {provider_template_id}',
+      __('Send {channel} to {recipient_mode} {to} {tag_id} {list_id}', 'wp-sms'),
+      __('{message_mode}: {body} {provider_template_id}', 'wp-sms'),
     ],
     advancedFields: ['gateway', 'subject', 'media_url', 'template_variables'],
   },
   http_request: {
-    lines: ['Make a {method} request to {url}', 'Body: {body}'],
+    lines: [__('Make a {method} request to {url}', 'wp-sms'), __('Body: {body}', 'wp-sms')],
     advancedFields: ['headers'],
   },
   subscribe_to_list: {
-    lines: ['Subscribe {contact_id} to list {list_id}'],
+    lines: [__('Subscribe {contact_id} to list {list_id}', 'wp-sms')],
     advancedFields: [],
   },
   unsubscribe_from_list: {
-    lines: ['Unsubscribe {contact_id} from list {list_id}'],
+    lines: [__('Unsubscribe {contact_id} from list {list_id}', 'wp-sms')],
     advancedFields: [],
   },
 };

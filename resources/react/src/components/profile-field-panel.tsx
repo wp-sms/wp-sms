@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useState, useEffect } from 'react';
 import {
   Drawer,
@@ -126,10 +126,10 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
   );
 
   const title = mode === 'edit'
-    ? `Edit: ${form.label}`
+    ? sprintf(__('Edit: %s', 'wp-sms'), form.label)
     : mode === 'meta'
-      ? 'Pick Existing Meta Key'
-      : 'Create Custom Field';
+      ? __('Pick Existing Meta Key', 'wp-sms')
+      : __('Create Custom Field', 'wp-sms');
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
@@ -138,10 +138,10 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
           <DrawerTitle>{title}</DrawerTitle>
           <DrawerDescription id="field-panel-desc">
             {mode === 'meta'
-              ? 'Browse existing user meta keys from other plugins and add them to your auth forms.'
+              ? __('Browse existing user meta keys from other plugins and add them to your auth forms.', 'wp-sms')
               : isSystem
-                ? 'Configure visibility and requirements for this system field.'
-                : 'Define a custom field for registration and profile forms.'}
+                ? __('Configure visibility and requirements for this system field.', 'wp-sms')
+                : __('Define a custom field for registration and profile forms.', 'wp-sms')}
           </DrawerDescription>
         </DrawerHeader>
 
@@ -171,11 +171,11 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                     >
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium font-mono">{mk.key}</span>
-                        <span className="text-xs text-muted-foreground">{mk.count} users</span>
+                        <span className="text-xs text-muted-foreground">{sprintf(__('%d users', 'wp-sms'), mk.count)}</span>
                       </div>
                       {mk.sample_value && (
                         <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                          e.g. {mk.sample_value}
+                          {sprintf(__('e.g. %s', 'wp-sms'), mk.sample_value)}
                         </p>
                       )}
                     </button>
@@ -308,7 +308,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                       onChange={(e) => update({ default_value: e.target.value })}
                       className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     >
-                      <option value="">No default</option>
+                      <option value="">{__('No default', 'wp-sms')}</option>
                       {(form.options ?? []).map((opt) => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
@@ -371,7 +371,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                 onClick={handleSubmit}
                 disabled={!form.id || !form.label || idConflict}
               >
-                {mode === 'edit' ? 'Save Changes' : 'Add Field'}
+                {mode === 'edit' ? __('Save Changes', 'wp-sms') : __('Add Field', 'wp-sms')}
               </Button>
             </>
           )}

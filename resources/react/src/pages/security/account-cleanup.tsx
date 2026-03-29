@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -14,9 +14,9 @@ interface AccountCleanupProps {
 function formatTtl(hours: number): string {
   if (hours >= 24) {
     const days = Math.floor(hours / 24);
-    return `${days} day${days !== 1 ? 's' : ''}`;
+    return sprintf(_n('%d day', '%d days', days, 'wp-sms'), days);
   }
-  return `${hours} hours`;
+  return sprintf(_n('%d hour', '%d hours', hours, 'wp-sms'), hours);
 }
 
 export function AccountCleanup({ settings, onUpdate }: AccountCleanupProps) {
@@ -31,8 +31,7 @@ export function AccountCleanup({ settings, onUpdate }: AccountCleanupProps) {
           {__('Pending Registration Cleanup', 'wp-sms')}
         </CardTitle>
         <CardDescription>
-          Automatically delete pending users who never verified their account.
-          When verification is required at signup, users who never complete verification are cleaned up after the TTL expires, freeing their email/phone for re-registration.
+          {__('Automatically delete pending users who never verified their account. When verification is required at signup, users who never complete verification are cleaned up after the TTL expires, freeing their email/phone for re-registration.', 'wp-sms')}
         </CardDescription>
         <CardAction>
           <Switch
@@ -45,7 +44,7 @@ export function AccountCleanup({ settings, onUpdate }: AccountCleanupProps) {
       {enabled && (
         <CardContent className="border-t pt-4">
           <Field>
-            <FieldLabel htmlFor="ttl_hours">Cleanup TTL (hours)</FieldLabel>
+            <FieldLabel htmlFor="ttl_hours">{__('Cleanup TTL (hours)', 'wp-sms')}</FieldLabel>
             <Input
               id="ttl_hours"
               type="number"
@@ -56,7 +55,7 @@ export function AccountCleanup({ settings, onUpdate }: AccountCleanupProps) {
               className="max-w-[200px]"
             />
             <FieldDescription>
-              Hours before an unverified registration is eligible for cleanup and re-registration ({formatTtl(settings.pending_user_ttl_hours)})
+              {sprintf(__('Hours before an unverified registration is eligible for cleanup and re-registration (%s)', 'wp-sms'), formatTtl(settings.pending_user_ttl_hours))}
             </FieldDescription>
           </Field>
         </CardContent>

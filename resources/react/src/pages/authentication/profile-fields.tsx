@@ -1,12 +1,11 @@
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ProfileFieldPanel } from '@/components/profile-field-panel';
 import { Plus, GripVertical, Pencil, Trash2, ArrowUp, ArrowDown, ListChecks } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
-import { FIELD_TYPES, formatLabel } from '@/lib/constants';
-import { pluralize } from '@/lib/utils';
+import { FIELD_TYPES, FIELD_SOURCES, FIELD_VISIBILITY } from '@/lib/constants';
 import { useConfirm } from '@/components/confirm-provider';
 import type { AuthSettings, ProfileFieldDefinition } from '@/lib/api';
 
@@ -123,7 +122,7 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
       <PageHeader
         icon={ListChecks}
         title={__('Profile Fields', 'wp-sms')}
-        metadata={pluralize(allFields.length, 'field')}
+        metadata={sprintf(_n('%d field', '%d fields', allFields.length, 'wp-sms'), allFields.length)}
         actions={
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => handleAdd('meta')}>
@@ -144,7 +143,7 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium">{field.label}</span>
                   <Badge variant={getSourceBadgeVariant(field.source)} className="text-[10px] px-1.5 py-0">
-                    {field.source}
+                    {FIELD_SOURCES.find((s) => s.value === field.source)?.label ?? field.source}
                   </Badge>
                   {field.source !== 'system' && (
                     <Badge variant="outline" className="text-[10px] px-1.5 py-0">
@@ -158,7 +157,7 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  {formatLabel(field.visibility)} {field.meta_key !== field.id ? `\u00B7 ${field.meta_key}` : ''}
+                  {FIELD_VISIBILITY.find((v) => v.value === field.visibility)?.label ?? field.visibility} {field.meta_key !== field.id ? `\u00B7 ${field.meta_key}` : ''}
                 </p>
               </div>
               <div className="flex items-center gap-1">

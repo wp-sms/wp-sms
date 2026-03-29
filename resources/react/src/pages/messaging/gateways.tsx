@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { useState, useMemo, useEffect } from 'react';
 import { useGateways } from '@/hooks/use-gateways';
 import { GatewayConfigPanel } from '@/components/gateway-config-panel';
@@ -19,7 +19,6 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } f
 import { Search, Star, ChevronRight, Radio, Smartphone, Mail, MessageSquare, MessageCircle, Send, Check } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 import { getGatewayColor, getGatewayInitial } from '@/lib/gateway-visuals';
-import { pluralize } from '@/lib/utils';
 import type { Gateway } from '@/lib/api';
 
 const FEATURE_LABELS: Record<string, string> = {
@@ -211,7 +210,7 @@ export function Gateways() {
       <PageHeader
         icon={Radio}
         title={__('Gateways', 'wp-sms')}
-        metadata={pluralize(gateways.length, 'gateway')}
+        metadata={sprintf(_n('%d gateway', '%d gateways', gateways.length, 'wp-sms'), gateways.length)}
         actions={
           allChannels.length > 0 ? (
             <Button variant="outline" size="sm" onClick={() => setDefaultsOpen(true)}>

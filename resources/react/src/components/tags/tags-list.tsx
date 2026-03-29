@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { useState, useCallback } from 'react';
 import type { Tag } from '@/lib/api';
 import type { UseTagsReturn } from '@/hooks/use-tags';
@@ -18,7 +18,6 @@ import {
 import { Plus, Tags, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
-import { pluralize } from '@/lib/utils';
 
 interface TagsListProps {
   hook: UseTagsReturn;
@@ -133,7 +132,7 @@ export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
         <PageSection
           icon={Tags}
           title={__('Tags', 'wp-sms')}
-          description={pluralize(tags.length, 'tag')}
+          description={sprintf(_n('%d tag', '%d tags', tags.length, 'wp-sms'), tags.length)}
           actions={
             <Button size="sm" onClick={handleCreate}>
               <Plus className="me-1.5 h-3.5 w-3.5" /> {__('New Tag', 'wp-sms')}

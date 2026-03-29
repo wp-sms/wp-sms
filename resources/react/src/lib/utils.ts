@@ -69,6 +69,3 @@ export function getAvailableRoles(): { value: string; label: string }[] {
   return Object.entries(roles).map(([value, label]) => ({ value, label: label as string }));
 }
 
-export function pluralize(count: number, singular: string, plural?: string): string {
-  return `${count} ${count === 1 ? singular : (plural ?? singular + 's')}`;
-}

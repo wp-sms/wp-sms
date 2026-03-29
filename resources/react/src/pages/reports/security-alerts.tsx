@@ -29,13 +29,13 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
       contentClassName="space-y-6"
     >
         <div className="flex items-baseline gap-x-4 gap-y-1 flex-wrap text-sm text-muted-foreground">
-          <span><strong className="font-bold tabular-nums text-foreground">{fmtNumber(failed_login_attempts)}</strong> failed logins</span>
+          <span><strong className="font-bold tabular-nums text-foreground">{fmtNumber(failed_login_attempts)}</strong> {__('failed logins', 'wp-sms')}</span>
           <span aria-hidden>·</span>
-          <span><strong className="font-bold tabular-nums text-foreground">{fmtNumber(accounts_locked)}</strong> accounts locked</span>
+          <span><strong className="font-bold tabular-nums text-foreground">{fmtNumber(accounts_locked)}</strong> {__('accounts locked', 'wp-sms')}</span>
           <span aria-hidden>·</span>
-          <span><strong className="font-bold tabular-nums text-foreground">{fmtNumber(accounts_suspended)}</strong> accounts suspended</span>
+          <span><strong className="font-bold tabular-nums text-foreground">{fmtNumber(accounts_suspended)}</strong> {__('accounts suspended', 'wp-sms')}</span>
           <span aria-hidden>·</span>
-          <span><strong className="font-bold tabular-nums text-foreground">{fmtNumber(otp_failures)}</strong> OTP failures</span>
+          <span><strong className="font-bold tabular-nums text-foreground">{fmtNumber(otp_failures)}</strong> {__('OTP failures', 'wp-sms')}</span>
         </div>
 
         {top_failed_ips.length > 0 && (

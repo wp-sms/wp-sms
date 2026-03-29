@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -29,7 +29,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
           <div className="space-y-4">
             <div className="max-w-md">
               <Field>
-                <FieldLabel htmlFor="auth_base_url">Base URL</FieldLabel>
+                <FieldLabel htmlFor="auth_base_url">{__('Base URL', 'wp-sms')}</FieldLabel>
                 <Input
                   id="auth_base_url"
                   type="text"
@@ -39,7 +39,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
                   placeholder="/auth"
                 />
                 <FieldDescription>
-                  The base path for authentication pages (e.g., /auth, /login)
+                  {__('The base path for authentication pages (e.g., /auth, /login)', 'wp-sms')}
                 </FieldDescription>
               </Field>
             </div>
@@ -67,7 +67,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
       >
           <div className="space-y-4 max-w-md">
             <Field>
-              <FieldLabel htmlFor="site_phone_channel">Channel</FieldLabel>
+              <FieldLabel htmlFor="site_phone_channel">{__('Channel', 'wp-sms')}</FieldLabel>
               <Select
                 value={settings.site_phone_channel}
                 onValueChange={(value) => onUpdate('site_phone_channel', value as SitePhoneChannel)}
@@ -87,7 +87,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
 
             <Field>
               <FieldLabel htmlFor="site_phone">
-                {isTelegram ? 'Chat ID' : 'Phone Number'}
+                {isTelegram ? __('Chat ID', 'wp-sms') : __('Phone Number', 'wp-sms')}
               </FieldLabel>
               <Input
                 id="site_phone"
@@ -98,13 +98,13 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
                 placeholder={isTelegram ? '123456789' : '+1234567890'}
               />
               <FieldDescription>
-                {'Used as {{site.phone}} in flow templates and as fallback for notifications when no recipients are configured.'}
+                {__('Used as {{site.phone}} in flow templates and as fallback for notifications when no recipients are configured.', 'wp-sms')}
               </FieldDescription>
             </Field>
 
             {isTelegram && (
               <p className="text-xs text-muted-foreground rounded-md bg-muted/50 p-3">
-                Telegram requires a configured Telegram bot in Authentication &rarr; Channels.
+                {__('Telegram requires a configured Telegram bot in Authentication → Channels.', 'wp-sms')}
               </p>
             )}
           </div>
@@ -117,7 +117,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
       >
           <div className="space-y-4 max-w-md">
             <Field>
-              <FieldLabel htmlFor="terms_url">Terms of Service URL</FieldLabel>
+              <FieldLabel htmlFor="terms_url">{__('Terms of Service URL', 'wp-sms')}</FieldLabel>
               <Input
                 id="terms_url"
                 type="url"
@@ -128,7 +128,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="privacy_url">Privacy Policy URL</FieldLabel>
+              <FieldLabel htmlFor="privacy_url">{__('Privacy Policy URL', 'wp-sms')}</FieldLabel>
               <Input
                 id="privacy_url"
                 type="url"
@@ -137,7 +137,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
                 placeholder="https://example.com/privacy"
               />
               <FieldDescription>
-                When set, a consent line appears on the registration page.
+                {__('When set, a consent line appears on the registration page.', 'wp-sms')}
               </FieldDescription>
             </Field>
           </div>
@@ -150,7 +150,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
       >
           <div className="space-y-4 max-w-md">
             <Field>
-              <FieldLabel htmlFor="subscription_consent_text">Consent Text</FieldLabel>
+              <FieldLabel htmlFor="subscription_consent_text">{__('Consent Text', 'wp-sms')}</FieldLabel>
               <Textarea
                 id="subscription_consent_text"
                 rows={3}
@@ -159,12 +159,12 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
                 placeholder='I agree to receive messages and accept the <a href="{privacy_url}">Privacy Policy</a>.'
               />
               <FieldDescription>
-                HTML allowed. Use <code>{'{privacy_url}'}</code> as a placeholder for the privacy policy link.
+                {sprintf(__('HTML allowed. Use %s as a placeholder for the privacy policy link.', 'wp-sms'), '{privacy_url}')}
               </FieldDescription>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="subscription_consent_privacy_url">Privacy Policy URL</FieldLabel>
+              <FieldLabel htmlFor="subscription_consent_privacy_url">{__('Privacy Policy URL', 'wp-sms')}</FieldLabel>
               <Input
                 id="subscription_consent_privacy_url"
                 value={settings.subscription_consent_privacy_url}
@@ -204,7 +204,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
       >
           <div className="space-y-4 max-w-md">
             <Field>
-              <FieldLabel htmlFor="log_verbosity">Verbosity</FieldLabel>
+              <FieldLabel htmlFor="log_verbosity">{__('Verbosity', 'wp-sms')}</FieldLabel>
               <Select
                 value={settings.log_verbosity}
                 onValueChange={(value) => onUpdate('log_verbosity', value as AuthSettings['log_verbosity'])}
@@ -225,7 +225,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
               </FieldDescription>
             </Field>
             <Field>
-              <FieldLabel htmlFor="log_retention_days">Retention (days)</FieldLabel>
+              <FieldLabel htmlFor="log_retention_days">{__('Retention (days)', 'wp-sms')}</FieldLabel>
               <Input
                 id="log_retention_days"
                 type="number"

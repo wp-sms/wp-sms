@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { formatDateTime } from '@/lib/format';
 import { useState } from 'react';
 import { useCampaigns } from '@/hooks/use-campaigns';
@@ -34,7 +34,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { CHANNEL_LABELS } from '@/components/gateway-config-form';
 import { Plus, Megaphone, Pencil, Trash2, Copy, Eye } from 'lucide-react';
-import { pluralize } from '@/lib/utils';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
 
@@ -129,7 +128,7 @@ export function Campaigns() {
       <PageHeader
         icon={Megaphone}
         title={__('Campaigns', 'wp-sms')}
-        metadata={pluralize(total, 'campaign')}
+        metadata={sprintf(_n('%d campaign', '%d campaigns', total, 'wp-sms'), total)}
         actions={
           <Button size="sm" onClick={() => setView({ mode: 'create' })}>
             <Plus className="me-1.5 h-3.5 w-3.5" />

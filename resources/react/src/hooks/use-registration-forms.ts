@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useFormsCrud } from './use-forms-crud';
 
 export interface RegistrationFormField {
@@ -25,6 +26,6 @@ export interface RegistrationFormData {
 export function useRegistrationForms() {
   return useFormsCrud<RegistrationFormData>({
     endpoint: '/auth/admin/registration-forms',
-    label: 'Registration form',
+    label: __('Registration form', 'wp-sms'),
   });
 }

@@ -1,4 +1,4 @@
-import { __, sprintf } from '@wordpress/i18n';
+import { __, sprintf, _n } from '@wordpress/i18n';
 import { useState } from 'react';
 import { IntegrationIcon } from '@/components/integration-icon';
 import { IntegrationStatusBadge } from '@/components/integration-status-badge';
@@ -11,7 +11,6 @@ import { Loader2, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useIntegrationConfig } from '@/hooks/use-integrations';
 import { INTEGRATION_CATEGORY_LABELS } from '@/lib/constants';
-import { pluralize } from '@/lib/utils';
 import type { IntegrationDetail } from '@/lib/api';
 
 interface IntegrationHeroProps {
@@ -74,12 +73,12 @@ export function IntegrationHero({ detail, onConfigChange }: IntegrationHeroProps
               ))}
               {detail.triggers.length > 0 && (
                 <Badge variant="neutral" className="text-xs font-medium">
-                  {pluralize(detail.triggers.length, 'Trigger')}
+                  {sprintf(_n('%d Trigger', '%d Triggers', detail.triggers.length, 'wp-sms'), detail.triggers.length)}
                 </Badge>
               )}
               {detail.actions.length > 0 && (
                 <Badge variant="neutral" className="text-xs font-medium">
-                  {pluralize(detail.actions.length, 'Action')}
+                  {sprintf(_n('%d Action', '%d Actions', detail.actions.length, 'wp-sms'), detail.actions.length)}
                 </Badge>
               )}
             </div>

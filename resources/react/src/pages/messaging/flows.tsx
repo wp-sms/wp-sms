@@ -1,4 +1,4 @@
-import { __, sprintf } from '@wordpress/i18n';
+import { __, sprintf, _n } from '@wordpress/i18n';
 import { formatDate } from '@/lib/format';
 import { useState, useEffect, useMemo } from 'react';
 import { useFlows } from '@/hooks/use-flows';
@@ -46,7 +46,6 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { formatLabel } from '@/lib/constants';
-import { pluralize } from '@/lib/utils';
 import { countSteps } from '@/lib/flow-utils';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
@@ -222,7 +221,7 @@ export function Flows() {
       <PageHeader
         icon={Workflow}
         title={__('Automation Flows', 'wp-sms')}
-        metadata={pluralize(total, 'flow')}
+        metadata={sprintf(_n('%d flow', '%d flows', total, 'wp-sms'), total)}
         actions={
           <div className="flex items-center gap-2">
             {!templatesLoading && templates.length > 0 && (

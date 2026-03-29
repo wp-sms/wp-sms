@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { useState } from 'react';
 import { useWebhooks } from '@/hooks/use-webhooks';
 import type { OutboundWebhook, WebhookEvent, WebhookEventGroups } from '@/lib/api';
@@ -37,7 +37,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
-import { copyToClipboard, pluralize } from '@/lib/utils';
+import { copyToClipboard } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
 
 type View =
@@ -149,7 +149,7 @@ export function Webhooks() {
       <PageHeader
         icon={Webhook}
         title={__('Webhooks', 'wp-sms')}
-        metadata={pluralize(webhooks.length, 'webhook')}
+        metadata={sprintf(_n('%d webhook', '%d webhooks', webhooks.length, 'wp-sms'), webhooks.length)}
         actions={
           <Button size="sm" onClick={() => setView({ mode: 'create' })}>
             <Plus className="me-1.5 h-3.5 w-3.5" />
@@ -196,7 +196,7 @@ export function Webhooks() {
                   <code className="text-xs text-muted-foreground">{truncateUrl(wh.url)}</code>
                 </TableCell>
                 <TableCell>
-                  <Badge variant="outline">{pluralize(wh.events.length, 'event')}</Badge>
+                  <Badge variant="outline">{sprintf(_n('%d event', '%d events', wh.events.length, 'wp-sms'), wh.events.length)}</Badge>
                 </TableCell>
                 <TableCell>
                   <Switch

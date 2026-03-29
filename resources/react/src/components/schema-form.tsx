@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useRef, useState, useEffect, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -48,7 +48,7 @@ function TemplatePreview({ value, payloadSchema, sampleData }: { value: string; 
 
   return (
     <p className="mt-1 text-xs text-muted-foreground/70 truncate">
-      Preview: {preview}
+      {sprintf(__('Preview: %s', 'wp-sms'), preview)}
     </p>
   );
 }
@@ -77,7 +77,7 @@ function resolvePlaceholder(
   if (triggerPlaceholder) return triggerPlaceholder;
   if (prop.example != null) return String(prop.example);
   const label = prop.title ?? formatLabel(fieldKey);
-  return `Enter ${label.toLowerCase()}`;
+  return sprintf(__('Enter %s', 'wp-sms'), label.toLowerCase());
 }
 
 function TextareaField({
@@ -254,7 +254,7 @@ function DynamicSelectField({
           onValueChange={(v) => onChange(fieldKey, v)}
         >
           <SelectTrigger id={`schema-${fieldKey}`} className="flex-1">
-            <SelectValue placeholder={showAny ? 'Any' : `Select ${label.toLowerCase()}`} />
+            <SelectValue placeholder={showAny ? __('Any', 'wp-sms') : sprintf(__('Select %s', 'wp-sms'), label.toLowerCase())} />
           </SelectTrigger>
           <SelectContent>
             {options.map((opt) => (
@@ -473,7 +473,7 @@ function PropertyField({
             onValueChange={(v) => onChange(fieldKey, v)}
           >
             <SelectTrigger id={`schema-${fieldKey}`} className="flex-1">
-              <SelectValue placeholder={showAny ? 'Any' : `Select ${label.toLowerCase()}`} />
+              <SelectValue placeholder={showAny ? __('Any', 'wp-sms') : sprintf(__('Select %s', 'wp-sms'), label.toLowerCase())} />
             </SelectTrigger>
             <SelectContent>
               {prop.enum.map((opt) => (

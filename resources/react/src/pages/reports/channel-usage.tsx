@@ -71,7 +71,7 @@ const MethodChart = memo(function MethodChart({ title, description, items }: { t
   }, [items, plotW, plotH]);
 
   const tooltipRows: TooltipRow[] | undefined = hover
-    ? [{ color: COLORS[hover.index % COLORS.length], label: 'Count', value: hover.item.count }]
+    ? [{ color: COLORS[hover.index % COLORS.length], label: __('Count', 'wp-sms'), value: hover.item.count }]
     : undefined;
 
   return (

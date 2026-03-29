@@ -47,7 +47,6 @@ import { copyToClipboard, generateSlug, getAvailableRoles } from '@/lib/utils';
 import { SYSTEM_FIELD_OPTIONS } from '@/lib/constants';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/error-utils';
-import { pluralize } from '@/lib/utils';
 
 interface FormEditorState {
   name: string;
@@ -203,7 +202,7 @@ export function RegistrationForms() {
         <PageHeader
           icon={FileText}
           title={__('Registration Forms', 'wp-sms')}
-          metadata={pluralize(forms.length, 'form')}
+          metadata={sprintf(_n('%d form', '%d forms', forms.length, 'wp-sms'), forms.length)}
           actions={
             <Button onClick={openCreate} size="sm">
               <Plus className="me-1 h-3.5 w-3.5" />

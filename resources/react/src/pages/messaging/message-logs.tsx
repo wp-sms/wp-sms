@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { formatDateTime, formatRelativeTime } from '@/lib/format';
 import { useState, useEffect, type ReactNode } from 'react';
 import { PageHeader } from '@/components/layout/page-header';
@@ -13,7 +13,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { EmptyState } from '@/components/ui/empty-state';
 import { DataTable } from '@/components/ui/data-table';
 import { Send, ScrollText, SlidersHorizontal } from 'lucide-react';
-import { pluralize } from '@/lib/utils';
 import { useMessageLogs } from '@/hooks/use-message-logs';
 import { StatusBadge, ChannelBadge } from '@/components/messaging/message-badges';
 import { MessageLogDetailPanel } from '@/components/messaging/message-log-detail-panel';
@@ -44,7 +43,7 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
 
   useEffect(() => {
     if (!setHeaderMeta) return;
-    setHeaderMeta(pluralize(total, 'message'));
+    setHeaderMeta(sprintf(_n('%d message', '%d messages', total, 'wp-sms'), total));
     return () => setHeaderMeta(null);
   }, [total, setHeaderMeta]);
 
@@ -58,11 +57,11 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
     <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
       <div className="space-y-4">
         {!embedded && (
-          <PageHeader icon={Send} title={__('Message Logs', 'wp-sms')} metadata={pluralize(total, 'message')} actions={filtersButton} />
+          <PageHeader icon={Send} title={__('Message Logs', 'wp-sms')} metadata={sprintf(_n('%d message', '%d messages', total, 'wp-sms'), total)} actions={filtersButton} />
         )}
         {embedded && !setHeaderMeta && (
           <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">{pluralize(total, 'message')}</span>
+            <span className="text-sm text-muted-foreground">{sprintf(_n('%d message', '%d messages', total, 'wp-sms'), total)}</span>
             {filtersButton}
           </div>
         )}

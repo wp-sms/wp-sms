@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { useState, useEffect, type ReactNode } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,6 @@ import { useConfirm } from '@/components/confirm-provider';
 import { LogTable } from '@/components/log-table';
 import { useLogs } from '@/hooks/use-logs';
 import { EVENT_TYPES, formatLabel } from '@/lib/constants';
-import { pluralize } from '@/lib/utils';
 
 interface LogsPageProps {
   embedded?: boolean;
@@ -60,7 +59,7 @@ export function LogsPage({ embedded, setHeaderMeta, setHeaderActions }: LogsPage
 
   useEffect(() => {
     if (!setHeaderMeta) return;
-    setHeaderMeta(!loading ? pluralize(total, 'event') : null);
+    setHeaderMeta(!loading ? sprintf(_n('%d event', '%d events', total, 'wp-sms'), total) : null);
     return () => setHeaderMeta(null);
   }, [total, loading, setHeaderMeta]);
 
@@ -76,13 +75,13 @@ export function LogsPage({ embedded, setHeaderMeta, setHeaderActions }: LogsPage
         <PageHeader
           icon={ScrollText}
           title={__('Logs', 'wp-sms')}
-          metadata={!loading ? pluralize(total, 'event') : undefined}
+          metadata={!loading ? sprintf(_n('%d event', '%d events', total, 'wp-sms'), total) : undefined}
           actions={clearButton}
         />
       )}
       {embedded && !setHeaderMeta && clearButton && (
         <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">{pluralize(total, 'event')}</span>
+          <span className="text-sm text-muted-foreground">{sprintf(_n('%d event', '%d events', total, 'wp-sms'), total)}</span>
           {clearButton}
         </div>
       )}

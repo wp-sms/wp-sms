@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { useState, useCallback } from 'react';
 import type { ContactList, Tag } from '@/lib/api';
 import type { UseListsReturn } from '@/hooks/use-lists';
@@ -19,7 +19,6 @@ import {
 import { Plus, List, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
-import { pluralize } from '@/lib/utils';
 
 interface ListsListProps {
   hook: UseListsReturn;
@@ -139,7 +138,7 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
         <PageSection
           icon={List}
           title={__('Lists & Segments', 'wp-sms')}
-          description={pluralize(lists.length, 'list')}
+          description={sprintf(_n('%d list', '%d lists', lists.length, 'wp-sms'), lists.length)}
           actions={
             <Button size="sm" onClick={handleCreate}>
               <Plus className="me-1.5 h-3.5 w-3.5" /> {__('New List', 'wp-sms')}

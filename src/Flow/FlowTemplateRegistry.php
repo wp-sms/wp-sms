@@ -18,7 +18,7 @@ class FlowTemplateRegistry
                 'id'          => 'welcome_sms',
                 'name'        => __('Welcome SMS to New Subscribers', 'wp-sms'),
                 'description' => __('Send a welcome message when a new user registers on your site.', 'wp-sms'),
-                'category'    => 'Welcome & Onboarding',
+                'category'    => __('Welcome & Onboarding', 'wp-sms'),
                 'trigger_type'   => 'wordpress.user_register',
                 'trigger_config' => [],
                 'steps' => [
@@ -41,7 +41,7 @@ class FlowTemplateRegistry
                 'id'          => 'order_confirmation',
                 'name'        => __('Order Confirmation SMS', 'wp-sms'),
                 'description' => __('Notify customers via SMS when they place a new order.', 'wp-sms'),
-                'category'    => 'WooCommerce',
+                'category'    => __('WooCommerce', 'wp-sms'),
                 'trigger_type'   => 'woocommerce.order_created',
                 'trigger_config' => [],
                 'steps' => [
@@ -64,7 +64,7 @@ class FlowTemplateRegistry
                 'id'          => 'order_completed',
                 'name'        => __('Order Completed Notification', 'wp-sms'),
                 'description' => __('Let customers know when their order is completed and ready.', 'wp-sms'),
-                'category'    => 'WooCommerce',
+                'category'    => __('WooCommerce', 'wp-sms'),
                 'trigger_type'   => 'woocommerce.order_completed',
                 'trigger_config' => [],
                 'steps' => [
@@ -87,7 +87,7 @@ class FlowTemplateRegistry
                 'id'          => 'payment_failed_alert',
                 'name'        => __('Payment Failed Alert to Admin', 'wp-sms'),
                 'description' => __('Immediately notify the admin when a payment fails.', 'wp-sms'),
-                'category'    => 'WooCommerce',
+                'category'    => __('WooCommerce', 'wp-sms'),
                 'trigger_type'   => 'woocommerce.payment_failed',
                 'trigger_config' => [],
                 'steps' => [
@@ -109,7 +109,7 @@ class FlowTemplateRegistry
                 'id'          => 'new_user_notification',
                 'name'        => __('New User Registration Alert', 'wp-sms'),
                 'description' => __('Get notified when a new user registers on your site.', 'wp-sms'),
-                'category'    => 'Notifications',
+                'category'    => __('Notifications', 'wp-sms'),
                 'trigger_type'   => 'wordpress.user_register',
                 'trigger_config' => [],
                 'steps' => [
@@ -131,7 +131,7 @@ class FlowTemplateRegistry
                 'id'          => 'role_change_notification',
                 'name'        => __('User Role Change Notification', 'wp-sms'),
                 'description' => __('Alert when a user\'s role is changed.', 'wp-sms'),
-                'category'    => 'Notifications',
+                'category'    => __('Notifications', 'wp-sms'),
                 'trigger_type'   => 'wordpress.user_role_changed',
                 'trigger_config' => [],
                 'steps' => [
@@ -153,7 +153,7 @@ class FlowTemplateRegistry
                 'id'          => 'new_comment_notification',
                 'name'        => __('New Comment Notification', 'wp-sms'),
                 'description' => __('Get notified when a new comment is posted on your site.', 'wp-sms'),
-                'category'    => 'Notifications',
+                'category'    => __('Notifications', 'wp-sms'),
                 'trigger_type'   => 'wordpress.comment_posted',
                 'trigger_config' => [],
                 'steps' => [
@@ -175,7 +175,7 @@ class FlowTemplateRegistry
                 'id'          => 'post_published',
                 'name'        => __('Post Published Announcement', 'wp-sms'),
                 'description' => __('Announce when a new post is published on your site.', 'wp-sms'),
-                'category'    => 'Engagement',
+                'category'    => __('Engagement', 'wp-sms'),
                 'trigger_type'   => 'wordpress.post_published',
                 'trigger_config' => [],
                 'steps' => [
@@ -198,7 +198,7 @@ class FlowTemplateRegistry
                 'id'          => 'order_status_webhook',
                 'name'        => __('Order Status Change Webhook', 'wp-sms'),
                 'description' => __('Fire a webhook when an order status changes in WooCommerce.', 'wp-sms'),
-                'category'    => 'WooCommerce',
+                'category'    => __('WooCommerce', 'wp-sms'),
                 'trigger_type'   => 'woocommerce.order_status_changed',
                 'trigger_config' => [],
                 'steps' => [
@@ -218,7 +218,7 @@ class FlowTemplateRegistry
                 'id'          => 'abandoned_cart_reminder',
                 'name'        => __('Abandoned Cart Follow-up', 'wp-sms'),
                 'description' => __('Send a reminder if an order is still pending after 1 hour.', 'wp-sms'),
-                'category'    => 'Engagement',
+                'category'    => __('Engagement', 'wp-sms'),
                 'trigger_type'   => 'woocommerce.order_created',
                 'trigger_config' => [],
                 'steps' => [
@@ -259,7 +259,7 @@ class FlowTemplateRegistry
                 'id'          => 'blog_post_broadcast',
                 'name'        => __('Blog Post Broadcast', 'wp-sms'),
                 'description' => __('Broadcast a message to a tag group when a new blog post is published.', 'wp-sms'),
-                'category'    => 'Engagement',
+                'category'    => __('Engagement', 'wp-sms'),
                 'trigger_type'   => 'wordpress.post_published',
                 'trigger_config' => [],
                 'steps' => [
@@ -282,7 +282,7 @@ class FlowTemplateRegistry
                 'id'          => 'contact_welcome_sequence',
                 'name'        => __('Contact Welcome Sequence', 'wp-sms'),
                 'description' => __('Send a welcome SMS when a contact is created, then a follow-up 24 hours later.', 'wp-sms'),
-                'category'    => 'Welcome & Onboarding',
+                'category'    => __('Welcome & Onboarding', 'wp-sms'),
                 'trigger_type'   => 'wsms.contact_created',
                 'trigger_config' => [],
                 'steps' => [
@@ -324,7 +324,7 @@ class FlowTemplateRegistry
                 'id'          => 'inbound_sms_auto_reply',
                 'name'        => __('Inbound SMS Auto-Reply', 'wp-sms'),
                 'description' => __('Automatically reply when an inbound SMS is received.', 'wp-sms'),
-                'category'    => 'Engagement',
+                'category'    => __('Engagement', 'wp-sms'),
                 'trigger_type'   => 'wsms.inbound_sms_received',
                 'trigger_config' => [],
                 'steps' => [
@@ -347,7 +347,7 @@ class FlowTemplateRegistry
                 'id'          => 'daily_digest_admin',
                 'name'        => __('Daily Digest to Admin', 'wp-sms'),
                 'description' => __('Send a daily digest SMS to the admin every morning at 9 AM.', 'wp-sms'),
-                'category'    => 'Notifications',
+                'category'    => __('Notifications', 'wp-sms'),
                 'trigger_type'   => 'schedule.recurring',
                 'trigger_config' => ['frequency' => 'daily', 'time' => '09:00'],
                 'steps' => [

@@ -21,7 +21,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { DataTable } from '@/components/ui/data-table';
 import { Mail, MessageSquare, Send, Smartphone, Eye, RotateCcw, Settings, RefreshCw, AlertTriangle, ExternalLink, FileText } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
-import { pluralize } from '@/lib/utils';
 
 interface VariableInfo {
   name: string;
@@ -216,7 +215,7 @@ export function Templates() {
   return (
     <>
       <div className="space-y-4">
-        <PageHeader icon={FileText} title={__('Message Templates', 'wp-sms')} metadata={!loading ? pluralize(templates.length, 'template') : undefined} />
+        <PageHeader icon={FileText} title={__('Message Templates', 'wp-sms')} metadata={!loading ? sprintf(_n('%d template', '%d templates', templates.length, 'wp-sms'), templates.length) : undefined} />
         <DataTable loading={loading} isEmpty={templates.length === 0} empty={<p className="py-8 text-center text-sm text-muted-foreground">{__('No templates found.', 'wp-sms')}</p>}>
           <Table>
             <TableHeader>
