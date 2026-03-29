@@ -248,7 +248,7 @@ function NavMenu({ activeSection, onNavigate, items }: { activeSection: string; 
                 <SidebarMenuButton tooltip={item.label}>
                   <Icon />
                   <span>{item.label}</span>
-                  <ChevronRight className="ms-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                  <ChevronRight className="ms-auto transition-transform rtl:rotate-180 group-data-[state=open]/collapsible:rotate-90" />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
               <CollapsibleContent>
