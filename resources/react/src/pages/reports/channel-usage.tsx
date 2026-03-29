@@ -81,7 +81,7 @@ const MethodChart = memo(function MethodChart({ title, description, items }: { t
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div ref={containerRef} className="relative h-56">
+        <div ref={containerRef} className="relative h-56" dir="ltr">
           <div ref={ref} className="h-full w-full">
             {width > 0 && (
               <svg width={width} height={height} className="overflow-visible">

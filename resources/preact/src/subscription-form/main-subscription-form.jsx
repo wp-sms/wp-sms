@@ -22,6 +22,7 @@ function mountForms() {
             el.style.setProperty('--wsms-sub-primary', config.primaryColor);
         }
 
+        el.dir = document.documentElement.dir || 'ltr';
         el.dataset.wsmsMounted = '1';
         render(<SubscriptionFormApp config={formConfig} />, el);
     });

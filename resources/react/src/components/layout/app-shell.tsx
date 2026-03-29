@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { useIsRtl } from '@/hooks/use-is-rtl';
 import { __ } from '@wordpress/i18n';
 import { LogIn, Paintbrush, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Settings2, MessageSquare, ClipboardList, Webhook, Bell, Sparkles, Contact, FileText, type LucideIcon } from 'lucide-react';
 import { Logo } from '@/components/logo';
@@ -148,7 +147,6 @@ function CollapsedGroupItem({ item, activeSection, isActive, onNavigate }: {
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const Icon = item.icon;
-  const isRtl = useIsRtl();
 
   useEffect(() => () => clearTimeout(closeTimer.current), []);
 
@@ -176,7 +174,7 @@ function CollapsedGroupItem({ item, activeSection, isActive, onNavigate }: {
           </SidebarMenuButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          side={isRtl ? "left" : "right"}
+          side="right"
           align="start"
           sideOffset={4}
           onMouseEnter={scheduleOpen}

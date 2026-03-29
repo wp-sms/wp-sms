@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Monitor } from 'lucide-react';
+import { isRtl } from '@/hooks/use-is-rtl';
 import type { MessagingButtonSettings } from './use-mb-settings';
 
 interface WidgetPreviewProps {
@@ -13,7 +14,7 @@ interface WidgetPreviewProps {
  * Renders a miniature version of the widget inside an iframe using plain JS.
  */
 const PREVIEW_HTML = `<!DOCTYPE html>
-<html><head><meta charset="utf-8">
+<html dir="${isRtl ? 'rtl' : 'ltr'}"><head><meta charset="utf-8">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;height:100vh;overflow:hidden;position:relative}
@@ -33,11 +34,11 @@ body{background:var(--p-bg);color:var(--p-text)}
 .panel-header p{font-size:10px;opacity:.85;margin-top:2px}
 .panel-body{padding:12px 14px;flex:1;overflow-y:auto}
 .panel-body .greeting{font-size:11px;margin-bottom:8px;color:var(--p-muted)}
-.cta-btn{display:flex;align-items:center;gap:6px;width:100%;padding:8px 10px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;text-align:left;border:1px solid var(--p-border);background:var(--p-card);color:var(--p-text)}
+.cta-btn{display:flex;align-items:center;gap:6px;width:100%;padding:8px 10px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;text-align:start;border:1px solid var(--p-border);background:var(--p-card);color:var(--p-text)}
 .cta-btn svg{width:16px;height:16px;flex-shrink:0}
 .team-row{display:flex;align-items:center;gap:5px;padding-top:8px;margin-top:8px;border-top:1px solid var(--p-border)}
 .avatar{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:#fff;overflow:hidden}
-.avatar+.avatar{margin-left:-5px}
+.avatar+.avatar{margin-inline-start:-5px}
 .avatar img{width:100%;height:100%;object-fit:cover}
 .team-label{font-size:9px;color:var(--p-muted)}
 .nav{display:flex;flex-shrink:0;border-top:1px solid var(--p-border)}

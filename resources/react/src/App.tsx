@@ -25,6 +25,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { DirectionProvider } from '@/components/ui/direction';
 import { ConfirmProvider } from '@/components/confirm-provider';
 import { AlertCircle } from 'lucide-react';
 
@@ -111,20 +112,22 @@ export default function App() {
   }
 
   return (
-    <TooltipProvider>
-      <ConfirmProvider>
-        <SaveBarProvider defaultState={defaultSaveBarState}>
-          <div className="wsms-app">
-            <div className="border border-border">
-              <AppShell activeSection={section} onNavigate={setSection} version={version}>
-                {renderContent()}
-              </AppShell>
-            </div>
+    <DirectionProvider>
+      <TooltipProvider>
+        <ConfirmProvider>
+          <SaveBarProvider defaultState={defaultSaveBarState}>
+            <div className="wsms-app">
+              <div className="border border-border">
+                <AppShell activeSection={section} onNavigate={setSection} version={version}>
+                  {renderContent()}
+                </AppShell>
+              </div>
 
-            <Toaster richColors position={isRtl ? "bottom-left" : "bottom-right"} />
-          </div>
-        </SaveBarProvider>
-      </ConfirmProvider>
-    </TooltipProvider>
+              <Toaster richColors position={isRtl ? "bottom-left" : "bottom-right"} />
+            </div>
+          </SaveBarProvider>
+        </ConfirmProvider>
+      </TooltipProvider>
+    </DirectionProvider>
   );
 }

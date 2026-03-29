@@ -218,6 +218,8 @@ window.wsmsVerify = {
     mount(containerEl, options) {
         if (!containerEl || !options) return;
 
+        containerEl.dir = document.documentElement.dir || 'ltr';
+
         render(
             h(VerifyWidget, {
                 channel: options.channel,

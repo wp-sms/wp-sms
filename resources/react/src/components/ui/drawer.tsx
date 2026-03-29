@@ -5,12 +5,14 @@ import { XIcon } from "lucide-react"
 import { Drawer as DrawerPrimitive } from "vaul"
 
 import { cn } from "@/lib/utils"
+import { isRtl } from "@/hooks/use-is-rtl"
 
 function Drawer({
-  direction = "right",
+  direction,
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
-  return <DrawerPrimitive.Root data-slot="drawer" direction={direction} {...props} />
+  const resolvedDirection = direction ?? (isRtl ? 'left' : 'right');
+  return <DrawerPrimitive.Root data-slot="drawer" direction={resolvedDirection} {...props} />
 }
 
 function DrawerTrigger({
@@ -64,8 +66,8 @@ function DrawerContent({
           "group/drawer-content fixed z-[100100] flex h-auto flex-col bg-background",
           "data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-lg data-[vaul-drawer-direction=top]:border-b-2 data-[vaul-drawer-direction=top]:border-b-foreground",
           "data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-lg data-[vaul-drawer-direction=bottom]:border-t-2 data-[vaul-drawer-direction=bottom]:border-t-foreground",
-          "data-[vaul-drawer-direction=right]:top-[var(--wp-admin--admin-bar--height,32px)] data-[vaul-drawer-direction=right]:bottom-0 data-[vaul-drawer-direction=right]:end-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:border-s-2 data-[vaul-drawer-direction=right]:border-s-foreground data-[vaul-drawer-direction=right]:sm:max-w-sm",
-          "data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:start-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:border-e-2 data-[vaul-drawer-direction=left]:border-e-foreground data-[vaul-drawer-direction=left]:sm:max-w-sm",
+          "data-[vaul-drawer-direction=right]:top-[var(--wp-admin--admin-bar--height,32px)] data-[vaul-drawer-direction=right]:bottom-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:border-l-2 data-[vaul-drawer-direction=right]:border-l-foreground data-[vaul-drawer-direction=right]:sm:max-w-sm",
+          "data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:border-r-2 data-[vaul-drawer-direction=left]:border-r-foreground data-[vaul-drawer-direction=left]:sm:max-w-sm",
           className
         )}
         {...props}

@@ -29,7 +29,7 @@ export function SystemHealth({ embedded, setHeaderMeta, setHeaderActions }: Syst
 
   const refreshButton = (
     <Button variant="outline" size="sm" onClick={refetch} disabled={loading}>
-      <RefreshCw className={`mr-1.5 h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
+      <RefreshCw className={`me-1.5 h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
       {__('Refresh', 'wp-sms')}
     </Button>
   );
