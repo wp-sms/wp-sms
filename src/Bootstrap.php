@@ -29,6 +29,7 @@ use WSms\Integration\ContactForm7\CF7NotificationServiceProvider;
 use WSms\Verification\Plugin\ContactForm7\CF7ServiceProvider;
 use WSms\Verification\Plugin\WPForms\WPFormsServiceProvider;
 use WSms\Verification\Plugin\WooCommerce\WooCommerceServiceProvider;
+use WSms\Container\MigrationServiceProvider;
 use WSms\Service\Installation\InstallManager;
 
 defined('ABSPATH') || exit;
@@ -53,6 +54,7 @@ class Bootstrap
     private static array $providers = [
         CoreServiceProvider::class,
         AdminServiceProvider::class,
+        MigrationServiceProvider::class, // Must come before Auth — sets transition mode
         AuthServiceProvider::class,
         MfaServiceProvider::class,
         SocialServiceProvider::class,

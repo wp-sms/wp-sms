@@ -101,6 +101,7 @@ export const NAV_SECTIONS: readonly NavSection[] = [
           { id: 's-general', label: __('General', 'wp-sms') },
           { id: 's-security', label: __('Security', 'wp-sms') },
           { id: 's-privacy', label: __('Privacy', 'wp-sms') },
+          { id: 's-migration', label: __('Migration', 'wp-sms') },
         ],
       },
     ],

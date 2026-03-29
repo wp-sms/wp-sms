@@ -43,6 +43,11 @@ class WooCommerceServiceProvider implements ServiceProvider
             return;
         }
 
+        // Skip verification hooks during transition mode to avoid conflicts.
+        if (get_option('wsms_transition_mode')) {
+            return;
+        }
+
         // Resolve config first (cheap) to gate heavier service construction.
         $config = $container->get('integration.woo.config');
 

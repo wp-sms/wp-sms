@@ -167,6 +167,12 @@ class AuthServiceProvider implements ServiceProvider
     /** {@inheritDoc} */
     public function boot(ServiceContainer $container): void
     {
+        // Transition mode: skip auth hooks that conflict with the active migration source plugin.
+        if (get_option('wsms_transition_mode')) {
+            $this->bootNonAuthHooks($container);
+            return;
+        }
+
         $container->get('auth.router')->setCaptchaGuard($container->get('auth.captcha_guard'));
         $container->get('auth.router')->registerHooks();
         $container->get('auth.shortcode')->registerHooks();
@@ -304,6 +310,92 @@ class AuthServiceProvider implements ServiceProvider
 
             return false; // All placeholder — block.
         }, 10, 2);
+    }
+
+    /**
+     * Register only non-conflicting hooks during transition mode.
+     *
+     * Skips: auth.router, auth.login_guard, auth.api_guard, auth.block, auth.shortcode
+     * Keeps: GDPR, avatar, privacy, profile fields, placeholder email filter
+     */
+    private function bootNonAuthHooks(ServiceContainer $container): void
+    {
+        // Profile field meta registration.
+        add_action('init', function () use ($container) {
+            $container->get('auth.field_registry')->registerMeta();
+        });
+
+        // Avatar hooks.
+        $avatarManager = $container->get('auth.avatar_manager');
+        add_filter('get_avatar_url', [$avatarManager, 'filterGetAvatarUrl'], 10, 3);
+        add_filter('get_avatar', [$avatarManager, 'filterGetAvatar'], 10, 6);
+        add_action('delete_user', [$avatarManager, 'cleanupOnUserDelete']);
+
+        // User deletion cleanup.
+        add_action('delete_user', function (int $userId) use ($container) {
+            $db = $container->get(Connection::class);
+            $db->delete(Connection::TABLE_USER_FACTORS, ['user_id' => $userId]);
+            $db->delete(Connection::TABLE_VERIFICATIONS, ['user_id' => $userId]);
+        });
+
+        // GDPR exporters/erasers (same as full boot).
+        add_filter('wp_privacy_personal_data_exporters', function (array $exporters) use ($container, $avatarManager) {
+            $exporters['wsms-profile-fields'] = [
+                'exporter_friendly_name' => __('WSMS Profile Fields', 'wp-sms'),
+                'callback'               => function (string $email, int $page) use ($container) {
+                    return $this->exportProfileFieldData($container, $email, $page);
+                },
+            ];
+            $exporters['wsms-avatar'] = [
+                'exporter_friendly_name' => __('WSMS Avatar', 'wp-sms'),
+                'callback'               => [$avatarManager, 'exportPersonalData'],
+            ];
+            return $exporters;
+        });
+
+        add_filter('wp_privacy_personal_data_erasers', function (array $erasers) use ($container, $avatarManager) {
+            $erasers['wsms-profile-fields'] = [
+                'eraser_friendly_name' => __('WSMS Profile Fields', 'wp-sms'),
+                'callback'             => function (string $email, int $page) use ($container) {
+                    return $this->eraseProfileFieldData($container, $email, $page);
+                },
+            ];
+            $erasers['wsms-avatar'] = [
+                'eraser_friendly_name' => __('WSMS Avatar', 'wp-sms'),
+                'callback'             => [$avatarManager, 'erasePersonalData'],
+            ];
+            return $erasers;
+        });
+
+        // Privacy policy.
+        add_action('admin_init', function () {
+            if (!function_exists('wp_add_privacy_policy_content')) {
+                return;
+            }
+            wp_add_privacy_policy_content(
+                'WP SMS',
+                wp_kses_post($this->buildPrivacyPolicyText()),
+            );
+        });
+
+        // Placeholder email filter.
+        add_filter('pre_wp_mail', function ($null, $atts) {
+            $to = is_array($atts['to'] ?? '') ? implode(',', $atts['to']) : ($atts['to'] ?? '');
+            $recipients = array_map('trim', explode(',', $to));
+
+            foreach ($recipients as $r) {
+                if (!AccountManager::isPlaceholderEmail($r)) {
+                    return $null;
+                }
+            }
+
+            return false;
+        }, 10, 2);
+
+        // Settings injection for MFA (needed for non-auth uses).
+        $settingsRepo = $container->get('auth.settings');
+        $mfaManager = $container->get('mfa.manager');
+        $mfaManager->setSettingsRepository($settingsRepo);
     }
 
     private function exportProfileFieldData(ServiceContainer $container, string $email, int $page): array

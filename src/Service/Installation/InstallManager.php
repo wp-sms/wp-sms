@@ -5,6 +5,8 @@ namespace WSms\Service\Installation;
 use WSms\Branding\BrandingRepository;
 use WSms\Database\CleanupScheduler;
 use WSms\Database\Migrator;
+use WSms\Migration\MigrationStateManager;
+use WSms\Migration\MigrationStatus;
 use WSms\PhoneRestriction\DatabaseUpdater;
 
 defined('ABSPATH') || exit;
@@ -148,6 +150,17 @@ class InstallManager
         as_unschedule_all_actions(CleanupScheduler::HOOK_NAME, [], CleanupScheduler::AS_GROUP);
         as_unschedule_all_actions(DatabaseUpdater::CRON_HOOK, [], DatabaseUpdater::AS_GROUP);
         delete_option(BrandingRepository::OPTION_KEY);
+
+        // Pause any running migration so it can resume on reactivation.
+        $stateManager = new MigrationStateManager();
+        $status = $stateManager->getStatus();
+        if ($status === MigrationStatus::Running) {
+            try {
+                $stateManager->transitionStatus(MigrationStatus::Paused);
+            } catch (\Throwable $e) {
+                // Best effort — don't block deactivation.
+            }
+        }
     }
 
     /**

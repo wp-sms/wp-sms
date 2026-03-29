@@ -21,6 +21,7 @@ import { SecurityPage } from '@/pages/security';
 import { PrivacyPage } from '@/pages/privacy';
 import { MonitoringPage } from '@/pages/monitoring';
 import { SettingsPage } from '@/pages/settings';
+import { MigrationPage } from '@/pages/migration';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Toaster } from '@/components/ui/sonner';
@@ -102,6 +103,8 @@ export default function App() {
             return <SecurityPage subTab={subTab} onNavigate={setSection} settings={settings} onUpdate={updateSetting} roles={roles} />;
           case 's-privacy':
             return <PrivacyPage />;
+          case 's-migration':
+            return <MigrationPage />;
           default:
             return <SettingsPage subTab={subTab} onNavigate={setSection} settings={settings} onUpdate={updateSetting} />;
         }
