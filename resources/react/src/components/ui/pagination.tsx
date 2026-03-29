@@ -44,10 +44,12 @@ type PaginationLinkProps = {
 function PaginationLink({
   className,
   isActive,
+  children,
   ...props
 }: PaginationLinkProps) {
   return (
     <a
+      role="button"
       aria-current={isActive ? "page" : undefined}
       data-slot="pagination-link"
       data-active={isActive}
@@ -57,7 +59,9 @@ function PaginationLink({
         className
       )}
       {...props}
-    />
+    >
+      {children}
+    </a>
   )
 }
 

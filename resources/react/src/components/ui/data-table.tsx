@@ -26,7 +26,7 @@ export function DataTable({
 }: DataTableProps) {
   if (loading) {
     return (
-      <div className="space-y-3">
+      <div className="space-y-3" aria-busy="true" role="status">
         {Array.from({ length: skeletonRows }).map((_, i) => (
           <Skeleton key={i} className="h-12 w-full" />
         ))}

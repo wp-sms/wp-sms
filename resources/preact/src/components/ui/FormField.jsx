@@ -48,6 +48,7 @@ export const FormField = forwardRef(function FormField({
 
     const showError = touchedRef.current && error;
     const InputComponent = type === 'password' ? PasswordInput : Input;
+    const errorId = `${id}-error`;
 
     return (
         <div className="wsms-auth-stack-2">
@@ -58,12 +59,13 @@ export const FormField = forwardRef(function FormField({
                     id={id}
                     type={type === 'password' ? undefined : type}
                     aria-invalid={showError ? 'true' : undefined}
+                    aria-describedby={showError ? errorId : undefined}
                     {...inputProps}
                     onBlur={handleBlur}
                     onInput={handleInput}
                 />
             )}
-            {showError && <span className="wsms-auth-field-error">{error}</span>}
+            {showError && <span id={errorId} className="wsms-auth-field-error" role="alert">{error}</span>}
         </div>
     );
 });

@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import type { LucideIcon } from 'lucide-react';
 import { Pencil, ChevronUp, Trash2 } from 'lucide-react';
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
-import { cn } from '@/lib/utils';
+import { cn, onActivate } from '@/lib/utils';
 import { useConfirm } from '@/components/confirm-provider';
 
 interface CollapsibleCardProps {
@@ -60,11 +60,14 @@ export function CollapsibleCard({
       >
         {/* Header */}
         <div
+          role={!isExpanded ? 'button' : undefined}
+          tabIndex={!isExpanded ? 0 : undefined}
           className={cn(
             'flex items-center gap-2 px-3 py-2.5',
             !isExpanded && 'cursor-pointer hover:bg-muted/30 transition-colors rounded-lg',
           )}
           onClick={!isExpanded ? onToggle : undefined}
+          onKeyDown={!isExpanded ? onActivate(onToggle) : undefined}
         >
           <span className={cn('flex h-6 w-6 shrink-0 items-center justify-center rounded-md', iconBg)}>
             <Icon className={cn('h-3.5 w-3.5', iconFg)} />
@@ -82,11 +85,12 @@ export function CollapsibleCard({
             )}
           </span>
 
-          <span className={cn('h-2 w-2 shrink-0 rounded-full', statusColor)} title={statusLabel} />
+          <span className={cn('h-2 w-2 shrink-0 rounded-full', statusColor)} aria-label={statusLabel} role="img" />
 
           <div className="flex items-center gap-0.5 shrink-0">
             <button
               type="button"
+              aria-label={isExpanded ? __('Collapse', 'wp-sms') : __('Edit', 'wp-sms')}
               className="inline-flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-foreground transition-colors"
               onClick={(e) => { e.stopPropagation(); onToggle(); }}
             >
@@ -95,6 +99,7 @@ export function CollapsibleCard({
             {onDelete && (
               <button
                 type="button"
+                aria-label={__('Delete step', 'wp-sms')}
                 className="inline-flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-destructive transition-colors"
                 onClick={(e) => { e.stopPropagation(); void handleDelete(); }}
               >

@@ -463,6 +463,7 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
                 variant="outline"
                 size="icon"
                 className="shrink-0"
+                aria-label={__('Copy secret', 'wp-sms')}
                 onClick={async () => {
                   await copyToClipboard(webhook.secret);
                   toast.success(__('Secret copied to clipboard.', 'wp-sms'));

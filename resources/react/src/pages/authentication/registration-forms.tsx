@@ -372,6 +372,7 @@ export function RegistrationForms() {
                             size="icon-md"
                             disabled={fieldIdx === 0}
                             onClick={() => moveField(sf.id, 'up')}
+                            aria-label={__('Move up', 'wp-sms')}
                           >
                             <ArrowUp className="h-3.5 w-3.5" />
                           </Button>
@@ -380,6 +381,7 @@ export function RegistrationForms() {
                             size="icon-md"
                             disabled={fieldIdx === formState.fields.length - 1}
                             onClick={() => moveField(sf.id, 'down')}
+                            aria-label={__('Move down', 'wp-sms')}
                           >
                             <ArrowDown className="h-3.5 w-3.5" />
                           </Button>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from 'preact/hooks';
+import { __ } from '@wordpress/i18n';
 
 const POLL_INTERVAL = 200;
 const MAX_POLLS = 50; // 10 seconds max wait
@@ -108,7 +109,7 @@ export function CaptchaWidget({ provider, siteKey, onVerify, resetRef }) {
     if (!siteKey || !provider) return null;
 
     return (
-        <div className="wsms-auth-flex-center">
+        <div className="wsms-auth-flex-center" aria-label={__('Security verification', 'wp-sms')}>
             <div ref={containerRef} />
         </div>
     );

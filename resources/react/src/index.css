@@ -86,23 +86,23 @@
   --card-foreground: #2d2926;
   --popover: #ffffff;
   --popover-foreground: #2d2926;
-  --primary: #e8630a;
+  --primary: #c75300;
   --primary-foreground: #ffffff;
   --secondary: #f3f1ed;
   --secondary-foreground: #2d2926;
   --muted: #f3f1ed;
-  --muted-foreground: #7a756f;
+  --muted-foreground: #665e57;
   --accent: #f3f1ed;
   --accent-foreground: #2d2926;
   --destructive: #c23b22;
   --destructive-foreground: #ffffff;
-  --success: #2d8f4e;
-  --warning: #c59200;
+  --success: #237a3e;
+  --warning: #996d00;
   --info: #2563eb;
   --border: #d4d0cc;
   --input: #d4d0cc;
-  --ring: #e8630a;
-  --chart-1: #e8630a;
+  --ring: #c75300;
+  --chart-1: #c75300;
   --chart-2: #b44230;
   --chart-3: #0d9488;
   --chart-4: #8b6cc1;
@@ -110,12 +110,12 @@
 
   --sidebar: #ffffff;
   --sidebar-foreground: #2d2926;
-  --sidebar-primary: #e8630a;
+  --sidebar-primary: #c75300;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #fef3eb;
-  --sidebar-accent-foreground: #e8630a;
+  --sidebar-accent-foreground: #c75300;
   --sidebar-border: #d4d0cc;
-  --sidebar-ring: #e8630a;
+  --sidebar-ring: #c75300;
 
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -129,6 +129,17 @@
 @keyframes slide-up { from { transform: translateY(100%); opacity: 0; } }
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 @keyframes bar-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  #wpsms-app *,
+  #wpsms-app *::before,
+  #wpsms-app *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 
 @layer base {
   * {

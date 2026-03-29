@@ -1,4 +1,5 @@
 import { __, sprintf } from '@wordpress/i18n';
+import { onActivate } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -151,8 +152,12 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                   <div className="flex items-center gap-3">
                     {member.avatar_url ? (
                       <div
+                        role="button"
+                        tabIndex={0}
+                        aria-label={__('Change avatar', 'wp-sms')}
                         className="group relative h-12 w-12 shrink-0 cursor-pointer overflow-hidden rounded-full border"
                         onClick={() => openMediaLibrary('Select Avatar', (url) => updateMember(i, 'avatar_url', url))}
+                        onKeyDown={onActivate(() => openMediaLibrary('Select Avatar', (url) => updateMember(i, 'avatar_url', url)))}
                       >
                         <img
                           src={member.avatar_url}
@@ -165,8 +170,12 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                       </div>
                     ) : (
                       <div
+                        role="button"
+                        tabIndex={0}
+                        aria-label={__('Upload avatar', 'wp-sms')}
                         className="flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-input transition-colors hover:border-primary/30 hover:bg-primary/5"
                         onClick={() => openMediaLibrary('Select Avatar', (url) => updateMember(i, 'avatar_url', url))}
+                        onKeyDown={onActivate(() => openMediaLibrary('Select Avatar', (url) => updateMember(i, 'avatar_url', url)))}
                       >
                         <Upload className="h-4 w-4 text-muted-foreground/50" />
                       </div>

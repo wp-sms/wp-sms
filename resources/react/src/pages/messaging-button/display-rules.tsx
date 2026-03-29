@@ -238,7 +238,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
                           onChange={(e) => updateSchedule(i, 'close', e.target.value)}
                           className="w-28"
                         />
-                        <Button variant="ghost" size="icon" onClick={() => removeScheduleDay(i)}>
+                        <Button variant="ghost" size="icon" onClick={() => removeScheduleDay(i)} aria-label={__('Remove day', 'wp-sms')}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>

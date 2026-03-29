@@ -154,8 +154,8 @@ export function SubscriptionFormApp({ config }) {
 
     if (state === STATE.SUCCESS) {
         content = (
-            <div class="wsms-sub-form__success">
-                <div class="wsms-sub-form__success-icon">✓</div>
+            <div class="wsms-sub-form__success" role="status" aria-live="polite">
+                <div class="wsms-sub-form__success-icon" aria-hidden="true">✓</div>
                 <div class="wsms-sub-form__success-msg">{successMessage}</div>
             </div>
         );
@@ -182,7 +182,7 @@ export function SubscriptionFormApp({ config }) {
                     {cooldown > 0 ? sprintf(__('Resend in %ds', 'wp-sms'), cooldown) : __('Resend code', 'wp-sms')}
                 </button>
 
-                {error && <div class="wsms-sub-form__error">{error}</div>}
+                {error && <div class="wsms-sub-form__error" role="alert">{error}</div>}
             </div>
         );
     } else {
@@ -214,7 +214,7 @@ export function SubscriptionFormApp({ config }) {
                     </div>
                 ))}
 
-                <div class="wsms-sub-form__hp" aria-hidden="true">
+                <div class="wsms-sub-form__hp" aria-hidden="true" style="position:absolute;left:-9999px;height:0;overflow:hidden">
                     <input type="text" name="_hp" tabIndex={-1} autoComplete="off" />
                 </div>
 
@@ -228,6 +228,7 @@ export function SubscriptionFormApp({ config }) {
                 )}
 
                 {consent && (
+                    // eslint-disable-next-line jsx-a11y/label-has-associated-control -- label wraps checkbox; dangerouslySetInnerHTML hides text from static analysis
                     <label class="wsms-sub-form__consent">
                         <input
                             type="checkbox"
@@ -248,7 +249,7 @@ export function SubscriptionFormApp({ config }) {
                     {buttonText || __('Subscribe', 'wp-sms')}
                 </button>
 
-                {error && <div class="wsms-sub-form__error">{error}</div>}
+                {error && <div class="wsms-sub-form__error" role="alert">{error}</div>}
             </form>
         );
     }

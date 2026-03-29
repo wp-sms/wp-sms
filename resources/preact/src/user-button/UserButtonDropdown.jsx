@@ -18,7 +18,10 @@ function Avatar({ user }) {
 export function UserButtonDropdown({ user, baseUrl, logoutUrl }) {
     const [open, setOpen] = useState(false);
     const ref = useRef(null);
+    const triggerRef = useRef(null);
+    const menuRef = useRef(null);
 
+    // Close on outside click
     useEffect(() => {
         if (!open) return;
         function handleClick(e) {
@@ -28,10 +31,49 @@ export function UserButtonDropdown({ user, baseUrl, logoutUrl }) {
         return () => document.removeEventListener('click', handleClick, true);
     }, [open]);
 
+    // Keyboard navigation for the dropdown menu
     useEffect(() => {
-        if (!open) return;
+        if (!open || !menuRef.current) return;
+
+        // Focus the first menu item when opened
+        const items = menuRef.current.querySelectorAll('[role="menuitem"]');
+        items[0]?.focus();
+
         function handleKey(e) {
-            if (e.key === 'Escape') setOpen(false);
+            const menuItems = menuRef.current?.querySelectorAll('[role="menuitem"]');
+            if (!menuItems?.length) return;
+            const currentIndex = Array.from(menuItems).indexOf(document.activeElement);
+
+            switch (e.key) {
+                case 'Escape':
+                    setOpen(false);
+                    triggerRef.current?.focus();
+                    break;
+                case 'ArrowDown': {
+                    e.preventDefault();
+                    const next = currentIndex < menuItems.length - 1 ? currentIndex + 1 : 0;
+                    menuItems[next]?.focus();
+                    break;
+                }
+                case 'ArrowUp': {
+                    e.preventDefault();
+                    const prev = currentIndex > 0 ? currentIndex - 1 : menuItems.length - 1;
+                    menuItems[prev]?.focus();
+                    break;
+                }
+                case 'Home':
+                    e.preventDefault();
+                    menuItems[0]?.focus();
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    menuItems[menuItems.length - 1]?.focus();
+                    break;
+                case 'Tab':
+                    // Close menu on Tab to let natural focus flow continue
+                    setOpen(false);
+                    break;
+            }
         }
         document.addEventListener('keydown', handleKey);
         return () => document.removeEventListener('keydown', handleKey);
@@ -42,17 +84,18 @@ export function UserButtonDropdown({ user, baseUrl, logoutUrl }) {
     return (
         <div className="wsms-ub" ref={ref}>
             <button
+                ref={triggerRef}
                 className="wsms-ub-trigger"
                 onClick={() => setOpen((v) => !v)}
                 aria-expanded={open}
                 aria-haspopup="true"
-                title={displayName}
+                aria-label={displayName}
             >
                 <Avatar user={user} />
             </button>
 
             {open && (
-                <div className="wsms-ub-dropdown" role="menu">
+                <div ref={menuRef} className="wsms-ub-dropdown" role="menu">
                     <div className="wsms-ub-dropdown__header">
                         <Avatar user={user} />
                         <div className="wsms-ub-dropdown__info">
@@ -69,6 +112,7 @@ export function UserButtonDropdown({ user, baseUrl, logoutUrl }) {
                             href={`${baseUrl}${path}`}
                             className="wsms-ub-dropdown__item"
                             role="menuitem"
+                            tabIndex={-1}
                             onClick={() => setOpen(false)}
                         >
                             <Icon />
@@ -82,6 +126,7 @@ export function UserButtonDropdown({ user, baseUrl, logoutUrl }) {
                         href={logoutUrl}
                         className="wsms-ub-dropdown__item wsms-ub-dropdown__item--danger"
                         role="menuitem"
+                        tabIndex={-1}
                     >
                         <LogOut />
                         {__('Sign out', 'wp-sms')}

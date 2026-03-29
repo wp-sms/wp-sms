@@ -39,7 +39,7 @@ export function TemplateVariablePicker({ payloadSchema, variables: variablesProp
           variant="ghost"
           size="icon-md"
           className="text-muted-foreground hover:text-foreground"
-          title={__('Insert template variable', 'wp-sms')}
+          aria-label={__('Insert template variable', 'wp-sms')}
         >
           <Braces className="h-3.5 w-3.5" />
         </Button>

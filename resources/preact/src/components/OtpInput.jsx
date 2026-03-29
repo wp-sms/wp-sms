@@ -1,4 +1,5 @@
 import { OTPInput, REGEXP_ONLY_DIGITS } from 'input-otp';
+import { __ } from '@wordpress/i18n';
 import { useAutoFocus } from '../hooks/useAutoFocus';
 
 function Slot({ char, isActive, hasFakeCaret }) {
@@ -57,6 +58,7 @@ export function OtpInput({ length = 6, onComplete, disabled, autoFocus = false, 
             pushPasswordManagerStrategy="increase-width"
             pasteTransformer={stripNonDigits}
             containerClassName={cfg.container}
+            aria-label={__('Verification code', 'wp-sms')}
             render={({ slots }) => (
                 <div className={cfg.slots} dir="ltr">
                     {slots.slice(0, half).map((slot, i) => (

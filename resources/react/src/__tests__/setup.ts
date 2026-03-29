@@ -1,6 +1,9 @@
-import { beforeAll, afterAll, afterEach } from 'vitest';
+import { beforeAll, afterAll, afterEach, expect } from 'vitest';
 import '@testing-library/jest-dom/vitest';
+import * as matchers from 'vitest-axe/matchers';
 import { cleanup } from '@testing-library/react';
+
+expect.extend(matchers);
 import { server } from './mocks/server';
 import { resetMockSettings } from './mocks/handlers';
 

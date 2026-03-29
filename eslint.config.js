@@ -2,11 +2,25 @@ import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import reactPlugin from "eslint-plugin-react";
+import jsxA11y from "eslint-plugin-jsx-a11y";
 import globals from "globals";
 
 const hooksRules = {
   "react-hooks/rules-of-hooks": "error",
   "react-hooks/exhaustive-deps": "warn",
+};
+
+const a11yOverrides = {
+  // autoFocus is intentional in dialogs, search fields, and step transitions
+  "jsx-a11y/no-autofocus": "off",
+  // Our Label/FieldLabel components render <label> and receive htmlFor via spread props
+  "jsx-a11y/label-has-associated-control": ["error", {
+    labelComponents: ["Label", "FieldLabel"],
+    labelAttributes: ["htmlFor"],
+    controlComponents: ["Input", "Select", "Switch", "Textarea", "PhoneInput"],
+    assert: "either",
+    depth: 5,
+  }],
 };
 
 export default [
@@ -63,18 +77,21 @@ export default [
     },
   },
 
-  // 4. React hooks + React rules for React source files
+  // 4. React hooks + React + a11y rules for React source files
   {
     files: ["resources/react/src/**/*.{ts,tsx}"],
     plugins: {
       "react-hooks": reactHooksPlugin,
       react: reactPlugin,
+      "jsx-a11y": jsxA11y,
     },
     settings: {
       react: { version: "19" },
     },
     rules: {
       ...hooksRules,
+      ...jsxA11y.flatConfigs.recommended.rules,
+      ...a11yOverrides,
       "react/jsx-key": "error",
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
@@ -88,12 +105,13 @@ export default [
     },
   },
 
-  // 5. Preact layer — hooks + jsx-uses-vars to avoid false "unused" on JSX imports
+  // 5. Preact layer — hooks + jsx-uses-vars + a11y to avoid false "unused" on JSX imports
   {
     files: ["resources/preact/src/**/*.{js,jsx}"],
     plugins: {
       "react-hooks": reactHooksPlugin,
       react: reactPlugin,
+      "jsx-a11y": jsxA11y,
     },
     languageOptions: {
       globals: {
@@ -105,6 +123,8 @@ export default [
     },
     rules: {
       ...hooksRules,
+      ...jsxA11y.flatConfigs.recommended.rules,
+      ...a11yOverrides,
       "react/jsx-uses-vars": "error",
       "react/jsx-no-literals": ["warn", {
         noStrings: false,

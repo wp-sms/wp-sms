@@ -47,9 +47,9 @@ export function SegmentBuilder({ conditions, tags, onChange, hideCount }: Segmen
         </Select>
 
         {!hideCount && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" aria-live="polite">
             {loading ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" aria-label={__('Loading', 'wp-sms')} />
             ) : (
               <Badge variant="secondary" className="text-xs">
                 {sprintf(_n('%d contact matches', '%d contacts match', count, 'wp-sms'), count)}

@@ -126,7 +126,7 @@ export default function App() {
                 </AppShell>
               </div>
 
-              <Toaster richColors position={isRtl ? "bottom-left" : "bottom-right"} />
+              <Toaster richColors position={isRtl ? "bottom-left" : "bottom-right"} toastOptions={{ duration: 5000 }} />
             </div>
           </SaveBarProvider>
         </ConfirmProvider>

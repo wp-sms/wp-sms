@@ -59,6 +59,7 @@ function SecretField({ id, value, onChange, placeholder }: {
         size="icon-xs"
         className="absolute end-2 top-1/2 -translate-y-1/2"
         onClick={() => setVisible(!visible)}
+        aria-label={visible ? __('Hide password', 'wp-sms') : __('Show password', 'wp-sms')}
       >
         {visible ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
       </Button>

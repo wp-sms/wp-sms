@@ -260,7 +260,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                           onInput={(e) => updateOption(i, 'value', (e.target as HTMLInputElement).value)}
                           className="w-28"
                         />
-                        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => removeOption(i)}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => removeOption(i)} aria-label={__('Remove option', 'wp-sms')}>
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </div>

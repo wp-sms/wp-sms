@@ -553,15 +553,16 @@ function BasicsStep({
                     {sprintf(__('via %s', 'wp-sms'), currentGw.name)}
                   </span>
                   {isSelected && gws.length > 1 && (
-                    <span
-                      className="block text-[10px] text-primary mt-1 cursor-pointer hover:underline"
+                    <button
+                      type="button"
+                      className="block text-[10px] text-primary mt-1 cursor-pointer hover:underline bg-transparent border-0 p-0"
                       onClick={(e) => {
                         e.stopPropagation();
                         setGatewayDropdownOpen(gatewayDropdownOpen === ch ? null : ch);
                       }}
                     >
                       {__('Change', 'wp-sms')}
-                    </span>
+                    </button>
                   )}
                 </button>
               );
@@ -885,7 +886,7 @@ function MessageStep({
                     size="icon"
                     disabled={uploading}
                     onClick={() => fileInputRef.current?.click()}
-                    title={__('Upload image', 'wp-sms')}
+                    aria-label={__('Upload image', 'wp-sms')}
                   >
                     {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
                   </Button>

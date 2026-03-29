@@ -217,6 +217,7 @@ export function DynamicConfigField({
               size="icon"
               className="shrink-0"
               disabled={loading && options.length === 0}
+              aria-label={__('Toggle options', 'wp-sms')}
             >
               {loading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -250,7 +251,7 @@ export function DynamicConfigField({
                 <Skeleton className="h-6 w-5/6" />
               </div>
             ) : error ? (
-              <div className="p-3 text-center space-y-2">
+              <div className="p-3 text-center space-y-2" role="alert">
                 <p className="text-sm text-destructive flex items-center justify-center gap-1.5">
                   <AlertCircle className="h-3.5 w-3.5" />
                   {error}

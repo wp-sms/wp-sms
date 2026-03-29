@@ -55,10 +55,14 @@ export function WidgetPanel({ isOpen, currentPage, config, isOnline, offlineMess
             const first = focusable[0];
             const last = focusable[focusable.length - 1];
 
-            if (e.shiftKey && document.activeElement === first) {
+            // Use Shadow DOM-aware activeElement if inside shadow root
+            const root = panelRef.current.getRootNode();
+            const active = root.activeElement ?? document.activeElement;
+
+            if (e.shiftKey && active === first) {
                 e.preventDefault();
                 last?.focus();
-            } else if (!e.shiftKey && document.activeElement === last) {
+            } else if (!e.shiftKey && active === last) {
                 e.preventDefault();
                 first?.focus();
             }

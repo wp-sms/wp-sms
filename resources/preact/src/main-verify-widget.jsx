@@ -177,7 +177,7 @@ function VerifyWidget({ channel, identifier, onVerified, onError, codeLength = 6
                     </div>
                 )}
 
-                <div className="wsms-vw-actions">
+                <div className="wsms-vw-actions" aria-live="polite">
                     <button
                         type="button"
                         className="wsms-vw-resend"

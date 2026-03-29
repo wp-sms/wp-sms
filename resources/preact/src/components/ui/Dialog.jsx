@@ -8,6 +8,7 @@ const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabi
 export function Dialog({ open, onClose, children, className }) {
     const overlayRef = useRef(null);
     const contentRef = useRef(null);
+    const previouslyFocusedRef = useRef(null);
 
     const handleKeyDown = useCallback((e) => {
         if (e.key === 'Escape' && onClose) {
@@ -37,6 +38,8 @@ export function Dialog({ open, onClose, children, className }) {
 
     useEffect(() => {
         if (!open) return;
+        // Store the element that had focus before the dialog opened
+        previouslyFocusedRef.current = document.activeElement;
         document.addEventListener('keydown', handleKeyDown);
         const prevOverflow = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
@@ -45,12 +48,15 @@ export function Dialog({ open, onClose, children, className }) {
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
             document.body.style.overflow = prevOverflow;
+            // Return focus to the previously focused element
+            previouslyFocusedRef.current?.focus();
         };
     }, [open, handleKeyDown]);
 
     if (!open) return null;
 
     return (
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- overlay backdrop; keyboard handled by Escape key listener
         <div
             ref={overlayRef}
             className="wsms-auth-dialog-overlay"

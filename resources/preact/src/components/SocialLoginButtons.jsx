@@ -21,10 +21,10 @@ export function SocialLoginButtons({ intent = 'login' }) {
                         key={provider.id}
                         type="button"
                         className="wsms-auth-social-icon-btn"
-                        title={sprintf(__('Continue with %s', 'wp-sms'), provider.name)}
+                        aria-label={sprintf(__('Continue with %s', 'wp-sms'), provider.name)}
                         onClick={() => goToProvider(provider, intent)}
                     >
-                        <span dangerouslySetInnerHTML={{ __html: provider.icon }} />
+                        <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: provider.icon }} />
                     </button>
                 ))}
             </div>
@@ -44,6 +44,7 @@ export function SocialLoginButtons({ intent = 'login' }) {
                 >
                     <span
                         className="wsms-auth-social-btn__icon"
+                        aria-hidden="true"
                         dangerouslySetInnerHTML={{ __html: provider.icon }}
                     />
                     {provider.name}

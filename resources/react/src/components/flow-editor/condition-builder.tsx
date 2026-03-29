@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useRef } from 'react';
 import type { JsonSchema } from '@/lib/api';
 import {
   type ConditionRule,
@@ -11,7 +11,7 @@ import {
   getConditionValueOptions,
   OPERATORS,
 } from '@/lib/condition-utils';
-import { groupBy } from '@/lib/utils';
+import { groupBy, focusFirstInteractive } from '@/lib/utils';
 import { buildMergedSchema } from '@/lib/flow-utils';
 import { useTriggers } from '@/hooks/use-triggers';
 import { Button } from '@/components/ui/button';
@@ -55,12 +55,16 @@ export function ConditionBuilder({ rules, onChange, payloadSchema, triggerType }
     onChange(next);
   };
 
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
+
   const removeRule = (index: number) => {
     onChange(rules.filter((_, i) => i !== index));
+    focusFirstInteractive(rowRefs.current[Math.max(0, index - 1)]);
   };
 
   const addRule = () => {
     onChange([...rules, createEmptyRule()]);
+    focusFirstInteractive(rowRefs.current[rules.length]);
   };
 
   const getField = (fieldPath: string): FieldOption | undefined => fieldMap.get(fieldPath);
@@ -89,7 +93,7 @@ export function ConditionBuilder({ rules, onChange, payloadSchema, triggerType }
         const hideValue = currentOp?.hideValue ?? false;
 
         return (
-          <div key={index} className="flex items-center gap-2">
+          <div key={index} ref={(el) => { rowRefs.current[index] = el; }} className="flex items-center gap-2">
             {/* Field select */}
             <Select
               value={rule.field}
@@ -174,6 +178,7 @@ export function ConditionBuilder({ rules, onChange, payloadSchema, triggerType }
               size="sm"
               className="h-9 w-9 shrink-0 p-0 text-muted-foreground hover:text-destructive"
               onClick={() => removeRule(index)}
+              aria-label={__('Remove condition', 'wp-sms')}
             >
               <X className="h-4 w-4" />
             </Button>

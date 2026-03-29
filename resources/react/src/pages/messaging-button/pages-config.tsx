@@ -222,7 +222,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                       placeholder="https://..."
                       className="flex-1"
                     />
-                    <Button variant="ghost" size="icon" onClick={() => removeResourceLink(i)}>
+                    <Button variant="ghost" size="icon" onClick={() => removeResourceLink(i)} aria-label={__('Delete link', 'wp-sms')}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>

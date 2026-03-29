@@ -1,9 +1,19 @@
-import { useMemo } from "react"
+import { createContext, useContext, useId, useMemo } from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
+
+interface FieldContextValue {
+  fieldId: string
+}
+
+const FieldContext = createContext<FieldContextValue | null>(null)
+
+function useFieldContext() {
+  return useContext(FieldContext)
+}
 
 function FieldSet({ className, ...props }: React.ComponentProps<"fieldset">) {
   return (
@@ -83,14 +93,18 @@ function Field({
   orientation = "vertical",
   ...props
 }: React.ComponentProps<"div"> & VariantProps<typeof fieldVariants>) {
+  const fieldId = useId()
+  const ctx = useMemo(() => ({ fieldId }), [fieldId])
   return (
-    <div
-      role="group"
-      data-slot="field"
-      data-orientation={orientation}
-      className={cn(fieldVariants({ orientation }), className)}
-      {...props}
-    />
+    <FieldContext value={ctx}>
+      <div
+        role="group"
+        data-slot="field"
+        data-orientation={orientation}
+        className={cn(fieldVariants({ orientation }), className)}
+        {...props}
+      />
+    </FieldContext>
   )
 }
 
@@ -112,6 +126,7 @@ function FieldLabel({
   ...props
 }: React.ComponentProps<typeof Label>) {
   return (
+    // eslint-disable-next-line jsx-a11y/label-has-associated-control -- receives htmlFor via props spread
     <Label
       data-slot="field-label"
       className={cn(
@@ -148,9 +163,11 @@ function FieldHint({ className, ...props }: React.ComponentProps<"p">) {
   )
 }
 
-function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
+function FieldDescription({ className, id, ...props }: React.ComponentProps<"p">) {
+  const ctx = useFieldContext()
   return (
     <p
+      id={id ?? (ctx ? `${ctx.fieldId}-description` : undefined)}
       data-slot="field-description"
       className={cn(
         "text-sm leading-normal font-normal text-muted-foreground group-has-[[data-orientation=horizontal]]/field:text-balance",
@@ -197,10 +214,12 @@ function FieldError({
   className,
   children,
   errors,
+  id,
   ...props
 }: React.ComponentProps<"div"> & {
   errors?: Array<{ message?: string } | undefined>
 }) {
+  const ctx = useFieldContext()
   const content = useMemo(() => {
     if (children) {
       return children
@@ -234,6 +253,7 @@ function FieldError({
 
   return (
     <div
+      id={id ?? (ctx ? `${ctx.fieldId}-error` : undefined)}
       role="alert"
       data-slot="field-error"
       className={cn("text-sm font-normal text-destructive", className)}
@@ -288,4 +308,5 @@ export {
   FieldContent,
   FieldTitle,
   SwitchField,
+  useFieldContext,
 }

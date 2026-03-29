@@ -161,17 +161,17 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
                 </p>
               </div>
               <div className="flex items-center gap-1">
-                <Button variant="ghost" size="icon-md" onClick={() => handleMoveUp(index)} disabled={index === 0}>
+                <Button variant="ghost" size="icon-md" onClick={() => handleMoveUp(index)} disabled={index === 0} aria-label={__('Move up', 'wp-sms')}>
                   <ArrowUp className="h-3.5 w-3.5" />
                 </Button>
-                <Button variant="ghost" size="icon-md" onClick={() => handleMoveDown(index)} disabled={index === allFields.length - 1}>
+                <Button variant="ghost" size="icon-md" onClick={() => handleMoveDown(index)} disabled={index === allFields.length - 1} aria-label={__('Move down', 'wp-sms')}>
                   <ArrowDown className="h-3.5 w-3.5" />
                 </Button>
-                <Button variant="ghost" size="icon-md" onClick={() => handleEdit(field)}>
+                <Button variant="ghost" size="icon-md" onClick={() => handleEdit(field)} aria-label={__('Edit', 'wp-sms')}>
                   <Pencil className="h-3.5 w-3.5" />
                 </Button>
                 {field.source !== 'system' && (
-                  <Button variant="ghost" size="icon-md" className="text-destructive" onClick={() => handleDelete(field.id)}>
+                  <Button variant="ghost" size="icon-md" className="text-destructive" onClick={() => handleDelete(field.id)} aria-label={__('Delete', 'wp-sms')}>
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 )}

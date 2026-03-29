@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { __ } from '@wordpress/i18n';
 import { TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,7 +14,7 @@ export function ActionsCell({ children }: { children: ReactNode }) {
     <TableCell>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-8 w-8">
+          <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={__('Open menu', 'wp-sms')}>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>

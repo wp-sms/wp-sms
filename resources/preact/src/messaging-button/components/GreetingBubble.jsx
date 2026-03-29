@@ -56,8 +56,10 @@ export function GreetingBubble({ config, position, isWidgetOpen, onOpen }) {
     return (
         <div
             class={`wsms-mb-greeting wsms-mb-greeting--show ${posClass}`}
-            role="status"
+            role={config.open_on_click ? 'button' : 'status'}
+            tabIndex={config.open_on_click ? 0 : undefined}
             onClick={handleClick}
+            onKeyDown={config.open_on_click ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } } : undefined}
             style={config.open_on_click ? { cursor: 'pointer' } : undefined}
         >
             <span class="wsms-mb-greeting__text">{config.message}</span>

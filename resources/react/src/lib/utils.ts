@@ -69,3 +69,18 @@ export function getAvailableRoles(): { value: string; label: string }[] {
   return Object.entries(roles).map(([value, label]) => ({ value, label: label as string }));
 }
 
+/** Keyboard handler for making non-button elements activatable via Enter/Space. */
+export function onActivate(handler: () => void) {
+  return (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); }
+  };
+}
+
+/** Move focus to the first interactive element inside a container after the current frame. */
+export function focusFirstInteractive(container: HTMLElement | null | undefined) {
+  if (!container) return;
+  requestAnimationFrame(() => {
+    container.querySelector<HTMLElement>('button, input, [tabindex]')?.focus();
+  });
+}
+

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect, useRef } from 'preact/hooks';
 import { __, sprintf } from '@wordpress/i18n';
 import { Fingerprint } from 'lucide-react';
 import { cn } from '../../utils/cn';
@@ -60,6 +60,7 @@ export function MfaStep() {
     const [trustDevice, setTrustDevice] = useState(false);
     const [passkeyPrompting, setPasskeyPrompting] = useState(false);
     const backupRef = useAutoFocus(useBackup);
+    const tryAgainRef = useRef(null);
 
     const trustedDevices = trustedDevicesConfig.value;
     const showTrustCheckbox = trustedDevices?.enabled;
@@ -129,6 +130,8 @@ export function MfaStep() {
             await handleVerify(JSON.stringify(assertion), channelId);
         } catch (err) {
             authError.value = formatWebAuthnError(err);
+            // Focus the try-again button after passkey error
+            requestAnimationFrame(() => tryAgainRef.current?.focus());
         } finally {
             setPasskeyPrompting(false);
         }
@@ -264,6 +267,7 @@ export function MfaStep() {
                             </p>
                             {!passkeyPrompting && (
                                 <Button
+                                    ref={tryAgainRef}
                                     variant="outline"
                                     onClick={() => sendMfaChallenge('passkey')}
                                     disabled={authLoading.value}

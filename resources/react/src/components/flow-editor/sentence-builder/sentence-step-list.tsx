@@ -1,7 +1,8 @@
 import { __ } from '@wordpress/i18n';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import type { FlowNode, JsonSchema, JsonSchemaProperty } from '@/lib/api';
 import { createNode, type StepType } from '@/lib/flow-utils';
+import { focusFirstInteractive } from '@/lib/utils';
 import { useActions } from '@/hooks/use-actions';
 import { StepCard } from './step-card';
 import { StepAdder } from './step-adder';
@@ -24,6 +25,7 @@ export function SentenceStepList({
 }: SentenceStepListProps) {
   const { actions } = useActions();
   const [expandedStepId, setExpandedStepId] = useState<string | null>(null);
+  const stepRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   // Compute per-step enriched payload schemas that include previous action outputs.
   // This lets downstream variable pickers show {{actions.<action_id>.<field>}} without changes.
@@ -70,6 +72,7 @@ export function SentenceStepList({
     const node = createNode(type);
     onChange([...steps, node]);
     setExpandedStepId(node.id);
+    focusFirstInteractive(stepRefs.current.get(node.id));
   };
 
   const updateStep = (index: number, step: FlowNode) => {
@@ -82,6 +85,8 @@ export function SentenceStepList({
     const step = steps[index];
     if (expandedStepId === step.id) setExpandedStepId(null);
     onChange(steps.filter((_, i) => i !== index));
+    const prevStep = steps[index - 1];
+    if (prevStep) focusFirstInteractive(stepRefs.current.get(prevStep.id));
   };
 
   if (steps.length === 0) {
@@ -95,7 +100,7 @@ export function SentenceStepList({
   return (
     <div className="space-y-0">
       {steps.map((step, i) => (
-        <div key={step.id}>
+        <div key={step.id} ref={(el) => { if (el) stepRefs.current.set(step.id, el); else stepRefs.current.delete(step.id); }}>
           <StepCard
             step={step}
             index={i}

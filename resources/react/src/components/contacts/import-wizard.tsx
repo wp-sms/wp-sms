@@ -1,6 +1,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { useState, useRef } from 'react';
 import type { ImportPreview, ImportResult } from '@/lib/api';
+import { onActivate } from '@/lib/utils';
 import { useConfirm } from '@/components/confirm-provider';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
@@ -128,8 +129,12 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
           {/* Step: Upload */}
           {step === 'upload' && (
             <div
+              role="button"
+              tabIndex={0}
+              aria-label={__('Upload CSV file', 'wp-sms')}
               className="flex flex-col items-center justify-center py-12 border-2 border-dashed rounded-lg cursor-pointer hover:border-primary/50 transition-colors"
               onClick={() => fileRef.current?.click()}
+              onKeyDown={onActivate(() => fileRef.current?.click())}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
                 e.preventDefault();
