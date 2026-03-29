@@ -36,6 +36,9 @@ const loginActions = [
 const waitForApp =
   'wait for element [data-slot="sidebar-wrapper"] to be visible';
 
+const waitForAuth =
+  'wait for element #wsms-auth > div to be visible';
+
 function adminPage(hash) {
   return {
     url: hash ? `${ADMIN}#${hash}` : ADMIN,
@@ -43,6 +46,14 @@ function adminPage(hash) {
       ? [`navigate to ${ADMIN}#${hash}`, waitForApp]
       : [waitForApp],
     rootElement: '#wpsms-app',
+  };
+}
+
+function authPage(route) {
+  return {
+    url: `${BASE}/account/${route}`,
+    actions: [waitForAuth],
+    rootElement: '#wsms-auth',
   };
 }
 
@@ -64,19 +75,24 @@ module.exports = {
 
   urls: [
     // ── Auth pages (public, no login needed) ──
-    { url: `${BASE}/account/login`, rootElement: '#wsms-auth' },
-    { url: `${BASE}/account/register`, rootElement: '#wsms-auth' },
-    { url: `${BASE}/account/forgot-password`, rootElement: '#wsms-auth' },
+    authPage('login'),
+    authPage('register'),
+    authPage('forgot-password'),
 
-    // ── WP Login (first admin entry — establishes session) ──
+    // ── WP Login (establishes session for logged-in pages) ──
     {
       url: `${BASE}/wp-login.php`,
       actions: loginActions,
-      // Suppress wp-login.php's own a11y issues — we only need the session
       ignore: ['notice', 'warning', 'error'],
     },
 
-    // ── Admin dashboard pages (session from login carries over) ──
+    // ── Auth pages (logged-in — session from WP login carries over) ──
+    authPage(''),                 // Account dashboard
+    authPage('profile'),          // Edit profile
+    authPage('change-password'),  // Change password
+    authPage('security'),         // MFA / security settings
+
+    // ── Admin dashboard pages ──
     adminPage(null),
     adminPage('/messaging/campaigns'),
     adminPage('/flows'),

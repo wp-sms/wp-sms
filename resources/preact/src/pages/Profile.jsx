@@ -209,6 +209,7 @@ export function Profile() {
                         type="file"
                         accept="image/jpeg,image/png,image/gif,image/webp"
                         className="wsms-auth-hidden"
+                        aria-label={__('Upload avatar', 'wp-sms')}
                         onChange={handleAvatarUpload}
                     />
                 </div>

@@ -4,7 +4,7 @@ import { __ } from '@wordpress/i18n';
 import { Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
-export const PasswordInput = forwardRef(function PasswordInput({ className, ...props }, ref) {
+export const PasswordInput = forwardRef(function PasswordInput({ className, type: _type, ...props }, ref) {
     const [visible, setVisible] = useState(false);
 
     return (
