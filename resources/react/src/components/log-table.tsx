@@ -132,19 +132,19 @@ export function LogTable({ logs, total, page, perPage, onPageChange, loading }: 
                       <div className="grid gap-2 py-1 text-xs">
                         {log.channel_id && (
                           <div className="flex gap-2">
-                            <span className="font-medium text-muted-foreground">Channel:</span>
+                            <span className="font-medium text-muted-foreground">{__('Channel:', 'wp-sms')}</span>
                             <span>{log.channel_id}</span>
                           </div>
                         )}
                         {log.user_agent && (
                           <div className="flex gap-2">
-                            <span className="font-medium text-muted-foreground">User Agent:</span>
+                            <span className="font-medium text-muted-foreground">{__('User Agent:', 'wp-sms')}</span>
                             <span className="break-all">{log.user_agent}</span>
                           </div>
                         )}
                         {meta && Object.keys(meta).length > 0 && (
                           <div className="flex flex-col gap-1">
-                            <span className="font-medium text-muted-foreground">Metadata:</span>
+                            <span className="font-medium text-muted-foreground">{__('Metadata:', 'wp-sms')}</span>
                             <div className="grid gap-1 ps-2">
                               {Object.entries(meta).map(([key, value]) => (
                                 <div key={key} className="flex gap-2">

@@ -25,9 +25,11 @@ export function CF7Verification({ settings, onUpdate }: CF7VerificationProps) {
           {__('Form Verification', 'wp-sms')}
         </CardTitle>
         <CardDescription>
-          Add international phone fields and email verification to Contact Form 7 forms.
-          Registers <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">[wsms_phone]</code> and <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">[wsms_verify_email]</code> form
-          tags. Use <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">[wsms_phone verify]</code> to require SMS verification.
+          {__('Add international phone fields and email verification to Contact Form 7 forms. Registers', 'wp-sms')}{' '}
+          <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">{'[wsms_phone]'}</code>{' '}{__('and', 'wp-sms')}{' '}
+          <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">{'[wsms_verify_email]'}</code>{' '}
+          {__('form tags. Use', 'wp-sms')}{' '}
+          <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">{'[wsms_phone verify]'}</code>{' '}{__('to require SMS verification.', 'wp-sms')}
         </CardDescription>
         <CardAction>
           <Switch

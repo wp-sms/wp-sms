@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { useState, useMemo } from 'react';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 
@@ -23,7 +24,7 @@ export function JsonViewer({ data, label, defaultExpanded = false }: JsonViewerP
       >
         {expanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
         {label && <span className="font-medium">{label}</span>}
-        {!expanded && <span className="text-[10px] text-muted-foreground/70">{keyCount} keys</span>}
+        {!expanded && <span className="text-[10px] text-muted-foreground/70">{sprintf(__('%d keys', 'wp-sms'), keyCount)}</span>}
       </button>
       {expanded && (
         <pre dir="ltr" className="mt-1 rounded border bg-muted/30 p-2 text-[11px] font-mono max-h-60 overflow-auto whitespace-pre-wrap break-all">

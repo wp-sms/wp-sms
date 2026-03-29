@@ -243,7 +243,7 @@ export function PrivacyPage() {
                   <CardTitle className="text-base">{__('WordPress User', 'wp-sms')}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm text-muted-foreground">
-                  {lookup.wp_user.display_name} ({lookup.wp_user.email}) — ID #{lookup.wp_user.id}
+                  {sprintf(__('%1$s (%2$s) — ID #%3$s', 'wp-sms'), lookup.wp_user.display_name, lookup.wp_user.email, lookup.wp_user.id)}
                 </CardContent>
               </Card>
             )}

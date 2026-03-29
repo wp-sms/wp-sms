@@ -299,7 +299,7 @@ export function GatewayConfigPanel({
                       <CheckCircle2 className="h-4 w-4" />
                       <AlertTitle>{__('Sent successfully', 'wp-sms')}</AlertTitle>
                       {testResult.data.provider_id && (
-                        <AlertDescription>Provider ID: {testResult.data.provider_id}</AlertDescription>
+                        <AlertDescription>{__('Provider ID:', 'wp-sms')} {testResult.data.provider_id}</AlertDescription>
                       )}
                     </Alert>
                   ) : (

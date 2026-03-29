@@ -29,14 +29,14 @@ function VerifiedBadge({ verified }: { verified: boolean }) {
     return (
       <span className="inline-flex items-center gap-1 text-xs text-emerald-600">
         <CheckCircle2 className="h-3.5 w-3.5" />
-        Verified
+        {__('Verified', 'wp-sms')}
       </span>
     );
   }
   return (
     <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
       <XCircle className="h-3.5 w-3.5" />
-      Not verified
+      {__('Not verified', 'wp-sms')}
     </span>
   );
 }

@@ -331,9 +331,9 @@ export function RegistrationForms() {
                 placeholder="vendor-registration"
               />
               <FieldDescription>
-                {__('Popup:', 'wp-sms')} <code>[wsms_auth id="{formState.slug || '...'}" view="register"]</code>
+                {__('Popup:', 'wp-sms')}{' '}<code>{'[wsms_auth id="'}{formState.slug || '...'}{'" view="register"]'}</code>
                 <br />
-                {__('Embed:', 'wp-sms')} <code>[wsms_auth id="{formState.slug || '...'}" view="register" mode="embed"]</code>
+                {__('Embed:', 'wp-sms')}{' '}<code>{'[wsms_auth id="'}{formState.slug || '...'}{'" view="register" mode="embed"]'}</code>
               </FieldDescription>
             </Field>
 

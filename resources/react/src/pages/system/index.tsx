@@ -36,7 +36,7 @@ export function SystemHealth({ embedded, setHeaderMeta, setHeaderActions }: Syst
 
   const timestamp = data && (
     <span className="text-xs tabular-nums text-muted-foreground">
-      Updated {formatRelativeTime(data.generated_at)}
+      {__('Updated', 'wp-sms')} {formatRelativeTime(data.generated_at)}
     </span>
   );
 
@@ -124,7 +124,7 @@ export function SystemHealth({ embedded, setHeaderMeta, setHeaderActions }: Syst
             actions={
               (data.queue.totals['failed'] ?? 0) > 0 && (
                 <Badge variant="destructive" dot>
-                  {data.queue.totals['failed']} failed
+                  {data.queue.totals['failed']} {__('failed', 'wp-sms')}
                 </Badge>
               )
             }

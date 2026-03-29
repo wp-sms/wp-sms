@@ -284,7 +284,7 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
               <Logo className="h-6 w-6 text-primary-foreground" />
             </div>
             <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-              <span className="text-lg font-extrabold tracking-tight leading-none">WSMS</span>
+              <span className="text-lg font-extrabold tracking-tight leading-none">{'WSMS'}</span>
             </div>
           </div>
         </SidebarHeader>
@@ -325,13 +325,13 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
                 <Logo className="h-4 w-4 text-primary/60" />
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[13px] font-medium tracking-tight text-muted-foreground/80">WSMS</span>
+                <span className="text-[13px] font-medium tracking-tight text-muted-foreground/80">{'WSMS'}</span>
                 <span className="rounded border border-border/50 px-1.5 py-px font-mono text-[9px] tracking-wide text-muted-foreground/50">{version}</span>
                 <span className="mx-0.5 text-border">·</span>
                 <span className="text-[11px] text-muted-foreground/50">
-                  by{' '}
+                  {__('by', 'wp-sms')}{' '}
                   <a href="https://veronalabs.com" target="_blank" rel="noopener noreferrer" className="font-medium text-muted-foreground/60 transition-colors hover:text-primary">
-                    VeronaLabs
+                    {'VeronaLabs'}
                   </a>
                 </span>
               </div>
@@ -339,7 +339,7 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
             <nav className="flex items-center gap-4 text-[11px] text-muted-foreground/40">
               <a href="https://wsms.io/docs" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">{__('Docs', 'wp-sms')}</a>
               <a href="https://wsms.io/support" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">{__('Support', 'wp-sms')}</a>
-              <a href="https://wsms.io" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">wsms.io</a>
+              <a href="https://wsms.io" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">{'wsms.io'}</a>
             </nav>
           </div>
         </footer>

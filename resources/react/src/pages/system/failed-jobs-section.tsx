@@ -74,7 +74,7 @@ export function FailedJobsSection({ data, onMutate }: FailedJobsSectionProps) {
           <div className="flex flex-wrap gap-2">
             {data.error_groups.map((g) => (
               <Badge key={g.message} variant="neutral" className="max-w-xs truncate">
-                {g.count}x {g.message}
+                {g.count}{'x '}{g.message}
               </Badge>
             ))}
           </div>

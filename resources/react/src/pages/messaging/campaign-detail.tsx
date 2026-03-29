@@ -203,7 +203,7 @@ function StatsSection({ data, stats, deliveryRate }: {
             </p>
             {showCost && (
               <p className="mt-1 text-sm text-muted-foreground">
-                Total cost: ${stats.total_cost.toFixed(4)}
+                {__('Total cost: $', 'wp-sms')}{stats.total_cost.toFixed(4)}
               </p>
             )}
             {hasDeliveryTracking && deliveryRate === 0 && stats.sent > 0 && !isAllFailed && (

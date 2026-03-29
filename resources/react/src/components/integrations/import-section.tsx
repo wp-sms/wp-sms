@@ -211,7 +211,7 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
         {/* Role selection for WordPress */}
         {isWpUsers && (
           <div className="space-y-2">
-            <label className="text-sm font-medium">User Roles</label>
+            <label className="text-sm font-medium">{__('User Roles', 'wp-sms')}</label>
             <p className="text-xs text-muted-foreground">
               {__('Only import users with these roles. Leave empty to import all roles.', 'wp-sms')}
             </p>
@@ -232,7 +232,7 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
         {/* List picker for EO/Mailtrap */}
         {hasListPicker && (
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Import from List</label>
+            <label className="text-sm font-medium">{__('Import from List', 'wp-sms')}</label>
             {loadingLists ? (
               <Skeleton className="h-9 w-full" />
             ) : (
@@ -255,7 +255,7 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
         {/* Field mapping */}
         {importFields && (
           <div className="space-y-2">
-            <label className="text-sm font-medium">Field Mapping</label>
+            <label className="text-sm font-medium">{__('Field Mapping', 'wp-sms')}</label>
             <FieldMappingTable
               mapping={mapping}
               availableFields={importFields.fields}
@@ -267,11 +267,11 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
         {/* Auto-sync toggle */}
         <div className="flex items-center justify-between">
           <div>
-            <label className="text-sm font-medium">Auto-sync</label>
+            <label className="text-sm font-medium">{__('Auto-sync', 'wp-sms')}</label>
             <p className="text-xs text-muted-foreground">
               {isWpUsers
-                ? 'Automatically sync when users register, update their profile, or are deleted.'
-                : 'Automatically sync new contacts on a recurring schedule.'}
+                ? __('Automatically sync when users register, update their profile, or are deleted.', 'wp-sms')
+                : __('Automatically sync new contacts on a recurring schedule.', 'wp-sms')}
             </p>
           </div>
           <Switch checked={autoSync} onCheckedChange={setAutoSync} />
@@ -280,7 +280,7 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
         {/* Save button */}
         <Button size="sm" onClick={handleSave} disabled={saving}>
           {saving && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
-          Save Settings
+          {__('Save Settings', 'wp-sms')}
         </Button>
 
         {/* Divider */}
@@ -310,7 +310,7 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
             <div className="space-y-1.5">
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>{__('Importing...', 'wp-sms')}</span>
-                <span>{progress.synced} contacts{totalAvailable > 0 ? ` / ${totalAvailable}` : ''}</span>
+                <span>{progress.synced} {__('contacts', 'wp-sms')}{totalAvailable > 0 ? ` / ${totalAvailable}` : ''}</span>
               </div>
               <Progress value={totalAvailable > 0 ? Math.min(100, (progress.synced / totalAvailable) * 100) : 0} />
             </div>

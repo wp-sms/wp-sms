@@ -14,7 +14,7 @@ export function ContactWpUserInfo({ wpUser }: ContactWpUserInfoProps) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-sm font-medium">
           <User className="h-3.5 w-3.5 text-muted-foreground" />
-          WordPress User
+          {__('WordPress User', 'wp-sms')}
         </div>
         <a
           href={wpUser.edit_url}
@@ -22,7 +22,7 @@ export function ContactWpUserInfo({ wpUser }: ContactWpUserInfoProps) {
           rel="noopener noreferrer"
           className="text-xs text-primary hover:underline flex items-center gap-1"
         >
-          View in WP <ExternalLink className="h-3 w-3" />
+          {__('View in WP', 'wp-sms')} <ExternalLink className="h-3 w-3" />
         </a>
       </div>
       <div className="space-y-1 text-sm">

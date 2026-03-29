@@ -199,7 +199,7 @@ export function GatewayConfigForm({ gatewayId, schema, values, supportedChannels
 
       {channelSections.map((channel) => (
         <div key={channel} className="space-y-4">
-          <h4 className="text-sm font-medium">{channelLabel(channel)} Settings</h4>
+          <h4 className="text-sm font-medium">{channelLabel(channel)} {__('Settings', 'wp-sms')}</h4>
           {Object.entries(schema.channels[channel]).map(([key, field]) =>
             field.dynamic ? (
               <DynamicConfigField

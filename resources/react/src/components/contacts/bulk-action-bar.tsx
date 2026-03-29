@@ -29,7 +29,7 @@ export function BulkActionBar({ count, tags, onBulkAction, onClear }: BulkAction
 
   return (
     <div className="fixed bottom-4 start-1/2 -translate-x-1/2 rtl:translate-x-1/2 z-40 flex items-center gap-3 rounded-lg border bg-background px-4 py-2.5 shadow-lg">
-      <span className="text-sm font-medium">{count} selected</span>
+      <span className="text-sm font-medium">{count} {__('selected', 'wp-sms')}</span>
 
       <div className="h-4 w-px bg-border" />
 
@@ -64,7 +64,7 @@ export function BulkActionBar({ count, tags, onBulkAction, onClear }: BulkAction
 
       {confirming ? (
         <Button variant="destructive" size="sm" className="h-8" onClick={() => void handleAction('delete')} disabled={acting}>
-          Sure? Delete {count}
+          {__('Sure? Delete', 'wp-sms')} {count}
         </Button>
       ) : (
         <Button

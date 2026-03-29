@@ -74,28 +74,28 @@ export function ContactFormPanel({ open, onOpenChange, contact, onSave }: Contac
         <div className="space-y-4 px-4">
           <div className="grid grid-cols-2 gap-3">
             <Field>
-              <FieldLabel htmlFor="cf-first">First name</FieldLabel>
+              <FieldLabel htmlFor="cf-first">{__('First name', 'wp-sms')}</FieldLabel>
               <Input id="cf-first" value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} />
             </Field>
             <Field>
-              <FieldLabel htmlFor="cf-last">Last name</FieldLabel>
+              <FieldLabel htmlFor="cf-last">{__('Last name', 'wp-sms')}</FieldLabel>
               <Input id="cf-last" value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} />
             </Field>
           </div>
 
           <Field>
-            <FieldLabel htmlFor="cf-email">Email</FieldLabel>
+            <FieldLabel htmlFor="cf-email">{__('Email', 'wp-sms')}</FieldLabel>
             <Input id="cf-email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
             {form.email && (
               <label className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                 <Checkbox checked={form.email_verified} onCheckedChange={(v) => setForm({ ...form, email_verified: !!v })} />
-                Email verified
+                {__('Email verified', 'wp-sms')}
               </label>
             )}
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="cf-phone">Phone</FieldLabel>
+            <FieldLabel htmlFor="cf-phone">{__('Phone', 'wp-sms')}</FieldLabel>
             <PhoneInput
               key={contact?.id ?? 'new'}
               value={form.phone}
@@ -104,14 +104,14 @@ export function ContactFormPanel({ open, onOpenChange, contact, onSave }: Contac
             {form.phone && (
               <label className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                 <Checkbox checked={form.phone_verified} onCheckedChange={(v) => setForm({ ...form, phone_verified: !!v })} />
-                Phone verified
+                {__('Phone verified', 'wp-sms')}
               </label>
             )}
           </Field>
           <p className="text-xs text-muted-foreground -mt-2">{__('At least one of email or phone is required.', 'wp-sms')}</p>
 
           <Field>
-            <FieldLabel htmlFor="cf-status">Status</FieldLabel>
+            <FieldLabel htmlFor="cf-status">{__('Status', 'wp-sms')}</FieldLabel>
             <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v })}>
               <SelectTrigger id="cf-status">
                 <SelectValue />
@@ -127,7 +127,7 @@ export function ContactFormPanel({ open, onOpenChange, contact, onSave }: Contac
           <div>
             <p className="text-sm font-medium mb-2">{__('Channel opt-outs', 'wp-sms')}</p>
             <p className="text-xs text-muted-foreground mb-2">
-              Opted-out channels won&apos;t receive campaign messages.
+              {__("Opted-out channels won't receive campaign messages.", 'wp-sms')}
             </p>
             {OPT_OUT_CHANNELS.map(({ value: ch, label }) => (
               <label key={ch} className="flex items-center gap-2 text-sm text-muted-foreground mb-1.5">
@@ -139,7 +139,7 @@ export function ContactFormPanel({ open, onOpenChange, contact, onSave }: Contac
                     setForm({ ...form, channel_opt_outs: next });
                   }}
                 />
-                Opted out of {label}
+                {__('Opted out of', 'wp-sms')} {label}
               </label>
             ))}
           </div>

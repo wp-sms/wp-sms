@@ -50,7 +50,7 @@ function OptOutIndicator({ optOuts }: { optOuts?: Record<string, string | null> 
   const labels = active.map(([ch]) => ch.toUpperCase()).join(', ');
   return (
     <span className="text-[11px] text-muted-foreground ms-1.5">
-      ({labels} opted out)
+      ({labels} {__('opted out', 'wp-sms')})
     </span>
   );
 }

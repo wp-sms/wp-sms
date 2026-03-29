@@ -347,7 +347,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                 placeholder="newsletter"
               />
               <FieldDescription>
-                {__('Shortcode:', 'wp-sms')} <code>[wsms_subscribe id="{formState.slug || '...'}"]</code>
+                {__('Shortcode:', 'wp-sms')}{' '}<code>{'[wsms_subscribe id="'}{formState.slug || '...'}{'"]'}</code>
               </FieldDescription>
             </Field>
 

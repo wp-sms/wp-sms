@@ -41,7 +41,7 @@ export function ExecutionHistory({ flowId }: ExecutionHistoryProps) {
     <div className="space-y-4">
       {!loading && executions.length > 0 && (
         <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">{total} execution{total !== 1 ? 's' : ''}</p>
+          <p className="text-sm text-muted-foreground">{total} {total !== 1 ? __('executions', 'wp-sms') : __('execution', 'wp-sms')}</p>
           <Button variant="ghost" size="sm" onClick={refetch}>
             <RefreshCw className="me-1.5 h-3.5 w-3.5" />
             {__('Refresh', 'wp-sms')}

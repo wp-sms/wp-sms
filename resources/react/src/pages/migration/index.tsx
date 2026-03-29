@@ -221,7 +221,7 @@ function DetectionStep({ available, onSelect, status, onViewResults, onViewProgr
           <CardContent>
             <Progress value={status.percent} className="mb-4" />
             <p className="text-sm text-muted-foreground mb-4">
-              {status.percent}% — {status.processed_items.toLocaleString()} of {status.total_items.toLocaleString()} items
+              {sprintf(__('%1$s%% — %2$s of %3$s items', 'wp-sms'), status.percent, status.processed_items.toLocaleString(), status.total_items.toLocaleString())}
             </p>
             <Button onClick={onViewProgress}>{__('View Details', 'wp-sms')}</Button>
           </CardContent>
@@ -269,7 +269,7 @@ function DetectionStep({ available, onSelect, status, onViewResults, onViewProgr
                 <CardTitle className="flex items-center gap-2">
                   {plugin.id === 'digits' ? 'Digits' : plugin.id}
                   {plugin.active && <Badge variant="secondary">{__('Active', 'wp-sms')}</Badge>}
-                  {plugin.version && <Badge variant="outline">v{plugin.version}</Badge>}
+                  {plugin.version && <Badge variant="outline">{'v'}{plugin.version}</Badge>}
                 </CardTitle>
                 <CardDescription className="mt-1">
                   {plugin.summary.join(' · ')}
@@ -568,7 +568,7 @@ function ProgressStep({ status, onPause, onResume, onViewResults, actionLoading 
         <CardContent className="pt-6">
           <Progress value={status.percent} className="mb-2" />
           <p className="text-sm text-muted-foreground">
-            {status.percent}% — {status.processed_items.toLocaleString()} of {status.total_items.toLocaleString()} items
+            {sprintf(__('%1$s%% — %2$s of %3$s items', 'wp-sms'), status.percent, status.processed_items.toLocaleString(), status.total_items.toLocaleString())}
           </p>
         </CardContent>
       </Card>

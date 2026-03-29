@@ -93,16 +93,16 @@ function CredentialForm({ detail, onConfigChange }: { detail: IntegrationDetail;
         {error && <p className="text-sm text-destructive">{error}</p>}
         <Button size="sm" onClick={handleConnect} disabled={connecting}>
           {connecting && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
-          Connect
+          {__('Connect', 'wp-sms')}
         </Button>
 
         {(hasImport || hasSync || hasPoll) && (
           <div className="text-sm text-muted-foreground space-y-1 border-t pt-4">
-            <p className="font-medium">After connecting, you&apos;ll be able to:</p>
+            <p className="font-medium">{__('After connecting, you\'ll be able to:', 'wp-sms')}</p>
             <ul className="list-disc list-inside text-xs space-y-0.5">
-              {hasImport && <li>Import contacts from {detail.name}</li>}
-              {hasSync && <li>Sync contacts automatically</li>}
-              {hasPoll && <li>Poll for suppressions and bounces</li>}
+              {hasImport && <li>{sprintf(__('Import contacts from %s', 'wp-sms'), detail.name)}</li>}
+              {hasSync && <li>{__('Sync contacts automatically', 'wp-sms')}</li>}
+              {hasPoll && <li>{__('Poll for suppressions and bounces', 'wp-sms')}</li>}
             </ul>
           </div>
         )}
@@ -117,9 +117,9 @@ function GatewayPrompt() {
       <Info className="h-4 w-4" />
       <AlertTitle>{__('Gateway Required', 'wp-sms')}</AlertTitle>
       <AlertDescription>
-        Connect the gateway first.{' '}
+        {__('Connect the gateway first.', 'wp-sms')}{' '}
         <a href="#gateways" className="font-medium underline hover:no-underline">
-          Go to Gateways &rarr;
+          {__('Go to Gateways \u2192', 'wp-sms')}
         </a>
       </AlertDescription>
     </Alert>

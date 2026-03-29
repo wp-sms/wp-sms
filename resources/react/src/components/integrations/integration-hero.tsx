@@ -91,7 +91,7 @@ export function IntegrationHero({ detail, onConfigChange }: IntegrationHeroProps
           <AlertTriangle className="h-4 w-4" />
           <AlertTitle>{__('Not Installed', 'wp-sms')}</AlertTitle>
           <AlertDescription>
-            {detail.name} is not installed. Settings can be pre-configured but won&apos;t take effect until the plugin is active.
+            {sprintf(__('%s is not installed. Settings can be pre-configured but won\'t take effect until the plugin is active.', 'wp-sms'), detail.name)}
           </AlertDescription>
         </Alert>
       )}
@@ -107,9 +107,9 @@ function HeroAction({ detail, disconnecting, onDisconnect }: {
   if (detail.auth_type === 'none' || detail.auth_type === 'webhook_secret' || !detail.connected) return null;
 
   const label = detail.auth_type === 'gateway'
-    ? `Connected via ${detail.name}`
+    ? sprintf(__('Connected via %s', 'wp-sms'), detail.name)
     : typeof detail.config?.bot_username === 'string'
-      ? <>Connected as <span className="font-medium">@{detail.config.bot_username}</span></>
+      ? <>{__('Connected as', 'wp-sms')} <span className="font-medium">@{detail.config.bot_username}</span></>
       : null;
 
   return (
@@ -117,7 +117,7 @@ function HeroAction({ detail, disconnecting, onDisconnect }: {
       {label && <span className="text-xs text-muted-foreground">{label}</span>}
       <Button variant="outline" size="sm" onClick={onDisconnect} disabled={disconnecting}>
         {disconnecting && <Loader2 className="me-1 h-4 w-4 animate-spin" />}
-        Disconnect
+        {__('Disconnect', 'wp-sms')}
       </Button>
     </div>
   );

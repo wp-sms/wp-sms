@@ -201,7 +201,7 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
             className="mt-3 rounded-md border border-input bg-muted/30 px-3 py-2 text-sm"
             style={{ fontFamily: branding.font_family || 'system-ui' }}
           >
-            The quick brown fox jumps over the lazy dog
+            {__('The quick brown fox jumps over the lazy dog', 'wp-sms')}
           </div>
         </div>
       </CardContent>

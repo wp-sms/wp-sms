@@ -66,7 +66,7 @@ export function ConditionGroupComponent({ group, tags, onChange, depth = 0 }: Co
             <SelectItem value="any">{__('Any', 'wp-sms')}</SelectItem>
           </SelectContent>
         </Select>
-        <span className="text-xs text-muted-foreground">of these conditions</span>
+        <span className="text-xs text-muted-foreground">{__('of these conditions', 'wp-sms')}</span>
       </div>
 
       {conditions.map((condition, i) => (
@@ -87,7 +87,7 @@ export function ConditionGroupComponent({ group, tags, onChange, depth = 0 }: Co
             className="absolute -end-1 -top-1 h-5 w-5 p-0 text-muted-foreground"
             onClick={() => removeGroup(i)}
           >
-            x
+            {'x'}
           </Button>
           <ConditionGroupComponent
             group={subGroup}

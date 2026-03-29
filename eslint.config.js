@@ -80,6 +80,11 @@ export default [
       "react/prop-types": "off",
       "react/no-direct-mutation-state": "error",
       "react/no-children-prop": "error",
+      "react/jsx-no-literals": ["warn", {
+        noStrings: false,
+        ignoreProps: true,
+        allowedStrings: ["·", "|", ":", "/", "+", "×", "-", "*", "(", ")", "@", ".", "✓", "%", "&ndash;", "&mdash;", "—", "#"],
+      }],
     },
   },
 
@@ -101,6 +106,11 @@ export default [
     rules: {
       ...hooksRules,
       "react/jsx-uses-vars": "error",
+      "react/jsx-no-literals": ["warn", {
+        noStrings: false,
+        ignoreProps: true,
+        allowedStrings: ["·", "|", ":", "/", "+", "×", "-", "*", "(", ")", "@", ".", "✓", "%", "&ndash;", "&mdash;", "—", "#"],
+      }],
     },
   },
 

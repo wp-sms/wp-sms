@@ -66,12 +66,12 @@ export function TagFormPanel({ open, onOpenChange, tag, onSave }: TagFormPanelPr
 
         <div className="space-y-4 px-4">
           <Field>
-            <FieldLabel htmlFor="tag-name">Name *</FieldLabel>
+            <FieldLabel htmlFor="tag-name">{__('Name *', 'wp-sms')}</FieldLabel>
             <Input id="tag-name" value={name} onChange={(e) => handleNameChange(e.target.value)} placeholder={__('e.g. VIP', 'wp-sms')} />
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="tag-slug">Slug</FieldLabel>
+            <FieldLabel htmlFor="tag-slug">{__('Slug', 'wp-sms')}</FieldLabel>
             <Input
               id="tag-slug"
               value={slug}

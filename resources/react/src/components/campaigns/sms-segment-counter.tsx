@@ -102,7 +102,7 @@ export function SmsSegmentCounter({ text, optOutText }: SmsSegmentCounterProps) 
       </span>
       {info.nonGsmChars.length > 0 && (
         <span className="text-amber-600" title={`Non-GSM characters: ${info.nonGsmChars.join(' ')}`}>
-          Unicode: {info.nonGsmChars.slice(0, 5).map((c) => `"${c}"`).join(', ')}
+          {__('Unicode:', 'wp-sms')} {info.nonGsmChars.slice(0, 5).map((c) => `"${c}"`).join(', ')}
           {info.nonGsmChars.length > 5 ? ` +${info.nonGsmChars.length - 5} more` : ''}
         </span>
       )}

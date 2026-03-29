@@ -104,7 +104,7 @@ export function LogoCard({ branding, onChange }: LogoCardProps) {
               className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted accent-primary"
             />
             <div className="flex h-8 w-14 shrink-0 items-center justify-center rounded border border-input text-xs font-mono">
-              {branding.logo_size} px
+              {branding.logo_size}{' px'}
             </div>
           </div>
         </Field>

@@ -95,3 +95,11 @@ composer test                                    # All unit tests
 npm test                                         # Frontend tests
 npm run test:e2e                                 # E2E tests (requires running WordPress)
 ```
+
+## i18n
+
+### ESLint
+`react/jsx-no-literals` warns on raw English text in JSX. All user-visible strings must be wrapped with `{__('...', 'wp-sms')}`.
+
+### PO Source References
+All PO entries for JS strings must use `#: public/app/main.js:1 public/js/app/main.js:1` as source reference (not the `.tsx` source path), so `wp i18n make-json` includes them in the JSON files WordPress loads.

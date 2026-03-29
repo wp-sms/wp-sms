@@ -42,7 +42,7 @@ export function ContactTagsManager({ contactId, tags, allTags, onAdd, onRemove }
               </SelectItem>
             ))}
             {!available.length && (
-              <div className="px-2 py-1.5 text-xs text-muted-foreground">All tags assigned</div>
+              <div className="px-2 py-1.5 text-xs text-muted-foreground">{__('All tags assigned', 'wp-sms')}</div>
             )}
           </SelectContent>
         </Select>

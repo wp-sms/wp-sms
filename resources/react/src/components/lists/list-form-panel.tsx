@@ -73,12 +73,12 @@ export function ListFormPanel({ open, onOpenChange, list, tags, onSave }: ListFo
 
         <div className="space-y-4 px-4">
           <Field>
-            <FieldLabel htmlFor="list-name">Name *</FieldLabel>
+            <FieldLabel htmlFor="list-name">{__('Name *', 'wp-sms')}</FieldLabel>
             <Input id="list-name" value={name} onChange={(e) => setName(e.target.value)} />
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="list-desc">Description</FieldLabel>
+            <FieldLabel htmlFor="list-desc">{__('Description', 'wp-sms')}</FieldLabel>
             <Textarea id="list-desc" value={description} onChange={(e) => setDescription(e.target.value)} className="h-16" />
           </Field>
 

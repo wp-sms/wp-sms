@@ -34,7 +34,7 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
   const filtersButton = (
     <Button variant="outline" size="sm" onClick={() => setFiltersOpen(v => !v)}>
       <SlidersHorizontal className="me-1.5 h-3.5 w-3.5" />
-      Filters
+      {__('Filters', 'wp-sms')}
       {activeFilterCount > 0 && (
         <Badge variant="default" className="ms-1.5 h-5 px-1.5 text-[10px]">{activeFilterCount}</Badge>
       )}
@@ -68,7 +68,7 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
         <CollapsibleContent>
           <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
             <Field>
-              <FieldLabel htmlFor="filter-channel">Channel</FieldLabel>
+              <FieldLabel htmlFor="filter-channel">{__('Channel', 'wp-sms')}</FieldLabel>
               <Select value={filters.channel || 'all'} onValueChange={(v) => setFilter('channel', v === 'all' ? '' : v)}>
                 <SelectTrigger id="filter-channel">
                   <SelectValue />
@@ -84,7 +84,7 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="filter-status">Status</FieldLabel>
+              <FieldLabel htmlFor="filter-status">{__('Status', 'wp-sms')}</FieldLabel>
               <Select value={filters.status || 'all'} onValueChange={(v) => setFilter('status', v === 'all' ? '' : v)}>
                 <SelectTrigger id="filter-status">
                   <SelectValue />
@@ -100,7 +100,7 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="filter-recipient">Recipient</FieldLabel>
+              <FieldLabel htmlFor="filter-recipient">{__('Recipient', 'wp-sms')}</FieldLabel>
               <Input
                 id="filter-recipient"
                 placeholder={__('Search recipient...', 'wp-sms')}
@@ -110,7 +110,7 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="filter-gateway">Gateway</FieldLabel>
+              <FieldLabel htmlFor="filter-gateway">{__('Gateway', 'wp-sms')}</FieldLabel>
               <Input
                 id="filter-gateway"
                 placeholder={__('Filter by gateway', 'wp-sms')}
@@ -120,7 +120,7 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="filter-from">From</FieldLabel>
+              <FieldLabel htmlFor="filter-from">{__('From', 'wp-sms')}</FieldLabel>
               <Input
                 id="filter-from"
                 type="date"
@@ -130,7 +130,7 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="filter-to">To</FieldLabel>
+              <FieldLabel htmlFor="filter-to">{__('To', 'wp-sms')}</FieldLabel>
               <Input
                 id="filter-to"
                 type="date"

@@ -296,7 +296,7 @@ export function IntegrationPicker({
               />
               <DialogPrimitive.Close className="rounded-sm opacity-50 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden">
                 <X className="h-4 w-4" />
-                <span className="sr-only">Close</span>
+                <span className="sr-only">{__('Close', 'wp-sms')}</span>
               </DialogPrimitive.Close>
             </div>
           </div>
