@@ -20,7 +20,7 @@ abstract class AbstractScheduleTrigger extends AbstractTrigger
 
     public function getGroup(): string
     {
-        return 'Schedule';
+        return __('Schedule', 'wp-sms');
     }
 
     public function subscribe(callable $callback): void

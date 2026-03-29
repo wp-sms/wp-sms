@@ -157,6 +157,18 @@ class Bootstrap
      */
     public static function loadTextdomain(): void
     {
+        // Redirect MO file resolution so the plugin's bundled translations
+        // always take precedence over stale copies in WP_LANG_DIR/plugins/.
+        add_filter('load_textdomain_mofile', function (string $mofile, string $domain): string {
+            if ($domain !== 'wp-sms') {
+                return $mofile;
+            }
+
+            $bundled = dirname(WP_SMS_MAIN_FILE) . '/public/languages/wp-sms-' . determine_locale() . '.mo';
+
+            return file_exists($bundled) ? $bundled : $mofile;
+        }, 10, 2);
+
         load_plugin_textdomain(
             'wp-sms',
             false,

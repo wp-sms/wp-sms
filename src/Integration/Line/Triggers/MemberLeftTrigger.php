@@ -25,7 +25,7 @@ class MemberLeftTrigger extends AbstractTrigger
 
     public function getGroup(): string
     {
-        return 'LINE';
+        return __('LINE', 'wp-sms');
     }
 
     public function getPayloadSchema(): array

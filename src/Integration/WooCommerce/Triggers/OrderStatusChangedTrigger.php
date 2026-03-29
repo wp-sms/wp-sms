@@ -26,7 +26,7 @@ class OrderStatusChangedTrigger extends AbstractTrigger
 
     public function getGroup(): string
     {
-        return 'WooCommerce';
+        return __('WooCommerce', 'wp-sms');
     }
 
     public function getPayloadSchema(): array

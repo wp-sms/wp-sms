@@ -39,7 +39,7 @@ class RemoveFromMailtrapListAction extends AbstractAction
 
     public function getGroup(): string
     {
-        return 'Mailtrap';
+        return __('Mailtrap', 'wp-sms');
     }
 
     public function getConfigSchema(): array

@@ -26,7 +26,7 @@ class UpdateOrderStatusAction extends AbstractAction
 
     public function getGroup(): string
     {
-        return 'WooCommerce';
+        return __('WooCommerce', 'wp-sms');
     }
 
     public function getOutputSchema(): array

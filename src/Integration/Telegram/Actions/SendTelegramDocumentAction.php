@@ -32,7 +32,7 @@ class SendTelegramDocumentAction extends AbstractAction
 
     public function getGroup(): string
     {
-        return 'Telegram';
+        return __('Telegram', 'wp-sms');
     }
 
     public function getOutputSchema(): array

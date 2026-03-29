@@ -33,7 +33,7 @@ class FormRegistrationTrigger extends AbstractTrigger
 
     public function getGroup(): string
     {
-        return 'Auth';
+        return __('Auth', 'wp-sms');
     }
 
     public function getPayloadSchema(): array

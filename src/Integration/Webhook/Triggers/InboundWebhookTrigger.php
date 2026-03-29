@@ -26,7 +26,7 @@ class InboundWebhookTrigger extends AbstractTrigger
 
     public function getGroup(): string
     {
-        return 'Webhook';
+        return __('Webhook', 'wp-sms');
     }
 
     public function getPayloadSchema(): array

@@ -32,7 +32,7 @@ class CallbackQueryTrigger extends AbstractTrigger
 
     public function getGroup(): string
     {
-        return 'Telegram';
+        return __('Telegram', 'wp-sms');
     }
 
     public function getPayloadSchema(): array

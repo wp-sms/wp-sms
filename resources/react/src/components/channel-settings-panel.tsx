@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Smartphone, Mail, KeyRound } from 'lucide-react';
 import {
   Drawer,
@@ -187,12 +187,12 @@ function ChannelContent({
                     <span className="text-sm">{dc.label}</span>
                     {!dc.available && (
                       <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                        Coming Soon
+                        {__('Coming Soon', 'wp-sms')}
                       </Badge>
                     )}
                     {dc.available && !hasGateway && (
                       <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                        No gateway
+                        {__('No gateway', 'wp-sms')}
                       </Badge>
                     )}
                   </label>
@@ -288,14 +288,14 @@ function ChannelContent({
                       : 'border-border hover:bg-accent'
                   }`}
                 >
-                  {len} digits
+                  {sprintf(__('%d digits', 'wp-sms'), len)}
                 </button>
               ))}
             </div>
           </Field>
         )}
         <Field>
-          <FieldLabel htmlFor={`${channelId}-panel-expiry`}>Expiry (seconds)</FieldLabel>
+          <FieldLabel htmlFor={`${channelId}-panel-expiry`}>{__('Code Expiry (seconds)', 'wp-sms')}</FieldLabel>
           <Input
             id={`${channelId}-panel-expiry`}
             type="number"
@@ -329,10 +329,10 @@ export function ChannelSettingsPanel({
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted">
               <Icon className="h-4 w-4 text-muted-foreground" />
             </div>
-            {meta.label} Settings
+            {sprintf(__('%s Settings', 'wp-sms'), meta.label)}
           </DrawerTitle>
           <DrawerDescription>
-            Configure {meta.label.toLowerCase()} settings
+            {sprintf(__('Configure %s settings', 'wp-sms'), meta.label.toLowerCase())}
           </DrawerDescription>
         </DrawerHeader>
 

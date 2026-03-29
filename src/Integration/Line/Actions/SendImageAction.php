@@ -32,7 +32,7 @@ class SendImageAction extends AbstractAction
 
     public function getGroup(): string
     {
-        return 'LINE';
+        return __('LINE', 'wp-sms');
     }
 
     public function getOutputSchema(): array

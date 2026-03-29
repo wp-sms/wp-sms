@@ -32,7 +32,7 @@ class CreateContactAction extends AbstractAction
 
     public function getGroup(): string
     {
-        return 'Contacts';
+        return __('Contacts', 'wp-sms');
     }
 
     public function getOutputSchema(): array

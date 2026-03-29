@@ -32,7 +32,7 @@ class ContactOptedOutTrigger extends AbstractTrigger
 
     public function getGroup(): string
     {
-        return 'WSMS';
+        return __('WSMS', 'wp-sms');
     }
 
     public function getPayloadSchema(): array

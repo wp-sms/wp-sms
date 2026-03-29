@@ -26,7 +26,7 @@ class FormSubmittedTrigger extends AbstractTrigger
 
     public function getGroup(): string
     {
-        return 'Contact Form 7';
+        return __('Contact Form 7', 'wp-sms');
     }
 
     public function getPayloadSchema(): array

@@ -32,7 +32,7 @@ class QueueAutomationAction extends AbstractAction
 
     public function getGroup(): string
     {
-        return 'EmailOctopus';
+        return __('EmailOctopus', 'wp-sms');
     }
 
     public function getConfigSchema(): array

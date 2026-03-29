@@ -27,7 +27,7 @@ class CreatePostAction extends AbstractAction
 
     public function getGroup(): string
     {
-        return 'WordPress';
+        return __('WordPress', 'wp-sms');
     }
 
     public function getOutputSchema(): array

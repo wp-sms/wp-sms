@@ -149,7 +149,15 @@ class MessagingButtonSettings
 
     public function isEnabled(): bool
     {
-        return (bool) $this->get('enabled', false);
+        // Read the raw option directly to avoid triggering getTranslatedDefaults()
+        // (which calls __()) before the textdomain is loaded at 'init'.
+        if ($this->cached !== null) {
+            return (bool) ($this->cached['enabled'] ?? false);
+        }
+
+        $raw = get_option(self::OPTION_KEY, []);
+
+        return (bool) (is_array($raw) ? ($raw['enabled'] ?? self::DEFAULTS['enabled']) : self::DEFAULTS['enabled']);
     }
 
     /**
