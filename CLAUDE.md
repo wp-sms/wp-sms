@@ -94,7 +94,15 @@ composer test                                    # All unit tests
 ./vendor/bin/phpunit --filter="AccountManager"   # Specific class
 npm test                                         # Frontend tests
 npm run test:e2e                                 # E2E tests (requires running WordPress)
+npm run test:a11y                                # Live page a11y scan (requires running WordPress)
 ```
+
+### Live Page A11y Scanning
+- **Framework:** pa11y-ci with HTML_CodeSniffer + axe-core dual runners
+- **Config:** `.pa11yci.cjs` (reads credentials from `.env`)
+- **Requires:** Running WordPress instance at `WP_URL`
+- **Run:** `npm run test:a11y`
+- Scans auth pages (public) and admin dashboard pages (auto-login via session sharing)
 
 ## i18n
 

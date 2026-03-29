@@ -141,7 +141,7 @@ export function Campaigns() {
           value={filters.status || 'all'}
           onValueChange={(v) => setFilter('status', v === 'all' ? '' : v)}
         >
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-40" aria-label={__('Filter by status', 'wp-sms')}>
             <SelectValue placeholder={__('All Statuses', 'wp-sms')} />
           </SelectTrigger>
           <SelectContent>
@@ -159,7 +159,7 @@ export function Campaigns() {
           value={filters.channel || 'all'}
           onValueChange={(v) => setFilter('channel', v === 'all' ? '' : v)}
         >
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-40" aria-label={__('Filter by channel', 'wp-sms')}>
             <SelectValue placeholder={__('All Channels', 'wp-sms')} />
           </SelectTrigger>
           <SelectContent>

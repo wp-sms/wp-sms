@@ -222,6 +222,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                         size="icon"
                         onClick={() => removeContactMethod(i, j)}
                         disabled={member.contact_methods.length <= 1}
+                        aria-label={__('Remove contact method', 'wp-sms')}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

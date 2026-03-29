@@ -241,7 +241,7 @@ export function Flows() {
         value={filters.status || 'all'}
         onValueChange={(v) => setFilter('status', v === 'all' ? '' : v)}
       >
-        <SelectTrigger className="w-40">
+        <SelectTrigger className="w-40" aria-label={__('Filter by status', 'wp-sms')}>
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

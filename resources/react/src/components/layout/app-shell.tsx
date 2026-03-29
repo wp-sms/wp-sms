@@ -239,12 +239,11 @@ function NavMenu({ activeSection, onNavigate, items }: { activeSection: string; 
         }
 
         return (
-          <Collapsible
-            key={item.id}
-            defaultOpen={isParentActive}
-            className="group/collapsible"
-          >
-            <SidebarMenuItem>
+          <SidebarMenuItem key={item.id}>
+            <Collapsible
+              defaultOpen={isParentActive}
+              className="group/collapsible"
+            >
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton tooltip={item.label}>
                   <Icon />
@@ -266,8 +265,8 @@ function NavMenu({ activeSection, onNavigate, items }: { activeSection: string; 
                   ))}
                 </SidebarMenuSub>
               </CollapsibleContent>
-            </SidebarMenuItem>
-          </Collapsible>
+            </Collapsible>
+          </SidebarMenuItem>
         );
       })}
     </SidebarMenu>
@@ -325,18 +324,18 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
                 <Logo className="h-4 w-4 text-primary/60" />
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[13px] font-medium tracking-tight text-muted-foreground/80">{'WSMS'}</span>
-                <span className="rounded border border-border/50 px-1.5 py-px font-mono text-[9px] tracking-wide text-muted-foreground/50">{version}</span>
-                <span className="mx-0.5 text-border">·</span>
-                <span className="text-[11px] text-muted-foreground/50">
+                <span className="text-[13px] font-medium tracking-tight text-muted-foreground">{'WSMS'}</span>
+                <span className="rounded border border-border px-1.5 py-px font-mono text-[9px] tracking-wide text-muted-foreground">{version}</span>
+                <span className="mx-0.5 text-muted-foreground" aria-hidden="true">·</span>
+                <span className="text-[11px] text-muted-foreground">
                   {__('by', 'wp-sms')}{' '}
-                  <a href="https://veronalabs.com" target="_blank" rel="noopener noreferrer" className="font-medium text-muted-foreground/60 transition-colors hover:text-primary">
+                  <a href="https://veronalabs.com" target="_blank" rel="noopener noreferrer" className="font-medium text-muted-foreground transition-colors hover:text-primary">
                     {'VeronaLabs'}
                   </a>
                 </span>
               </div>
             </div>
-            <nav className="flex items-center gap-4 text-[11px] text-muted-foreground/40">
+            <nav className="flex items-center gap-4 text-[11px] text-muted-foreground">
               <a href="https://wsms.io/docs" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">{__('Docs', 'wp-sms')}</a>
               <a href="https://wsms.io/support" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">{__('Support', 'wp-sms')}</a>
               <a href="https://wsms.io" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">{'wsms.io'}</a>

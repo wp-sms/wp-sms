@@ -30,6 +30,7 @@
     "build:json": "wp i18n make-json public/languages/ --no-purge",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:a11y": "pa11y-ci --config .pa11yci",
     "test:e2e": "vitest run --config tests/e2e/vitest.config.e2e.ts",
     "lint": "eslint resources/",
     "lint:fix": "eslint resources/ --fix"
@@ -76,6 +77,7 @@
     "jsdom": "^29.0.0",
     "msw": "^2.12.13",
     "otpauth": "^9.5.0",
+    "pa11y-ci": "^4.1.0",
     "react-refresh": "^0.18.0",
     "sass": "^1.98.0",
     "typescript": "^5.9.3",

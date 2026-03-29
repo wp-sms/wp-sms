@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo } from 'preact/hooks';
+import { __ } from '@wordpress/i18n';
 import { PhoneInput as LitePhoneInput } from '../adapters/LitePhoneInputAdapter';
 import { authConfig } from '../signals/config';
 import { createGeoIpLookup } from '../../../shared/geo-lookup';
@@ -41,6 +42,7 @@ export function PhoneInput({ value = '', onChange, disabled, autoFocus = false, 
                     onChange={onChange}
                     disabled={disabled}
                     autoFocus={autoFocus}
+                    aria-label={__('Phone Number', 'wp-sms')}
                     defaultCountry={config.defaultCountry || 'US'}
                     preferredCountries={config.preferredCountries}
                     allowedCountries={config.allowedCountries}

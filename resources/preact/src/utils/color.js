@@ -81,7 +81,7 @@ function buildModeVars(mode, { pL, pC, pH, bgL, bgC, bgH, txL, txC, txH, erL, er
         vars['--popover'] = oklch(0.20, bgC * 0.2, bgH);
         vars['--popover-foreground'] = oklch(0.95, 0.005, bgH);
         vars['--muted'] = oklch(0.25, bgC * 0.15, bgH);
-        vars['--muted-foreground'] = oklch(0.65, 0.01, bgH);
+        vars['--muted-foreground'] = oklch(0.60, 0.01, bgH);
         vars['--secondary'] = oklch(0.25, 0.005, bgH);
         vars['--secondary-foreground'] = oklch(0.90, 0.005, bgH);
         vars['--accent'] = oklch(Math.max(acL * 0.4, 0.25), acC * 0.2, acH);
@@ -105,7 +105,7 @@ function buildModeVars(mode, { pL, pC, pH, bgL, bgC, bgH, txL, txC, txH, erL, er
         vars['--popover'] = oklch(1, 0, 0);
         vars['--popover-foreground'] = oklch(0.147, 0.004, bgH);
         vars['--muted'] = oklch(Math.min(lightBgL + 0.02, 0.97), bgC * 0.5, bgH);
-        vars['--muted-foreground'] = oklch(0.55, 0.013, bgH);
+        vars['--muted-foreground'] = oklch(0.475, 0.014, bgH);
         vars['--secondary'] = oklch(0.967, 0.001, bgH);
         vars['--secondary-foreground'] = oklch(0.21, 0.006, bgH);
         const accentIsLight = acL > 0.5;
