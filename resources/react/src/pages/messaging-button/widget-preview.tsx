@@ -49,8 +49,8 @@ body{background:var(--p-bg);color:var(--p-text)}
 <body>
 <div class="site">
   <div class="bar"></div>
-  <h1>{__('Your Website', 'wp-sms')}</h1>
-  <p>{__('Preview of the messaging button widget', 'wp-sms')}</p>
+  <h1>Your Website</h1>
+  <p>Preview of the messaging button widget</p>
   <div class="block" style="margin-top:12px"></div>
   <div class="block"></div>
   <div class="block" style="width:60%"></div>
@@ -132,13 +132,13 @@ function render(cfg){
   }
   if(team.length>0){
     h+='<div class="team-row">';
-    team.slice(0,3).forEach(function(m,i){
+    team.slice(0,3).forEach(function(m){
       h+='<div class="avatar" style="background:'+accent+'">';
       if(m.avatar_url)h+='<img src="'+esc(m.avatar_url)+'" alt="">';
       else h+=esc((m.name||'?')[0].toUpperCase());
       h+='</div>';
     });
-    h+='<span class="team-label">{__('Meet our team', 'wp-sms')}</span>';
+    h+='<span class="team-label">Meet our team</span>';
     h+='</div>';
   }
   h+='</div>';
