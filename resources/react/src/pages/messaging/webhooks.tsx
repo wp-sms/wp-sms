@@ -367,6 +367,7 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
           <Label htmlFor="wh-url">{__('URL', 'wp-sms')} <span className="text-destructive">*</span></Label>
           <Input
             id="wh-url"
+            dir="ltr"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="https://hooks.zapier.com/..."
@@ -453,6 +454,7 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
             <Label>{__('Secret', 'wp-sms')}</Label>
             <div className="flex items-center gap-2">
               <Input
+                dir="ltr"
                 value={webhook.secret}
                 readOnly
                 className="font-mono text-xs"

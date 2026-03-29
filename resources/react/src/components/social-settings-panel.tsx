@@ -149,6 +149,7 @@ export function SocialSettingsPanel({
             <Input
               id={`${providerId}-client-id`}
               type="text"
+              dir="ltr"
               value={settings.client_id ?? ''}
               onChange={(e) => onUpdate({ client_id: e.target.value })}
               placeholder={help.clientIdPlaceholder}
@@ -177,6 +178,7 @@ export function SocialSettingsPanel({
             <FieldLabel>{__('Callback URL', 'wp-sms')}</FieldLabel>
             <Input
               type="text"
+              dir="ltr"
               value={callbackUrl}
               readOnly
               className="text-xs font-mono bg-muted cursor-text"

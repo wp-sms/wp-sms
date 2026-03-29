@@ -107,6 +107,7 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
                 <Input
                   id="captcha-site-key"
                   type="text"
+                  dir="ltr"
                   value={captcha.site_key}
                   onChange={(e) => update({ site_key: e.target.value })}
                   placeholder={__('Enter site key', 'wp-sms')}

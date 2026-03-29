@@ -489,6 +489,7 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
               <Input
                 id="line-bot-id"
                 type="text"
+                dir="ltr"
                 value={lineSettings.bot_basic_id ?? ''}
                 onChange={(e) => updateLine({ bot_basic_id: e.target.value })}
                 placeholder={__('@123abcde', 'wp-sms')}

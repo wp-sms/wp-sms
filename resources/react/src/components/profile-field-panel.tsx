@@ -207,6 +207,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                 <Field>
                   <FieldLabel>{__('Field ID / Meta Key *', 'wp-sms')}</FieldLabel>
                   <Input
+                    dir="ltr"
                     value={form.meta_key}
                     onInput={(e) => update({ meta_key: (e.target as HTMLInputElement).value, id: (e.target as HTMLInputElement).value })}
                     placeholder="company"

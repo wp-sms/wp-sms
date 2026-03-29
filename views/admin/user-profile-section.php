@@ -146,7 +146,7 @@ $svgBan = UserListManager::SVG_BAN;
             <?php endif; ?>
             <?php if ($can_manage): ?>
                 <div class="wsms-phone-edit" style="display: none; margin-top: 8px;">
-                    <input type="tel" class="wsms-phone-input" pattern="\+[0-9]+" placeholder="+1234567890" value="<?php echo esc_attr($phone); ?>" style="width: 200px;">
+                    <input type="tel" dir="ltr" class="wsms-phone-input" pattern="\+[0-9]+" placeholder="+1234567890" value="<?php echo esc_attr($phone); ?>" style="width: 200px;">
                     <button type="button" class="button button-small wsms-action" data-action="save-phone" data-user-id="<?php echo esc_attr($user_id); ?>"><?php esc_html_e('Save', 'wp-sms'); ?></button>
                     <button type="button" class="button button-small wsms-phone-cancel"><?php esc_html_e('Cancel', 'wp-sms'); ?></button>
                     <?php if ($phone): ?>

@@ -216,6 +216,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                       className="w-1/3"
                     />
                     <Input
+                      dir="ltr"
                       value={link.url}
                       onChange={(e) => updateResourceLink(i, 'url', e.target.value)}
                       placeholder="https://..."
@@ -274,6 +275,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                 <FieldLabel htmlFor="mb-privacy-url">{__('Privacy Policy URL', 'wp-sms')}</FieldLabel>
                 <Input
                   id="mb-privacy-url"
+                  dir="ltr"
                   value={gdpr.link_url}
                   onChange={(e) => onUpdate('gdpr.link_url', e.target.value)}
                   placeholder="https://example.com/privacy"

@@ -202,6 +202,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                         </SelectContent>
                       </Select>
                       <Input
+                        dir="ltr"
                         value={method.value}
                         onChange={(e) => updateContactMethod(i, j, 'value', e.target.value)}
                         placeholder={method.type === 'email' ? 'email@example.com' : '+1234567890'}

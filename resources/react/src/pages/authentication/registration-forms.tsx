@@ -323,6 +323,7 @@ export function RegistrationForms() {
               <FieldLabel htmlFor="rf-slug">{__('Slug', 'wp-sms')}</FieldLabel>
               <Input
                 id="rf-slug"
+                dir="ltr"
                 value={formState.slug}
                 onChange={(e) => {
                   setSlugManual(true);
@@ -480,6 +481,7 @@ export function RegistrationForms() {
               <FieldLabel htmlFor="rf-redirect">{__('Redirect URL', 'wp-sms')}</FieldLabel>
               <Input
                 id="rf-redirect"
+                dir="ltr"
                 value={formState.redirect_url}
                 onChange={(e) => setFormState((prev) => ({ ...prev, redirect_url: e.target.value }))}
                 placeholder="/welcome or https://..."
@@ -503,6 +505,7 @@ export function RegistrationForms() {
                   className="w-12 h-9 p-1 cursor-pointer"
                 />
                 <Input
+                  dir="ltr"
                   value={formState.branding.primary_color || ''}
                   onChange={(e) =>
                     setFormState((prev) => ({

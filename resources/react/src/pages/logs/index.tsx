@@ -127,6 +127,7 @@ export function LogsPage({ embedded, setHeaderMeta, setHeaderActions }: LogsPage
           <Input
             id="filter-user"
             type="text"
+            dir="ltr"
             placeholder={__('Filter by user ID', 'wp-sms')}
             value={filters.user_id}
             onChange={(e) => setFilter('user_id', e.target.value)}

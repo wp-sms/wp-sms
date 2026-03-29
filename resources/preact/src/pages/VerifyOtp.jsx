@@ -96,6 +96,7 @@ export function VerifyOtp() {
                             ref={backupRef}
                             id="wsms-backup"
                             type="text"
+                            dir="ltr"
                             value={backupCode}
                             onInput={(e) => setBackupCode(e.target.value)}
                             placeholder={__('Enter backup code', 'wp-sms')}

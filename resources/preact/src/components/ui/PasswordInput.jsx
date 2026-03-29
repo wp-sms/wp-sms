@@ -8,7 +8,7 @@ export const PasswordInput = forwardRef(function PasswordInput({ className, ...p
     const [visible, setVisible] = useState(false);
 
     return (
-        <div className="wsms-auth-password-wrapper">
+        <div className="wsms-auth-password-wrapper" dir="ltr">
             <input
                 ref={ref}
                 type={visible ? 'text' : 'password'}

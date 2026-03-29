@@ -185,6 +185,7 @@ export function DynamicConfigField({
         <Input
           id={id}
           type="text"
+          dir="ltr"
           value={currentValue}
           onChange={(e) => onChange(fieldKey, e.target.value)}
           placeholder={field.placeholder}
@@ -203,6 +204,7 @@ export function DynamicConfigField({
           <Input
             id={id}
             type="text"
+            dir="ltr"
             value={currentValue}
             onChange={(e) => onChange(fieldKey, e.target.value)}
             placeholder={field.placeholder}

@@ -621,7 +621,7 @@ function ManualTemplateForm({
       <p className="text-xs font-medium text-muted-foreground">{__('Add Manual Template', 'wp-sms')}</p>
       <Field>
         <FieldLabel>{__('Template ID', 'wp-sms')}</FieldLabel>
-        <Input value={templateId} onChange={(e) => setTemplateId(e.target.value)} placeholder={__('e.g. otp_verify', 'wp-sms')} />
+        <Input dir="ltr" value={templateId} onChange={(e) => setTemplateId(e.target.value)} placeholder={__('e.g. otp_verify', 'wp-sms')} />
       </Field>
       <Field>
         <FieldLabel>{__('Name', 'wp-sms')}</FieldLabel>
@@ -902,6 +902,7 @@ function TemplateEditor({
                                 </div>
                                 <Input
                                   ref={ctaUrlRef}
+                                  dir="ltr"
                                   value={currentDraft.cta_url ?? ''}
                                   onChange={(e) => updateDraft('cta_url', e.target.value)}
                                   placeholder={__('e.g. {{verify_url}}', 'wp-sms')}

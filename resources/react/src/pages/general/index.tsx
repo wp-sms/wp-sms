@@ -33,6 +33,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
                 <Input
                   id="auth_base_url"
                   type="text"
+                  dir="ltr"
                   value={settings.auth_base_url}
                   onChange={(e) => onUpdate('auth_base_url', e.target.value)}
                   placeholder="/auth"
@@ -91,6 +92,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
               <Input
                 id="site_phone"
                 type="text"
+                dir="ltr"
                 value={settings.site_phone}
                 onChange={(e) => onUpdate('site_phone', e.target.value)}
                 placeholder={isTelegram ? '123456789' : '+1234567890'}

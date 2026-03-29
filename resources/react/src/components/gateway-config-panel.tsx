@@ -265,6 +265,7 @@ export function GatewayConfigPanel({
                   <Input
                     id="test-to"
                     type="text"
+                    dir="ltr"
                     value={testTo}
                     onChange={(e) => setTestTo(e.target.value)}
                     placeholder={recipientPlaceholder}

@@ -28,6 +28,7 @@ export function ColorPickerField({ id, label, value, placeholder, onChange }: Co
         />
         <Input
           id={inputId}
+          dir="ltr"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}

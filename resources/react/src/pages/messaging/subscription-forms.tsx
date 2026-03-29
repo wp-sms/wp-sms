@@ -338,6 +338,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
               <FieldLabel htmlFor="sf-slug">{__('Slug', 'wp-sms')}</FieldLabel>
               <Input
                 id="sf-slug"
+                dir="ltr"
                 value={formState.slug}
                 onChange={(e) => {
                   setSlugManual(true);
@@ -511,6 +512,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
               <FieldLabel htmlFor="sf-redirect">{__('Redirect URL', 'wp-sms')}</FieldLabel>
               <Input
                 id="sf-redirect"
+                dir="ltr"
                 value={formState.redirect_url}
                 onChange={(e) => setFormState((prev) => ({ ...prev, redirect_url: e.target.value }))}
                 placeholder="/thank-you or https://..."
@@ -557,6 +559,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                   <FieldLabel htmlFor="sf-privacy-url">{__('Privacy Policy URL', 'wp-sms')}</FieldLabel>
                   <Input
                     id="sf-privacy-url"
+                    dir="ltr"
                     value={formState.privacy_url ?? ''}
                     onChange={(e) =>
                       setFormState((prev) => ({ ...prev, privacy_url: e.target.value || null }))

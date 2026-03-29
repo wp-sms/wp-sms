@@ -132,6 +132,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
             <Field>
               <FieldLabel>{__('Include URLs', 'wp-sms')}</FieldLabel>
               <Textarea
+                dir="ltr"
                 value={display_rules.include_urls.join('\n')}
                 onChange={(e) => {
                   const urls = e.target.value.split('\n').filter(Boolean);
@@ -148,6 +149,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
             <Field>
               <FieldLabel>{__('Exclude URLs', 'wp-sms')}</FieldLabel>
               <Textarea
+                dir="ltr"
                 value={display_rules.exclude_urls.join('\n')}
                 onChange={(e) => {
                   const urls = e.target.value.split('\n').filter(Boolean);

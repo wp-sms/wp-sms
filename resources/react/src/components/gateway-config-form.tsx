@@ -44,7 +44,7 @@ function SecretField({ id, value, onChange, placeholder }: {
 }) {
   const [visible, setVisible] = useState(false);
   return (
-    <div className="relative">
+    <div className="relative" dir="ltr">
       <Input
         id={id}
         type={visible ? 'text' : 'password'}
@@ -146,6 +146,7 @@ function ConfigField({ fieldKey, field, value, onChange }: {
       <Input
         id={id}
         type="text"
+        dir="ltr"
         value={String(value ?? field.default ?? '')}
         onChange={(e) => onChange(fieldKey, e.target.value)}
         placeholder={field.placeholder}
