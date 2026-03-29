@@ -18,7 +18,7 @@ export function UserAvatar({ user, size = 'md', className }) {
         return (
             <img
                 src={avatarUrl}
-                alt=""
+                alt={user?.display_name || ''}
                 className={cn('wsms-auth-avatar wsms-auth-avatar--img', SIZE_CLASSES[size], className)}
                 onError={() => setImgFailed(true)}
             />

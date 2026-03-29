@@ -140,6 +140,7 @@ export function LayoutCard({ branding, onChange }: LayoutCardProps) {
             onChange={(v) => onChange({ border_radius: v })}
             options={RADIUS_OPTIONS}
             size="labeled"
+            aria-label={__('Corner Style', 'wp-sms')}
           />
         </Field>
 
@@ -150,6 +151,7 @@ export function LayoutCard({ branding, onChange }: LayoutCardProps) {
             onChange={(v) => onChange({ button_style: v })}
             options={BUTTON_STYLE_OPTIONS}
             size="labeled"
+            aria-label={__('Button Style', 'wp-sms')}
           />
         </Field>
 
@@ -160,6 +162,7 @@ export function LayoutCard({ branding, onChange }: LayoutCardProps) {
             onChange={(v) => onChange({ social_position: v })}
             options={SOCIAL_POSITIONS}
             size="labeled"
+            aria-label={__('Social Buttons Layout', 'wp-sms')}
           />
         </Field>
       </CardContent>

@@ -147,6 +147,7 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
           value={device}
           onChange={setDevice}
           options={DEVICE_PRESETS}
+          aria-label={__('Device preview', 'wp-sms')}
         />
 
         <div className="flex-1" />

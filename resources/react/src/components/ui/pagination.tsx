@@ -39,23 +39,26 @@ function PaginationItem({ ...props }: React.ComponentProps<"li">) {
 
 type PaginationLinkProps = {
   isActive?: boolean
-} & React.ComponentProps<"a">
+  'aria-disabled'?: boolean
+} & Omit<React.ComponentProps<"a">, 'aria-disabled'>
 
 function PaginationLink({
   className,
   isActive,
+  'aria-disabled': ariaDisabled,
   children,
   ...props
 }: PaginationLinkProps) {
   return (
     <a
-      role="button"
       aria-current={isActive ? "page" : undefined}
+      aria-disabled={ariaDisabled || undefined}
       data-slot="pagination-link"
       data-active={isActive}
       className={cn(
         "inline-flex items-center justify-center min-w-8 h-8 rounded-md border border-border text-xs font-semibold transition-colors hover:border-foreground hover:text-foreground",
         isActive && "bg-foreground text-background border-foreground hover:bg-foreground hover:text-background",
+        ariaDisabled && "pointer-events-none opacity-50",
         className
       )}
       {...props}
@@ -133,7 +136,8 @@ function PageNumbers({
           <PaginationItem>
             <PaginationPrevious
               onClick={() => onPageChange(Math.max(1, page - 1))}
-              className={page <= 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+              aria-disabled={page <= 1}
+              className={page > 1 ? 'cursor-pointer' : undefined}
             />
           </PaginationItem>
           {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
@@ -162,7 +166,8 @@ function PageNumbers({
           <PaginationItem>
             <PaginationNext
               onClick={() => onPageChange(Math.min(totalPages, page + 1))}
-              className={page >= totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+              aria-disabled={page >= totalPages}
+              className={page < totalPages ? 'cursor-pointer' : undefined}
             />
           </PaginationItem>
         </PaginationContent>

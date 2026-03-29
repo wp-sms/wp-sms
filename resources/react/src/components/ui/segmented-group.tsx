@@ -13,6 +13,8 @@ interface SegmentedGroupProps<T extends string | number> {
   options: SegmentedGroupOption<T>[];
   /** "icon" = square icon-only buttons (default), "labeled" = wider buttons with icon + label */
   size?: 'icon' | 'labeled';
+  /** Accessible label for the group (announced by screen readers) */
+  'aria-label'?: string;
 }
 
 export function SegmentedGroup<T extends string | number>({
@@ -20,6 +22,7 @@ export function SegmentedGroup<T extends string | number>({
   onChange,
   options,
   size = 'icon',
+  'aria-label': ariaLabel,
 }: SegmentedGroupProps<T>) {
   const isLabeled = size === 'labeled';
   // Inline !important overrides Field's [&>*]:w-full (both are !important via Tailwind v4, parent wins by specificity)
@@ -28,7 +31,7 @@ export function SegmentedGroup<T extends string | number>({
   }, []);
 
   return (
-    <div ref={fitRef} className="flex rounded-lg border-2 border-input">
+    <div ref={fitRef} role="group" aria-label={ariaLabel} className="flex rounded-lg border-2 border-input">
       {options.map((opt, i) => {
         const active = value === opt.value;
 
@@ -37,6 +40,8 @@ export function SegmentedGroup<T extends string | number>({
             key={String(opt.value)}
             type="button"
             title={opt.label}
+            aria-label={opt.label}
+            aria-pressed={active}
             onClick={() => onChange(opt.value)}
             className={cn(
               'flex items-center justify-center transition-colors',

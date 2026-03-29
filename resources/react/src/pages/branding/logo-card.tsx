@@ -88,6 +88,7 @@ export function LogoCard({ branding, onChange }: LogoCardProps) {
             value={branding.logo_position}
             onChange={(v) => onChange({ logo_position: v })}
             options={LOGO_POSITIONS}
+            aria-label={__('Logo Position', 'wp-sms')}
           />
         </Field>
 

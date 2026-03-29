@@ -190,18 +190,21 @@ export function SubscriptionFormApp({ config }) {
             <form onSubmit={handleSubmit}>
                 {fields.map((field) => (
                     <div class="wsms-sub-form__field" key={field.key}>
-                        <label class={`wsms-sub-form__label${field.required ? ' wsms-sub-form__label--required' : ''}`}>
+                        <label htmlFor={`wsms-sub-${field.key}`} class={`wsms-sub-form__label${field.required ? ' wsms-sub-form__label--required' : ''}`}>
                             {field.label || field.key}
                         </label>
                         {field.key === 'phone' ? (
                             <PhoneInput
+                                id={`wsms-sub-${field.key}`}
                                 value={values[field.key] || ''}
                                 onChange={(e164) => updateField(field.key, e164)}
                                 disabled={isSubmitting}
                                 config={config.phoneInput}
+                                aria-label={field.label || field.key}
                             />
                         ) : (
                             <input
+                                id={`wsms-sub-${field.key}`}
                                 type={INPUT_TYPES[field.key] || 'text'}
                                 class="wsms-sub-form__input"
                                 name={field.key}

@@ -97,6 +97,7 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
             onChange={(v) => onChange({ color_mode: v })}
             options={COLOR_MODE_OPTIONS}
             size="labeled"
+            aria-label={__('Color Mode', 'wp-sms')}
           />
           {branding.color_mode === 'auto' && (
             <FieldDescription>

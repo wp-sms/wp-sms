@@ -113,6 +113,7 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
                       { value: 'system', label: __('System', 'wp-sms'), icon: <Monitor className="h-4 w-4" /> },
                     ]}
                     size="labeled"
+                    aria-label={__('Theme', 'wp-sms')}
                   />
                 </Field>
               </>

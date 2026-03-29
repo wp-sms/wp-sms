@@ -23,6 +23,8 @@ export function PresetGrid<T extends { id: string; name: string }>({
           key={preset.id}
           type="button"
           title={preset.name}
+          aria-label={preset.name}
+          aria-pressed={activePresetId === preset.id}
           onClick={() => onSelect(preset)}
           className={cn(
             'group relative flex flex-col overflow-hidden rounded-lg border p-2 text-start transition-all',

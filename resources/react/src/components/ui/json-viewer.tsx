@@ -20,6 +20,8 @@ export function JsonViewer({ data, label, defaultExpanded = false }: JsonViewerP
       <button
         type="button"
         onClick={() => setExpanded(!expanded)}
+        aria-expanded={expanded}
+        aria-label={label || __('Toggle JSON details', 'wp-sms')}
         className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
       >
         {expanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}

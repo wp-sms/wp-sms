@@ -8,7 +8,7 @@ export function AvatarImage({ src, name }) {
     return (
         <img
             src={src}
-            alt={name}
+            alt={name || ''}
             onError={(e) => {
                 const parent = e.target.parentNode;
                 e.target.remove();
