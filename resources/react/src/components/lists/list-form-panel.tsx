@@ -83,7 +83,7 @@ export function ListFormPanel({ open, onOpenChange, list, tags, onSave }: ListFo
           </Field>
 
           <Field>
-            <FieldLabel>Type</FieldLabel>
+            <FieldLabel>{__('Type', 'wp-sms')}</FieldLabel>
             <Select value={type} onValueChange={(v) => setType(v as 'static' | 'dynamic')}>
               <SelectTrigger>
                 <SelectValue />
@@ -97,7 +97,7 @@ export function ListFormPanel({ open, onOpenChange, list, tags, onSave }: ListFo
 
           {type === 'static' && (
             <Field>
-              <FieldLabel>Tag</FieldLabel>
+              <FieldLabel>{__('Tag', 'wp-sms')}</FieldLabel>
               <Select value={tagId} onValueChange={setTagId}>
                 <SelectTrigger>
                   <SelectValue placeholder={__('Select a tag...', 'wp-sms')} />

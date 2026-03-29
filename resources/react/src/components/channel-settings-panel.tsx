@@ -208,7 +208,7 @@ function ChannelContent({
         <>
           <Separator />
           <Field>
-            <FieldLabel>OTP Gateway</FieldLabel>
+            <FieldLabel>{__('OTP Gateway', 'wp-sms')}</FieldLabel>
             <Select
               value={settings.otp_gateway ?? '__default__'}
               onValueChange={(v) => onUpdate({ otp_gateway: v === '__default__' ? null : v })}
@@ -224,7 +224,7 @@ function ChannelContent({
               </SelectContent>
             </Select>
             <FieldDescription>
-              Route OTP/verification messages through a dedicated gateway instead of the channel default
+              {__('Route OTP/verification messages through a dedicated gateway instead of the channel default', 'wp-sms')}
             </FieldDescription>
           </Field>
         </>
@@ -274,7 +274,7 @@ function ChannelContent({
         <Label className="text-sm font-medium">{__('Code Settings', 'wp-sms')}</Label>
         {settings.verification_methods?.includes('otp') && (
           <Field>
-            <FieldLabel>Code Length</FieldLabel>
+            <FieldLabel>{__('Code Length', 'wp-sms')}</FieldLabel>
             <div className="flex gap-2">
               {[4, 6].map((len) => (
                 <button
@@ -304,7 +304,7 @@ function ChannelContent({
             value={settings.expiry}
             onChange={(e) => onUpdate({ expiry: Number(e.target.value) })}
           />
-          <FieldDescription>How long the code/link remains valid (60-3600)</FieldDescription>
+          <FieldDescription>{__('How long the code/link remains valid (60-3600)', 'wp-sms')}</FieldDescription>
         </Field>
       </div>
     </div>

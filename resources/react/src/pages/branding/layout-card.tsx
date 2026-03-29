@@ -77,7 +77,7 @@ export function LayoutCard({ branding, onChange }: LayoutCardProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Layout className="h-4 w-4 text-muted-foreground" />
-          Layout &amp; Shape
+          {__('Layout & Shape', 'wp-sms')}
         </CardTitle>
         <CardDescription>
           {__('Choose a page layout, corner style, and social button placement', 'wp-sms')}
@@ -85,7 +85,7 @@ export function LayoutCard({ branding, onChange }: LayoutCardProps) {
       </CardHeader>
       <CardContent className="space-y-5">
         <Field>
-          <FieldLabel>Page Layout</FieldLabel>
+          <FieldLabel>{__('Page Layout', 'wp-sms')}</FieldLabel>
           <div className="grid grid-cols-2 gap-3">
             {/* Centered layout thumbnail */}
             <button
@@ -134,7 +134,7 @@ export function LayoutCard({ branding, onChange }: LayoutCardProps) {
         </Field>
 
         <Field>
-          <FieldLabel>Corner Style</FieldLabel>
+          <FieldLabel>{__('Corner Style', 'wp-sms')}</FieldLabel>
           <SegmentedGroup
             value={branding.border_radius}
             onChange={(v) => onChange({ border_radius: v })}
@@ -144,7 +144,7 @@ export function LayoutCard({ branding, onChange }: LayoutCardProps) {
         </Field>
 
         <Field>
-          <FieldLabel>Button Style</FieldLabel>
+          <FieldLabel>{__('Button Style', 'wp-sms')}</FieldLabel>
           <SegmentedGroup
             value={branding.button_style}
             onChange={(v) => onChange({ button_style: v })}
@@ -154,7 +154,7 @@ export function LayoutCard({ branding, onChange }: LayoutCardProps) {
         </Field>
 
         <Field>
-          <FieldLabel>Social Buttons Layout</FieldLabel>
+          <FieldLabel>{__('Social Buttons Layout', 'wp-sms')}</FieldLabel>
           <SegmentedGroup
             value={branding.social_position}
             onChange={(v) => onChange({ social_position: v })}

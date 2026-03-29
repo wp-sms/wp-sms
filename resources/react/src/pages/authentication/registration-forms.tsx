@@ -401,7 +401,7 @@ export function RegistrationForms() {
             <Separator />
 
             <Field>
-              <FieldLabel>User Role</FieldLabel>
+              <FieldLabel>{__('User Role', 'wp-sms')}</FieldLabel>
               <Select
                 value={formState.user_role || '__default__'}
                 onValueChange={(v) => setFormState((prev) => ({ ...prev, user_role: v === '__default__' ? '' : v }))}
@@ -418,7 +418,7 @@ export function RegistrationForms() {
                   ))}
                 </SelectContent>
               </Select>
-              <FieldDescription>Role assigned to users who register through this form.</FieldDescription>
+              <FieldDescription>{__('Role assigned to users who register through this form.', 'wp-sms')}</FieldDescription>
             </Field>
 
             <Separator />
@@ -484,7 +484,7 @@ export function RegistrationForms() {
                 onChange={(e) => setFormState((prev) => ({ ...prev, redirect_url: e.target.value }))}
                 placeholder="/welcome or https://..."
               />
-              <FieldDescription>Users will be redirected here after successful registration.</FieldDescription>
+              <FieldDescription>{__('Users will be redirected here after successful registration.', 'wp-sms')}</FieldDescription>
             </Field>
 
             <Field>
@@ -528,15 +528,15 @@ export function RegistrationForms() {
                   </Button>
                 )}
               </div>
-              <FieldDescription>Override the global branding color for this form.</FieldDescription>
+              <FieldDescription>{__('Override the global branding color for this form.', 'wp-sms')}</FieldDescription>
             </Field>
 
             <Separator />
 
             <Field orientation="horizontal">
               <div className="flex-1">
-                <FieldLabel>Active</FieldLabel>
-                <FieldDescription>Inactive forms return 404 when accessed.</FieldDescription>
+                <FieldLabel>{__('Active', 'wp-sms')}</FieldLabel>
+                <FieldDescription>{__('Inactive forms return 404 when accessed.', 'wp-sms')}</FieldDescription>
               </div>
               <Switch
                 checked={formState.status === 'active'}

@@ -28,25 +28,25 @@ class SubscriptionFormRepository
         $slug = $form->getSlug();
         foreach ($forms as $existing) {
             if ($existing->getSlug() === $slug && $existing->getId() !== $id) {
-                throw new \InvalidArgumentException('A subscription form with this slug already exists.');
+                throw new \InvalidArgumentException(__('A subscription form with this slug already exists.', 'wp-sms'));
             }
         }
 
         if (in_array($slug, self::RESERVED_SLUGS, true)) {
-            throw new \InvalidArgumentException('This slug is reserved and cannot be used.');
+            throw new \InvalidArgumentException(__('This slug is reserved and cannot be used.', 'wp-sms'));
         }
 
         // Validate fields contain at least email or phone.
         $fieldKeys = $form->getFieldKeys();
         if (!in_array('email', $fieldKeys, true) && !in_array('phone', $fieldKeys, true)) {
-            throw new \InvalidArgumentException('Form must include at least an email or phone field.');
+            throw new \InvalidArgumentException(__('Form must include at least an email or phone field.', 'wp-sms'));
         }
 
         // Validate optin_channel matches an enabled field.
         if ($form->requiresDoubleOptIn()) {
             $channel = $form->getOptInChannel();
             if (!in_array($channel, $fieldKeys, true)) {
-                throw new \InvalidArgumentException('Double opt-in channel must match an enabled field in the form.');
+                throw new \InvalidArgumentException(__('Double opt-in channel must match an enabled field in the form.', 'wp-sms'));
             }
         }
 

@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -14,10 +14,10 @@ interface LogoCardProps {
 }
 
 const LOGO_POSITIONS = [
-  { value: 'left' as LogoPosition, label: 'Left', icon: <AlignLeft className="h-4 w-4" /> },
-  { value: 'center' as LogoPosition, label: 'Center', icon: <AlignCenter className="h-4 w-4" /> },
-  { value: 'right' as LogoPosition, label: 'Right', icon: <AlignRight className="h-4 w-4" /> },
-  { value: 'hidden' as LogoPosition, label: 'Hidden', icon: <EyeOff className="h-4 w-4" /> },
+  { value: 'left' as LogoPosition, label: __('Left', 'wp-sms'), icon: <AlignLeft className="h-4 w-4" /> },
+  { value: 'center' as LogoPosition, label: __('Center', 'wp-sms'), icon: <AlignCenter className="h-4 w-4" /> },
+  { value: 'right' as LogoPosition, label: __('Right', 'wp-sms'), icon: <AlignRight className="h-4 w-4" /> },
+  { value: 'hidden' as LogoPosition, label: __('Hidden', 'wp-sms'), icon: <EyeOff className="h-4 w-4" /> },
 ];
 
 export function LogoCard({ branding, onChange }: LogoCardProps) {
@@ -26,7 +26,7 @@ export function LogoCard({ branding, onChange }: LogoCardProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Image className="h-4 w-4 text-muted-foreground" />
-          Logo &amp; Site Name
+          {__('Logo & Site Name', 'wp-sms')}
         </CardTitle>
         <CardDescription>
           {__('Customize the logo and name displayed on auth pages', 'wp-sms')}
@@ -34,13 +34,13 @@ export function LogoCard({ branding, onChange }: LogoCardProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         <Field>
-          <FieldLabel>Logo</FieldLabel>
+          <FieldLabel>{__('Logo', 'wp-sms')}</FieldLabel>
           <div className="flex items-center gap-3">
             {branding.logo_url ? (
               <div className="relative">
                 <img
                   src={branding.logo_url}
-                  alt="Logo preview"
+                  alt={__('Logo preview', 'wp-sms')}
                   className="h-10 max-w-[160px] rounded border border-input object-contain p-1"
                 />
                 <button
@@ -62,17 +62,17 @@ export function LogoCard({ branding, onChange }: LogoCardProps) {
               size="sm"
               onClick={() => openMediaLibrary('Select Logo', (url) => onChange({ logo_url: url }))}
             >
-              {branding.logo_url ? 'Change' : 'Upload'}
+              {branding.logo_url ? __('Change', 'wp-sms') : __('Upload', 'wp-sms')}
             </Button>
           </div>
           <FieldDescription>
-            Leave empty to use the default WSMS icon.
+            {__('Leave empty to use the default WSMS icon.', 'wp-sms')}
           </FieldDescription>
         </Field>
 
         <div className="max-w-md">
           <Field>
-            <FieldLabel htmlFor="branding-site-name">Site Name</FieldLabel>
+            <FieldLabel htmlFor="branding-site-name">{__('Site Name', 'wp-sms')}</FieldLabel>
             <Input
               id="branding-site-name"
               value={branding.site_name}
@@ -83,7 +83,7 @@ export function LogoCard({ branding, onChange }: LogoCardProps) {
         </div>
 
         <Field>
-          <FieldLabel>Logo Position</FieldLabel>
+          <FieldLabel>{__('Logo Position', 'wp-sms')}</FieldLabel>
           <SegmentedGroup
             value={branding.logo_position}
             onChange={(v) => onChange({ logo_position: v })}
@@ -92,7 +92,7 @@ export function LogoCard({ branding, onChange }: LogoCardProps) {
         </Field>
 
         <Field>
-          <FieldLabel>Logo Size: {branding.logo_size}px</FieldLabel>
+          <FieldLabel>{sprintf(__('Logo Size: %dpx', 'wp-sms'), branding.logo_size)}</FieldLabel>
           <div className="flex items-center gap-3 max-w-xs">
             <input
               type="range"

@@ -28,12 +28,12 @@ class RegistrationFormRepository
         $slug = $form->getSlug();
         foreach ($forms as $existing) {
             if ($existing->getSlug() === $slug && $existing->getId() !== $id) {
-                throw new \InvalidArgumentException('A form with this slug already exists.');
+                throw new \InvalidArgumentException(__('A form with this slug already exists.', 'wp-sms'));
             }
         }
 
         if (in_array($slug, self::RESERVED_SLUGS, true)) {
-            throw new \InvalidArgumentException('This slug is reserved and cannot be used.');
+            throw new \InvalidArgumentException(__('This slug is reserved and cannot be used.', 'wp-sms'));
         }
 
         foreach ($forms as $i => $existing) {

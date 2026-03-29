@@ -130,12 +130,12 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
         <CardHeader>
           <CardTitle>{__('Auto-Reply Messages', 'wp-sms')}</CardTitle>
           <CardDescription>
-            Configure automatic replies sent when recipients text STOP, START, or HELP keywords.
+            {__('Configure automatic replies sent when recipients text STOP, START, or HELP keywords.', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <AutoReplySection
-            label="Opt-Out Reply (STOP)"
+            label={__('Opt-Out Reply (STOP)', 'wp-sms')}
             description={__('Sent when a recipient texts STOP to unsubscribe', 'wp-sms')}
             enabled={draft.auto_reply_stop_enabled}
             text={draft.auto_reply_stop_text}
@@ -143,7 +143,7 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
             onTextChange={(v) => update('auto_reply_stop_text', v)}
           />
           <AutoReplySection
-            label="Opt-In Reply (START)"
+            label={__('Opt-In Reply (START)', 'wp-sms')}
             description={__('Sent when a recipient texts START to re-subscribe', 'wp-sms')}
             enabled={draft.auto_reply_start_enabled}
             text={draft.auto_reply_start_text}
@@ -151,7 +151,7 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
             onTextChange={(v) => update('auto_reply_start_text', v)}
           />
           <AutoReplySection
-            label="Help Reply (HELP)"
+            label={__('Help Reply (HELP)', 'wp-sms')}
             description={__('Sent when a recipient texts HELP for information', 'wp-sms')}
             enabled={draft.auto_reply_help_enabled}
             text={draft.auto_reply_help_text}
@@ -171,7 +171,7 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
         </CardHeader>
         <CardContent className="space-y-6">
           <KeywordSection
-            label="STOP Keywords"
+            label={__('STOP Keywords', 'wp-sms')}
             description={__('Messages matching these keywords will unsubscribe the sender', 'wp-sms')}
             defaultKeywords={defaults.stop_keywords}
             customKeywords={draft.custom_stop_keywords}
@@ -181,7 +181,7 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
             onRemove={(v) => removeKeyword('stop', v)}
           />
           <KeywordSection
-            label="START Keywords"
+            label={__('START Keywords', 'wp-sms')}
             description={__('Messages matching these keywords will re-subscribe the sender', 'wp-sms')}
             defaultKeywords={defaults.start_keywords}
             customKeywords={draft.custom_start_keywords}
@@ -191,13 +191,13 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
             onRemove={(v) => removeKeyword('start', v)}
           />
           <Field>
-            <FieldLabel>HELP Keywords</FieldLabel>
+            <FieldLabel>{__('HELP Keywords', 'wp-sms')}</FieldLabel>
             <div className="flex flex-wrap gap-1.5">
               {defaults.help_keywords.map((kw) => (
                 <Badge key={kw} variant="secondary">{kw}</Badge>
               ))}
             </div>
-            <FieldDescription>Help keywords are built-in only.</FieldDescription>
+            <FieldDescription>{__('Help keywords are built-in only.', 'wp-sms')}</FieldDescription>
           </Field>
         </CardContent>
       </Card>
@@ -212,13 +212,13 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
         </CardHeader>
         <CardContent>
           <Field>
-            <FieldLabel>Default opt-out text</FieldLabel>
+            <FieldLabel>{__('Default opt-out text', 'wp-sms')}</FieldLabel>
             <Input
               value={draft.default_campaign_opt_out_text}
               onChange={(e) => update('default_campaign_opt_out_text', e.target.value)}
               placeholder={__('Reply STOP to unsubscribe', 'wp-sms')}
             />
-            <FieldDescription>This text is appended to campaign messages when opt-out instructions are enabled.</FieldDescription>
+            <FieldDescription>{__('This text is appended to campaign messages when opt-out instructions are enabled.', 'wp-sms')}</FieldDescription>
           </Field>
         </CardContent>
       </Card>

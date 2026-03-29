@@ -193,7 +193,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
             <>
               {/* Label */}
               <Field>
-                <FieldLabel>Label *</FieldLabel>
+                <FieldLabel>{__('Label *', 'wp-sms')}</FieldLabel>
                 <Input
                   value={form.label}
                   onInput={(e) => update({ label: (e.target as HTMLInputElement).value })}
@@ -205,7 +205,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
               {/* ID / Meta Key (read-only for system) */}
               {!isSystem && (
                 <Field>
-                  <FieldLabel>Field ID / Meta Key *</FieldLabel>
+                  <FieldLabel>{__('Field ID / Meta Key *', 'wp-sms')}</FieldLabel>
                   <Input
                     value={form.meta_key}
                     onInput={(e) => update({ meta_key: (e.target as HTMLInputElement).value, id: (e.target as HTMLInputElement).value })}
@@ -216,7 +216,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                     <p className="text-xs text-destructive">{__('This ID is already in use.', 'wp-sms')}</p>
                   )}
                   <FieldDescription>
-                    The wp_usermeta key where the value is stored.
+                    {__('The wp_usermeta key where the value is stored.', 'wp-sms')}
                   </FieldDescription>
                 </Field>
               )}
@@ -224,7 +224,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
               {/* Type (not for system) */}
               {!isSystem && (
                 <Field>
-                  <FieldLabel>Field Type</FieldLabel>
+                  <FieldLabel>{__('Field Type', 'wp-sms')}</FieldLabel>
                   <RadioGroup
                     value={form.type}
                     onValueChange={(v) => update({ type: v as ProfileFieldDefinition['type'] })}
@@ -243,7 +243,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
               {/* Select options */}
               {form.type === 'select' && !isSystem && (
                 <Field>
-                  <FieldLabel>Options</FieldLabel>
+                  <FieldLabel>{__('Options', 'wp-sms')}</FieldLabel>
                   <div className="space-y-2">
                     {(form.options ?? []).map((opt, i) => (
                       <div key={i} className="flex items-center gap-2">
@@ -275,7 +275,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
               {/* Placeholder (text/textarea only) */}
               {(form.type === 'text' || form.type === 'textarea') && !isSystem && (
                 <Field>
-                  <FieldLabel>Placeholder</FieldLabel>
+                  <FieldLabel>{__('Placeholder', 'wp-sms')}</FieldLabel>
                   <Input
                     value={form.placeholder ?? ''}
                     onInput={(e) => update({ placeholder: (e.target as HTMLInputElement).value })}
@@ -287,20 +287,20 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
               {/* Help Text */}
               {!isSystem && (
                 <Field>
-                  <FieldLabel>Help Text</FieldLabel>
+                  <FieldLabel>{__('Help Text', 'wp-sms')}</FieldLabel>
                   <Input
                     value={form.description ?? ''}
                     onInput={(e) => update({ description: (e.target as HTMLInputElement).value })}
                     placeholder={__('Shown below the field on the form', 'wp-sms')}
                   />
-                  <FieldDescription>Persistent guidance displayed below the input.</FieldDescription>
+                  <FieldDescription>{__('Persistent guidance displayed below the input.', 'wp-sms')}</FieldDescription>
                 </Field>
               )}
 
               {/* Default Value */}
               {!isSystem && (
                 <Field>
-                  <FieldLabel>Default Value</FieldLabel>
+                  <FieldLabel>{__('Default Value', 'wp-sms')}</FieldLabel>
                   {form.type === 'select' ? (
                     <select
                       value={String(form.default_value ?? '')}
@@ -327,7 +327,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                       placeholder={__('Pre-filled value for new registrations', 'wp-sms')}
                     />
                   )}
-                  <FieldDescription>Value used when the user doesn't provide one.</FieldDescription>
+                  <FieldDescription>{__("Value used when the user doesn't provide one.", 'wp-sms')}</FieldDescription>
                 </Field>
               )}
 
@@ -335,7 +335,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
 
               {/* Visibility */}
               <Field>
-                <FieldLabel>Visibility</FieldLabel>
+                <FieldLabel>{__('Visibility', 'wp-sms')}</FieldLabel>
                 <RadioGroup
                   value={form.visibility}
                   onValueChange={(v) => update({ visibility: v as ProfileFieldDefinition['visibility'] })}

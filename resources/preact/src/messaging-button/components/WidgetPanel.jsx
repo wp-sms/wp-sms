@@ -74,8 +74,8 @@ export function WidgetPanel({ isOpen, currentPage, config, isOnline, offlineMess
         ? 'wsms-mb-panel--left'
         : 'wsms-mb-panel--right';
 
-    const widgetTitle = config.widget?.title ?? 'Hi there!';
-    const widgetSubtitle = config.widget?.subtitle ?? 'How can we help?';
+    const widgetTitle = config.widget?.title ?? __('Hi there!', 'wp-sms');
+    const widgetSubtitle = config.widget?.subtitle ?? __('How can we help?', 'wp-sms');
     const primaryColor = config.button?.primary_color ?? '#2563eb';
     const titleId = 'wsms-mb-panel-title';
 

@@ -33,7 +33,7 @@ export function CF7Verification({ settings, onUpdate }: CF7VerificationProps) {
           <Switch
             checked={enabled}
             onCheckedChange={(v) => update({ verification_enabled: v })}
-            aria-label="Toggle CF7 verification"
+            aria-label={__('Toggle CF7 verification', 'wp-sms')}
           />
         </CardAction>
       </CardHeader>

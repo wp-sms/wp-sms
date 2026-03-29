@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -17,9 +17,9 @@ interface TeamPageProps {
 const CHANNEL_TYPES = [
   { value: 'whatsapp', label: 'WhatsApp' },
   { value: 'telegram', label: 'Telegram' },
-  { value: 'email', label: 'Email' },
-  { value: 'phone', label: 'Phone' },
-  { value: 'sms', label: 'SMS' },
+  { value: 'email', label: __('Email', 'wp-sms') },
+  { value: 'phone', label: __('Phone', 'wp-sms') },
+  { value: 'sms', label: __('SMS', 'wp-sms') },
 ];
 
 export function TeamPage({ settings, onUpdate }: TeamPageProps) {
@@ -119,7 +119,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                       <ChevronDown className="h-4 w-4" />
                     </Button>
                     <span className="ms-1 text-sm font-medium text-muted-foreground">
-                      Member {i + 1}
+                      {sprintf(__('Member %d', 'wp-sms'), i + 1)}
                     </span>
                   </div>
                   <Button variant="ghost" size="icon-md" onClick={() => removeMember(i)}>
@@ -129,7 +129,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
 
                 <div className="grid grid-cols-2 gap-3">
                   <Field>
-                    <FieldLabel>Name</FieldLabel>
+                    <FieldLabel>{__('Name', 'wp-sms')}</FieldLabel>
                     <Input
                       value={member.name}
                       onChange={(e) => updateMember(i, 'name', e.target.value)}
@@ -137,7 +137,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                     />
                   </Field>
                   <Field>
-                    <FieldLabel>Role</FieldLabel>
+                    <FieldLabel>{__('Role', 'wp-sms')}</FieldLabel>
                     <Input
                       value={member.role}
                       onChange={(e) => updateMember(i, 'role', e.target.value)}
@@ -147,7 +147,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                 </div>
 
                 <Field>
-                  <FieldLabel>Avatar</FieldLabel>
+                  <FieldLabel>{__('Avatar', 'wp-sms')}</FieldLabel>
                   <div className="flex items-center gap-3">
                     {member.avatar_url ? (
                       <div
@@ -243,7 +243,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
         </CardHeader>
         <CardContent>
           <Field>
-            <FieldLabel htmlFor="mb-default-message">Default Message</FieldLabel>
+            <FieldLabel htmlFor="mb-default-message">{__('Default Message', 'wp-sms')}</FieldLabel>
             <Input
               id="mb-default-message"
               value={settings.default_message}
@@ -251,7 +251,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
               placeholder={__('Hi! I\'m visiting {page_title} and have a question.', 'wp-sms')}
             />
             <FieldDescription>
-              Placeholders: {'{page_title}'}, {'{page_url}'}, {'{member_name}'}. Leave empty to disable.
+              {sprintf(__('Placeholders: %1$s, %2$s, %3$s. Leave empty to disable.', 'wp-sms'), '{page_title}', '{page_url}', '{member_name}')}
             </FieldDescription>
           </Field>
         </CardContent>

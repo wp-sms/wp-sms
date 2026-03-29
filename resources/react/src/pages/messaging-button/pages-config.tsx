@@ -18,11 +18,11 @@ interface PagesConfigPageProps {
 }
 
 const FORM_FIELDS = [
-  { id: 'name', label: 'Name' },
-  { id: 'email', label: 'Email' },
-  { id: 'phone', label: 'Phone' },
-  { id: 'message', label: 'Message' },
-] as const;
+  { id: 'name' as const, label: __('Name', 'wp-sms') },
+  { id: 'email' as const, label: __('Email', 'wp-sms') },
+  { id: 'phone' as const, label: __('Phone', 'wp-sms') },
+  { id: 'message' as const, label: __('Message', 'wp-sms') },
+];
 
 export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
   const { pages, gdpr } = settings;
@@ -66,7 +66,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
             <Switch
               checked={pages.welcome.enabled}
               onCheckedChange={(checked) => onUpdate('pages.welcome.enabled', checked)}
-              aria-label="Toggle welcome page"
+              aria-label={__('Toggle welcome page', 'wp-sms')}
             />
           </CardAction>
         </CardHeader>
@@ -74,7 +74,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
           <CardContent>
             <div className="space-y-4">
               <Field>
-                <FieldLabel htmlFor="mb-greeting">Greeting Message</FieldLabel>
+                <FieldLabel htmlFor="mb-greeting">{__('Greeting Message', 'wp-sms')}</FieldLabel>
                 <Textarea
                   id="mb-greeting"
                   value={pages.welcome.greeting}
@@ -84,7 +84,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="mb-cta-label">CTA Button Label</FieldLabel>
+                <FieldLabel htmlFor="mb-cta-label">{__('CTA Button Label', 'wp-sms')}</FieldLabel>
                 <Input
                   id="mb-cta-label"
                   value={pages.welcome.cta_label}
@@ -109,7 +109,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
             <Switch
               checked={pages.contact_form.enabled}
               onCheckedChange={(checked) => onUpdate('pages.contact_form.enabled', checked)}
-              aria-label="Toggle contact form"
+              aria-label={__('Toggle contact form', 'wp-sms')}
             />
           </CardAction>
         </CardHeader>
@@ -117,7 +117,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
           <CardContent>
             <div className="space-y-4">
               <Field>
-                <FieldLabel>Form Fields</FieldLabel>
+                <FieldLabel>{__('Form Fields', 'wp-sms')}</FieldLabel>
                 <div className="space-y-3">
                   {FORM_FIELDS.map(({ id, label }) => {
                     const isRequired = pages.contact_form.required_fields.includes(id);
@@ -136,17 +136,17 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                           {label}
                         </Label>
                         {isRequired && (
-                          <span className="text-xs text-muted-foreground">(required)</span>
+                          <span className="text-xs text-muted-foreground">{__('(required)', 'wp-sms')}</span>
                         )}
                       </div>
                     );
                   })}
                 </div>
-                <FieldDescription>Choose which fields to show in the contact form</FieldDescription>
+                <FieldDescription>{__('Choose which fields to show in the contact form', 'wp-sms')}</FieldDescription>
               </Field>
 
               <Field>
-                <FieldLabel>Notification Channel</FieldLabel>
+                <FieldLabel>{__('Notification Channel', 'wp-sms')}</FieldLabel>
                 <Select
                   value={pages.contact_form.channel}
                   onValueChange={(v) => onUpdate('pages.contact_form.channel', v)}
@@ -157,11 +157,11 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                     <SelectItem value="sms">{__('SMS', 'wp-sms')}</SelectItem>
                   </SelectContent>
                 </Select>
-                <FieldDescription>How notification of new messages is delivered to you</FieldDescription>
+                <FieldDescription>{__('How notification of new messages is delivered to you', 'wp-sms')}</FieldDescription>
               </Field>
 
               <Field>
-                <FieldLabel htmlFor="mb-recipients">Notification Recipients</FieldLabel>
+                <FieldLabel htmlFor="mb-recipients">{__('Notification Recipients', 'wp-sms')}</FieldLabel>
                 <Input
                   id="mb-recipients"
                   value={pages.contact_form.notification_recipients.join(', ')}
@@ -171,7 +171,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                   }}
                   placeholder={__('admin@example.com, support@example.com', 'wp-sms')}
                 />
-                <FieldDescription>Comma-separated list. Defaults to site admin email if empty.</FieldDescription>
+                <FieldDescription>{__('Comma-separated list. Defaults to site admin email if empty.', 'wp-sms')}</FieldDescription>
               </Field>
             </div>
           </CardContent>
@@ -190,7 +190,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
             <Switch
               checked={pages.resources.enabled}
               onCheckedChange={(checked) => onUpdate('pages.resources.enabled', checked)}
-              aria-label="Toggle resources"
+              aria-label={__('Toggle resources', 'wp-sms')}
             />
           </CardAction>
         </CardHeader>
@@ -254,7 +254,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
             <Switch
               checked={gdpr.enabled}
               onCheckedChange={(checked) => onUpdate('gdpr.enabled', checked)}
-              aria-label="Toggle GDPR consent"
+              aria-label={__('Toggle GDPR consent', 'wp-sms')}
             />
           </CardAction>
         </CardHeader>
@@ -262,7 +262,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
           <CardContent>
             <div className="space-y-4">
               <Field>
-                <FieldLabel htmlFor="mb-consent-text">Consent Text</FieldLabel>
+                <FieldLabel htmlFor="mb-consent-text">{__('Consent Text', 'wp-sms')}</FieldLabel>
                 <Input
                   id="mb-consent-text"
                   value={gdpr.consent_text}
@@ -271,7 +271,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="mb-privacy-url">Privacy Policy URL</FieldLabel>
+                <FieldLabel htmlFor="mb-privacy-url">{__('Privacy Policy URL', 'wp-sms')}</FieldLabel>
                 <Input
                   id="mb-privacy-url"
                   value={gdpr.link_url}

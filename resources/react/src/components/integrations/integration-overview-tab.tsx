@@ -153,14 +153,14 @@ function StatusDashboard({ detail }: { detail: IntegrationDetail }) {
       <CardContent className="space-y-4">
         {hasStats && (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            <StatCard label="Status" value="Connected" />
+            <StatCard label={__('Status', 'wp-sms')} value={__('Connected', 'wp-sms')} />
             {hasImport && importStats && (
-              <StatCard label="Contacts imported" value={importStats.total_synced} />
+              <StatCard label={__('Contacts imported', 'wp-sms')} value={importStats.total_synced} />
             )}
             {hasSync && syncStatus && (
               <>
-                <StatCard label="Last sync" value={syncStatus.last_push_at ? formatDateTime(syncStatus.last_push_at) : 'Never'} />
-                <StatCard label="Total pushed" value={syncStatus.total_pushed ?? 0} />
+                <StatCard label={__('Last sync', 'wp-sms')} value={syncStatus.last_push_at ? formatDateTime(syncStatus.last_push_at) : __('Never', 'wp-sms')} />
+                <StatCard label={__('Total pushed', 'wp-sms')} value={syncStatus.total_pushed ?? 0} />
               </>
             )}
           </div>

@@ -74,18 +74,18 @@ export function MessageLogDetailPanel({ log, onClose }: MessageLogDetailPanelPro
               <section>
                 <h3 className="text-xs font-medium text-muted-foreground mb-2">{__('Delivery', 'wp-sms')}</h3>
                 <div className="grid grid-cols-2 gap-3">
-                  <Field label="Type" value={log.type ? formatLabel(log.type) : null} />
-                  <Field label="Gateway" value={log.gateway_id} />
-                  <Field label="Cost" value={log.cost} />
+                  <Field label={__('Type', 'wp-sms')} value={log.type ? formatLabel(log.type) : null} />
+                  <Field label={__('Gateway', 'wp-sms')} value={log.gateway_id} />
+                  <Field label={__('Cost', 'wp-sms')} value={log.cost} />
                   <div>
                     <span className="text-xs text-muted-foreground">{__('Provider ID', 'wp-sms')}</span>
                     <p className="text-sm font-mono truncate" title={log.provider_id ?? undefined}>
                       {log.provider_id ?? '\u2014'}
                     </p>
                   </div>
-                  <Field label="Created" value={formatDateTime(log.created_at)} />
-                  <Field label="Sent At" value={log.sent_at ? formatDateTime(log.sent_at) : null} />
-                  <Field label="Delivered At" value={log.delivered_at ? formatDateTime(log.delivered_at) : null} />
+                  <Field label={__('Created', 'wp-sms')} value={formatDateTime(log.created_at)} />
+                  <Field label={__('Sent At', 'wp-sms')} value={log.sent_at ? formatDateTime(log.sent_at) : null} />
+                  <Field label={__('Delivered At', 'wp-sms')} value={log.delivered_at ? formatDateTime(log.delivered_at) : null} />
                 </div>
               </section>
 

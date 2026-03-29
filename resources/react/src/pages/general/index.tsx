@@ -45,7 +45,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
 
             <SwitchField
               id="redirect_login"
-              label="Redirect WordPress Login"
+              label={__('Redirect WordPress Login', 'wp-sms')}
               description={__('Redirect wp-login.php to your custom auth pages', 'wp-sms')}
               checked={settings.redirect_login}
               onCheckedChange={(checked) => onUpdate('redirect_login', checked)}
@@ -173,7 +173,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
 
             <SwitchField
               id="subscription_consent_required"
-              label="Consent Required"
+              label={__('Consent Required', 'wp-sms')}
               description={__('Block submission if the consent checkbox is not checked', 'wp-sms')}
               checked={settings.subscription_consent_required}
               onCheckedChange={(checked) => onUpdate('subscription_consent_required', checked)}
@@ -188,7 +188,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
       >
           <SwitchField
             id="auto_create_users"
-            label="Auto-Create Accounts on Login"
+            label={__('Auto-Create Accounts on Login', 'wp-sms')}
             description={__('When someone logs in with a phone or email that doesn\'t have an account yet, automatically create one instead of rejecting them', 'wp-sms')}
             checked={settings.auto_create_users}
             onCheckedChange={(checked) => onUpdate('auto_create_users', checked)}
@@ -232,7 +232,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
                 value={settings.log_retention_days}
                 onChange={(e) => onUpdate('log_retention_days', Number(e.target.value))}
               />
-              <FieldDescription>How long to keep log entries before cleanup</FieldDescription>
+              <FieldDescription>{__('How long to keep log entries before cleanup', 'wp-sms')}</FieldDescription>
             </Field>
           </div>
       </PageSection>

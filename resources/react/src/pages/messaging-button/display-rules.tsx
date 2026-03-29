@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -60,7 +60,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
         <CardContent>
           <div className="space-y-4">
             <Field>
-              <FieldLabel htmlFor="mb-auto-open-delay">Auto-open delay (seconds)</FieldLabel>
+              <FieldLabel htmlFor="mb-auto-open-delay">{__('Auto-open delay (seconds)', 'wp-sms')}</FieldLabel>
               <Input
                 id="mb-auto-open-delay"
                 type="number"
@@ -68,11 +68,11 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
                 value={triggers.auto_open_delay}
                 onChange={(e) => onUpdate('triggers.auto_open_delay', Number(e.target.value))}
               />
-              <FieldDescription>Open the widget after this many seconds. 0 to disable.</FieldDescription>
+              <FieldDescription>{__('Open the widget after this many seconds. 0 to disable.', 'wp-sms')}</FieldDescription>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="mb-scroll-percent">Scroll percentage</FieldLabel>
+              <FieldLabel htmlFor="mb-scroll-percent">{__('Scroll percentage', 'wp-sms')}</FieldLabel>
               <Input
                 id="mb-scroll-percent"
                 type="number"
@@ -81,12 +81,12 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
                 value={triggers.scroll_percent}
                 onChange={(e) => onUpdate('triggers.scroll_percent', Number(e.target.value))}
               />
-              <FieldDescription>Open when visitor scrolls past this percentage. 0 to disable.</FieldDescription>
+              <FieldDescription>{__('Open when visitor scrolls past this percentage. 0 to disable.', 'wp-sms')}</FieldDescription>
             </Field>
 
             <SwitchField
               id="exit-intent"
-              label="Exit intent"
+              label={__('Exit intent', 'wp-sms')}
               description={__('Open when the cursor moves toward closing the tab (desktop only)', 'wp-sms')}
               checked={triggers.exit_intent}
               onCheckedChange={(checked) => onUpdate('triggers.exit_intent', checked)}
@@ -108,14 +108,14 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
           <div className="space-y-4">
             <SwitchField
               id="auto-inject"
-              label="Auto-inject on all pages"
+              label={__('Auto-inject on all pages', 'wp-sms')}
               description={__('When enabled, the widget appears on all frontend pages (unless excluded)', 'wp-sms')}
               checked={display_rules.auto_inject}
               onCheckedChange={(checked) => onUpdate('display_rules.auto_inject', checked)}
             />
 
             <Field>
-              <FieldLabel>Visibility</FieldLabel>
+              <FieldLabel>{__('Visibility', 'wp-sms')}</FieldLabel>
               <Select
                 value={display_rules.visibility}
                 onValueChange={(v) => onUpdate('display_rules.visibility', v)}
@@ -130,7 +130,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
             </Field>
 
             <Field>
-              <FieldLabel>Include URLs</FieldLabel>
+              <FieldLabel>{__('Include URLs', 'wp-sms')}</FieldLabel>
               <Textarea
                 value={display_rules.include_urls.join('\n')}
                 onChange={(e) => {
@@ -141,12 +141,12 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
                 rows={3}
               />
               <FieldDescription>
-                Only show on these URLs (one per line). Supports wildcards (*). Leave empty to show on all pages.
+                {__('Only show on these URLs (one per line). Supports wildcards (*). Leave empty to show on all pages.', 'wp-sms')}
               </FieldDescription>
             </Field>
 
             <Field>
-              <FieldLabel>Exclude URLs</FieldLabel>
+              <FieldLabel>{__('Exclude URLs', 'wp-sms')}</FieldLabel>
               <Textarea
                 value={display_rules.exclude_urls.join('\n')}
                 onChange={(e) => {
@@ -157,7 +157,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
                 rows={3}
               />
               <FieldDescription>
-                Hide on these URLs (one per line). Supports wildcards (*).
+                {__('Hide on these URLs (one per line). Supports wildcards (*).', 'wp-sms')}
               </FieldDescription>
             </Field>
           </div>
@@ -172,14 +172,14 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
             {__('Business Hours', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            Show different messaging when you're offline.
-            {wpTimezone && <> Hours are evaluated in your WordPress timezone ({wpTimezone}).</>}
+            {__('Show different messaging when you\'re offline.', 'wp-sms')}
+            {wpTimezone && <> {sprintf(__('Hours are evaluated in your WordPress timezone (%s).', 'wp-sms'), wpTimezone)}</>}
           </CardDescription>
           <CardAction>
             <Switch
               checked={business_hours.enabled}
               onCheckedChange={(checked) => onUpdate('business_hours.enabled', checked)}
-              aria-label="Toggle business hours"
+              aria-label={__('Toggle business hours', 'wp-sms')}
             />
           </CardAction>
         </CardHeader>
@@ -187,7 +187,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
           <CardContent>
             <div className="space-y-4">
               <Field>
-                <FieldLabel>Offline Message</FieldLabel>
+                <FieldLabel>{__('Offline Message', 'wp-sms')}</FieldLabel>
                 <Input
                   value={business_hours.offline_message}
                   onChange={(e) => onUpdate('business_hours.offline_message', e.target.value)}
@@ -196,13 +196,13 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
               </Field>
 
               <Field>
-                <FieldLabel>Schedule</FieldLabel>
+                <FieldLabel>{__('Schedule', 'wp-sms')}</FieldLabel>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" className="text-xs" onClick={() => onUpdate('business_hours.schedule', SCHEDULE_MON_FRI)}>
-                    Mon-Fri 9-5
+                    {__('Mon-Fri 9-5', 'wp-sms')}
                   </Button>
                   <Button variant="outline" size="sm" className="text-xs" onClick={() => onUpdate('business_hours.schedule', SCHEDULE_MON_SAT)}>
-                    Mon-Sat 9-6
+                    {__('Mon-Sat 9-6', 'wp-sms')}
                   </Button>
                   <Button variant="outline" size="sm" className="text-xs" onClick={() => onUpdate('business_hours.schedule', SCHEDULE_EVERY_DAY)}>
                     {__('Every Day', 'wp-sms')}
@@ -229,7 +229,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
                           onChange={(e) => updateSchedule(i, 'open', e.target.value)}
                           className="w-28"
                         />
-                        <span className="text-sm text-muted-foreground">to</span>
+                        <span className="text-sm text-muted-foreground">{__('to', 'wp-sms')}</span>
                         <Input
                           type="time"
                           value={entry.close}
@@ -243,7 +243,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
                       {invalidTime && (
                         <p className="mt-1 ms-1 flex items-center gap-1 text-xs text-amber-600">
                           <AlertTriangle className="h-3 w-3" />
-                          Open time should be before close time
+                          {__('Open time should be before close time', 'wp-sms')}
                         </p>
                       )}
                     </div>

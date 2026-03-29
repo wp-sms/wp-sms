@@ -58,7 +58,7 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
             <Switch
               checked={settings.backup_codes.enabled}
               onCheckedChange={(v) => onUpdate('backup_codes', { ...settings.backup_codes, enabled: v })}
-              aria-label="Toggle Backup Codes"
+              aria-label={__('Toggle Backup Codes', 'wp-sms')}
             />
           </CardAction>
         </CardHeader>
@@ -66,7 +66,7 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
           <CardContent className="border-t pt-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <Field>
-                <FieldLabel htmlFor="backup_codes_count">Number of Codes</FieldLabel>
+                <FieldLabel htmlFor="backup_codes_count">{__('Number of Codes', 'wp-sms')}</FieldLabel>
                 <Input
                   id="backup_codes_count"
                   type="number"
@@ -75,10 +75,10 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
                   value={settings.backup_codes.count}
                   onChange={(e) => onUpdate('backup_codes', { ...settings.backup_codes, count: Number(e.target.value) })}
                 />
-                <FieldDescription>How many backup codes to generate (4-20)</FieldDescription>
+                <FieldDescription>{__('How many backup codes to generate (4-20)', 'wp-sms')}</FieldDescription>
               </Field>
               <Field>
-                <FieldLabel htmlFor="backup_codes_length">Code Length</FieldLabel>
+                <FieldLabel htmlFor="backup_codes_length">{__('Code Length', 'wp-sms')}</FieldLabel>
                 <Input
                   id="backup_codes_length"
                   type="number"
@@ -87,7 +87,7 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
                   value={settings.backup_codes.length}
                   onChange={(e) => onUpdate('backup_codes', { ...settings.backup_codes, length: Number(e.target.value) })}
                 />
-                <FieldDescription>Number of characters per code (6-12)</FieldDescription>
+                <FieldDescription>{__('Number of characters per code (6-12)', 'wp-sms')}</FieldDescription>
               </Field>
             </div>
           </CardContent>
@@ -106,7 +106,7 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
             <Switch
               checked={settings.trusted_devices.enabled}
               onCheckedChange={(v) => onUpdate('trusted_devices', { ...settings.trusted_devices, enabled: v })}
-              aria-label="Toggle Trusted Devices"
+              aria-label={__('Toggle Trusted Devices', 'wp-sms')}
             />
           </CardAction>
         </CardHeader>
@@ -114,7 +114,7 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
           <CardContent className="border-t pt-4">
             <div className="max-w-sm">
               <Field>
-                <FieldLabel htmlFor="trusted_device_ttl">Trust Duration</FieldLabel>
+                <FieldLabel htmlFor="trusted_device_ttl">{__('Trust Duration', 'wp-sms')}</FieldLabel>
                 <Select
                   value={String(settings.trusted_devices.ttl)}
                   onValueChange={(v) => onUpdate('trusted_devices', { ...settings.trusted_devices, ttl: Number(v) })}
@@ -130,7 +130,7 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
                     ))}
                   </SelectContent>
                 </Select>
-                <FieldDescription>How long a device stays trusted before MFA is required again</FieldDescription>
+                <FieldDescription>{__('How long a device stays trusted before MFA is required again', 'wp-sms')}</FieldDescription>
               </Field>
             </div>
           </CardContent>
@@ -188,7 +188,7 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
           <div className="space-y-4">
             <div className="max-w-sm">
               <Field>
-                <FieldLabel htmlFor="enrollment_timing">Timing</FieldLabel>
+                <FieldLabel htmlFor="enrollment_timing">{__('Timing', 'wp-sms')}</FieldLabel>
                 <Select
                   value={settings.enrollment_timing}
                   onValueChange={(value) => onUpdate('enrollment_timing', value as AuthSettings['enrollment_timing'])}
@@ -222,7 +222,7 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
             {settings.enrollment_timing === 'grace_period' && (
               <div className="max-w-xs">
                 <Field>
-                  <FieldLabel htmlFor="grace_period_days">Grace Period (days)</FieldLabel>
+                  <FieldLabel htmlFor="grace_period_days">{__('Grace Period (days)', 'wp-sms')}</FieldLabel>
                   <Input
                     id="grace_period_days"
                     type="number"
@@ -231,7 +231,7 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
                     value={settings.grace_period_days}
                     onChange={(e) => onUpdate('grace_period_days', Number(e.target.value))}
                   />
-                  <FieldDescription>Number of days before MFA is required (1-90)</FieldDescription>
+                  <FieldDescription>{__('Number of days before MFA is required (1-90)', 'wp-sms')}</FieldDescription>
                 </Field>
               </div>
             )}

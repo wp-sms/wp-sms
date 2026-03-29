@@ -81,7 +81,7 @@ export function TagFormPanel({ open, onOpenChange, tag, onSave }: TagFormPanelPr
           </Field>
 
           <Field>
-            <FieldLabel>Color</FieldLabel>
+            <FieldLabel>{__('Color', 'wp-sms')}</FieldLabel>
             <div className="flex items-center gap-2">
               {TAG_COLORS.map((c) => (
                 <button

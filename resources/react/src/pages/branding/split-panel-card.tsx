@@ -27,7 +27,7 @@ export function SplitPanelCard({ branding, onChange }: SplitPanelCardProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         <Field>
-          <FieldLabel>Panel Position</FieldLabel>
+          <FieldLabel>{__('Panel Position', 'wp-sms')}</FieldLabel>
           <RadioGroup
             value={branding.split_panel_position}
             onValueChange={(v) => onChange({ split_panel_position: v as SplitPanelPosition })}
@@ -47,7 +47,7 @@ export function SplitPanelCard({ branding, onChange }: SplitPanelCardProps) {
         <div className="max-w-md">
           <ColorPickerField
             id="branding-split-bg-color"
-            label="Panel Background Color"
+            label={__('Panel Background Color', 'wp-sms')}
             value={branding.split_panel_bg_color}
             placeholder="#1e293b"
             onChange={(v) => onChange({ split_panel_bg_color: v })}
@@ -55,22 +55,22 @@ export function SplitPanelCard({ branding, onChange }: SplitPanelCardProps) {
         </div>
 
         <Field>
-          <FieldLabel>Panel Background Image</FieldLabel>
+          <FieldLabel>{__('Panel Background Image', 'wp-sms')}</FieldLabel>
           <ImagePickerField
             value={branding.split_panel_bg_image_url}
             title={__('Select Panel Background', 'wp-sms')}
-            alt="Panel background preview"
+            alt={__('Panel background preview', 'wp-sms')}
             onSelect={(url) => onChange({ split_panel_bg_image_url: url })}
             onClear={() => onChange({ split_panel_bg_image_url: '' })}
           />
           <FieldDescription>
-            Optional image for the brand panel. Color shows through if not set.
+            {__('Optional image for the brand panel. Color shows through if not set.', 'wp-sms')}
           </FieldDescription>
         </Field>
 
         <div className="max-w-md space-y-4">
           <Field>
-            <FieldLabel htmlFor="branding-split-heading">Welcome Heading</FieldLabel>
+            <FieldLabel htmlFor="branding-split-heading">{__('Welcome Heading', 'wp-sms')}</FieldLabel>
             <Input
               id="branding-split-heading"
               value={branding.split_welcome_heading}
@@ -80,7 +80,7 @@ export function SplitPanelCard({ branding, onChange }: SplitPanelCardProps) {
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="branding-split-subtitle">Subtitle</FieldLabel>
+            <FieldLabel htmlFor="branding-split-subtitle">{__('Subtitle', 'wp-sms')}</FieldLabel>
             <Input
               id="branding-split-subtitle"
               value={branding.split_subtitle}

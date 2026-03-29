@@ -58,7 +58,7 @@ class PrivacyRequestService
         $wpUser = $this->findWpUser($identifier, $contacts);
 
         if (empty($contacts) && !$wpUser) {
-            throw new NotFoundException('No data found for this identifier.');
+            throw new NotFoundException(__('No data found for this identifier.', 'wp-sms'));
         }
 
         $recipients = $this->collectRecipients($identifier, $contacts);
@@ -162,7 +162,7 @@ class PrivacyRequestService
         $identifier = trim($identifier);
 
         if ($identifier === '') {
-            throw new \InvalidArgumentException('Identifier is required.');
+            throw new \InvalidArgumentException(__('Identifier is required.', 'wp-sms'));
         }
 
         return $identifier;

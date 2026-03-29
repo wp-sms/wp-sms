@@ -250,8 +250,8 @@ function PhoneInputConfigCard({ draft, countries, updateSection }: {
       contentClassName="border-t pt-4 space-y-4"
     >
         <Field>
-          <FieldLabel>Display Mode</FieldLabel>
-          <FieldDescription>How the phone number and dial code are displayed in the input</FieldDescription>
+          <FieldLabel>{__('Display Mode', 'wp-sms')}</FieldLabel>
+          <FieldDescription>{__('How the phone number and dial code are displayed in the input', 'wp-sms')}</FieldDescription>
           <RadioGroup
             value={draft.phone_input.display_mode}
             onValueChange={(v) => updateSection('phone_input', { display_mode: v as PhoneDisplayMode })}
@@ -277,8 +277,8 @@ function PhoneInputConfigCard({ draft, countries, updateSection }: {
         </Field>
 
         <Field>
-          <FieldLabel>Default Country</FieldLabel>
-          <FieldDescription>Pre-selected country when the phone input loads</FieldDescription>
+          <FieldLabel>{__('Default Country', 'wp-sms')}</FieldLabel>
+          <FieldDescription>{__('Pre-selected country when the phone input loads', 'wp-sms')}</FieldDescription>
           <SingleCountryPicker
             countries={countries}
             value={draft.phone_input.default_country}
@@ -287,8 +287,8 @@ function PhoneInputConfigCard({ draft, countries, updateSection }: {
         </Field>
 
         <Field>
-          <FieldLabel>Preferred Countries</FieldLabel>
-          <FieldDescription>These countries appear at the top of the dropdown for quick access</FieldDescription>
+          <FieldLabel>{__('Preferred Countries', 'wp-sms')}</FieldLabel>
+          <FieldDescription>{__('These countries appear at the top of the dropdown for quick access', 'wp-sms')}</FieldDescription>
           <CountryPicker
             countries={countries}
             selected={draft.phone_input.preferred_countries}
@@ -354,7 +354,7 @@ function CountryRestrictionsCard({ draft, countries, updateSection }: {
       contentClassName="border-t pt-4 space-y-6"
     >
         <CountrySection
-          label="Authentication"
+          label={__('Authentication', 'wp-sms')}
           description={__('Restrict which countries can register or verify via phone', 'wp-sms')}
           enabled={draft.auth.enabled}
           mode={draft.auth.mode}
@@ -368,7 +368,7 @@ function CountryRestrictionsCard({ draft, countries, updateSection }: {
         <div className="border-t" />
 
         <CountrySection
-          label="Messaging"
+          label={__('Messaging', 'wp-sms')}
           description={__('Restrict which countries can receive messages', 'wp-sms')}
           enabled={draft.messaging.enabled}
           mode={draft.messaging.mode}
@@ -575,7 +575,7 @@ function NumberTypeBlockingCard({ draft, dbStatus, updateSection, onDownload, do
         <Switch
           checked={ntb.enabled}
           onCheckedChange={(v) => updateSection('number_type_blocking', { enabled: v })}
-          aria-label="Toggle number type blocking"
+          aria-label={__('Toggle number type blocking', 'wp-sms')}
         />
       }
       contentClassName={ntb.enabled ? 'border-t pt-4 space-y-4' : undefined}
@@ -684,8 +684,8 @@ function EnhancedDatabaseCard({ dbStatus, autoUpdate, onToggleAutoUpdate, onDown
 
         <Field orientation="horizontal">
           <div className="flex-1">
-            <FieldLabel>Auto-update</FieldLabel>
-            <FieldDescription>Automatically download the latest database weekly</FieldDescription>
+            <FieldLabel>{__('Auto-update', 'wp-sms')}</FieldLabel>
+            <FieldDescription>{__('Automatically download the latest database weekly', 'wp-sms')}</FieldDescription>
           </div>
           <Switch checked={autoUpdate} onCheckedChange={onToggleAutoUpdate} />
         </Field>
@@ -722,7 +722,7 @@ function PhoneCheckerCard() {
       contentClassName="space-y-4"
     >
         <Field className="max-w-md">
-          <FieldLabel>Phone number</FieldLabel>
+          <FieldLabel>{__('Phone number', 'wp-sms')}</FieldLabel>
           <div className="flex gap-2">
             <Input
               value={phone}
@@ -732,10 +732,10 @@ function PhoneCheckerCard() {
               onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); check(); } }}
             />
             <Button onClick={check} disabled={!phone.trim() || checking}>
-              {checking ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Check'}
+              {checking ? <Loader2 className="h-4 w-4 animate-spin" /> : __('Check', 'wp-sms')}
             </Button>
           </div>
-          <FieldDescription>Use E.164 format (e.g. +12025551234)</FieldDescription>
+          <FieldDescription>{__('Use E.164 format (e.g. +12025551234)', 'wp-sms')}</FieldDescription>
         </Field>
         {error && (
           <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">

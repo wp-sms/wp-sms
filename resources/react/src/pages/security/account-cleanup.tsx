@@ -38,7 +38,7 @@ export function AccountCleanup({ settings, onUpdate }: AccountCleanupProps) {
           <Switch
             checked={enabled}
             onCheckedChange={(v) => onUpdate('pending_user_cleanup_enabled', v)}
-            aria-label="Toggle pending registration cleanup"
+            aria-label={__('Toggle pending registration cleanup', 'wp-sms')}
           />
         </CardAction>
       </CardHeader>

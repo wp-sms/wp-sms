@@ -394,7 +394,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
             <Separator />
 
             <Field>
-              <FieldLabel>Subscribe to List</FieldLabel>
+              <FieldLabel>{__('Subscribe to List', 'wp-sms')}</FieldLabel>
               <Select
                 value={formState.list_id || '__none__'}
                 onValueChange={(v) => setFormState((prev) => ({ ...prev, list_id: v === '__none__' ? null : v }))}
@@ -409,7 +409,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                   ))}
                 </SelectContent>
               </Select>
-              <FieldDescription>Only static lists are shown — dynamic lists are computed automatically.</FieldDescription>
+              <FieldDescription>{__('Only static lists are shown — dynamic lists are computed automatically.', 'wp-sms')}</FieldDescription>
             </Field>
 
             <Separator />
@@ -430,7 +430,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                 </Field>
                 {formState.double_optin && optinChannelOptions.length > 0 && (
                   <Field>
-                    <FieldLabel>Verification channel</FieldLabel>
+                    <FieldLabel>{__('Verification channel', 'wp-sms')}</FieldLabel>
                     <Select
                       value={formState.optin_channel}
                       onValueChange={(v) => setFormState((prev) => ({ ...prev, optin_channel: v }))}
@@ -462,7 +462,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
             </Field>
 
             <Field orientation="horizontal">
-              <FieldLabel>Use custom color</FieldLabel>
+              <FieldLabel>{__('Use custom color', 'wp-sms')}</FieldLabel>
               <Switch
                 checked={!!formState.appearance.primary_color}
                 onCheckedChange={(checked) => {
@@ -481,7 +481,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
             {formState.appearance.primary_color ? (
               <ColorPickerField
                 id="sf-primary-color"
-                label="Primary Color"
+                label={__('Primary Color', 'wp-sms')}
                 value={formState.appearance.primary_color}
                 placeholder="#171717"
                 onChange={(v) =>
@@ -515,14 +515,14 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                 onChange={(e) => setFormState((prev) => ({ ...prev, redirect_url: e.target.value }))}
                 placeholder="/thank-you or https://..."
               />
-              <FieldDescription>Users will be redirected here after subscribing. Leave empty to show the success message.</FieldDescription>
+              <FieldDescription>{__('Users will be redirected here after subscribing. Leave empty to show the success message.', 'wp-sms')}</FieldDescription>
             </Field>
 
             <Separator />
 
             {/* Consent & Privacy */}
             <Field orientation="horizontal">
-              <FieldLabel>Use custom consent</FieldLabel>
+              <FieldLabel>{__('Use custom consent', 'wp-sms')}</FieldLabel>
               <Switch
                 checked={formState.consent_text !== null}
                 onCheckedChange={(checked) => {
@@ -585,8 +585,8 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
 
             <Field orientation="horizontal">
               <div className="flex-1">
-                <FieldLabel>Active</FieldLabel>
-                <FieldDescription>Inactive forms return 404 when accessed.</FieldDescription>
+                <FieldLabel>{__('Active', 'wp-sms')}</FieldLabel>
+                <FieldDescription>{__('Inactive forms return 404 when accessed.', 'wp-sms')}</FieldDescription>
               </div>
               <Switch
                 checked={formState.status === 'active'}

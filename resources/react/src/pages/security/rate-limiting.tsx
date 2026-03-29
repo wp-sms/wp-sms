@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -36,7 +36,7 @@ function RateLimitCard({ title, description, icon: Icon, attemptsId, cooldownId,
       <CardContent>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field>
-            <FieldLabel htmlFor={attemptsId}>Max Attempts</FieldLabel>
+            <FieldLabel htmlFor={attemptsId}>{__('Max Attempts', 'wp-sms')}</FieldLabel>
             <Input
               id={attemptsId}
               type="number"
@@ -45,10 +45,10 @@ function RateLimitCard({ title, description, icon: Icon, attemptsId, cooldownId,
               value={maxAttempts}
               onChange={(e) => onChangeAttempts(Number(e.target.value))}
             />
-            <FieldDescription>Maximum verification attempts before lockout</FieldDescription>
+            <FieldDescription>{__('Maximum verification attempts before lockout', 'wp-sms')}</FieldDescription>
           </Field>
           <Field>
-            <FieldLabel htmlFor={cooldownId}>Cooldown (seconds)</FieldLabel>
+            <FieldLabel htmlFor={cooldownId}>{__('Cooldown (seconds)', 'wp-sms')}</FieldLabel>
             <Input
               id={cooldownId}
               type="number"
@@ -57,11 +57,11 @@ function RateLimitCard({ title, description, icon: Icon, attemptsId, cooldownId,
               value={cooldown}
               onChange={(e) => onChangeCooldown(Number(e.target.value))}
             />
-            <FieldDescription>Wait time after reaching max attempts</FieldDescription>
+            <FieldDescription>{__('Wait time after reaching max attempts', 'wp-sms')}</FieldDescription>
           </Field>
         </div>
         <p className="text-xs text-muted-foreground mt-2 pt-2 border-t border-border/50">
-          Users will be locked out for {cooldown}s after {maxAttempts} failed attempts.
+          {sprintf(__('Users will be locked out for %1$ds after %2$d failed attempts.', 'wp-sms'), cooldown, maxAttempts)}
         </p>
       </CardContent>
     </Card>

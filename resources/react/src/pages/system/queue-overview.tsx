@@ -39,9 +39,9 @@ export function QueueOverview({ data }: QueueOverviewProps) {
   return (
     <div className="space-y-4">
       <div className="grid gap-3 grid-cols-3">
-        <StatCard label="Pending" value={pending} icon={Clock} colorClass="text-blue-500" delay={0} muted={pending === 0} />
-        <StatCard label="In Progress" value={inProgress} icon={Loader2} colorClass="text-amber-500" delay={60} muted={inProgress === 0} />
-        <StatCard label="Failed" value={failed} icon={XCircle} colorClass="text-destructive" delay={120} muted={failed === 0} />
+        <StatCard label={__('Pending', 'wp-sms')} value={pending} icon={Clock} colorClass="text-blue-500" delay={0} muted={pending === 0} />
+        <StatCard label={__('In Progress', 'wp-sms')} value={inProgress} icon={Loader2} colorClass="text-amber-500" delay={60} muted={inProgress === 0} />
+        <StatCard label={__('Failed', 'wp-sms')} value={failed} icon={XCircle} colorClass="text-destructive" delay={120} muted={failed === 0} />
       </div>
 
       {data.stuck_jobs.length > 0 && (

@@ -40,7 +40,7 @@ export function WooCommerce({ settings, onUpdate }: WooCommerceProps) {
             <Switch
               checked={!!woo.redirect_auth}
               onCheckedChange={(v) => update({ redirect_auth: v })}
-              aria-label="Toggle WooCommerce auth redirect"
+              aria-label={__('Toggle WooCommerce auth redirect', 'wp-sms')}
             />
           </CardAction>
         </CardHeader>

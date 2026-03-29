@@ -235,24 +235,24 @@ function StatsSection({ data, stats, deliveryRate }: {
 
       {hasDeliveryTracking ? (
         <div className={cn('grid gap-3', showCost ? 'grid-cols-2 sm:grid-cols-5' : 'grid-cols-2 sm:grid-cols-4')}>
-          <StatCard label="Delivered" value={stats.delivered.toLocaleString()} icon={CheckCircle} colorClass="text-emerald-500" delay={60} muted={stats.delivered === 0} />
-          <StatCard label="Failed" value={stats.failed.toLocaleString()} icon={XCircle} colorClass="text-destructive" delay={120} muted={stats.failed === 0} />
+          <StatCard label={__('Delivered', 'wp-sms')} value={stats.delivered.toLocaleString()} icon={CheckCircle} colorClass="text-emerald-500" delay={60} muted={stats.delivered === 0} />
+          <StatCard label={__('Failed', 'wp-sms')} value={stats.failed.toLocaleString()} icon={XCircle} colorClass="text-destructive" delay={120} muted={stats.failed === 0} />
           <StatCard
-            label="Pending"
+            label={__('Pending', 'wp-sms')}
             value={(stats.sent + stats.queued).toLocaleString()}
             icon={Clock} colorClass="text-amber-500" delay={180}
-            subtitle={data.quiet_hours ? `${stats.queued} queued (quiet hours active)` : undefined}
+            subtitle={data.quiet_hours ? sprintf(__('%d queued (quiet hours active)', 'wp-sms'), stats.queued) : undefined}
             muted={stats.sent + stats.queued === 0}
           />
-          <StatCard label="Total" value={data.total_recipients.toLocaleString()} icon={Users} colorClass="text-blue-500" delay={240} subtitle={data.skipped_count > 0 ? `${data.skipped_count} skipped` : undefined} />
-          {showCost && <StatCard label="Cost" value={`$${stats.total_cost.toFixed(4)}`} icon={DollarSign} colorClass="text-purple-500" delay={300} />}
+          <StatCard label={__('Total', 'wp-sms')} value={data.total_recipients.toLocaleString()} icon={Users} colorClass="text-blue-500" delay={240} subtitle={data.skipped_count > 0 ? sprintf(__('%d skipped', 'wp-sms'), data.skipped_count) : undefined} />
+          {showCost && <StatCard label={__('Cost', 'wp-sms')} value={`$${stats.total_cost.toFixed(4)}`} icon={DollarSign} colorClass="text-purple-500" delay={300} />}
         </div>
       ) : (
         <div className={cn('grid gap-3', showCost ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-2 sm:grid-cols-3')}>
-          <StatCard label="Sent" value={sentSuccessCount.toLocaleString()} icon={CheckCircle} colorClass="text-emerald-500" delay={60} muted={sentSuccessCount === 0} />
-          <StatCard label="Failed" value={stats.failed.toLocaleString()} icon={XCircle} colorClass="text-destructive" delay={120} muted={stats.failed === 0} />
-          <StatCard label="Total" value={data.total_recipients.toLocaleString()} icon={Users} colorClass="text-blue-500" delay={180} subtitle={data.skipped_count > 0 ? `${data.skipped_count} skipped` : undefined} />
-          {showCost && <StatCard label="Cost" value={`$${stats.total_cost.toFixed(4)}`} icon={DollarSign} colorClass="text-purple-500" delay={240} />}
+          <StatCard label={__('Sent', 'wp-sms')} value={sentSuccessCount.toLocaleString()} icon={CheckCircle} colorClass="text-emerald-500" delay={60} muted={sentSuccessCount === 0} />
+          <StatCard label={__('Failed', 'wp-sms')} value={stats.failed.toLocaleString()} icon={XCircle} colorClass="text-destructive" delay={120} muted={stats.failed === 0} />
+          <StatCard label={__('Total', 'wp-sms')} value={data.total_recipients.toLocaleString()} icon={Users} colorClass="text-blue-500" delay={180} subtitle={data.skipped_count > 0 ? sprintf(__('%d skipped', 'wp-sms'), data.skipped_count) : undefined} />
+          {showCost && <StatCard label={__('Cost', 'wp-sms')} value={`$${stats.total_cost.toFixed(4)}`} icon={DollarSign} colorClass="text-purple-500" delay={240} />}
         </div>
       )}
     </div>
@@ -383,29 +383,31 @@ function CampaignDetailsSection({ data, defaultOpen }: { data: Campaign; default
     >
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3">
-          <MetadataField label="Channel" value={channelLabel(data.channel)} />
-          <MetadataField label="Gateway" value={data.gateway_id ?? 'Default'} />
-          <MetadataField label="Audience" value={audienceSummary} />
+          <MetadataField label={__('Channel', 'wp-sms')} value={channelLabel(data.channel)} />
+          <MetadataField label={__('Gateway', 'wp-sms')} value={data.gateway_id ?? __('Default', 'wp-sms')} />
+          <MetadataField label={__('Audience', 'wp-sms')} value={audienceSummary} />
           {data.send_at && (
-            <MetadataField label="Scheduled" value={formatDateTime(data.send_at)} />
+            <MetadataField label={__('Scheduled', 'wp-sms')} value={formatDateTime(data.send_at)} />
           )}
-          <MetadataField label="Timezone" value={data.timezone} />
+          <MetadataField label={__('Timezone', 'wp-sms')} value={data.timezone} />
           {data.recurrence && (
             <MetadataField
-              label="Recurrence"
-              value={`Repeats ${data.recurrence.frequency}${data.recurrence.end_date ? ` until ${formatDateTime(data.recurrence.end_date)}` : ''}`}
+              label={__('Recurrence', 'wp-sms')}
+              value={data.recurrence.end_date
+                ? sprintf(__('Repeats %1$s until %2$s', 'wp-sms'), data.recurrence.frequency, formatDateTime(data.recurrence.end_date))
+                : sprintf(__('Repeats %s', 'wp-sms'), data.recurrence.frequency)}
               icon={Repeat}
             />
           )}
           {data.quiet_hours && (
             <MetadataField
-              label="Quiet Hours"
+              label={__('Quiet Hours', 'wp-sms')}
               value={`${data.quiet_hours.start} \u2013 ${data.quiet_hours.end} (${data.quiet_hours.timezone})`}
               icon={Moon}
             />
           )}
           {data.parent_id && (
-            <MetadataField label="Series" value="Part of recurring series" />
+            <MetadataField label={__('Series', 'wp-sms')} value={__('Part of recurring series', 'wp-sms')} />
           )}
         </div>
 

@@ -13,9 +13,9 @@ import { SYSTEM_FONTS, GOOGLE_FONTS, ALL_FONTS } from './font-list';
 import type { BrandingSettings, ColorMode } from '@/lib/api';
 
 const COLOR_MODE_OPTIONS = [
-  { value: 'light' as ColorMode, label: 'Light', icon: <Sun className="h-4 w-4" /> },
-  { value: 'dark' as ColorMode, label: 'Dark', icon: <Moon className="h-4 w-4" /> },
-  { value: 'auto' as ColorMode, label: 'Auto', icon: <Monitor className="h-4 w-4" /> },
+  { value: 'light' as ColorMode, label: __('Light', 'wp-sms'), icon: <Sun className="h-4 w-4" /> },
+  { value: 'dark' as ColorMode, label: __('Dark', 'wp-sms'), icon: <Moon className="h-4 w-4" /> },
+  { value: 'auto' as ColorMode, label: __('Auto', 'wp-sms'), icon: <Monitor className="h-4 w-4" /> },
 ];
 
 interface ColorsCardProps {
@@ -69,12 +69,12 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
           {__('Colors & Typography', 'wp-sms')}
         </CardTitle>
         <CardDescription>
-          Pick a preset theme, customize colors, and choose a font
+          {__('Pick a preset theme, customize colors, and choose a font', 'wp-sms')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
         <Field>
-          <FieldLabel>Theme Preset</FieldLabel>
+          <FieldLabel>{__('Theme Preset', 'wp-sms')}</FieldLabel>
           <PresetGrid
             presets={COLOR_PRESETS}
             activePresetId={activePresetId}
@@ -91,7 +91,7 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
         </Field>
 
         <Field>
-          <FieldLabel>Color Mode</FieldLabel>
+          <FieldLabel>{__('Color Mode', 'wp-sms')}</FieldLabel>
           <SegmentedGroup
             value={branding.color_mode}
             onChange={(v) => onChange({ color_mode: v })}
@@ -100,7 +100,7 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
           />
           {branding.color_mode === 'auto' && (
             <FieldDescription>
-              Automatically switches between light and dark based on visitor's system preference.
+              {__("Automatically switches between light and dark based on visitor's system preference.", 'wp-sms')}
             </FieldDescription>
           )}
         </Field>
@@ -108,28 +108,28 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
         <div className="grid grid-cols-2 gap-4 max-w-md">
           <ColorPickerField
             id="branding-primary-color"
-            label="Primary"
+            label={__('Primary', 'wp-sms')}
             value={branding.primary_color}
             placeholder="#8b5320"
             onChange={(v) => onChange({ primary_color: v })}
           />
           <ColorPickerField
             id="branding-accent-color"
-            label="Accent"
+            label={__('Accent', 'wp-sms')}
             value={branding.accent_color}
             placeholder="#6366f1"
             onChange={(v) => onChange({ accent_color: v })}
           />
           <ColorPickerField
             id="branding-text-color"
-            label="Text"
+            label={__('Text', 'wp-sms')}
             value={branding.text_color}
             placeholder="#1c1917"
             onChange={(v) => onChange({ text_color: v })}
           />
           <ColorPickerField
             id="branding-error-color"
-            label="Error"
+            label={__('Error', 'wp-sms')}
             value={branding.error_color}
             placeholder="#dc2626"
             onChange={(v) => onChange({ error_color: v })}
@@ -142,7 +142,7 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
             <div className="max-w-md">
               <ColorPickerField
                 id="branding-bg-color"
-                label="Background Color"
+                label={__('Background Color', 'wp-sms')}
                 value={branding.background_color}
                 placeholder="#f5f5f4"
                 onChange={(v) => onChange({ background_color: v })}
@@ -150,16 +150,16 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
             </div>
 
             <Field>
-              <FieldLabel>Background Image</FieldLabel>
+              <FieldLabel>{__('Background Image', 'wp-sms')}</FieldLabel>
               <ImagePickerField
                 value={branding.background_image_url}
                 title={__('Select Background Image', 'wp-sms')}
-                alt="Background preview"
+                alt={__('Background preview', 'wp-sms')}
                 onSelect={(url) => onChange({ background_image_url: url })}
                 onClear={() => onChange({ background_image_url: '' })}
               />
               <FieldDescription>
-                Covers the page behind the login card. Optional.
+                {__('Covers the page behind the login card. Optional.', 'wp-sms')}
               </FieldDescription>
             </Field>
           </>
@@ -167,14 +167,14 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
 
         <div className="max-w-md">
           <Field>
-            <FieldLabel htmlFor="branding-font-family">Font Family</FieldLabel>
+            <FieldLabel htmlFor="branding-font-family">{__('Font Family', 'wp-sms')}</FieldLabel>
             <Select value={branding.font_family} onValueChange={handleFontChange}>
               <SelectTrigger id="branding-font-family">
                 <SelectValue placeholder={__('Select a font', 'wp-sms')} />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>System Fonts</SelectLabel>
+                  <SelectLabel>{__('System Fonts', 'wp-sms')}</SelectLabel>
                   {SYSTEM_FONTS.map((font) => (
                     <SelectItem key={font.value} value={font.value}>
                       {font.label}
@@ -182,7 +182,7 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
                   ))}
                 </SelectGroup>
                 <SelectGroup>
-                  <SelectLabel>Google Fonts</SelectLabel>
+                  <SelectLabel>{__('Google Fonts', 'wp-sms')}</SelectLabel>
                   {GOOGLE_FONTS.map((font) => (
                     <SelectItem key={font.value} value={font.value}>
                       {font.label}
@@ -192,7 +192,7 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
               </SelectContent>
             </Select>
             <FieldDescription>
-              Google Fonts are loaded with display=swap for fast rendering
+              {__('Google Fonts are loaded with display=swap for fast rendering', 'wp-sms')}
             </FieldDescription>
           </Field>
 

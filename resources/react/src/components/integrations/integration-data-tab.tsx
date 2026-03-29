@@ -144,11 +144,11 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div>
               <span className="text-muted-foreground">{__('Last push', 'wp-sms')}</span>
-              <p className="font-medium">{status.last_push_at ? formatDateTime(status.last_push_at) : 'Never'}</p>
+              <p className="font-medium">{status.last_push_at ? formatDateTime(status.last_push_at) : __('Never', 'wp-sms')}</p>
             </div>
             <div>
               <span className="text-muted-foreground">{__('Last poll', 'wp-sms')}</span>
-              <p className="font-medium">{status.last_poll_at ? formatDateTime(status.last_poll_at) : 'Never'}</p>
+              <p className="font-medium">{status.last_poll_at ? formatDateTime(status.last_poll_at) : __('Never', 'wp-sms')}</p>
             </div>
             <div>
               <span className="text-muted-foreground">{__('Total pushed', 'wp-sms')}</span>
@@ -189,7 +189,7 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
 
         <SwitchField
           id="sync-auto-push"
-          label="Auto-push contacts"
+          label={__('Auto-push contacts', 'wp-sms')}
           description={__('Push new and updated contacts to the provider automatically.', 'wp-sms')}
           checked={settings.auto_push}
           onCheckedChange={(v) => update('auto_push', v)}
@@ -197,7 +197,7 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
 
         <SwitchField
           id="sync-push-tags"
-          label="Push tags"
+          label={__('Push tags', 'wp-sms')}
           description={__('Include contact tags when pushing to provider.', 'wp-sms')}
           checked={settings.push_tags}
           onCheckedChange={(v) => update('push_tags', v)}
@@ -205,7 +205,7 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
 
         <SwitchField
           id="sync-poll-enabled"
-          label="Suppression polling"
+          label={__('Suppression polling', 'wp-sms')}
           description={__('Poll for unsubscribes, bounces, and complaints.', 'wp-sms')}
           checked={settings.poll_enabled}
           onCheckedChange={(v) => update('poll_enabled', v)}
@@ -231,7 +231,7 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
 
         <SwitchField
           id="sync-remove-on-delete"
-          label="Remove on delete"
+          label={__('Remove on delete', 'wp-sms')}
           description={__('Remove contact from provider when deleted locally.', 'wp-sms')}
           checked={settings.remove_on_delete}
           onCheckedChange={(v) => update('remove_on_delete', v)}

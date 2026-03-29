@@ -32,7 +32,7 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <Field>
-                <FieldLabel>Position</FieldLabel>
+                <FieldLabel>{__('Position', 'wp-sms')}</FieldLabel>
                 <Select value={button.position} onValueChange={(v) => onUpdate('button.position', v)}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -43,7 +43,7 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
               </Field>
 
               <Field>
-                <FieldLabel>Style</FieldLabel>
+                <FieldLabel>{__('Style', 'wp-sms')}</FieldLabel>
                 <Select value={button.style} onValueChange={(v) => onUpdate('button.style', v)}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -63,13 +63,13 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
                 onChange={(e) => onUpdate('button.text', e.target.value)}
                 placeholder={__('Chat with us', 'wp-sms')}
               />
-              <FieldDescription>Displayed when style includes text</FieldDescription>
+              <FieldDescription>{__('Displayed when style includes text', 'wp-sms')}</FieldDescription>
             </Field>
 
             <Field orientation="horizontal">
               <div className="flex-1">
-                <FieldLabel>Custom appearance</FieldLabel>
-                <FieldDescription>When off, inherits colors and theme from central branding.</FieldDescription>
+                <FieldLabel>{__('Custom appearance', 'wp-sms')}</FieldLabel>
+                <FieldDescription>{__('When off, inherits colors and theme from central branding.', 'wp-sms')}</FieldDescription>
               </div>
               <Switch
                 checked={hasCustomAppearance}
@@ -88,14 +88,14 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
                 <div className="grid grid-cols-2 gap-4">
                   <ColorPickerField
                     id="mb-primary-color"
-                    label="Primary Color"
+                    label={__('Primary Color', 'wp-sms')}
                     value={button.primary_color!}
                     placeholder="#2563eb"
                     onChange={(v) => onUpdate('button.primary_color', v)}
                   />
                   <ColorPickerField
                     id="mb-text-color"
-                    label="Text Color"
+                    label={__('Text Color', 'wp-sms')}
                     value={button.text_color}
                     placeholder="#ffffff"
                     onChange={(v) => onUpdate('button.text_color', v)}
@@ -103,14 +103,14 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
                 </div>
 
                 <Field>
-                  <FieldLabel>Theme</FieldLabel>
+                  <FieldLabel>{__('Theme', 'wp-sms')}</FieldLabel>
                   <SegmentedGroup
                     value={widget.theme}
                     onChange={(v) => onUpdate('widget.theme', v)}
                     options={[
-                      { value: 'light', label: 'Light', icon: <Sun className="h-4 w-4" /> },
-                      { value: 'dark', label: 'Dark', icon: <Moon className="h-4 w-4" /> },
-                      { value: 'system', label: 'System', icon: <Monitor className="h-4 w-4" /> },
+                      { value: 'light', label: __('Light', 'wp-sms'), icon: <Sun className="h-4 w-4" /> },
+                      { value: 'dark', label: __('Dark', 'wp-sms'), icon: <Moon className="h-4 w-4" /> },
+                      { value: 'system', label: __('System', 'wp-sms'), icon: <Monitor className="h-4 w-4" /> },
                     ]}
                     size="labeled"
                   />
@@ -119,7 +119,7 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
             )}
 
             <Field>
-              <FieldLabel>Attention Effect</FieldLabel>
+              <FieldLabel>{__('Attention Effect', 'wp-sms')}</FieldLabel>
               <Select value={button.attention} onValueChange={(v) => onUpdate('button.attention', v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -145,7 +145,7 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
         <CardContent>
           <div className="space-y-4">
             <Field>
-              <FieldLabel htmlFor="mb-widget-title">Title</FieldLabel>
+              <FieldLabel htmlFor="mb-widget-title">{__('Title', 'wp-sms')}</FieldLabel>
               <Input
                 id="mb-widget-title"
                 value={widget.title}
@@ -155,7 +155,7 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="mb-widget-subtitle">Subtitle</FieldLabel>
+              <FieldLabel htmlFor="mb-widget-subtitle">{__('Subtitle', 'wp-sms')}</FieldLabel>
               <Input
                 id="mb-widget-subtitle"
                 value={widget.subtitle}
@@ -177,7 +177,7 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
             <Switch
               checked={greeting_bubble.enabled}
               onCheckedChange={(checked) => onUpdate('greeting_bubble.enabled', checked)}
-              aria-label="Toggle greeting bubble"
+              aria-label={__('Toggle greeting bubble', 'wp-sms')}
             />
           </CardAction>
         </CardHeader>
@@ -185,7 +185,7 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
           <CardContent>
             <div className="space-y-4">
               <Field>
-                <FieldLabel htmlFor="mb-greeting-message">Message</FieldLabel>
+                <FieldLabel htmlFor="mb-greeting-message">{__('Message', 'wp-sms')}</FieldLabel>
                 <Input
                   id="mb-greeting-message"
                   value={greeting_bubble.message}
@@ -196,7 +196,7 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
 
               <div className="grid grid-cols-2 gap-4">
                 <Field>
-                  <FieldLabel htmlFor="mb-greeting-delay">Show After (seconds)</FieldLabel>
+                  <FieldLabel htmlFor="mb-greeting-delay">{__('Show After (seconds)', 'wp-sms')}</FieldLabel>
                   <Input
                     id="mb-greeting-delay"
                     type="number"
@@ -206,7 +206,7 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="mb-greeting-duration">Auto-dismiss (seconds)</FieldLabel>
+                  <FieldLabel htmlFor="mb-greeting-duration">{__('Auto-dismiss (seconds)', 'wp-sms')}</FieldLabel>
                   <Input
                     id="mb-greeting-duration"
                     type="number"
@@ -214,12 +214,12 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
                     value={greeting_bubble.duration}
                     onChange={(e) => onUpdate('greeting_bubble.duration', Number(e.target.value))}
                   />
-                  <FieldDescription>0 = stay until clicked</FieldDescription>
+                  <FieldDescription>{__('0 = stay until clicked', 'wp-sms')}</FieldDescription>
                 </Field>
               </div>
 
               <Field orientation="horizontal">
-                <FieldLabel>Open widget on click</FieldLabel>
+                <FieldLabel>{__('Open widget on click', 'wp-sms')}</FieldLabel>
                 <Switch
                   checked={greeting_bubble.open_on_click}
                   onCheckedChange={(checked) => onUpdate('greeting_bubble.open_on_click', checked)}

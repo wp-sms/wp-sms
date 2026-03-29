@@ -1128,27 +1128,27 @@ function ReviewStep({
     <div className="space-y-6">
       {/* Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <SummaryItem label="Campaign" value={draft.name} />
-        <SummaryItem label="Channel" value={`${channelLabel(draft.channel)} via ${selectedGateway?.name ?? 'Default'}`} />
-        <SummaryItem label="Recipients" value={audienceCount !== null ? audienceCount.toLocaleString() : 'Calculating...'} />
+        <SummaryItem label={__('Campaign', 'wp-sms')} value={draft.name} />
+        <SummaryItem label={__('Channel', 'wp-sms')} value={sprintf(__('%1$s via %2$s', 'wp-sms'), channelLabel(draft.channel), selectedGateway?.name ?? __('Default', 'wp-sms'))} />
+        <SummaryItem label={__('Recipients', 'wp-sms')} value={audienceCount !== null ? audienceCount.toLocaleString() : __('Calculating...', 'wp-sms')} />
         <SummaryItem
-          label="Schedule"
-          value={draft.send_mode === 'now' ? 'Send immediately' : `Scheduled: ${draft.send_at}`}
+          label={__('Schedule', 'wp-sms')}
+          value={draft.send_mode === 'now' ? __('Send immediately', 'wp-sms') : `${__('Scheduled', 'wp-sms')}: ${draft.send_at}`}
         />
         {segmentInfo && (
           <SummaryItem
-            label="SMS Segments"
-            value={`${segmentInfo.segmentCount} segments (${segmentInfo.encoding})`}
+            label={__('SMS Segments', 'wp-sms')}
+            value={sprintf(__('%1$d segments (%2$s)', 'wp-sms'), segmentInfo.segmentCount, segmentInfo.encoding)}
           />
         )}
         {draft.quiet_hours && (
-          <SummaryItem label="Quiet Hours" value={`${draft.quiet_hours.start} - ${draft.quiet_hours.end}`} />
+          <SummaryItem label={__('Quiet Hours', 'wp-sms')} value={`${draft.quiet_hours.start} - ${draft.quiet_hours.end}`} />
         )}
       </div>
 
       {!supportsDeliveryReceipt && (
         <p className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
-          Delivery tracking not available for this gateway — only send status will be shown.
+          {__('Delivery tracking not available for this gateway — only send status will be shown.', 'wp-sms')}
         </p>
       )}
 

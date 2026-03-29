@@ -174,7 +174,7 @@ export function SocialSettingsPanel({
 
           {/* Callback URL (read-only) */}
           <Field>
-            <FieldLabel>Callback URL</FieldLabel>
+            <FieldLabel>{__('Callback URL', 'wp-sms')}</FieldLabel>
             <Input
               type="text"
               value={callbackUrl}

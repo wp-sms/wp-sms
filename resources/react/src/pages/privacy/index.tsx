@@ -96,9 +96,9 @@ export function PrivacyPage() {
 
   async function handleErase() {
     const ok = await confirm({
-      title: 'Erase all data?',
-      description: `This will permanently delete all contacts, anonymize message logs, and remove auth logs for "${identifier}". This action cannot be undone.`,
-      confirmLabel: 'Erase Data',
+      title: __('Erase all data?', 'wp-sms'),
+      description: sprintf(__('This will permanently delete all contacts, anonymize message logs, and remove auth logs for "%s". This action cannot be undone.', 'wp-sms'), identifier),
+      confirmLabel: __('Erase Data', 'wp-sms'),
       variant: 'destructive',
     });
     if (!ok) return;
@@ -108,7 +108,7 @@ export function PrivacyPage() {
       const res = await api.post<EraseResult>('wsms/v1/privacy/erase', { identifier: identifier.trim() });
       const { contacts_removed, message_logs_anonymized, auth_logs_removed } = res.data;
       toast.success(
-        `Erased: ${contacts_removed} contact(s), ${message_logs_anonymized} message log(s) anonymized, ${auth_logs_removed} auth log(s) removed.`,
+        sprintf(__('Erased: %1$d contact(s), %2$d message log(s) anonymized, %3$d auth log(s) removed.', 'wp-sms'), contacts_removed, message_logs_anonymized, auth_logs_removed),
       );
       setLookup(null);
       setIdentifier('');
@@ -125,14 +125,14 @@ export function PrivacyPage() {
 
       <div className="space-y-6 max-w-2xl">
         <p className="text-sm text-muted-foreground">
-          Look up, export, or erase personal data stored by WSMS. Unlike WordPress's built-in privacy tools which only support email, this page also supports phone number lookups — essential for phone-only contacts.
+          {__('Look up, export, or erase personal data stored by WSMS. Unlike WordPress\'s built-in privacy tools which only support email, this page also supports phone number lookups — essential for phone-only contacts.', 'wp-sms')}
         </p>
 
         <Card>
           <CardHeader>
             <CardTitle>{__('Look Up Personal Data', 'wp-sms')}</CardTitle>
             <CardDescription>
-              Enter an email address or phone number to find all associated WSMS data including contact profiles, tags, message history, and authentication logs. Phone-only contacts can only be found here — they won't appear in WordPress's built-in privacy tools.
+              {__('Enter an email address or phone number to find all associated WSMS data including contact profiles, tags, message history, and authentication logs. Phone-only contacts can only be found here — they won\'t appear in WordPress\'s built-in privacy tools.', 'wp-sms')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -148,7 +148,7 @@ export function PrivacyPage() {
               </div>
               <Button type="submit" disabled={loading || !identifier.trim()}>
                 {loading ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}
-                Look Up
+                {__('Look Up', 'wp-sms')}
               </Button>
             </form>
           </CardContent>
@@ -157,21 +157,31 @@ export function PrivacyPage() {
         <div className="flex items-start gap-2 rounded-md border border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
           <Info className="size-4 mt-0.5 shrink-0" />
           <p>
-            For a full WordPress-wide data export or erasure (covering all plugins), use WordPress's built-in{' '}
-            <a href={`${adminUrl}export-personal-data.php`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-foreground underline underline-offset-2 hover:text-primary">
-              Export Personal Data <ExternalLink className="size-3" />
-            </a>{' '}and{' '}
-            <a href={`${adminUrl}erase-personal-data.php`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-foreground underline underline-offset-2 hover:text-primary">
-              Erase Personal Data <ExternalLink className="size-3" />
-            </a>{' '}
-            tools. Those tools only accept email addresses.
+            {/* translators: %1$s and %2$s are link labels for WordPress privacy tools */}
+            {sprintf(
+              __('For a full WordPress-wide data export or erasure (covering all plugins), use WordPress\'s built-in %1$s and %2$s tools. Those tools only accept email addresses.', 'wp-sms'),
+              '{{EXPORT}}',
+              '{{ERASE}}',
+            ).split(/({{EXPORT}}|{{ERASE}})/).map((part, i) => {
+              if (part === '{{EXPORT}}') return (
+                <a key={i} href={`${adminUrl}export-personal-data.php`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-foreground underline underline-offset-2 hover:text-primary">
+                  {__('Export Personal Data', 'wp-sms')} <ExternalLink className="size-3" />
+                </a>
+              );
+              if (part === '{{ERASE}}') return (
+                <a key={i} href={`${adminUrl}erase-personal-data.php`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-foreground underline underline-offset-2 hover:text-primary">
+                  {__('Erase Personal Data', 'wp-sms')} <ExternalLink className="size-3" />
+                </a>
+              );
+              return <span key={i}>{part}</span>;
+            })}
           </p>
         </div>
 
         {lookup && !hasData && (
           <Card>
             <CardContent className="py-8 text-center text-muted-foreground">
-              No data found for this identifier.
+              {__('No data found for this identifier.', 'wp-sms')}
             </CardContent>
           </Card>
         )}
@@ -183,7 +193,7 @@ export function PrivacyPage() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-base">
                     <User className="size-4" />
-                    {[contact.first_name, contact.last_name].filter(Boolean).join(' ') || 'Unnamed Contact'}
+                    {[contact.first_name, contact.last_name].filter(Boolean).join(' ') || __('Unnamed Contact', 'wp-sms')}
                     <Badge variant="outline" className="ms-auto font-normal">
                       {contact.status}
                     </Badge>
@@ -205,11 +215,11 @@ export function PrivacyPage() {
                     )}
                     {contact.source && (
                       <div className="text-muted-foreground">
-                        Source: {contact.source}
+                        {sprintf(__('Source: %s', 'wp-sms'), contact.source)}
                       </div>
                     )}
                     <div className="text-muted-foreground">
-                      Created: {new Date(contact.created_at).toLocaleDateString()}
+                      {sprintf(__('Created: %s', 'wp-sms'), new Date(contact.created_at).toLocaleDateString())}
                     </div>
                   </div>
 
@@ -246,15 +256,15 @@ export function PrivacyPage() {
                 <div className="grid grid-cols-3 gap-4 text-center text-sm">
                   <div>
                     <div className="text-2xl font-bold">{lookup.contacts.length}</div>
-                    <div className="text-muted-foreground">Contact(s)</div>
+                    <div className="text-muted-foreground">{__('Contact(s)', 'wp-sms')}</div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold">{lookup.message_log_count}</div>
-                    <div className="text-muted-foreground">Message Logs</div>
+                    <div className="text-muted-foreground">{__('Message Logs', 'wp-sms')}</div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold">{lookup.auth_log_count}</div>
-                    <div className="text-muted-foreground">Auth Logs</div>
+                    <div className="text-muted-foreground">{__('Auth Logs', 'wp-sms')}</div>
                   </div>
                 </div>
               </CardContent>
@@ -266,16 +276,23 @@ export function PrivacyPage() {
               <div className="flex gap-3">
                 <Button variant="outline" onClick={handleExport} disabled={exporting}>
                   {exporting ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
-                  Export Data
+                  {__('Export Data', 'wp-sms')}
                 </Button>
                 <Button variant="destructive" onClick={handleErase} disabled={erasing}>
                   {erasing ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
-                  Erase Data
+                  {__('Erase Data', 'wp-sms')}
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground">
-                <strong>Export</strong> downloads a JSON file containing contact profiles, tags, and message history.{' '}
-                <strong>Erase</strong> permanently deletes contact records and tags, anonymizes message logs (campaign statistics are preserved), and removes authentication logs.
+                {sprintf(
+                  __('%1$s downloads a JSON file containing contact profiles, tags, and message history. %2$s permanently deletes contact records and tags, anonymizes message logs (campaign statistics are preserved), and removes authentication logs.', 'wp-sms'),
+                  '{{EXPORT}}',
+                  '{{ERASE}}',
+                ).split(/({{EXPORT}}|{{ERASE}})/).map((part, i) => {
+                  if (part === '{{EXPORT}}') return <strong key={i}>{__('Export', 'wp-sms')}</strong>;
+                  if (part === '{{ERASE}}') return <strong key={i}>{__('Erase', 'wp-sms')}</strong>;
+                  return <span key={i}>{part}</span>;
+                })}
               </p>
             </div>
           </>

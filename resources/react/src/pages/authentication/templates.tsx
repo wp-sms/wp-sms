@@ -421,7 +421,7 @@ function ProviderTemplatePicker({
 
       <Field>
         <div className="flex items-center justify-between">
-          <FieldLabel>Provider template</FieldLabel>
+          <FieldLabel>{__('Provider template', 'wp-sms')}</FieldLabel>
           <div className="flex items-center gap-1">
             {isFetchable && (
               <Button
@@ -486,9 +486,9 @@ function ProviderTemplatePicker({
 
       {selectedTemplate && providerVariables.length > 0 && (
         <Field>
-          <FieldLabel>Variable mapping</FieldLabel>
+          <FieldLabel>{__('Variable mapping', 'wp-sms')}</FieldLabel>
           <FieldDescription>
-            Map each provider template variable to a plugin variable.
+            {__('Map each provider template variable to a plugin variable.', 'wp-sms')}
           </FieldDescription>
           <div className="space-y-2 mt-2">
             {providerVariables.map((pv) => (
@@ -529,7 +529,7 @@ function ProviderTemplatePicker({
 
       {selectedTemplate && (
         <Field>
-          <FieldLabel>Preview</FieldLabel>
+          <FieldLabel>{__('Preview', 'wp-sms')}</FieldLabel>
           <div className="rounded-2xl rounded-ss-sm bg-muted px-4 py-3 shadow-sm">
             <p className="text-sm whitespace-pre-wrap leading-relaxed">{previewBody}</p>
           </div>
@@ -620,15 +620,15 @@ function ManualTemplateForm({
     <div className="space-y-3 rounded-md border p-3 bg-muted/30">
       <p className="text-xs font-medium text-muted-foreground">{__('Add Manual Template', 'wp-sms')}</p>
       <Field>
-        <FieldLabel>Template ID</FieldLabel>
+        <FieldLabel>{__('Template ID', 'wp-sms')}</FieldLabel>
         <Input value={templateId} onChange={(e) => setTemplateId(e.target.value)} placeholder={__('e.g. otp_verify', 'wp-sms')} />
       </Field>
       <Field>
-        <FieldLabel>Name</FieldLabel>
+        <FieldLabel>{__('Name', 'wp-sms')}</FieldLabel>
         <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={__('e.g. OTP Verification', 'wp-sms')} />
       </Field>
       <Field>
-        <FieldLabel>Body Text</FieldLabel>
+        <FieldLabel>{__('Body Text', 'wp-sms')}</FieldLabel>
         <Textarea
           value={bodyText}
           onChange={(e) => setBodyText(e.target.value)}
@@ -639,8 +639,8 @@ function ManualTemplateForm({
       </Field>
       <Field>
         <div className="flex items-center justify-between">
-          <FieldLabel>Variables</FieldLabel>
-          <Button variant="ghost" size="sm" onClick={addVariable} className="h-7 text-xs">+ Add Variable</Button>
+          <FieldLabel>{__('Variables', 'wp-sms')}</FieldLabel>
+          <Button variant="ghost" size="sm" onClick={addVariable} className="h-7 text-xs">{__('+ Add Variable', 'wp-sms')}</Button>
         </div>
         <div className="space-y-2">
           {variables.map((v, i) => (
@@ -833,7 +833,7 @@ function TemplateEditor({
                           {isEmailChannel && (
                             <Field>
                               <div className="flex items-center justify-between">
-                                <FieldLabel>Subject</FieldLabel>
+                                <FieldLabel>{__('Subject', 'wp-sms')}</FieldLabel>
                                 <TemplateVariablePicker
                                   variables={fieldOptions}
                                   popoverClassName="w-72 p-2"
@@ -851,7 +851,7 @@ function TemplateEditor({
 
                           <Field>
                             <div className="flex items-center justify-between">
-                              <FieldLabel>Body</FieldLabel>
+                              <FieldLabel>{__('Body', 'wp-sms')}</FieldLabel>
                               <TemplateVariablePicker
                                 variables={fieldOptions}
                                 popoverClassName="w-72 p-2"
@@ -873,7 +873,7 @@ function TemplateEditor({
 
                               <Field>
                                 <div className="flex items-center justify-between">
-                                  <FieldLabel>CTA Button Text</FieldLabel>
+                                  <FieldLabel>{__('CTA Button Text', 'wp-sms')}</FieldLabel>
                                   <TemplateVariablePicker
                                     variables={fieldOptions}
                                     popoverClassName="w-72 p-2"
@@ -887,13 +887,13 @@ function TemplateEditor({
                                   placeholder={__('e.g. Verify Email', 'wp-sms')}
                                 />
                                 <FieldDescription>
-                                  Optional centered button in the email. Leave empty to omit.
+                                  {__('Optional centered button in the email. Leave empty to omit.', 'wp-sms')}
                                 </FieldDescription>
                               </Field>
 
                               <Field>
                                 <div className="flex items-center justify-between">
-                                  <FieldLabel>CTA Button URL</FieldLabel>
+                                  <FieldLabel>{__('CTA Button URL', 'wp-sms')}</FieldLabel>
                                   <TemplateVariablePicker
                                     variables={fieldOptions}
                                     popoverClassName="w-72 p-2"

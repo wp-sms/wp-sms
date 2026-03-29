@@ -16,18 +16,18 @@ interface CaptchaPageProps {
 }
 
 const PROVIDERS: { id: CaptchaProvider; label: string; description: string; comingSoon: boolean }[] = [
-  { id: 'turnstile', label: 'Cloudflare Turnstile', description: 'Free, privacy-friendly, often invisible', comingSoon: false },
-  { id: 'recaptcha', label: 'Google reCAPTCHA', description: 'Widely used, v2 checkbox or v3 invisible', comingSoon: true },
-  { id: 'hcaptcha', label: 'hCaptcha', description: 'Privacy-focused alternative to reCAPTCHA', comingSoon: true },
+  { id: 'turnstile', label: 'Cloudflare Turnstile', description: __('Free, privacy-friendly, often invisible', 'wp-sms'), comingSoon: false },
+  { id: 'recaptcha', label: 'Google reCAPTCHA', description: __('Widely used, v2 checkbox or v3 invisible', 'wp-sms'), comingSoon: true },
+  { id: 'hcaptcha', label: 'hCaptcha', description: __('Privacy-focused alternative to reCAPTCHA', 'wp-sms'), comingSoon: true },
 ];
 
 const ACTIONS: { id: CaptchaAction; label: string; description: string }[] = [
-  { id: 'login', label: 'Login', description: 'Password and passwordless login' },
-  { id: 'register', label: 'Registration', description: 'New account creation' },
-  { id: 'forgot_password', label: 'Forgot Password', description: 'Password reset requests' },
-  { id: 'identify', label: 'Identify', description: 'User lookup (not recommended — may break auto-login for returning users)' },
-  { id: 'subscribe', label: 'Subscription Forms', description: 'Newsletter form submissions' },
-  { id: 'messaging_button', label: 'Messaging Button', description: 'Contact messages from the messaging widget' },
+  { id: 'login', label: __('Login', 'wp-sms'), description: __('Password and passwordless login', 'wp-sms') },
+  { id: 'register', label: __('Registration', 'wp-sms'), description: __('New account creation', 'wp-sms') },
+  { id: 'forgot_password', label: __('Forgot Password', 'wp-sms'), description: __('Password reset requests', 'wp-sms') },
+  { id: 'identify', label: __('Identify', 'wp-sms'), description: __('User lookup (not recommended — may break auto-login for returning users)', 'wp-sms') },
+  { id: 'subscribe', label: __('Subscription Forms', 'wp-sms'), description: __('Newsletter form submissions', 'wp-sms') },
+  { id: 'messaging_button', label: __('Messaging Button', 'wp-sms'), description: __('Contact messages from the messaging widget', 'wp-sms') },
 ];
 
 export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
@@ -53,7 +53,7 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
           <Switch
             checked={captcha.enabled}
             onCheckedChange={(v) => update({ enabled: v })}
-            aria-label="Toggle CAPTCHA"
+            aria-label={__('Toggle CAPTCHA', 'wp-sms')}
           />
         }
         contentClassName={captcha.enabled ? 'border-t pt-4 space-y-6' : undefined}
@@ -62,7 +62,7 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
           <>
             {/* Provider Selector */}
             <Field>
-              <FieldLabel>Provider</FieldLabel>
+              <FieldLabel>{__('Provider', 'wp-sms')}</FieldLabel>
               <div className="grid gap-2">
                 {PROVIDERS.map((p) => (
                   <label
@@ -85,7 +85,7 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium">{p.label}</span>
-                        {p.comingSoon && <Badge variant="secondary" className="text-[10px] px-1.5 py-0">Coming Soon</Badge>}
+                        {p.comingSoon && <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{__('Coming Soon', 'wp-sms')}</Badge>}
                       </div>
                       <p className="text-xs text-muted-foreground">{p.description}</p>
                     </div>
@@ -103,7 +103,7 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
             {/* API Keys */}
             <div className="grid gap-4 sm:grid-cols-2">
               <Field>
-                <FieldLabel htmlFor="captcha-site-key">Site Key *</FieldLabel>
+                <FieldLabel htmlFor="captcha-site-key">{__('Site Key *', 'wp-sms')}</FieldLabel>
                 <Input
                   id="captcha-site-key"
                   type="text"
@@ -111,10 +111,10 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
                   onChange={(e) => update({ site_key: e.target.value })}
                   placeholder={__('Enter site key', 'wp-sms')}
                 />
-                <FieldDescription>Public key shown to visitors</FieldDescription>
+                <FieldDescription>{__('Public key shown to visitors', 'wp-sms')}</FieldDescription>
               </Field>
               <Field>
-                <FieldLabel htmlFor="captcha-secret-key">Secret Key *</FieldLabel>
+                <FieldLabel htmlFor="captcha-secret-key">{__('Secret Key *', 'wp-sms')}</FieldLabel>
                 <Input
                   id="captcha-secret-key"
                   type="password"
@@ -122,7 +122,7 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
                   onChange={(e) => update({ secret_key: e.target.value })}
                   placeholder={__('Enter secret key', 'wp-sms')}
                 />
-                <FieldDescription>Server-side key (never exposed to clients)</FieldDescription>
+                <FieldDescription>{__('Server-side key (never exposed to clients)', 'wp-sms')}</FieldDescription>
               </Field>
             </div>
           </>
@@ -153,10 +153,10 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
 
             <SwitchField
               id="captcha-fail-open"
-              label="Fail Open"
+              label={__('Fail Open', 'wp-sms')}
               description={captcha.fail_open
-                ? 'If the CAPTCHA service is unreachable, users will be allowed through. Less secure but avoids lockouts.'
-                : 'If the CAPTCHA service is unreachable, users will be blocked. More secure but may cause lockouts during outages.'}
+                ? __('If the CAPTCHA service is unreachable, users will be allowed through. Less secure but avoids lockouts.', 'wp-sms')
+                : __('If the CAPTCHA service is unreachable, users will be blocked. More secure but may cause lockouts during outages.', 'wp-sms')}
               checked={captcha.fail_open}
               onCheckedChange={(v) => update({ fail_open: v })}
               className="border-t pt-4 mt-4"
