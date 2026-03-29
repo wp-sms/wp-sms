@@ -10,6 +10,9 @@ export function createAuthConfig({ entry, name, fileName, emptyOutDir = true, as
     return {
         plugins: [preact()],
         publicDir: false,
+        define: {
+            'process.env.NODE_ENV': JSON.stringify('production'),
+        },
         build: {
             lib: {
                 entry: resolve(__dirname, entry),

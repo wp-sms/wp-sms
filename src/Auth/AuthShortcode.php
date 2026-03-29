@@ -95,14 +95,14 @@ class AuthShortcode
 
         $this->enqueued = true;
 
-        $pluginUrl = plugin_dir_url(dirname(__DIR__, 1) . '/../wp-sms.php');
-        $version   = defined('WP_SMS_VERSION') ? WP_SMS_VERSION : '8.0';
+        $baseUrl = WP_SMS_URL . 'public/auth/';
+        $version = WP_SMS_VERSION;
 
         $this->registerVendorAsset();
 
         wp_enqueue_script(
             'wsms-auth',
-            $pluginUrl . 'public/auth/app.js',
+            $baseUrl . 'app.js',
             ['wsms-vendor'],
             $version,
             true,

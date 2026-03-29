@@ -44,8 +44,8 @@ class UserButtonRenderer
         }
         $this->enqueued = true;
 
-        $baseUrl = plugin_dir_url(WP_SMS_MAIN_FILE) . 'public/auth/';
-        $version = defined('WP_SMS_VERSION') ? WP_SMS_VERSION : '8.0.0';
+        $baseUrl = WP_SMS_URL . 'public/auth/';
+        $version = WP_SMS_VERSION;
 
         $this->registerVendorAsset();
 

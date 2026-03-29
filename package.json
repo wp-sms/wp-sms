@@ -26,7 +26,7 @@
     "build:user-button": "vite build -c vite.config.user-button.mjs",
     "build:subscription-form": "vite build -c vite.config.subscription-form.mjs",
     "build:cf7-phone": "vite build -c vite.config.cf7-phone.mjs",
-    "build:pot": "wp i18n make-pot . public/languages/wp-sms.pot --slug=wp-sms --domain=wp-sms --skip-audit",
+    "build:pot": "php -d error_reporting=E_ERROR -d memory_limit=512M $(which wp) i18n make-pot . public/languages/wp-sms.pot --slug=wp-sms --domain=wp-sms --skip-audit --exclude=node_modules,vendor,.git,resources",
     "build:json": "wp i18n make-json public/languages/ --no-purge",
     "test": "vitest run",
     "test:watch": "vitest",

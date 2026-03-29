@@ -21,7 +21,7 @@ trait EnqueuesVerifyWidget
 
         $this->registerVendorAsset();
 
-        $baseUrl = plugin_dir_url(WP_SMS_MAIN_FILE) . 'public/auth/';
+        $baseUrl = WP_SMS_URL . 'public/auth/';
         $version = WP_SMS_VERSION;
 
         wp_enqueue_style('wsms-verify-widget', $baseUrl . 'verify-widget-style.css', [], $version);
@@ -42,7 +42,7 @@ trait EnqueuesVerifyWidget
 
         wp_register_script(
             'wsms-verify-mounter',
-            plugin_dir_url(WP_SMS_MAIN_FILE) . 'public/js/mounter.min.js',
+            WP_SMS_URL . 'public/js/mounter.min.js',
             ['wsms-verify-widget'],
             WP_SMS_VERSION,
             true,
