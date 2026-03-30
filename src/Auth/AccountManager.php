@@ -609,17 +609,60 @@ class AccountManager
         }
 
         if ($phoneChanged) {
-            update_user_meta($userId, UserMeta::PENDING_PHONE, $phone);
-            $this->invalidateVerifications($userId, VerificationType::PhoneVerify->value);
-            $this->createChannelVerification($userId, 'phone', $phone);
-            $meta['phone_verification_required'] = true;
+            if ($phone === '') {
+                delete_user_meta($userId, UserMeta::PHONE);
+                delete_user_meta($userId, UserMeta::PENDING_PHONE);
+                delete_user_meta($userId, UserMeta::PHONE_VERIFIED);
+            } else {
+                $deliveryChannel = $settings['phone']['delivery_channel'] ?? 'sms';
+                $canDeliver = $this->messageDispatcher->canDeliverToChannel(
+                    $deliveryChannel,
+                    $this->getOtpGatewayId('phone')
+                );
+
+                if ($canDeliver) {
+                    $this->invalidateVerifications($userId, VerificationType::PhoneVerify->value);
+                    $sent = $this->createChannelVerification($userId, 'phone', $phone);
+
+                    if ($sent) {
+                        update_user_meta($userId, UserMeta::PENDING_PHONE, $phone);
+                        $meta['phone_verification_required'] = true;
+                    } else {
+                        $this->savePhoneDirectly($userId, $phone);
+                    }
+                } else {
+                    $this->savePhoneDirectly($userId, $phone);
+                }
+            }
         }
 
         if ($emailChanged) {
             $this->invalidateVerifications($userId, VerificationType::EmailVerify->value);
-            update_user_meta($userId, UserMeta::PENDING_EMAIL, $newEmail);
-            $this->createChannelVerification($userId, 'email', $newEmail);
-            $meta['email_verification_required'] = true;
+
+            if ($this->emailUsesOtp()) {
+                $canDeliverEmail = $this->messageDispatcher->canDeliverToChannel(
+                    'email',
+                    $this->getOtpGatewayId('email')
+                );
+
+                if ($canDeliverEmail) {
+                    $sent = $this->createChannelVerification($userId, 'email', $newEmail);
+
+                    if ($sent) {
+                        update_user_meta($userId, UserMeta::PENDING_EMAIL, $newEmail);
+                        $meta['email_verification_required'] = true;
+                    } else {
+                        $this->saveEmailDirectly($userId, $newEmail);
+                    }
+                } else {
+                    $this->saveEmailDirectly($userId, $newEmail);
+                }
+            } else {
+                // wp_mail is always available — no gateway check needed.
+                update_user_meta($userId, UserMeta::PENDING_EMAIL, $newEmail);
+                $this->createChannelVerification($userId, 'email', $newEmail);
+                $meta['email_verification_required'] = true;
+            }
         }
 
         // Write custom profile fields.
@@ -722,7 +765,14 @@ class AccountManager
         }
 
         $this->invalidateVerifications($userId, $verifyType);
-        $this->createChannelVerification($userId, $channel, $identifier);
+        $sent = $this->createChannelVerification($userId, $channel, $identifier);
+
+        if (!$sent) {
+            return OperationResult::fail(
+                AuthErrorCode::ChannelUnavailable,
+                __('Could not send verification code. No messaging gateway is configured.', 'wp-sms')
+            );
+        }
 
         return OperationResult::ok(__('Verification resent.', 'wp-sms'));
     }
@@ -851,7 +901,11 @@ class AccountManager
                     'expiry'   => $expiry,
                 ],
             );
-            $this->messageDispatcher->sendImmediate($message, $this->getOtpGatewayId('phone'));
+            $result = $this->messageDispatcher->sendImmediate($message, $this->getOtpGatewayId('phone'));
+
+            if (!$result->success) {
+                return false;
+            }
         } elseif ($channel === 'email') {
             $message = $this->templateManager->renderToMessage(
                 TemplateType::Otp->value,
@@ -862,7 +916,11 @@ class AccountManager
                     'expiry_minutes' => (string) (int) ($expiry / 60),
                 ],
             );
-            $this->messageDispatcher->sendImmediate($message, $this->getOtpGatewayId('email'));
+            $result = $this->messageDispatcher->sendImmediate($message, $this->getOtpGatewayId('email'));
+
+            if (!$result->success) {
+                return false;
+            }
         }
 
         return true;
@@ -881,6 +939,20 @@ class AccountManager
         }
 
         return OperationResult::fail(AuthErrorCode::PhoneRestricted, $restriction->message);
+    }
+
+    private function savePhoneDirectly(int $userId, string $phone): void
+    {
+        delete_user_meta($userId, UserMeta::PENDING_PHONE);
+        update_user_meta($userId, UserMeta::PHONE, $phone);
+        update_user_meta($userId, UserMeta::PHONE_VERIFIED, '0');
+    }
+
+    private function saveEmailDirectly(int $userId, string $email): void
+    {
+        delete_user_meta($userId, UserMeta::PENDING_EMAIL);
+        wp_update_user(['ID' => $userId, 'user_email' => $email]);
+        update_user_meta($userId, UserMeta::EMAIL_VERIFIED, '0');
     }
 
     /**

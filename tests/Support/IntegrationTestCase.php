@@ -113,6 +113,7 @@ abstract class IntegrationTestCase extends TestCase
         // Mock MessageDispatcher for integration tests.
         $messageDispatcher = $this->createMock(MessageDispatcher::class);
         $messageDispatcher->method('sendImmediate')->willReturn(DeliveryResult::sent());
+        $messageDispatcher->method('canDeliverToChannel')->willReturn(true);
 
         // Real AccountManager.
         $otpService = new OtpService(new VerificationRepository(new Connection($this->wpdb)), $this->otpGenerator);

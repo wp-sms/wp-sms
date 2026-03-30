@@ -39,6 +39,7 @@ class AccountManagerTest extends TestCase
             (function () {
                 $d = $this->createMock(MessageDispatcher::class);
                 $d->method('sendImmediate')->willReturn(DeliveryResult::sent());
+                $d->method('canDeliverToChannel')->willReturn(true);
                 return $d;
             })(),
             $this->createMock(TemplateManager::class),
@@ -1138,6 +1139,124 @@ class AccountManagerTest extends TestCase
         $this->assertTrue(AccountManager::isPlaceholderUsername(
             $GLOBALS['_test_wp_insert_user_data']['user_login']
         ));
+    }
+
+    // --- updateProfile: phone with no gateway ---
+
+    public function testUpdateProfilePhoneSavedDirectlyWhenNoGateway(): void
+    {
+        $manager = $this->makeManagerWithDispatcher(canDeliver: false);
+
+        $GLOBALS['_test_user_meta'][1] = ['wsms_phone' => '+0000000000'];
+
+        $result = $manager->updateProfile(1, ['phone' => '+1234567890']);
+
+        $this->assertTrue($result->success);
+        $this->assertArrayNotHasKey('phone_verification_required', $result->meta);
+        $this->assertSame('+1234567890', $GLOBALS['_test_user_meta'][1]['wsms_phone']);
+        $this->assertSame('0', $GLOBALS['_test_user_meta'][1]['wsms_phone_verified']);
+        $this->assertArrayNotHasKey('wsms_pending_phone', $GLOBALS['_test_user_meta'][1]);
+    }
+
+    public function testUpdateProfilePhoneRequiresVerificationWhenGatewayAvailable(): void
+    {
+        // Default setUp manager has sendImmediate → sent(), canDeliver → true.
+        $manager = $this->makeManagerWithDispatcher(canDeliver: true, sendSuccess: true);
+
+        $GLOBALS['_test_user_meta'][1] = ['wsms_phone' => '+0000000000'];
+
+        $result = $manager->updateProfile(1, ['phone' => '+1234567890']);
+
+        $this->assertTrue($result->success);
+        $this->assertTrue($result->meta['phone_verification_required']);
+        $this->assertSame('+1234567890', $GLOBALS['_test_user_meta'][1]['wsms_pending_phone']);
+        $this->assertSame('+0000000000', $GLOBALS['_test_user_meta'][1]['wsms_phone']);
+    }
+
+    public function testUpdateProfilePhoneFallsBackOnDeliveryFailure(): void
+    {
+        $manager = $this->makeManagerWithDispatcher(canDeliver: true, sendSuccess: false);
+
+        $GLOBALS['_test_user_meta'][1] = ['wsms_phone' => '+0000000000'];
+
+        $result = $manager->updateProfile(1, ['phone' => '+1234567890']);
+
+        $this->assertTrue($result->success);
+        $this->assertArrayNotHasKey('phone_verification_required', $result->meta);
+        $this->assertSame('+1234567890', $GLOBALS['_test_user_meta'][1]['wsms_phone']);
+        $this->assertSame('0', $GLOBALS['_test_user_meta'][1]['wsms_phone_verified']);
+        $this->assertArrayNotHasKey('wsms_pending_phone', $GLOBALS['_test_user_meta'][1]);
+    }
+
+    public function testUpdateProfilePhoneClearedDirectly(): void
+    {
+        $GLOBALS['_test_user_meta'][1] = [
+            'wsms_phone'          => '+1111111111',
+            'wsms_pending_phone'  => '+2222222222',
+            'wsms_phone_verified' => '1',
+        ];
+
+        $result = $this->manager->updateProfile(1, ['phone' => '']);
+
+        $this->assertTrue($result->success);
+        $this->assertArrayNotHasKey('wsms_phone', $GLOBALS['_test_user_meta'][1]);
+        $this->assertArrayNotHasKey('wsms_pending_phone', $GLOBALS['_test_user_meta'][1]);
+        $this->assertArrayNotHasKey('wsms_phone_verified', $GLOBALS['_test_user_meta'][1]);
+    }
+
+    // --- updateProfile: email with no gateway (OTP mode) ---
+
+    public function testUpdateProfileEmailSavedDirectlyWhenNoGatewayOtpMode(): void
+    {
+        $manager = $this->makeManagerWithDispatcher(canDeliver: false);
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'email' => ['verification_methods' => ['otp']],
+        ];
+
+        $user = $this->makeUser(1);
+        $user->user_email = 'old@example.com';
+        $GLOBALS['_test_userdata'] = $user;
+
+        $result = $manager->updateProfile(1, ['email' => 'new@example.com']);
+
+        $this->assertTrue($result->success);
+        $this->assertArrayNotHasKey('email_verification_required', $result->meta);
+    }
+
+    // --- resendVerification ---
+
+    public function testResendVerificationFailsWhenNoGateway(): void
+    {
+        $manager = $this->makeManagerWithDispatcher(canDeliver: true, sendSuccess: false);
+
+        $GLOBALS['_test_user_meta'][300] = ['wsms_phone' => '+1234567890'];
+
+        $result = $manager->resendVerification(300, 'phone');
+
+        $this->assertFalse($result->success);
+        $this->assertSame('channel_unavailable', $result->error);
+    }
+
+    // --- Helpers ---
+
+    private function makeManagerWithDispatcher(bool $canDeliver, bool $sendSuccess = true): AccountManager
+    {
+        $dispatcher = $this->createMock(MessageDispatcher::class);
+        $dispatcher->method('canDeliverToChannel')->willReturn($canDeliver);
+        $dispatcher->method('sendImmediate')->willReturn(
+            $sendSuccess ? DeliveryResult::sent() : DeliveryResult::failed('No gateway')
+        );
+
+        return new AccountManager(
+            $this->auditLogger,
+            $this->otpService,
+            $this->mfaManager,
+            $this->authSession,
+            new SettingsRepository(),
+            $dispatcher,
+            $this->createMock(TemplateManager::class),
+        );
     }
 
     private function makeVerification(int $userId, string $type, bool $expired = false, bool $used = false): object

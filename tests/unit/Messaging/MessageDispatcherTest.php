@@ -233,4 +233,36 @@ class MessageDispatcherTest extends TestCase
 
         $this->assertSame('log-5', $logId);
     }
+
+    // --- canDeliverToChannel ---
+
+    public function testCanDeliverToChannelReturnsTrueWhenGatewayExists(): void
+    {
+        $gateway = $this->createMock(GatewayInterface::class);
+        $this->gatewayRegistry->method('getDefault')->with('sms')->willReturn($gateway);
+
+        $this->assertTrue($this->dispatcher->canDeliverToChannel('sms'));
+    }
+
+    public function testCanDeliverToChannelReturnsFalseWhenNoGateway(): void
+    {
+        $this->gatewayRegistry->method('getDefault')->with('sms')->willReturn(null);
+
+        $this->assertFalse($this->dispatcher->canDeliverToChannel('sms'));
+    }
+
+    public function testCanDeliverToChannelUsesSpecificGatewayId(): void
+    {
+        $gateway = $this->createMock(GatewayInterface::class);
+        $this->gatewayRegistry->method('get')->with('twilio-otp')->willReturn($gateway);
+
+        $this->assertTrue($this->dispatcher->canDeliverToChannel('sms', 'twilio-otp'));
+    }
+
+    public function testCanDeliverToChannelReturnsFalseForMissingSpecificGateway(): void
+    {
+        $this->gatewayRegistry->method('get')->with('nonexistent')->willReturn(null);
+
+        $this->assertFalse($this->dispatcher->canDeliverToChannel('sms', 'nonexistent'));
+    }
 }

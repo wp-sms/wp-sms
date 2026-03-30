@@ -57,6 +57,18 @@ class MessageDispatcher
     }
 
     /**
+     * Check whether a gateway is available for the given channel.
+     */
+    public function canDeliverToChannel(string $channel, ?string $gatewayId = null): bool
+    {
+        $gateway = $gatewayId
+            ? $this->gatewayRegistry->get($gatewayId)
+            : $this->resolveGateway($channel);
+
+        return $gateway !== null;
+    }
+
+    /**
      * Send a message immediately (synchronous).
      *
      * @param string|null $gatewayId Specific gateway to use, or null for channel default

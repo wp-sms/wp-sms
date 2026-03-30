@@ -44,7 +44,7 @@ export function Profile() {
                     first_name: u.first_name || '',
                     last_name: u.last_name || '',
                     email: u.email || '',
-                    phone: u.phone || '',
+                    phone: u.pending_phone || u.phone || '',
                 };
 
                 // Load custom field values.
@@ -66,6 +66,7 @@ export function Profile() {
     const phoneCodeLength = details.phone?.code_length;
     const customFieldDefs = profileFieldDefs.value.filter((def) => !SYSTEM_FIELD_IDS.includes(def.id));
     const hasPhone = enabledChannels.value.includes('phone');
+    const userHasPhone = user && (user.phone || user.pending_phone);
 
     function updateField(name, value) {
         setForm((prev) => ({ ...prev, [name]: value }));
@@ -84,7 +85,17 @@ export function Profile() {
         try {
             const res = await api.put('/auth/profile', form);
             if (res.success) {
-                setSuccess(res.message || __('Profile updated.', 'wp-sms'));
+                if (res.phone_verification_required) {
+                    setShowPhoneOtp(true);
+                }
+                if (res.email_verification_required) {
+                    setShowEmailOtp(true);
+                }
+                setSuccess(
+                    (res.phone_verification_required || res.email_verification_required)
+                        ? __('Enter the verification code to confirm your changes.', 'wp-sms')
+                        : (res.message || __('Profile updated.', 'wp-sms'))
+                );
                 await refreshUser();
             }
         } catch (err) {
@@ -314,7 +325,7 @@ export function Profile() {
                         <div className="wsms-auth-stack-2">
                             <div className="wsms-auth-row-between">
                                 <Label>{__('Phone Number', 'wp-sms')}</Label>
-                                {user && user.phone && (
+                                {userHasPhone && (
                                     <StatusBadge variant={user.phone_verified ? 'verified' : 'unverified'} />
                                 )}
                             </div>
@@ -323,7 +334,7 @@ export function Profile() {
                                 onChange={(val) => updateField('phone', val)}
                                 disabled={loading}
                             />
-                            {user && user.phone && !user.phone_verified && !showPhoneOtp && (
+                            {userHasPhone && !user.phone_verified && !showPhoneOtp && (
                                 <Button
                                     variant="link"
                                     type="button"
