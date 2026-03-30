@@ -253,7 +253,14 @@ class RestServiceProvider implements ServiceProvider
             new PrivacyRequestService($c->get('contact.repository'), $c->get(Connection::class)),
         ));
         $container->register('rest.geo', fn() => new GeoController());
-        $container->register('system.health', fn($c) => new SystemHealthService($c->get(Connection::class)));
+        $container->register('system.health', fn($c) => new SystemHealthService(
+            $c->get(Connection::class),
+            $c->get('gateway.registry'),
+            $c->get('auth.settings'),
+            $c->get('webhook.repository'),
+            $c->get('phone_restriction.settings'),
+            $c->get('flow.triggers'),
+        ));
         $container->register('rest.system_health', fn($c) => new SystemHealthController($c->get('system.health')));
     }
 

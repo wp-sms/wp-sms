@@ -905,7 +905,34 @@ export interface FlowExecution {
 
 // --- System Health Types ---
 
+export type HealthCheckStatus = 'pass' | 'warn' | 'fail' | 'skip' | 'info';
+
+export interface HealthCheck {
+  id: string;
+  label: string;
+  status: HealthCheckStatus;
+  message: string;
+  resolution?: string;
+  link?: string;
+  details?: Record<string, unknown>;
+  lazy?: boolean;
+}
+
+export type SectionStatus = 'healthy' | 'warning' | 'critical';
+
 export interface SystemHealthResponse {
+  overall_status: {
+    level: 'healthy' | 'warnings' | 'critical';
+    summary: string;
+    section_statuses: Record<string, SectionStatus>;
+  };
+  checks: {
+    messaging: HealthCheck[];
+    auth: HealthCheck[];
+    background: HealthCheck[];
+    configuration: HealthCheck[];
+    data_security: HealthCheck[];
+  };
   cron_health: {
     wp_cron_disabled: boolean;
     as_runner_active: boolean;
@@ -957,4 +984,18 @@ export interface SystemHealthResponse {
     started_at: string;
   }[];
   generated_at: string;
+}
+
+export type GatewayCreditsResponse = Record<string, {
+  gateway_id: string;
+  name: string;
+  credit: string | null;
+  error?: string;
+}>;
+
+export interface TableSizeEntry {
+  table: string;
+  rows: number;
+  data_size_mb: number;
+  index_size_mb: number;
 }

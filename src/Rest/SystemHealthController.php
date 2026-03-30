@@ -23,6 +23,22 @@ class SystemHealthController extends Controller
             ],
         ]);
 
+        register_rest_route(self::NAMESPACE, '/system/health/gateway-credits', [
+            [
+                'methods'             => 'GET',
+                'callback'            => [$this, 'gatewayCredits'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/system/health/table-sizes', [
+            [
+                'methods'             => 'GET',
+                'callback'            => [$this, 'tableSizes'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
         register_rest_route(self::NAMESPACE, '/system/jobs/(?P<id>\d+)/retry', [
             [
                 'methods'             => 'POST',
@@ -49,6 +65,16 @@ class SystemHealthController extends Controller
     public function index(\WP_REST_Request $request): \WP_REST_Response
     {
         return $this->handle(fn() => $this->ok($this->health->getHealthData()));
+    }
+
+    public function gatewayCredits(\WP_REST_Request $request): \WP_REST_Response
+    {
+        return $this->handle(fn() => $this->ok($this->health->getGatewayCredits()));
+    }
+
+    public function tableSizes(\WP_REST_Request $request): \WP_REST_Response
+    {
+        return $this->handle(fn() => $this->ok($this->health->getTableSizes()));
     }
 
     public function retry(\WP_REST_Request $request): \WP_REST_Response

@@ -9217,6 +9217,42 @@ parameters:
 			path: src/System/SystemHealthService.php
 
 		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:buildAuthChecks\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:buildBackgroundChecks\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:buildChecks\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:buildConfigChecks\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:buildDataSecurityChecks\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:buildDeliveryRateCheck\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
 			message: '#^Method WSms\\System\\SystemHealthService\:\:buildFailedJobs\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -9224,6 +9260,12 @@ parameters:
 
 		-
 			message: '#^Method WSms\\System\\SystemHealthService\:\:buildHeartbeat\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:buildMessagingChecks\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/System/SystemHealthService.php
@@ -9241,6 +9283,18 @@ parameters:
 			path: src/System/SystemHealthService.php
 
 		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:computeOverallStatus\(\) has parameter \$checks with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:computeOverallStatus\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
 			message: '#^Method WSms\\System\\SystemHealthService\:\:detectCronHealth\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -9253,13 +9307,37 @@ parameters:
 			path: src/System/SystemHealthService.php
 
 		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:getGatewayCredits\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
 			message: '#^Method WSms\\System\\SystemHealthService\:\:getHealthData\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/System/SystemHealthService.php
 
 		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:getTableSizes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
 			message: '#^Method WSms\\System\\SystemHealthService\:\:getTranslatedTaskLabels\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:makeCheck\(\) has parameter \$details with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:makeCheck\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/System/SystemHealthService.php

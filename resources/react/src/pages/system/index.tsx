@@ -1,20 +1,23 @@
-import { __ } from '@wordpress/i18n';
-import { useEffect, type ReactNode } from 'react';
+import { __, sprintf } from '@wordpress/i18n';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { PageHeader } from '@/components/layout/page-header';
 import { PageSection } from '@/components/ui/page-section';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useSystemHealth } from '@/hooks/use-system-health';
 import { usePolling } from '@/hooks/use-polling';
-import { HeartbeatSection } from './heartbeat-section';
-import { QueueOverview } from './queue-overview';
-import { FailedJobsSection } from './failed-jobs-section';
-import { ActivityFeed } from './activity-feed';
-import { ActiveCampaignsCard } from './active-campaigns-card';
-import { Activity, AlertCircle, AlertTriangle, RefreshCw, HeartPulse, ListTodo, XCircle, Clock, Megaphone } from 'lucide-react';
+import { HealthSummary } from './health-summary';
+import { MessagingSection } from './messaging-section';
+import { AuthSection } from './auth-section';
+import { BackgroundSection } from './background-section';
+import { ConfigSection } from './config-section';
+import { DataSecuritySection } from './data-security-section';
+import { Activity, AlertCircle, RefreshCw, Send, ShieldCheck, Cog, Settings, Database } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/format';
+import { toast } from 'sonner';
+import type { SectionStatus } from '@/lib/api';
 
 interface SystemHealthProps {
   embedded?: boolean;
@@ -22,10 +25,46 @@ interface SystemHealthProps {
   setHeaderActions?: (node: ReactNode) => void;
 }
 
+const SECTION_CONFIG = [
+  { key: 'messaging', icon: Send, title: () => __('Messaging Delivery', 'wp-sms'), storageKey: 'health-messaging' },
+  { key: 'auth', icon: ShieldCheck, title: () => __('Authentication', 'wp-sms'), storageKey: 'health-auth' },
+  { key: 'background', icon: Cog, title: () => __('Background Processing', 'wp-sms'), storageKey: 'health-background' },
+  { key: 'configuration', icon: Settings, title: () => __('Configuration', 'wp-sms'), storageKey: 'health-config' },
+  { key: 'data_security', icon: Database, title: () => __('Data & Security', 'wp-sms'), storageKey: 'health-data-security' },
+] as const;
+
+const STATUS_BADGE_VARIANT: Record<SectionStatus, 'success' | 'warning' | 'destructive'> = {
+  healthy: 'success',
+  warning: 'warning',
+  critical: 'destructive',
+};
+
+const STATUS_BADGE_LABEL: Record<SectionStatus, string> = {
+  healthy: __('All OK', 'wp-sms'),
+  warning: __('Warning', 'wp-sms'),
+  critical: __('Critical', 'wp-sms'),
+};
+
 export function SystemHealth({ embedded, setHeaderMeta, setHeaderActions }: SystemHealthProps) {
   const { data, loading, error, refetch } = useSystemHealth();
+  const prevLevelRef = useRef<string | undefined>();
 
   usePolling(refetch, 30_000, !loading);
+
+  // Toast on status change
+  useEffect(() => {
+    if (!data) return;
+    const currentLevel = data.overall_status.level;
+    if (prevLevelRef.current !== undefined && prevLevelRef.current !== currentLevel) {
+      const label = currentLevel === 'healthy'
+        ? __('All systems operational', 'wp-sms')
+        : currentLevel === 'critical'
+          ? __('Critical issues detected', 'wp-sms')
+          : __('Issues need attention', 'wp-sms');
+      toast.info(sprintf(__('System status changed: %s', 'wp-sms'), label));
+    }
+    prevLevelRef.current = currentLevel;
+  }, [data?.overall_status.level]);
 
   const refreshButton = (
     <Button variant="outline" size="sm" onClick={refetch} disabled={loading}>
@@ -64,17 +103,10 @@ export function SystemHealth({ embedded, setHeaderMeta, setHeaderActions }: Syst
 
       {loading && !data && (
         <div className="space-y-4">
-          <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-[104px] w-full rounded-lg" />
-            ))}
-          </div>
-          <div className="grid gap-3 grid-cols-3">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className="h-20 w-full rounded-lg" />
-            ))}
-          </div>
-          <Skeleton className="h-48 w-full rounded-lg" />
+          <Skeleton className="h-16 w-full rounded-lg" />
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} className="h-24 w-full rounded-lg" />
+          ))}
         </div>
       )}
 
@@ -87,101 +119,43 @@ export function SystemHealth({ embedded, setHeaderMeta, setHeaderActions }: Syst
 
       {data && (
         <>
-          {data.cron_health.status !== 'healthy' && data.cron_health.status !== 'unknown' && (
-            <Alert
-              variant={data.cron_health.status === 'error' ? 'destructive' : 'default'}
-              className="animate-fade-up"
-            >
-              <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>
-                {data.cron_health.status === 'error' ? 'Background processing stopped' : 'Scheduler may be delayed'}
-              </AlertTitle>
-              <AlertDescription>
-                {data.cron_health.wp_cron_disabled
-                  ? 'WP-Cron is disabled. Background processing requires an external cron job or a server-level scheduler to trigger Action Scheduler.'
-                  : 'The Action Scheduler runner appears stalled. No jobs have completed in the last 10 minutes.'}
-              </AlertDescription>
-            </Alert>
-          )}
+          <HealthSummary overallStatus={data.overall_status} />
 
-          <PageSection
-            icon={HeartPulse}
-            title={__('Scheduled Tasks', 'wp-sms')}
-            description={__('Health of recurring background tasks', 'wp-sms')}
-            defaultOpen
-            collapsible
-            storageKey="system-heartbeat"
-            className="animate-fade-up"
-            style={{ animationDelay: '0ms' }}
-          >
-            <HeartbeatSection data={data.heartbeat} />
-          </PageSection>
+          {SECTION_CONFIG.map(({ key, icon, title, storageKey }, sectionIdx) => {
+            const sectionStatus = data.overall_status.section_statuses[key] ?? 'healthy';
+            const checks = data.checks[key as keyof typeof data.checks] ?? [];
+            const isHealthy = sectionStatus === 'healthy';
 
-          <PageSection
-            icon={ListTodo}
-            title={__('Queue Overview', 'wp-sms')}
-            description={__('Current job queue status', 'wp-sms')}
-            actions={
-              (data.queue.totals['failed'] ?? 0) > 0 && (
-                <Badge variant="destructive" dot>
-                  {data.queue.totals['failed']} {__('failed', 'wp-sms')}
-                </Badge>
-              )
-            }
-            defaultOpen
-            collapsible
-            storageKey="system-queue"
-            className="animate-fade-up"
-            style={{ animationDelay: '60ms' }}
-          >
-            <QueueOverview data={data.queue} />
-          </PageSection>
+            // Background always open; others open only when non-healthy
+            const smartDefaultOpen = key === 'background' ? true : !isHealthy;
 
-          <PageSection
-            icon={XCircle}
-            title={__('Failed Jobs', 'wp-sms')}
-            description={__('Jobs that encountered errors', 'wp-sms')}
-            actions={
-              data.failed_jobs.total > 0 && (
-                <Badge variant="destructive">{data.failed_jobs.total}</Badge>
-              )
-            }
-            defaultOpen={data.failed_jobs.items.length > 0}
-            collapsible
-            storageKey="system-failed"
-            className="animate-fade-up"
-            style={{ animationDelay: '120ms' }}
-          >
-            <FailedJobsSection data={data.failed_jobs} onMutate={refetch} />
-          </PageSection>
-
-          <PageSection
-            icon={Clock}
-            title={__('Recent Activity', 'wp-sms')}
-            description={__('Last completed and failed jobs', 'wp-sms')}
-            defaultOpen={false}
-            collapsible
-            storageKey="system-activity"
-            className="animate-fade-up"
-            style={{ animationDelay: '180ms' }}
-          >
-            <ActivityFeed data={data.recent_activity} />
-          </PageSection>
-
-          {data.active_campaigns.length > 0 && (
-            <PageSection
-              icon={Megaphone}
-              title={__('Active Campaigns', 'wp-sms')}
-              description={__('Campaigns currently sending', 'wp-sms')}
-              defaultOpen
-              collapsible
-              storageKey="system-campaigns"
-              className="animate-fade-up"
-              style={{ animationDelay: '240ms' }}
-            >
-              <ActiveCampaignsCard data={data.active_campaigns} />
-            </PageSection>
-          )}
+            return (
+              <PageSection
+                key={key}
+                id={storageKey}
+                icon={icon}
+                title={title()}
+                actions={
+                  sectionStatus !== 'healthy' && (
+                    <Badge variant={STATUS_BADGE_VARIANT[sectionStatus]} dot>
+                      {STATUS_BADGE_LABEL[sectionStatus]}
+                    </Badge>
+                  )
+                }
+                defaultOpen={smartDefaultOpen}
+                collapsible
+                storageKey={storageKey}
+                className="animate-fade-up"
+                style={{ animationDelay: `${sectionIdx * 60}ms` }}
+              >
+                {key === 'messaging' && <MessagingSection checks={checks} />}
+                {key === 'auth' && <AuthSection checks={checks} />}
+                {key === 'background' && <BackgroundSection checks={checks} data={data} onMutate={refetch} />}
+                {key === 'configuration' && <ConfigSection checks={checks} />}
+                {key === 'data_security' && <DataSecuritySection checks={checks} />}
+              </PageSection>
+            );
+          })}
         </>
       )}
     </div>
