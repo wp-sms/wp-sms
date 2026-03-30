@@ -67,6 +67,7 @@ class AccountManagerTest extends TestCase
             $GLOBALS['_test_userdata'],
             $GLOBALS['_test_get_user_by_result'],
             $GLOBALS['_test_current_user_id'],
+            $GLOBALS['_test_username_exists'],
         );
     }
 
@@ -1045,6 +1046,98 @@ class AccountManagerTest extends TestCase
         $user->user_pass = '';
 
         return $user;
+    }
+
+    // --- Username generation from email ---
+
+    public function testRegisterUserGeneratesUsernameFromEmailLocalPart(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 200;
+
+        $result = $this->manager->registerUser([
+            'email'    => 'john.smith@example.com',
+            'password' => 'StrongPass1!',
+        ]);
+
+        $this->assertTrue($result->success);
+        $captured = $GLOBALS['_test_wp_insert_user_data'];
+        $this->assertSame('john.smith', $captured['user_login']);
+        $this->assertSame('john.smith@example.com', $captured['user_email']);
+    }
+
+    public function testRegisterUserUsernameFromEmailAppendsNumericSuffix(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 201;
+        $GLOBALS['_test_username_exists'] = ['john'];
+
+        $result = $this->manager->registerUser([
+            'email'    => 'john@example.com',
+            'password' => 'StrongPass1!',
+        ]);
+
+        $this->assertTrue($result->success);
+        $this->assertSame('john2', $GLOBALS['_test_wp_insert_user_data']['user_login']);
+    }
+
+    public function testRegisterUserUsernameFromEmailSkipsMultipleTakenSuffixes(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 202;
+        $GLOBALS['_test_username_exists'] = ['alice', 'alice2', 'alice3'];
+
+        $result = $this->manager->registerUser([
+            'email'    => 'alice@example.com',
+            'password' => 'StrongPass1!',
+        ]);
+
+        $this->assertTrue($result->success);
+        $this->assertSame('alice4', $GLOBALS['_test_wp_insert_user_data']['user_login']);
+    }
+
+    public function testRegisterUserUsernameFromEmailDoesNotContainAtSign(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 203;
+
+        $this->manager->registerUser([
+            'email'    => 'bob@example.com',
+            'password' => 'StrongPass1!',
+        ]);
+
+        $captured = $GLOBALS['_test_wp_insert_user_data'];
+        $this->assertSame('bob', $captured['user_login']);
+        $this->assertStringNotContainsString('@', $captured['user_login']);
+    }
+
+    public function testRegisterUserExplicitUsernameOverridesEmailDerivation(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 204;
+
+        $this->manager->registerUser([
+            'email'    => 'bob@example.com',
+            'username' => 'custom_user',
+            'password' => 'StrongPass1!',
+        ]);
+
+        $this->assertSame('custom_user', $GLOBALS['_test_wp_insert_user_data']['user_login']);
+    }
+
+    public function testRegisterUserPhoneOnlyStillUsesPlaceholderUsername(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'email'    => ['required_at_signup' => false],
+            'password' => ['required_at_signup' => false],
+            'phone'    => ['required_at_signup' => true],
+            'registration_fields' => ['phone'],
+        ];
+        $GLOBALS['_test_wp_insert_user_result'] = 205;
+
+        $result = $this->manager->registerUser([
+            'phone' => '+1234567890',
+        ]);
+
+        $this->assertTrue($result->success);
+        $this->assertTrue(AccountManager::isPlaceholderUsername(
+            $GLOBALS['_test_wp_insert_user_data']['user_login']
+        ));
     }
 
     private function makeVerification(int $userId, string $type, bool $expired = false, bool $used = false): object

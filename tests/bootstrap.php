@@ -439,6 +439,13 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('username_exists')) {
+        function username_exists(string $username) {
+            $taken = $GLOBALS['_test_username_exists'] ?? [];
+            return in_array($username, $taken, true) ? 1 : false;
+        }
+    }
+
     if (!function_exists('home_url')) {
         function home_url(string $path = '', ?string $scheme = null): string {
             return 'http://localhost' . ($path ? '/' . ltrim($path, '/') : '');

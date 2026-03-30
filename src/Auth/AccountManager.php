@@ -27,6 +27,9 @@ class AccountManager
     public const PLACEHOLDER_EMAIL_DOMAIN = 'noreply.wsms.local';
     public const PLACEHOLDER_USERNAME_PREFIX = 'wsms_';
     public const DEFAULT_PENDING_USER_TTL_HOURS = 24;
+    private const USERNAME_FALLBACK = 'user';
+    /** WordPress `user_login` column is 60 chars; reserve 10 for numeric suffix. */
+    private const USERNAME_MAX_BASE_LENGTH = 50;
 
     /** @var (\Closure(): SendingPolicyGuard)|null */
     private ?\Closure $sendingPolicyGuardResolver = null;
@@ -102,6 +105,40 @@ class AccountManager
 
     private static function generatePlaceholderUsername(): string
     {
+        return self::PLACEHOLDER_USERNAME_PREFIX . bin2hex(random_bytes(5));
+    }
+
+    /**
+     * Generate a unique username from an email address.
+     */
+    private static function generateUsernameFromEmail(string $email): string
+    {
+        $localPart = strstr($email, '@', true);
+
+        if ($localPart === false || $localPart === '') {
+            $localPart = self::USERNAME_FALLBACK;
+        }
+
+        $username = sanitize_user($localPart, true);
+
+        if ($username === '') {
+            $username = self::USERNAME_FALLBACK;
+        }
+
+        $username = mb_substr($username, 0, self::USERNAME_MAX_BASE_LENGTH);
+
+        if (!username_exists($username)) {
+            return $username;
+        }
+
+        for ($suffix = 2; $suffix <= 9999; $suffix++) {
+            $candidate = $username . $suffix;
+            if (!username_exists($candidate)) {
+                return $candidate;
+            }
+        }
+
+        // Exhausted numeric suffixes — fall back to random
         return self::PLACEHOLDER_USERNAME_PREFIX . bin2hex(random_bytes(5));
     }
 
@@ -275,7 +312,7 @@ class AccountManager
             ? sanitize_user($data['username'])
             : ($isPlaceholder
                 ? self::generatePlaceholderUsername()
-                : $email);
+                : self::generateUsernameFromEmail($email));
 
         $userdata = [
             'user_login' => $username,
