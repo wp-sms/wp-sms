@@ -468,7 +468,7 @@ class AuthServiceProvider implements ServiceProvider
         }
 
         $text .= '<h2>' . __('Data Retention & Your Rights', 'wp-sms') . '</h2>';
-        $text .= '<p>' . __('You may request export or deletion of your personal data through the WordPress privacy tools (Tools → Export/Erase Personal Data). Upon an erasure request, your contact record and associated tags are deleted, message log recipients are anonymized, and authentication logs are removed.', 'wp-sms') . '</p>';
+        $text .= '<p>' . __('You may request export or deletion of your personal data by contacting us. Upon an erasure request, your contact record and associated tags are deleted, message log recipients are anonymized, and authentication logs are removed.', 'wp-sms') . '</p>';
         $text .= '<p>' . __('You can unsubscribe at any time by replying STOP to SMS messages or clicking the unsubscribe link in emails.', 'wp-sms') . '</p>';
 
         return $text;
