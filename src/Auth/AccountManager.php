@@ -456,7 +456,7 @@ class AccountManager
             $this->sendWelcomeMessage($userId);
         }
 
-        $timing = EnrollmentTiming::tryFrom($settings['enrollment_timing'] ?? 'voluntary');
+        $timing = EnrollmentTiming::tryFrom($settings['enrollment_timing']);
 
         if ($timing === EnrollmentTiming::OnRegistration) {
             $meta['mfa_required'] = true;
@@ -565,7 +565,7 @@ class AccountManager
         $settings = $this->settingsRepo->all();
 
         if ($phoneChanged) {
-            $cooldown = (int) ($settings['phone']['cooldown'] ?? 60);
+            $cooldown = (int) $settings['phone']['cooldown'];
             if ($this->isVerificationOnCooldown($userId, VerificationType::PhoneVerify->value, $cooldown)) {
                 return OperationResult::fail(AuthErrorCode::Cooldown, __('Please wait before changing your phone number.', 'wp-sms'));
             }
@@ -582,7 +582,7 @@ class AccountManager
         }
 
         if ($emailChanged) {
-            $cooldown = (int) ($settings['email']['cooldown'] ?? 60);
+            $cooldown = (int) $settings['email']['cooldown'];
             if ($this->isVerificationOnCooldown($userId, VerificationType::EmailVerify->value, $cooldown)) {
                 return OperationResult::fail(AuthErrorCode::Cooldown, __('Please wait before changing your email.', 'wp-sms'));
             }
@@ -615,7 +615,7 @@ class AccountManager
                 delete_user_meta($userId, UserMeta::PENDING_PHONE);
                 delete_user_meta($userId, UserMeta::PHONE_VERIFIED);
             } else {
-                $deliveryChannel = $settings['phone']['delivery_channel'] ?? 'sms';
+                $deliveryChannel = $settings['phone']['delivery_channel'];
                 $canDeliver = $this->messageDispatcher->canDeliverToChannel(
                     $deliveryChannel,
                     $this->getOtpGatewayId('phone')
@@ -887,7 +887,7 @@ class AccountManager
         $expiry = (int) (($settings[$channel] ?? [])['expiry'] ?? 300);
 
         if ($channel === 'phone') {
-            $deliveryChannel = $settings['phone']['delivery_channel'] ?? 'sms';
+            $deliveryChannel = $settings['phone']['delivery_channel'];
             $message = $this->templateManager->renderToMessage(
                 TemplateType::PhoneVerification->value,
                 $deliveryChannel,
@@ -1006,7 +1006,7 @@ class AccountManager
     public function emailUsesOtp(): bool
     {
         $settings = $this->settingsRepo->all();
-        $methods = (array) ($settings['email']['verification_methods'] ?? ['otp']);
+        $methods = (array) $settings['email']['verification_methods'];
 
         return in_array('otp', $methods, true);
     }

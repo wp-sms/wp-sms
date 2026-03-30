@@ -107,6 +107,7 @@ class RestServiceProvider implements ServiceProvider
             return new AdminController(
                 $container->get('audit.logger'),
                 $container->get('mfa.manager'),
+                $container->get('auth.settings'),
                 $container->get('auth.field_registry'),
                 $container->get('audit.reports'),
                 $container->get('gateway.registry'),

@@ -94,7 +94,7 @@ class PolicyEngine
     {
         $settings = $this->settingsRepo->all();
 
-        $requiredRoles = $settings['mfa_required_roles'] ?? [];
+        $requiredRoles = $settings['mfa_required_roles'];
         if (empty($requiredRoles)) {
             return null;
         }
@@ -104,12 +104,12 @@ class PolicyEngine
             return null;
         }
 
-        $timing = EnrollmentTiming::tryFrom($settings['enrollment_timing'] ?? 'voluntary')
+        $timing = EnrollmentTiming::tryFrom($settings['enrollment_timing'])
             ?? EnrollmentTiming::Voluntary;
 
         $graceExpiry = 0;
         if ($timing === EnrollmentTiming::GracePeriod) {
-            $graceDays = (int) ($settings['grace_period_days'] ?? 7);
+            $graceDays = (int) $settings['grace_period_days'];
             $policyActivatedAt = (int) ($settings['mfa_policy_activated_at'] ?? 0) ?: time();
             $graceStart = max(strtotime($user->user_registered), $policyActivatedAt);
             $graceExpiry = $graceStart + ($graceDays * DAY_IN_SECONDS);
@@ -127,7 +127,7 @@ class PolicyEngine
     {
         $settings = $this->settingsRepo->all();
 
-        return $settings['mfa_required_roles'] ?? [];
+        return $settings['mfa_required_roles'];
     }
 
     /**
@@ -143,9 +143,8 @@ class PolicyEngine
         $settings = $this->settingsRepo->all();
         $methods = [];
 
-        // Password — allow_sign_in defaults to true (matches frontend defaults).
-        $password = $settings['password'] ?? [];
-        if (!empty($password['enabled']) && ($password['allow_sign_in'] ?? true)) {
+        $password = $settings['password'];
+        if (!empty($password['enabled']) && $password['allow_sign_in']) {
             $methods[] = 'password';
         }
 
@@ -383,7 +382,7 @@ class PolicyEngine
 
         // Legacy path (no registry injected).
         $settings = $this->settingsRepo->all();
-        $regFields = $settings['registration_fields'] ?? ['email', 'password'];
+        $regFields = $settings['registration_fields'];
         $effectiveFields = [];
 
         if ($this->isChannelRequiredAtSignup('email', $settings)) {

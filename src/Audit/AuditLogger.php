@@ -2,6 +2,7 @@
 
 namespace WSms\Audit;
 
+use WSms\Auth\SettingsRepository;
 use WSms\Database\Connection;
 use WSms\Enums\EventType;
 use WSms\Enums\LogVerbosity;
@@ -17,8 +18,10 @@ class AuditLogger
     private ?LogVerbosity $verbosity = null;
     private ?EventDispatcherInterface $eventDispatcher = null;
 
-    public function __construct(private readonly Connection $db)
-    {
+    public function __construct(
+        private readonly Connection $db,
+        private SettingsRepository $settingsRepo,
+    ) {
     }
 
     public function setEventDispatcher(EventDispatcherInterface $eventDispatcher): void
@@ -170,9 +173,8 @@ class AuditLogger
     private function getVerbosity(): LogVerbosity
     {
         if ($this->verbosity === null) {
-            $settings = get_option('wsms_auth_settings', []);
-            $level = $settings['log_verbosity'] ?? 'standard';
-            $this->verbosity = LogVerbosity::tryFrom($level) ?? LogVerbosity::Standard;
+            $this->verbosity = LogVerbosity::tryFrom($this->settingsRepo->get('log_verbosity'))
+                ?? LogVerbosity::Standard;
         }
 
         return $this->verbosity;

@@ -1,0 +1,142 @@
+{
+    "password": {
+        "enabled": true,
+        "required_at_signup": true,
+        "allow_sign_in": true
+    },
+    "phone": {
+        "enabled": false,
+        "usage": "login",
+        "verification_methods": [
+            "otp"
+        ],
+        "delivery_channel": "sms",
+        "required_at_signup": false,
+        "verify_at_signup": false,
+        "allow_sign_in": true,
+        "code_length": 6,
+        "expiry": 300,
+        "max_attempts": 3,
+        "cooldown": 60,
+        "reverify_on_change": false,
+        "otp_gateway": null
+    },
+    "email": {
+        "enabled": true,
+        "usage": "login",
+        "verification_methods": [
+            "otp"
+        ],
+        "required_at_signup": true,
+        "verify_at_signup": false,
+        "allow_sign_in": true,
+        "code_length": 6,
+        "expiry": 600,
+        "max_attempts": 3,
+        "cooldown": 60,
+        "reverify_on_change": false,
+        "otp_gateway": null
+    },
+    "backup_codes": {
+        "enabled": false,
+        "count": 10,
+        "length": 10
+    },
+    "totp": {
+        "enabled": false
+    },
+    "passkey": {
+        "enabled": false
+    },
+    "captcha": {
+        "enabled": false,
+        "provider": "turnstile",
+        "site_key": "",
+        "secret_key": "",
+        "protected_actions": [
+            "login",
+            "register",
+            "forgot_password",
+            "subscribe",
+            "messaging_button"
+        ],
+        "fail_open": false
+    },
+    "social": {
+        "google": {
+            "enabled": false,
+            "client_id": "",
+            "client_secret": ""
+        },
+        "github": {
+            "enabled": false,
+            "client_id": "",
+            "client_secret": ""
+        },
+        "telegram": {
+            "enabled": false,
+            "client_id": "",
+            "client_secret": ""
+        },
+        "line": {
+            "enabled": false,
+            "client_id": "",
+            "client_secret": ""
+        }
+    },
+    "telegram": {
+        "bot_token": "",
+        "bot_username": "",
+        "webhook_secret": "",
+        "enabled": false,
+        "code_length": 6,
+        "expiry": 300,
+        "max_attempts": 3,
+        "cooldown": 60
+    },
+    "line": {
+        "enabled": false,
+        "bot_basic_id": "",
+        "code_length": 6,
+        "expiry": 300,
+        "max_attempts": 3,
+        "cooldown": 60
+    },
+    "woocommerce": {
+        "verify_email_at_checkout": false,
+        "verify_phone_at_checkout": false,
+        "skip_verified_users": true,
+        "redirect_auth": false
+    },
+    "contact_form_7": {
+        "verification_enabled": true,
+        "notifications_enabled": true
+    },
+    "trusted_devices": {
+        "enabled": false,
+        "ttl": 2592000
+    },
+    "mfa_required_roles": [],
+    "enrollment_timing": "voluntary",
+    "grace_period_days": 7,
+    "auth_base_url": "/account",
+    "redirect_login": false,
+    "auto_create_users": false,
+    "log_verbosity": "standard",
+    "log_retention_days": 30,
+    "registration_fields": [
+        "email",
+        "password"
+    ],
+    "profile_fields": [],
+    "pending_user_cleanup_enabled": true,
+    "pending_user_ttl_hours": 24,
+    "social_profile_sync": "registration_only",
+    "site_phone": "",
+    "site_phone_channel": "sms",
+    "terms_url": "",
+    "privacy_url": "",
+    "subscription_consent_text": "",
+    "subscription_consent_required": false,
+    "subscription_consent_privacy_url": ""
+}

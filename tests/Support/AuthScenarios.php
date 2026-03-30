@@ -8,7 +8,7 @@ use WSms\Enums\EnrollmentTiming;
  * Single source of truth for all auth setting presets.
  *
  * Every integration (and unit) test references these named presets
- * instead of inline settings arrays. Mirrors SettingsRepository::CHANNEL_DEFAULTS.
+ * instead of inline settings arrays. Mirrors SettingsRepository::DEFAULTS.
  */
 class AuthScenarios
 {

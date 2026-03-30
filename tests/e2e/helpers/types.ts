@@ -1,4 +1,4 @@
-/** Auth settings object matching PolicyEngine::CHANNEL_DEFAULTS structure. */
+/** Auth settings object matching SettingsRepository::DEFAULTS structure. */
 export interface AuthSettings {
   password?: {
     enabled?: boolean;

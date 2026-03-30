@@ -7,6 +7,7 @@ use WP_REST_Response;
 use WSms\Audit\AuditLogger;
 use WSms\Audit\ReportAggregator;
 use WSms\Auth\ProfileFieldRegistry;
+use WSms\Auth\SettingsRepository;
 use WSms\Enums\EnrollmentTiming;
 use WSms\Enums\EventType;
 use WSms\Enums\LogVerbosity;
@@ -66,6 +67,7 @@ class AdminController extends Controller
     public function __construct(
         private AuditLogger $auditLogger,
         private MfaManager $mfaManager,
+        private SettingsRepository $settingsRepo,
         private ?ProfileFieldRegistry $fieldRegistry = null,
         private ?ReportAggregator $reportAggregator = null,
         private ?GatewayRegistry $gatewayRegistry = null,
@@ -150,11 +152,9 @@ class AdminController extends Controller
     public function handleGetSettings(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () {
-            $settings = get_option('wsms_auth_settings', []);
-
             return new WP_REST_Response([
                 'success'  => true,
-                'settings' => $settings,
+                'settings' => $this->settingsRepo->all(),
             ]);
         });
     }
@@ -201,6 +201,7 @@ class AdminController extends Controller
             }
 
             update_option('wsms_auth_settings', $updated);
+            $this->settingsRepo->invalidateCache();
 
             // Flush rewrite rules when auth_base_url changes.
             if (($current['auth_base_url'] ?? '/account') !== ($updated['auth_base_url'] ?? '/account')) {
@@ -210,7 +211,7 @@ class AdminController extends Controller
             return new WP_REST_Response([
                 'success'  => true,
                 'message'  => __('Settings updated.', 'wp-sms'),
-                'settings' => $updated,
+                'settings' => $this->settingsRepo->all(),
             ]);
         });
     }

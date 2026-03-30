@@ -18,7 +18,10 @@ class AuditServiceProvider implements ServiceProvider
     public function register(ServiceContainer $container): void
     {
         $container->register('audit.logger', function () use ($container) {
-            return new AuditLogger($container->get(Connection::class));
+            return new AuditLogger(
+                $container->get(Connection::class),
+                $container->get('auth.settings'),
+            );
         });
     }
 

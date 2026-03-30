@@ -53,7 +53,7 @@ class UserProfileSectionTest extends TestCase
         $this->auditLogger->method('getEvents')->willReturn(['items' => [], 'total' => 0]);
         $this->lockout->method('isLocked')->willReturn(['locked' => false, 'until' => null, 'attempts' => 0]);
         $this->settingsRepo->method('channel')->willReturnCallback(function (string $id) {
-            return SettingsRepository::CHANNEL_DEFAULTS[$id] ?? [];
+            return SettingsRepository::DEFAULTS[$id] ?? [];
         });
     }
 
@@ -83,7 +83,7 @@ class UserProfileSectionTest extends TestCase
         $this->auditLogger->method('getEvents')->willReturn(['items' => [], 'total' => 5]);
         $this->lockout->method('isLocked')->willReturn(['locked' => false, 'until' => null, 'attempts' => 0]);
         $this->settingsRepo->method('channel')->willReturnCallback(function (string $id) {
-            return SettingsRepository::CHANNEL_DEFAULTS[$id] ?? [];
+            return SettingsRepository::DEFAULTS[$id] ?? [];
         });
 
         ob_start();
@@ -116,7 +116,7 @@ class UserProfileSectionTest extends TestCase
         $this->auditLogger->method('getEvents')->willReturn(['items' => [], 'total' => 12]);
         $this->lockout->method('isLocked')->willReturn(['locked' => false, 'until' => null, 'attempts' => 0]);
         $this->settingsRepo->method('channel')->willReturnCallback(function (string $id) {
-            return SettingsRepository::CHANNEL_DEFAULTS[$id] ?? [];
+            return SettingsRepository::DEFAULTS[$id] ?? [];
         });
 
         ob_start();
@@ -196,7 +196,7 @@ class UserProfileSectionTest extends TestCase
             'locked' => true, 'until' => '2026-03-15T14:00:00Z', 'attempts' => 5,
         ]);
         $this->settingsRepo->method('channel')->willReturnCallback(function (string $id) {
-            return SettingsRepository::CHANNEL_DEFAULTS[$id] ?? [];
+            return SettingsRepository::DEFAULTS[$id] ?? [];
         });
 
         ob_start();
@@ -328,7 +328,7 @@ class UserProfileSectionTest extends TestCase
         $this->auditLogger->method('getEvents')->willReturn(['items' => [], 'total' => 0]);
         $this->lockout->method('isLocked')->willReturn(['locked' => false, 'until' => null, 'attempts' => 0]);
         $this->settingsRepo->method('channel')->willReturnCallback(function (string $id) {
-            $defaults = SettingsRepository::CHANNEL_DEFAULTS;
+            $defaults = SettingsRepository::DEFAULTS;
             return $defaults[$id] ?? [];
         });
 

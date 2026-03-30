@@ -52,8 +52,7 @@ class SocialServiceProvider implements ServiceProvider
 
         // Telegram OIDC provider.
         $container->register('social.provider.telegram', function () use ($container) {
-            $settings = get_option('wsms_auth_settings', []);
-            $tg = $settings['social']['telegram'] ?? [];
+            $tg = $container->get('auth.settings')->channel('social')['telegram'] ?? [];
 
             return new OidcProvider(
                 OidcPresets::telegram($tg['client_id'] ?? '', $tg['client_secret'] ?? ''),
@@ -85,8 +84,7 @@ class SocialServiceProvider implements ServiceProvider
     public function boot(ServiceContainer $container): void
     {
         // Skip provider registration if no social provider has credentials configured.
-        $settings = get_option('wsms_auth_settings', []);
-        $social = $settings['social'] ?? [];
+        $social = $container->get('auth.settings')->channel('social');
         $hasConfigured = false;
         foreach ($social as $provider) {
             if (!empty($provider['client_id'])) {

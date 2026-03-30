@@ -2,6 +2,7 @@
 
 namespace WSms\Service\Installation;
 
+use WSms\Auth\SettingsRepository;
 use WSms\Branding\BrandingRepository;
 use WSms\Database\CleanupScheduler;
 use WSms\Database\Migrator;
@@ -91,55 +92,7 @@ class InstallManager
 
         add_option(BrandingRepository::OPTION_KEY, BrandingRepository::DEFAULTS);
 
-        add_option('wsms_auth_settings', [
-            'phone' => [
-                'enabled'              => false,
-                'usage'                => 'login',
-                'verification_methods' => ['otp'],
-                'delivery_channel'     => 'sms',
-                'required_at_signup'   => false,
-                'verify_at_signup'     => false,
-                'allow_sign_in'        => true,
-                'code_length'          => 6,
-                'expiry'               => 300,
-                'max_attempts'         => 3,
-                'cooldown'             => 60,
-            ],
-            'email' => [
-                'enabled'              => true,
-                'usage'                => 'login',
-                'verification_methods' => ['otp'],
-                'required_at_signup'   => true,
-                'verify_at_signup'     => false,
-                'allow_sign_in'        => true,
-                'code_length'          => 6,
-                'expiry'               => 600,
-                'max_attempts'         => 3,
-                'cooldown'             => 60,
-            ],
-            'password' => [
-                'enabled'            => true,
-                'required_at_signup' => true,
-                'allow_sign_in'      => true,
-            ],
-            'backup_codes' => [
-                'enabled' => false,
-                'count'   => 10,
-                'length'  => 10,
-            ],
-            'totp' => [
-                'enabled' => false,
-            ],
-            'mfa_required_roles'  => [],
-            'enrollment_timing'   => 'voluntary',
-            'grace_period_days'   => 7,
-            'auth_base_url'       => '/account',
-            'redirect_login'      => false,
-            'auto_create_users'   => false,
-            'log_verbosity'       => 'standard',
-            'log_retention_days'  => 30,
-            'registration_fields' => ['email', 'password'],
-        ]);
+        add_option('wsms_auth_settings', SettingsRepository::DEFAULTS);
     }
 
     /**

@@ -169,7 +169,7 @@ class LoginGuard
 
         if (
             !empty($settings['email']['enabled'])
-            && ($settings['email']['usage'] ?? '') === 'login'
+            && $settings['email']['usage'] === 'login'
             && !empty($settings['email']['verify_at_login'])
             && empty(get_user_meta($userId, UserMeta::EMAIL_VERIFIED, true))
         ) {
@@ -178,7 +178,7 @@ class LoginGuard
 
         if (
             !empty($settings['phone']['enabled'])
-            && ($settings['phone']['usage'] ?? '') === 'login'
+            && $settings['phone']['usage'] === 'login'
             && !empty($settings['phone']['verify_at_login'])
             && empty(get_user_meta($userId, UserMeta::PHONE_VERIFIED, true))
         ) {

@@ -4,6 +4,7 @@ namespace WSms\Tests\Unit\Database;
 
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
+use WSms\Auth\SettingsRepository;
 use WSms\Database\CleanupScheduler;
 use WSms\Flow\Storage\FlowExecutionRepository;
 use WSms\Log\MessageLogger;
@@ -22,7 +23,7 @@ class CleanupSchedulerTest extends TestCase
         $this->flowExecRepo = $this->createMock(FlowExecutionRepository::class);
         $messageLogger = $this->createMock(MessageLogger::class);
         $this->verificationRepo = $this->createMock(VerificationRepository::class);
-        $this->scheduler = new CleanupScheduler($this->auditLogger, $this->flowExecRepo, $messageLogger, $this->verificationRepo);
+        $this->scheduler = new CleanupScheduler($this->auditLogger, $this->flowExecRepo, $messageLogger, $this->verificationRepo, new SettingsRepository());
 
         $GLOBALS['_test_as_scheduled_actions'] = [];
         $GLOBALS['_test_options'] = [];

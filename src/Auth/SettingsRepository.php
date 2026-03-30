@@ -9,10 +9,13 @@ class SettingsRepository
     private ?array $settings = null;
 
     /**
-     * Backend defaults matching the frontend constants (resources/react/src/lib/constants.ts).
-     * Applied so that settings missing from the DB still behave as the admin UI shows.
+     * Canonical defaults for all auth settings.
+     *
+     * Single source of truth — frontend constants.ts must match (enforced by test).
+     * InstallManager seeds the DB with this on activation.
      */
-    public const CHANNEL_DEFAULTS = [
+    public const DEFAULTS = [
+        // --- Channel sub-objects ---
         'password' => [
             'enabled'            => true,
             'required_at_signup' => true,
@@ -23,7 +26,13 @@ class SettingsRepository
             'usage'                => 'login',
             'verification_methods' => ['otp'],
             'delivery_channel'     => 'sms',
+            'required_at_signup'   => false,
+            'verify_at_signup'     => false,
             'allow_sign_in'        => true,
+            'code_length'          => 6,
+            'expiry'               => 300,
+            'max_attempts'         => 3,
+            'cooldown'             => 60,
             'reverify_on_change'   => false,
             'otp_gateway'          => null,
         ],
@@ -31,13 +40,20 @@ class SettingsRepository
             'enabled'              => true,
             'usage'                => 'login',
             'verification_methods' => ['otp'],
-            'allow_sign_in'        => true,
             'required_at_signup'   => true,
+            'verify_at_signup'     => false,
+            'allow_sign_in'        => true,
+            'code_length'          => 6,
+            'expiry'               => 600,
+            'max_attempts'         => 3,
+            'cooldown'             => 60,
             'reverify_on_change'   => false,
             'otp_gateway'          => null,
         ],
         'backup_codes' => [
             'enabled' => false,
+            'count'   => 10,
+            'length'  => 10,
         ],
         'totp' => [
             'enabled' => false,
@@ -55,6 +71,7 @@ class SettingsRepository
         ],
         'social' => [
             'google'   => ['enabled' => false, 'client_id' => '', 'client_secret' => ''],
+            'github'   => ['enabled' => false, 'client_id' => '', 'client_secret' => ''],
             'telegram' => ['enabled' => false, 'client_id' => '', 'client_secret' => ''],
             'line'     => ['enabled' => false, 'client_id' => '', 'client_secret' => ''],
         ],
@@ -90,6 +107,28 @@ class SettingsRepository
             'enabled' => false,
             'ttl'     => 2592000, // 30 days
         ],
+
+        // --- Top-level scalars ---
+        'mfa_required_roles'              => [],
+        'enrollment_timing'               => 'voluntary',
+        'grace_period_days'               => 7,
+        'auth_base_url'                   => '/account',
+        'redirect_login'                  => false,
+        'auto_create_users'               => false,
+        'log_verbosity'                   => 'standard',
+        'log_retention_days'              => 30,
+        'registration_fields'             => ['email', 'password'],
+        'profile_fields'                  => [],
+        'pending_user_cleanup_enabled'    => true,
+        'pending_user_ttl_hours'          => 24,
+        'social_profile_sync'             => 'registration_only',
+        'site_phone'                      => '',
+        'site_phone_channel'              => 'sms',
+        'terms_url'                       => '',
+        'privacy_url'                     => '',
+        'subscription_consent_text'       => '',
+        'subscription_consent_required'   => false,
+        'subscription_consent_privacy_url' => '',
     ];
 
     /**
@@ -104,17 +143,44 @@ class SettingsRepository
         }
 
         $raw = get_option('wsms_auth_settings', []);
-
-        foreach (self::CHANNEL_DEFAULTS as $key => $defaults) {
-            $raw[$key] = array_merge($defaults, $raw[$key] ?? []);
-        }
+        $merged = self::deepMergeDefaults(self::DEFAULTS, $raw);
 
         // Migrate old registration_fields to profile_fields if needed.
-        if (empty($raw['profile_fields']) && !empty($raw['registration_fields'])) {
-            $raw['profile_fields'] = $this->migrateRegistrationFields($raw['registration_fields']);
+        if (empty($merged['profile_fields']) && !empty($merged['registration_fields'])) {
+            $merged['profile_fields'] = $this->migrateRegistrationFields($merged['registration_fields']);
         }
 
-        return $this->settings = $raw;
+        return $this->settings = $merged;
+    }
+
+    /**
+     * Reset the in-memory cache so the next all() re-reads from DB.
+     */
+    public function invalidateCache(): void
+    {
+        $this->settings = null;
+    }
+
+    /**
+     * Deep-merge defaults with raw DB values.
+     *
+     * - Associative arrays: recurse (preserves sibling keys, e.g. social.github when only social.google is in DB)
+     * - Indexed arrays: replace wholesale (admin's ['login'] replaces 5-item default)
+     * - Scalars/null: replace
+     */
+    private static function deepMergeDefaults(array $defaults, array $raw): array
+    {
+        $result = $defaults;
+
+        foreach ($raw as $key => $value) {
+            if (is_array($value) && isset($result[$key]) && is_array($result[$key]) && !array_is_list($value)) {
+                $result[$key] = self::deepMergeDefaults($result[$key], $value);
+            } else {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
     }
 
     /**

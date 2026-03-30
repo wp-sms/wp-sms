@@ -259,7 +259,7 @@ class CaptchaGuardTest extends TestCase
 
     public function testDefaultProtectedActionsIncludeNewActions(): void
     {
-        $defaults = \WSms\Auth\SettingsRepository::CHANNEL_DEFAULTS['captcha']['protected_actions'];
+        $defaults = \WSms\Auth\SettingsRepository::DEFAULTS['captcha']['protected_actions'];
 
         $this->assertContains('subscribe', $defaults);
         $this->assertContains('messaging_button', $defaults);

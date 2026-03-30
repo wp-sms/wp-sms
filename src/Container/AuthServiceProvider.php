@@ -275,13 +275,14 @@ class AuthServiceProvider implements ServiceProvider
         });
 
         // Privacy policy suggested text.
-        add_action('admin_init', function () {
+        $authSettings = $container->get('auth.settings');
+        add_action('admin_init', function () use ($authSettings) {
             if (!function_exists('wp_add_privacy_policy_content')) {
                 return;
             }
             wp_add_privacy_policy_content(
                 'WSMS',
-                wp_kses_post($this->buildPrivacyPolicyText()),
+                wp_kses_post($this->buildPrivacyPolicyText($authSettings)),
             );
         });
 
@@ -368,13 +369,14 @@ class AuthServiceProvider implements ServiceProvider
         });
 
         // Privacy policy.
-        add_action('admin_init', function () {
+        $authSettings = $container->get('auth.settings');
+        add_action('admin_init', function () use ($authSettings) {
             if (!function_exists('wp_add_privacy_policy_content')) {
                 return;
             }
             wp_add_privacy_policy_content(
                 'WSMS',
-                wp_kses_post($this->buildPrivacyPolicyText()),
+                wp_kses_post($this->buildPrivacyPolicyText($authSettings)),
             );
         });
 
@@ -430,15 +432,15 @@ class AuthServiceProvider implements ServiceProvider
         return ['data' => $exportItems, 'done' => true];
     }
 
-    private function buildPrivacyPolicyText(): string
+    private function buildPrivacyPolicyText(SettingsRepository $settingsRepo): string
     {
-        $authSettings = get_option('wsms_auth_settings', []);
+        $authSettings = $settingsRepo->all();
         $messagingSettings = get_option('wsms_messaging_settings', []);
 
-        $logRetentionDays = (int) ($authSettings['log_retention_days'] ?? 30);
+        $logRetentionDays = (int) $authSettings['log_retention_days'];
         $messageLogRetentionDays = (int) ($messagingSettings['message_log_retention_days'] ?? 90);
-        $logVerbosity = $authSettings['log_verbosity'] ?? 'standard';
-        $trustedDevicesEnabled = !empty($authSettings['trusted_devices']['enabled'] ?? false);
+        $logVerbosity = $authSettings['log_verbosity'];
+        $trustedDevicesEnabled = !empty($authSettings['trusted_devices']['enabled']);
 
         $text = '<h2>' . __('Subscription & Contact Data', 'wp-sms') . '</h2>';
         $text .= '<p>' . __('When you subscribe through our forms, we collect your name, email address, and/or phone number. We use this data to send you the communications you opted into. Your subscription status, source, and any tags are stored to manage your preferences.', 'wp-sms') . '</p>';

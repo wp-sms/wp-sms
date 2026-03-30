@@ -26,6 +26,7 @@ class CoreServiceProvider implements ServiceProvider
             $container->get('flow.execution_repository'),
             $container->get('log.message'),
             $container->get('verification.repository'),
+            $container->get('auth.settings'),
         ));
     }
 

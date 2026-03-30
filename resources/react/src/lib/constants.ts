@@ -122,7 +122,7 @@ export const SYSTEM_FIELD_OPTIONS = [
   { id: 'username', label: __('Username', 'wp-sms') },
 ] as const;
 
-/** Matches PHP InstallManager defaults exactly. */
+/** Must match PHP SettingsRepository::DEFAULTS — enforced by test. */
 export const DEFAULTS: Required<AuthSettings> = {
   phone: {
     enabled: false,

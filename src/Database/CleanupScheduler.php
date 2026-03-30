@@ -4,6 +4,7 @@ namespace WSms\Database;
 
 use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountManager;
+use WSms\Auth\SettingsRepository;
 use WSms\Flow\Storage\FlowExecutionRepository;
 use WSms\Support\UserMeta;
 use WSms\Log\MessageLogger;
@@ -21,6 +22,7 @@ class CleanupScheduler
         private FlowExecutionRepository $flowExecutionRepo,
         private MessageLogger $messageLogger,
         private VerificationRepository $verificationRepo,
+        private SettingsRepository $settingsRepo,
     ) {}
 
     public function schedule(): void
@@ -37,7 +39,7 @@ class CleanupScheduler
 
     public function run(): void
     {
-        $authSettings = get_option('wsms_auth_settings', []);
+        $authSettings = $this->settingsRepo->all();
 
         $this->cleanExpiredVerifications();
         $this->cleanOldAuditLogs($authSettings);
@@ -58,18 +60,16 @@ class CleanupScheduler
 
     private function cleanOldAuditLogs(array $settings): void
     {
-        $days = $settings['log_retention_days'] ?? 30;
-        $this->auditLogger->deleteOlderThan($days);
+        $this->auditLogger->deleteOlderThan($settings['log_retention_days']);
     }
 
     private function cleanExpiredPendingUsers(array $settings): void
     {
-
-        if (empty($settings['pending_user_cleanup_enabled'] ?? true)) {
+        if (empty($settings['pending_user_cleanup_enabled'])) {
             return;
         }
 
-        $ttlHours = (int) ($settings['pending_user_ttl_hours'] ?? AccountManager::DEFAULT_PENDING_USER_TTL_HOURS);
+        $ttlHours = (int) $settings['pending_user_ttl_hours'];
         if ($ttlHours <= 0) {
             return;
         }

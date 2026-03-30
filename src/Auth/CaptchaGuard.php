@@ -38,14 +38,14 @@ class CaptchaGuard
             return null;
         }
 
-        $protectedActions = $settings['protected_actions'] ?? ['login', 'register', 'forgot_password'];
+        $protectedActions = $settings['protected_actions'];
 
         if (!in_array($action, $protectedActions, true)) {
             return null;
         }
 
-        $provider = $settings['provider'] ?? 'turnstile';
-        $secretKey = $settings['secret_key'] ?? '';
+        $provider = $settings['provider'];
+        $secretKey = $settings['secret_key'];
 
         if (empty($secretKey) || !isset($this->providers[$provider])) {
             return $this->failOpen($settings);
@@ -81,13 +81,11 @@ class CaptchaGuard
             return null;
         }
 
-        $provider = $settings['provider'] ?? 'turnstile';
-
         return [
             'enabled'           => true,
-            'provider'          => $provider,
-            'site_key'          => $settings['site_key'] ?? '',
-            'protected_actions' => $settings['protected_actions'] ?? ['login', 'register', 'forgot_password'],
+            'provider'          => $settings['provider'],
+            'site_key'          => $settings['site_key'],
+            'protected_actions' => $settings['protected_actions'],
         ];
     }
 
@@ -114,7 +112,7 @@ class CaptchaGuard
             return null;
         }
 
-        $provider = $settings['provider'] ?? 'turnstile';
+        $provider = $settings['provider'];
 
         return isset($this->providers[$provider])
             ? $this->providers[$provider]->getScriptUrl()

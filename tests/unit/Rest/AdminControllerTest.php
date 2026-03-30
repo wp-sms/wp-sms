@@ -5,6 +5,7 @@ namespace WSms\Tests\Unit\Rest;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
+use WSms\Auth\SettingsRepository;
 use WSms\Mfa\MfaManager;
 use WSms\Rest\AdminController;
 
@@ -22,6 +23,7 @@ class AdminControllerTest extends TestCase
         $this->controller = new AdminController(
             $this->auditLogger,
             $this->mfaManager,
+            new SettingsRepository(),
         );
 
         unset(

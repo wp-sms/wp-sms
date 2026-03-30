@@ -4,6 +4,7 @@ namespace WSms\Tests\Unit\Audit;
 
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
+use WSms\Auth\SettingsRepository;
 use WSms\Database\Connection;
 use WSms\Enums\EventType;
 use WSms\Event\Contracts\EventDispatcherInterface;
@@ -24,7 +25,7 @@ class AuditLoggerTest extends TestCase
         $GLOBALS['_test_apply_filters'] = [];
         unset($_SERVER['HTTP_USER_AGENT']);
 
-        $this->logger = new AuditLogger(new Connection($this->wpdb));
+        $this->logger = new AuditLogger(new Connection($this->wpdb), new SettingsRepository());
     }
 
     protected function tearDown(): void
@@ -146,7 +147,7 @@ class AuditLoggerTest extends TestCase
     public function testMetaNotStoredInMinimalMode(): void
     {
         $GLOBALS['_test_options']['wsms_auth_settings'] = ['log_verbosity' => 'minimal'];
-        $logger = new AuditLogger(new Connection($this->wpdb));
+        $logger = new AuditLogger(new Connection($this->wpdb), new SettingsRepository());
 
         $logger->log(EventType::LoginSuccess, 'success', 1, ['key' => 'val']);
 

@@ -17,7 +17,7 @@ Core workflow:
 ## Auth Architecture
 
 ### Source of Truth: Settings
-All auth behavior is driven by `wsms_auth_settings` (WordPress option). The canonical defaults live in `PolicyEngine::CHANNEL_DEFAULTS` (`src/Auth/PolicyEngine.php:312`). Frontend defaults must stay synced in `resources/react/src/lib/constants.ts`.
+All auth behavior is driven by `wsms_auth_settings` (WordPress option). The canonical defaults live in `SettingsRepository::DEFAULTS` (`src/Auth/SettingsRepository.php`). Frontend defaults must stay synced in `resources/react/src/lib/constants.ts` (enforced by test).
 
 ### Channels & Methods
 - **password**: enabled/disabled, required_at_signup
