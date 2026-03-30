@@ -1,5 +1,5 @@
 import { __, sprintf } from '@wordpress/i18n';
-import { challengeToken, challengeMeta, pendingMfa, pendingVerifications, authStep, clearAuth, isRedirecting } from '../signals/auth';
+import { challengeToken, challengeMeta, pendingMfa, pendingVerifications, authStep, clearAuth, isRedirecting, forgetIdentifier } from '../signals/auth';
 
 export function redirectTo(url) {
     isRedirecting.value = true;
@@ -105,5 +105,6 @@ export async function logout() {
     } catch {
         // proceed with redirect regardless
     }
+    forgetIdentifier();
     redirectTo(getBaseUrl() + '/login');
 }

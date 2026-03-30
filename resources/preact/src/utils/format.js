@@ -23,3 +23,11 @@ export function maskPhone(phone) {
     if (digits.length < 4) return phone;
     return '+' + digits.slice(0, -4).replace(/\d/g, '*') + digits.slice(-4);
 }
+
+export function maskIdentifier(id) {
+    if (!id) return '';
+    if (id.includes('@')) return maskEmail(id);
+    if (/^\+?\d/.test(id)) return maskPhone(id);
+    if (id.length <= 2) return id;
+    return id[0] + '***' + id[id.length - 1];
+}

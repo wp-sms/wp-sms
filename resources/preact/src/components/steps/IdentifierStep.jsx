@@ -15,6 +15,7 @@ import {
     forgetIdentifier,
 } from '../../signals/auth';
 import { extractError } from '../../utils/auth';
+import { maskIdentifier } from '../../utils/format';
 import { brandingConfig } from '../../signals/branding';
 import { Alert } from '../ui/Alert';
 import { Button } from '../ui/Button';
@@ -100,7 +101,7 @@ export function IdentifierStep() {
         return (
             <div className="wsms-auth-stack-4 wsms-auth-center">
                 <p className="wsms-auth-text-sm wsms-auth-text-muted">
-                    {sprintf(__('Signing in as %s...', 'wp-sms'), remembered)}
+                    {sprintf(__('Signing in as %s...', 'wp-sms'), maskIdentifier(remembered))}
                 </p>
             </div>
         );
