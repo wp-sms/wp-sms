@@ -4,11 +4,11 @@ namespace WSms\Messaging\Email;
 
 defined('ABSPATH') || exit;
 
-readonly class UnsubscribePayload
+class UnsubscribePayload
 {
     public function __construct(
-        public string $email,
-        public ?string $campaignId,
+        public readonly string $email,
+        public readonly ?string $campaignId,
     ) {
     }
 }

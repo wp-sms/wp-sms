@@ -231,7 +231,7 @@ parameters:
 		-
 			message: '#^Variable \$newEmail might not be defined\.$#'
 			identifier: variable.undefined
-			count: 2
+			count: 6
 			path: src/Auth/AccountManager.php
 
 		-
@@ -427,6 +427,12 @@ parameters:
 			path: src/Auth/PolicyEngine.php
 
 		-
+			message: '#^Method WSms\\Auth\\PolicyEngine\:\:getGatedRegistrationDefs\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Auth/PolicyEngine.php
+
+		-
 			message: '#^Method WSms\\Auth\\PolicyEngine\:\:getGracePeriodInfo\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -452,6 +458,12 @@ parameters:
 
 		-
 			message: '#^Method WSms\\Auth\\PolicyEngine\:\:getSmartMfaDefault\(\) has parameter \$availableFactors with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Auth/PolicyEngine.php
+
+		-
+			message: '#^Method WSms\\Auth\\PolicyEngine\:\:isChannelRequiredAtSignup\(\) has parameter \$settings with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Auth/PolicyEngine.php
@@ -613,6 +625,12 @@ parameters:
 			path: src/Auth/TrustedDeviceManager.php
 
 		-
+			message: '#^Method WSms\\Auth\\UserButtonRenderer\:\:shortcode\(\) has parameter \$atts with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Auth/UserButtonRenderer.php
+
+		-
 			message: '#^Method WSms\\Auth\\ValueObjects\\AuthResult\:\:__construct\(\) has parameter \$meta with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -731,6 +749,48 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Auth/ValueObjects/ProfileFieldDefinition.php
+
+		-
+			message: '#^Method WSms\\Branding\\BrandingRepository\:\:all\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Branding/BrandingRepository.php
+
+		-
+			message: '#^Method WSms\\Branding\\BrandingRepository\:\:get\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Branding/BrandingRepository.php
+
+		-
+			message: '#^Method WSms\\Branding\\BrandingRepository\:\:get\(\) has parameter \$default with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Branding/BrandingRepository.php
+
+		-
+			message: '#^Method WSms\\Branding\\BrandingRepository\:\:getPublicConfig\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Branding/BrandingRepository.php
+
+		-
+			message: '#^Method WSms\\Branding\\BrandingRepository\:\:getTranslatedDefaults\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Branding/BrandingRepository.php
+
+		-
+			message: '#^Method WSms\\Branding\\BrandingRepository\:\:update\(\) has parameter \$settings with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Branding/BrandingRepository.php
+
+		-
+			message: '#^Property WSms\\Branding\\BrandingRepository\:\:\$cached type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Branding/BrandingRepository.php
 
 		-
 			message: '#^Method WSms\\Campaign\\AudienceBatch\:\:__construct\(\) has parameter \$recipients with no value type specified in iterable type array\.$#'
@@ -877,12 +937,6 @@ parameters:
 			path: src/Campaign/CampaignDispatcher.php
 
 		-
-			message: '#^Property WSms\\Campaign\\CampaignDispatcher\:\:\$throttler is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: src/Campaign/CampaignDispatcher.php
-
-		-
 			message: '#^Method WSms\\Campaign\\CampaignRepository\:\:buildWhereClause\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -926,6 +980,12 @@ parameters:
 
 		-
 			message: '#^Method WSms\\Campaign\\GatewayThrottler\:\:check\(\) should return array\{allowed\: bool, retry_after\: int\} but returns array\{allowed\: false, retry_after\: float\|int\<1, max\>\}\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Campaign/GatewayThrottler.php
+
+		-
+			message: '#^Method WSms\\Campaign\\GatewayThrottler\:\:remaining\(\) should return array\{remaining\: int, retry_after\: int\} but returns array\{remaining\: 0, retry_after\: float\|int\<1, max\>\}\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Campaign/GatewayThrottler.php
@@ -985,6 +1045,12 @@ parameters:
 			path: src/Contact/ContactExporter.php
 
 		-
+			message: '#^Method WSms\\Contact\\ContactExporter\:\:serializeOptOuts\(\) should return string but returns string\|false\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Contact/ContactExporter.php
+
+		-
 			message: '#^Call to method getHeader\(\) on an unknown class WSms\\Dependencies\\League\\Csv\\Reader\.$#'
 			identifier: class.notFound
 			count: 1
@@ -1003,13 +1069,37 @@ parameters:
 			path: src/Contact/ContactImporter.php
 
 		-
-			message: '#^Method WSms\\Contact\\ContactImporter\:\:findExisting\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			message: '#^Method WSms\\Contact\\ContactImporter\:\:batchFindExisting\(\) has parameter \$mapped with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Contact/ContactImporter.php
 
 		-
-			message: '#^Method WSms\\Contact\\ContactImporter\:\:findExisting\(\) return type has no value type specified in iterable type array\.$#'
+			message: '#^Method WSms\\Contact\\ContactImporter\:\:batchFindExisting\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ContactImporter.php
+
+		-
+			message: '#^Method WSms\\Contact\\ContactImporter\:\:importChunk\(\) has parameter \$chunk with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ContactImporter.php
+
+		-
+			message: '#^Method WSms\\Contact\\ContactImporter\:\:importChunk\(\) has parameter \$fieldMapping with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ContactImporter.php
+
+		-
+			message: '#^Method WSms\\Contact\\ContactImporter\:\:importChunk\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ContactImporter.php
+
+		-
+			message: '#^Method WSms\\Contact\\ContactImporter\:\:importChunk\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Contact/ContactImporter.php
@@ -1022,6 +1112,24 @@ parameters:
 
 		-
 			message: '#^Method WSms\\Contact\\ContactImporter\:\:importFromCsv\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ContactImporter.php
+
+		-
+			message: '#^Method WSms\\Contact\\ContactImporter\:\:lookupExisting\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ContactImporter.php
+
+		-
+			message: '#^Method WSms\\Contact\\ContactImporter\:\:lookupExisting\(\) has parameter \$existingMap with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ContactImporter.php
+
+		-
+			message: '#^Method WSms\\Contact\\ContactImporter\:\:lookupExisting\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Contact/ContactImporter.php
@@ -1040,6 +1148,18 @@ parameters:
 
 		-
 			message: '#^Method WSms\\Contact\\ContactImporter\:\:mapFields\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ContactImporter.php
+
+		-
+			message: '#^Method WSms\\Contact\\ContactImporter\:\:mergeResult\(\) has parameter \$result with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ContactImporter.php
+
+		-
+			message: '#^Method WSms\\Contact\\ContactImporter\:\:mergeResult\(\) has parameter \$totals with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Contact/ContactImporter.php
@@ -1153,6 +1273,18 @@ parameters:
 			path: src/Contact/ContactRepository.php
 
 		-
+			message: '#^Method WSms\\Contact\\ContactRepository\:\:findByEmails\(\) has parameter \$emails with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ContactRepository.php
+
+		-
+			message: '#^Method WSms\\Contact\\ContactRepository\:\:findByEmails\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ContactRepository.php
+
+		-
 			message: '#^Method WSms\\Contact\\ContactRepository\:\:findByIds\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -1166,6 +1298,18 @@ parameters:
 
 		-
 			message: '#^Method WSms\\Contact\\ContactRepository\:\:findByPhone\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ContactRepository.php
+
+		-
+			message: '#^Method WSms\\Contact\\ContactRepository\:\:findByPhones\(\) has parameter \$phones with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ContactRepository.php
+
+		-
+			message: '#^Method WSms\\Contact\\ContactRepository\:\:findByPhones\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Contact/ContactRepository.php
@@ -1195,7 +1339,25 @@ parameters:
 			path: src/Contact/ContactRepository.php
 
 		-
+			message: '#^Method WSms\\Contact\\ContactRepository\:\:getTagsForContacts\(\) has parameter \$contactIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ContactRepository.php
+
+		-
+			message: '#^Method WSms\\Contact\\ContactRepository\:\:loadOptOuts\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ContactRepository.php
+
+		-
 			message: '#^Method WSms\\Contact\\ContactRepository\:\:placeholders\(\) has parameter \$items with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ContactRepository.php
+
+		-
+			message: '#^Method WSms\\Contact\\ContactRepository\:\:saveOptOuts\(\) has parameter \$optOuts with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Contact/ContactRepository.php
@@ -1273,6 +1435,18 @@ parameters:
 			path: src/Contact/Contracts/ContactRepositoryInterface.php
 
 		-
+			message: '#^Method WSms\\Contact\\Contracts\\ContactRepositoryInterface\:\:findByEmails\(\) has parameter \$emails with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/Contracts/ContactRepositoryInterface.php
+
+		-
+			message: '#^Method WSms\\Contact\\Contracts\\ContactRepositoryInterface\:\:findByEmails\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/Contracts/ContactRepositoryInterface.php
+
+		-
 			message: '#^Method WSms\\Contact\\Contracts\\ContactRepositoryInterface\:\:findByIds\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -1286,6 +1460,18 @@ parameters:
 
 		-
 			message: '#^Method WSms\\Contact\\Contracts\\ContactRepositoryInterface\:\:findByPhone\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/Contracts/ContactRepositoryInterface.php
+
+		-
+			message: '#^Method WSms\\Contact\\Contracts\\ContactRepositoryInterface\:\:findByPhones\(\) has parameter \$phones with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/Contracts/ContactRepositoryInterface.php
+
+		-
+			message: '#^Method WSms\\Contact\\Contracts\\ContactRepositoryInterface\:\:findByPhones\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Contact/Contracts/ContactRepositoryInterface.php
@@ -1310,6 +1496,12 @@ parameters:
 
 		-
 			message: '#^Method WSms\\Contact\\Contracts\\ContactRepositoryInterface\:\:getTags\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/Contracts/ContactRepositoryInterface.php
+
+		-
+			message: '#^Method WSms\\Contact\\Contracts\\ContactRepositoryInterface\:\:getTagsForContacts\(\) has parameter \$contactIds with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Contact/Contracts/ContactRepositoryInterface.php
@@ -1507,144 +1699,6 @@ parameters:
 			path: src/Contact/SegmentEvaluator.php
 
 		-
-			message: '#^Method WSms\\Contact\\Source\\AbstractContactSource\:\:applyFieldMapping\(\) has parameter \$fieldMapping with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/AbstractContactSource.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\AbstractContactSource\:\:applyFieldMapping\(\) has parameter \$sourceData with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/AbstractContactSource.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\AbstractContactSource\:\:applyFieldMapping\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/AbstractContactSource.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\AbstractContactSource\:\:upsertContact\(\) has parameter \$data with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/AbstractContactSource.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\ContactSourceManager\:\:get\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/ContactSourceManager.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\ContactSourceManager\:\:getAll\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/ContactSourceManager.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\ContactSourceManager\:\:save\(\) has parameter \$data with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/ContactSourceManager.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\ContactSourceManager\:\:updateStats\(\) has parameter \$stats with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/ContactSourceManager.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\Contracts\\ContactSourceInterface\:\:countAvailable\(\) has parameter \$config with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/Contracts/ContactSourceInterface.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\Contracts\\ContactSourceInterface\:\:getAvailableFields\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/Contracts/ContactSourceInterface.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\Contracts\\ContactSourceInterface\:\:getBatch\(\) has parameter \$config with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/Contracts/ContactSourceInterface.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\Contracts\\ContactSourceInterface\:\:getBatch\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/Contracts/ContactSourceInterface.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\Contracts\\ContactSourceInterface\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/Contracts/ContactSourceInterface.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\Contracts\\ContactSourceInterface\:\:getDefaultFieldMapping\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/Contracts/ContactSourceInterface.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\Contracts\\ContactSourceInterface\:\:syncOne\(\) has parameter \$config with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/Contracts/ContactSourceInterface.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\WordPressUsersSource\:\:countAvailable\(\) has parameter \$config with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/WordPressUsersSource.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\WordPressUsersSource\:\:extractUserData\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/WordPressUsersSource.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\WordPressUsersSource\:\:getAvailableFields\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/WordPressUsersSource.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\WordPressUsersSource\:\:getBatch\(\) has parameter \$config with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/WordPressUsersSource.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\WordPressUsersSource\:\:getBatch\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/WordPressUsersSource.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\WordPressUsersSource\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/WordPressUsersSource.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\WordPressUsersSource\:\:getDefaultFieldMapping\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/WordPressUsersSource.php
-
-		-
-			message: '#^Method WSms\\Contact\\Source\\WordPressUsersSource\:\:syncOne\(\) has parameter \$config with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Contact/Source/WordPressUsersSource.php
-
-		-
 			message: '#^Instantiated class WSms\\Dependencies\\Symfony\\Component\\Uid\\Ulid not found\.$#'
 			identifier: class.notFound
 			count: 1
@@ -1707,19 +1761,19 @@ parameters:
 		-
 			message: '#^Parameter \#2 \$callback of function add_action expects callable\(\)\: mixed, array\{mixed, ''cleanupOnUserDelete''\} given\.$#'
 			identifier: argument.type
-			count: 1
+			count: 2
 			path: src/Container/AuthServiceProvider.php
 
 		-
 			message: '#^Parameter \#2 \$callback of function add_filter expects callable\(\)\: mixed, array\{mixed, ''filterGetAvatar''\} given\.$#'
 			identifier: argument.type
-			count: 1
+			count: 2
 			path: src/Container/AuthServiceProvider.php
 
 		-
 			message: '#^Parameter \#2 \$callback of function add_filter expects callable\(\)\: mixed, array\{mixed, ''filterGetAvatarUrl''\} given\.$#'
 			identifier: argument.type
-			count: 1
+			count: 2
 			path: src/Container/AuthServiceProvider.php
 
 		-
@@ -1739,6 +1793,12 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Container/CoreServiceProvider.php
+
+		-
+			message: '#^Action callback returns string\|null but should not return anything\.$#'
+			identifier: return.void
+			count: 2
+			path: src/Container/IntegrationServiceProvider.php
 
 		-
 			message: '#^Call to an undefined method object\:\:isAvailable\(\)\.$#'
@@ -1765,10 +1825,22 @@ parameters:
 			path: src/Container/IntegrationServiceProvider.php
 
 		-
+			message: '#^Call to an undefined method WSms\\Messaging\\Gateway\\Provider\\KavenegarProvider\|WSms\\Messaging\\Gateway\\Provider\\NetGsmProvider\|WSms\\Messaging\\Gateway\\Provider\\OvhProvider\|WSms\\Messaging\\Gateway\\Provider\\TwilioProvider\|WSms\\Messaging\\Gateway\\Provider\\VonageProvider\:\:setCatalogManager\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Container/MessagingServiceProvider.php
+
+		-
 			message: '#^Cannot call method setUserFactorRepository\(\) on class\-string\|object\.$#'
 			identifier: method.nonObject
 			count: 1
 			path: src/Container/MfaServiceProvider.php
+
+		-
+			message: '#^Parameter \#2 \$body of static method WSms\\Webhook\\WebhookHttpClient\:\:send\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Container/WebhookServiceProvider.php
 
 		-
 			message: '#^Function as_has_scheduled_action not found\.$#'
@@ -1885,6 +1957,12 @@ parameters:
 			path: src/Flow/Action/SendMessageAction.php
 
 		-
+			message: '#^Method WSms\\Flow\\Action\\SendMessageAction\:\:buildTemplateMessage\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Flow/Action/SendMessageAction.php
+
+		-
 			message: '#^Method WSms\\Flow\\Action\\SendMessageAction\:\:execute\(\) has parameter \$config with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -1970,6 +2048,12 @@ parameters:
 
 		-
 			message: '#^Method WSms\\Flow\\Action\\SendMessageAction\:\:getPlaceholders\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Flow/Action/SendMessageAction.php
+
+		-
+			message: '#^Method WSms\\Flow\\Action\\SendMessageAction\:\:resolveTemplateGatewayFromContext\(\) has parameter \$context with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Flow/Action/SendMessageAction.php
@@ -3187,6 +3271,30 @@ parameters:
 			path: src/Integration/ContactForm7/Triggers/FormSubmittedTrigger.php
 
 		-
+			message: '#^Method WSms\\Integration\\Contracts\\ContactImportHelper\:\:applyFieldMapping\(\) has parameter \$fieldMapping with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Contracts/ContactImportHelper.php
+
+		-
+			message: '#^Method WSms\\Integration\\Contracts\\ContactImportHelper\:\:applyFieldMapping\(\) has parameter \$sourceData with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Contracts/ContactImportHelper.php
+
+		-
+			message: '#^Method WSms\\Integration\\Contracts\\ContactImportHelper\:\:applyFieldMapping\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Contracts/ContactImportHelper.php
+
+		-
+			message: '#^Method WSms\\Integration\\Contracts\\ContactImportHelper\:\:upsertContact\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Contracts/ContactImportHelper.php
+
+		-
 			message: '#^Method WSms\\Integration\\Contracts\\IntegrationInterface\:\:connect\(\) has parameter \$credentials with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -3227,6 +3335,48 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Integration/Contracts/SupportsAutomations.php
+
+		-
+			message: '#^Method WSms\\Integration\\Contracts\\SupportsContactImport\:\:countImportable\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Contracts/SupportsContactImport.php
+
+		-
+			message: '#^Method WSms\\Integration\\Contracts\\SupportsContactImport\:\:getAvailableImportFields\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Contracts/SupportsContactImport.php
+
+		-
+			message: '#^Method WSms\\Integration\\Contracts\\SupportsContactImport\:\:getDefaultImportFieldMapping\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Contracts/SupportsContactImport.php
+
+		-
+			message: '#^Method WSms\\Integration\\Contracts\\SupportsContactImport\:\:getImportBatch\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Contracts/SupportsContactImport.php
+
+		-
+			message: '#^Method WSms\\Integration\\Contracts\\SupportsContactImport\:\:getImportBatch\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Contracts/SupportsContactImport.php
+
+		-
+			message: '#^Method WSms\\Integration\\Contracts\\SupportsContactImport\:\:getImportConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Contracts/SupportsContactImport.php
+
+		-
+			message: '#^Method WSms\\Integration\\Contracts\\SupportsContactImport\:\:importOne\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Contracts/SupportsContactImport.php
 
 		-
 			message: '#^Method WSms\\Integration\\Contracts\\SupportsContactSync\:\:getFieldMapping\(\) return type has no value type specified in iterable type array\.$#'
@@ -3649,60 +3799,6 @@ parameters:
 			path: src/Integration/EmailOctopus/EmailOctopusApiClient.php
 
 		-
-			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusContactSource\:\:countAvailable\(\) has parameter \$config with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Integration/EmailOctopus/EmailOctopusContactSource.php
-
-		-
-			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusContactSource\:\:extractContactData\(\) has parameter \$eoContact with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Integration/EmailOctopus/EmailOctopusContactSource.php
-
-		-
-			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusContactSource\:\:extractContactData\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Integration/EmailOctopus/EmailOctopusContactSource.php
-
-		-
-			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusContactSource\:\:getAvailableFields\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Integration/EmailOctopus/EmailOctopusContactSource.php
-
-		-
-			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusContactSource\:\:getBatch\(\) has parameter \$config with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Integration/EmailOctopus/EmailOctopusContactSource.php
-
-		-
-			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusContactSource\:\:getBatch\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Integration/EmailOctopus/EmailOctopusContactSource.php
-
-		-
-			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusContactSource\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Integration/EmailOctopus/EmailOctopusContactSource.php
-
-		-
-			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusContactSource\:\:getDefaultFieldMapping\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Integration/EmailOctopus/EmailOctopusContactSource.php
-
-		-
-			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusContactSource\:\:syncOne\(\) has parameter \$config with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Integration/EmailOctopus/EmailOctopusContactSource.php
-
-		-
 			message: '#^Function as_unschedule_all_actions not found\.$#'
 			identifier: function.notFound
 			count: 1
@@ -3751,6 +3847,24 @@ parameters:
 			path: src/Integration/EmailOctopus/EmailOctopusIntegration.php
 
 		-
+			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusIntegration\:\:countImportable\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/EmailOctopus/EmailOctopusIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusIntegration\:\:extractImportContactData\(\) has parameter \$eoContact with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/EmailOctopus/EmailOctopusIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusIntegration\:\:extractImportContactData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/EmailOctopus/EmailOctopusIntegration.php
+
+		-
 			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusIntegration\:\:getAuthSchema\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -3769,7 +3883,37 @@ parameters:
 			path: src/Integration/EmailOctopus/EmailOctopusIntegration.php
 
 		-
+			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusIntegration\:\:getAvailableImportFields\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/EmailOctopus/EmailOctopusIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusIntegration\:\:getDefaultImportFieldMapping\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/EmailOctopus/EmailOctopusIntegration.php
+
+		-
 			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusIntegration\:\:getFieldMapping\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/EmailOctopus/EmailOctopusIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusIntegration\:\:getImportBatch\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/EmailOctopus/EmailOctopusIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusIntegration\:\:getImportBatch\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/EmailOctopus/EmailOctopusIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusIntegration\:\:getImportConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Integration/EmailOctopus/EmailOctopusIntegration.php
@@ -3788,6 +3932,12 @@ parameters:
 
 		-
 			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusIntegration\:\:getMetadata\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/EmailOctopus/EmailOctopusIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusIntegration\:\:importOne\(\) has parameter \$config with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Integration/EmailOctopus/EmailOctopusIntegration.php
@@ -3865,6 +4015,12 @@ parameters:
 			path: src/Integration/EmailOctopus/EmailOctopusIntegration.php
 
 		-
+			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusIntegration\:\:resolveProviderStatus\(\) has parameter \$contact with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/EmailOctopus/EmailOctopusIntegration.php
+
+		-
 			message: '#^Method WSms\\Integration\\EmailOctopus\\EmailOctopusIntegration\:\:updateContactStatus\(\) has parameter \$config with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -3875,6 +4031,846 @@ parameters:
 			identifier: notIdentical.alwaysTrue
 			count: 1
 			path: src/Integration/EmailOctopus/EmailOctopusIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\MulticastAction\:\:execute\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/MulticastAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\MulticastAction\:\:execute\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/MulticastAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\MulticastAction\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/MulticastAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\MulticastAction\:\:getOutputSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/MulticastAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\ReplyAction\:\:execute\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/ReplyAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\ReplyAction\:\:execute\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/ReplyAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\ReplyAction\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/ReplyAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\ReplyAction\:\:getOutputSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/ReplyAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\ReplyAction\:\:getPlaceholders\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/ReplyAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendFlexAction\:\:execute\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendFlexAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendFlexAction\:\:execute\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendFlexAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendFlexAction\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendFlexAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendFlexAction\:\:getOutputSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendFlexAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendFlexAction\:\:getPlaceholders\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendFlexAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendImageAction\:\:execute\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendImageAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendImageAction\:\:execute\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendImageAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendImageAction\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendImageAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendImageAction\:\:getOutputSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendImageAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendImageAction\:\:getPlaceholders\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendImageAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendMessageAction\:\:execute\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendMessageAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendMessageAction\:\:execute\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendMessageAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendMessageAction\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendMessageAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendMessageAction\:\:getOutputSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendMessageAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendMessageAction\:\:getPlaceholders\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendMessageAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendTemplateAction\:\:execute\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendTemplateAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendTemplateAction\:\:execute\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendTemplateAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendTemplateAction\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendTemplateAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendTemplateAction\:\:getOutputSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendTemplateAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SendTemplateAction\:\:getPlaceholders\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SendTemplateAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SetRichMenuAction\:\:execute\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SetRichMenuAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SetRichMenuAction\:\:execute\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SetRichMenuAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SetRichMenuAction\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SetRichMenuAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SetRichMenuAction\:\:getOutputSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SetRichMenuAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Actions\\SetRichMenuAction\:\:getPlaceholders\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Actions/SetRichMenuAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\AbandonedCart\:\:altText\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/AbandonedCart.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\AbandonedCart\:\:build\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/AbandonedCart.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\AbandonedCart\:\:build\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/AbandonedCart.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\Coupon\:\:altText\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/Coupon.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\Coupon\:\:build\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/Coupon.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\Coupon\:\:build\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/Coupon.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\DeliveryConfirmation\:\:altText\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/DeliveryConfirmation.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\DeliveryConfirmation\:\:build\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/DeliveryConfirmation.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\DeliveryConfirmation\:\:build\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/DeliveryConfirmation.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\FlexHelper\:\:baselineRow\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/FlexHelper.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\FlexHelper\:\:footer\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/FlexHelper.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\FlexHelper\:\:heroImage\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/FlexHelper.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\OrderConfirmation\:\:altText\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/OrderConfirmation.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\OrderConfirmation\:\:build\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/OrderConfirmation.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\OrderConfirmation\:\:build\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/OrderConfirmation.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\PaymentReminder\:\:altText\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/PaymentReminder.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\PaymentReminder\:\:build\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/PaymentReminder.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\PaymentReminder\:\:build\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/PaymentReminder.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\ProductRecommendation\:\:altText\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/ProductRecommendation.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\ProductRecommendation\:\:build\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/ProductRecommendation.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\ProductRecommendation\:\:build\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/ProductRecommendation.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\ShippingUpdate\:\:altText\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/ShippingUpdate.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\ShippingUpdate\:\:build\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/ShippingUpdate.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\FlexTemplates\\ShippingUpdate\:\:build\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/FlexTemplates/ShippingUpdate.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\LineIntegration\:\:connect\(\) has parameter \$credentials with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/LineIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\LineIntegration\:\:connect\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/LineIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\LineIntegration\:\:getAuthSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/LineIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\LineIntegration\:\:getGatewayConfig\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/LineIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Triggers\\AccountLinkTrigger\:\:getFilterSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Triggers/AccountLinkTrigger.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Triggers\\AccountLinkTrigger\:\:getPayloadSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Triggers/AccountLinkTrigger.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Triggers\\BeaconTrigger\:\:getFilterSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Triggers/BeaconTrigger.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Triggers\\BeaconTrigger\:\:getPayloadSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Triggers/BeaconTrigger.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Triggers\\FollowTrigger\:\:getPayloadSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Triggers/FollowTrigger.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Triggers\\MemberJoinedTrigger\:\:getPayloadSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Triggers/MemberJoinedTrigger.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Triggers\\MemberLeftTrigger\:\:getPayloadSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Triggers/MemberLeftTrigger.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Triggers\\MessageReceivedTrigger\:\:getFilterSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Triggers/MessageReceivedTrigger.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Triggers\\MessageReceivedTrigger\:\:getPayloadSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Triggers/MessageReceivedTrigger.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Triggers\\PostbackTrigger\:\:getFilterSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Triggers/PostbackTrigger.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Triggers\\PostbackTrigger\:\:getPayloadSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Triggers/PostbackTrigger.php
+
+		-
+			message: '#^Method WSms\\Integration\\Line\\Triggers\\UnfollowTrigger\:\:getPayloadSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Line/Triggers/UnfollowTrigger.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\Actions\\AddToMailtrapListAction\:\:execute\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/Actions/AddToMailtrapListAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\Actions\\AddToMailtrapListAction\:\:execute\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/Actions/AddToMailtrapListAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\Actions\\AddToMailtrapListAction\:\:getConfigOptions\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/Actions/AddToMailtrapListAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\Actions\\AddToMailtrapListAction\:\:getConfigOptions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/Actions/AddToMailtrapListAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\Actions\\AddToMailtrapListAction\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/Actions/AddToMailtrapListAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\Actions\\AddToMailtrapListAction\:\:getOutputSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/Actions/AddToMailtrapListAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\Actions\\RemoveFromMailtrapListAction\:\:execute\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/Actions/RemoveFromMailtrapListAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\Actions\\RemoveFromMailtrapListAction\:\:execute\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/Actions/RemoveFromMailtrapListAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\Actions\\RemoveFromMailtrapListAction\:\:getConfigOptions\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/Actions/RemoveFromMailtrapListAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\Actions\\RemoveFromMailtrapListAction\:\:getConfigOptions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/Actions/RemoveFromMailtrapListAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\Actions\\RemoveFromMailtrapListAction\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/Actions/RemoveFromMailtrapListAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\Actions\\RemoveFromMailtrapListAction\:\:getOutputSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/Actions/RemoveFromMailtrapListAction.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapApiClient\:\:createContact\(\) has parameter \$fields with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapApiClient.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapApiClient\:\:createContact\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapApiClient.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapApiClient\:\:findContactByEmail\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapApiClient.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapApiClient\:\:getAccounts\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapApiClient.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapApiClient\:\:getContacts\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapApiClient.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapApiClient\:\:getContacts\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapApiClient.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapApiClient\:\:getLists\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapApiClient.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapApiClient\:\:getSuppressions\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapApiClient.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapApiClient\:\:getSuppressions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapApiClient.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapApiClient\:\:request\(\) has parameter \$body with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapApiClient.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapApiClient\:\:request\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapApiClient.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapApiClient\:\:updateContact\(\) has parameter \$fields with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapApiClient.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapApiClient\:\:updateContact\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapApiClient.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapApiClient\:\:upsertContact\(\) has parameter \$fields with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapApiClient.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapApiClient\:\:upsertContact\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapApiClient.php
+
+		-
+			message: '#^Parameter \#2 \$args of function wp_remote_request expects array\{method\?\: string, timeout\?\: float, redirection\?\: int, httpversion\?\: string, user\-agent\?\: string, reject_unsafe_urls\?\: bool, blocking\?\: bool, headers\?\: array\|string, \.\.\.\}, array\{method\: string, headers\: array\{Api\-Token\: string, Content\-Type\: ''application/json'', Accept\: ''application/json''\}, timeout\: 30, body\?\: non\-empty\-string\|false\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapApiClient.php
+
+		-
+			message: '#^Function as_unschedule_all_actions not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:addToList\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:addToList\(\) has parameter \$fields with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:connect\(\) has parameter \$credentials with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:connect\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:countImportable\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:extractImportContactData\(\) has parameter \$mtContact with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:extractImportContactData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:getAuthSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:getAvailableImportFields\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:getDefaultImportFieldMapping\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:getFieldMapping\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:getGatewayConfig\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:getImportBatch\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:getImportBatch\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:getImportConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:getLists\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:getLists\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:getMetadata\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:importOne\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:mapContactFields\(\) has parameter \$contact with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:mapContactFields\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:pollSuppressions\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:pollSuppressions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:pushContact\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:pushContact\(\) has parameter \$contact with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:pushContactBatch\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:pushContactBatch\(\) has parameter \$contacts with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:removeContact\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:removeFromList\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\Mailtrap\\MailtrapIntegration\:\:updateContactStatus\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: src/Integration/Mailtrap/MailtrapIntegration.php
+
+		-
+			message: '#^Call to an undefined method WSms\\Integration\\Contracts\\SupportsContactImport\:\:isConnected\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Integration/Marketing/ImportSyncManager.php
+
+		-
+			message: '#^Method WSms\\Integration\\Marketing\\ImportSyncManager\:\:getImportSettings\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Marketing/ImportSyncManager.php
+
+		-
+			message: '#^Method WSms\\Integration\\Marketing\\ImportSyncManager\:\:getImportState\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Marketing/ImportSyncManager.php
+
+		-
+			message: '#^Method WSms\\Integration\\Marketing\\ImportSyncManager\:\:getImportStats\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Marketing/ImportSyncManager.php
+
+		-
+			message: '#^Method WSms\\Integration\\Marketing\\ImportSyncManager\:\:saveImportSettings\(\) has parameter \$settings with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Marketing/ImportSyncManager.php
+
+		-
+			message: '#^Method WSms\\Integration\\Marketing\\ImportSyncManager\:\:updateImportStats\(\) has parameter \$stats with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/Marketing/ImportSyncManager.php
 
 		-
 			message: '#^Call to an undefined method WSms\\Integration\\Contracts\\SupportsContactSync\:\:getId\(\)\.$#'
@@ -3985,6 +4981,18 @@ parameters:
 			path: src/Integration/PayloadSchemas.php
 
 		-
+			message: '#^Method WSms\\Integration\\PayloadSchemas\:\:extractLineSource\(\) has parameter \$source with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/PayloadSchemas.php
+
+		-
+			message: '#^Method WSms\\Integration\\PayloadSchemas\:\:extractLineSource\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/PayloadSchemas.php
+
+		-
 			message: '#^Method WSms\\Integration\\PayloadSchemas\:\:extractTelegramChat\(\) has parameter \$chat with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -4004,6 +5012,18 @@ parameters:
 
 		-
 			message: '#^Method WSms\\Integration\\PayloadSchemas\:\:extractTelegramUser\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/PayloadSchemas.php
+
+		-
+			message: '#^Method WSms\\Integration\\PayloadSchemas\:\:lineSource\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/PayloadSchemas.php
+
+		-
+			message: '#^Method WSms\\Integration\\PayloadSchemas\:\:lineUser\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Integration/PayloadSchemas.php
@@ -4825,7 +5845,55 @@ parameters:
 			path: src/Integration/WordPress/WordPressIntegration.php
 
 		-
+			message: '#^Method WSms\\Integration\\WordPress\\WordPressIntegration\:\:countImportable\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/WordPress/WordPressIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\WordPress\\WordPressIntegration\:\:extractUserData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/WordPress/WordPressIntegration.php
+
+		-
 			message: '#^Method WSms\\Integration\\WordPress\\WordPressIntegration\:\:getAuthSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/WordPress/WordPressIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\WordPress\\WordPressIntegration\:\:getAvailableImportFields\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/WordPress/WordPressIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\WordPress\\WordPressIntegration\:\:getDefaultImportFieldMapping\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/WordPress/WordPressIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\WordPress\\WordPressIntegration\:\:getImportBatch\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/WordPress/WordPressIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\WordPress\\WordPressIntegration\:\:getImportBatch\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/WordPress/WordPressIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\WordPress\\WordPressIntegration\:\:getImportConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Integration/WordPress/WordPressIntegration.php
+
+		-
+			message: '#^Method WSms\\Integration\\WordPress\\WordPressIntegration\:\:importOne\(\) has parameter \$config with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Integration/WordPress/WordPressIntegration.php
@@ -4865,6 +5933,114 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Integration/WpSms/WpSmsIntegration.php
+
+		-
+			message: '#^Constant WSms\\Line\\LineBotClient\:\:DATA_BASE is unused\.$#'
+			identifier: classConstant.unused
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Method WSms\\Line\\LineBotClient\:\:broadcast\(\) has parameter \$messages with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Method WSms\\Line\\LineBotClient\:\:broadcast\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Method WSms\\Line\\LineBotClient\:\:get\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Method WSms\\Line\\LineBotClient\:\:getBotInfo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Method WSms\\Line\\LineBotClient\:\:getProfile\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Method WSms\\Line\\LineBotClient\:\:getQuota\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Method WSms\\Line\\LineBotClient\:\:getQuotaConsumption\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Method WSms\\Line\\LineBotClient\:\:multicast\(\) has parameter \$messages with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Method WSms\\Line\\LineBotClient\:\:multicast\(\) has parameter \$to with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Method WSms\\Line\\LineBotClient\:\:multicast\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Method WSms\\Line\\LineBotClient\:\:post\(\) has parameter \$body with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Method WSms\\Line\\LineBotClient\:\:post\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Method WSms\\Line\\LineBotClient\:\:pushMessage\(\) has parameter \$messages with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Method WSms\\Line\\LineBotClient\:\:pushMessage\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Method WSms\\Line\\LineBotClient\:\:replyMessage\(\) has parameter \$messages with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Method WSms\\Line\\LineBotClient\:\:replyMessage\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Line/LineBotClient.php
+
+		-
+			message: '#^Parameter \#2 \$args of function wp_remote_post expects array\{method\?\: string, timeout\?\: float, redirection\?\: int, httpversion\?\: string, user\-agent\?\: string, reject_unsafe_urls\?\: bool, blocking\?\: bool, headers\?\: array\|string, \.\.\.\}, array\{headers\: array\{Authorization\: non\-falsy\-string, Content\-Type\: ''application/json'', X\-Line\-Retry\-Key\?\: string\}, body\: non\-empty\-string\|false\|null, timeout\: 10\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Line/LineBotClient.php
 
 		-
 			message: '#^Method WSms\\Log\\Contracts\\MessageLoggerInterface\:\:count\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
@@ -5071,6 +6247,12 @@ parameters:
 			path: src/Messaging/Catalog/ProviderTemplate.php
 
 		-
+			message: '#^Method WSms\\Messaging\\Catalog\\ProviderTemplate\:\:__construct\(\) has parameter \$variables with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Catalog/ProviderTemplate.php
+
+		-
 			message: '#^Method WSms\\Messaging\\Catalog\\ProviderTemplate\:\:fromArray\(\) has parameter \$data with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -5083,7 +6265,19 @@ parameters:
 			path: src/Messaging/Catalog/ProviderTemplate.php
 
 		-
+			message: '#^Method WSms\\Messaging\\Catalog\\TemplateCatalogManager\:\:getAllManualTemplates\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Catalog/TemplateCatalogManager.php
+
+		-
 			message: '#^Method WSms\\Messaging\\Catalog\\TemplateCatalogManager\:\:getAllMappings\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Catalog/TemplateCatalogManager.php
+
+		-
+			message: '#^Method WSms\\Messaging\\Catalog\\TemplateCatalogManager\:\:persistManualTemplates\(\) has parameter \$all with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Messaging/Catalog/TemplateCatalogManager.php
@@ -5095,10 +6289,22 @@ parameters:
 			path: src/Messaging/Catalog/TemplateCatalogManager.php
 
 		-
+			message: '#^Property WSms\\Messaging\\Catalog\\TemplateCatalogManager\:\:\$manualTemplatesCache type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Catalog/TemplateCatalogManager.php
+
+		-
 			message: '#^Property WSms\\Messaging\\Catalog\\TemplateCatalogManager\:\:\$mappingsCache type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Messaging/Catalog/TemplateCatalogManager.php
+
+		-
+			message: '#^Method WSms\\Messaging\\Catalog\\TemplateMapping\:\:__construct\(\) has parameter \$regulatoryMeta with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Catalog/TemplateMapping.php
 
 		-
 			message: '#^Method WSms\\Messaging\\Catalog\\TemplateMapping\:\:__construct\(\) has parameter \$variableMap with no value type specified in iterable type array\.$#'
@@ -5173,6 +6379,24 @@ parameters:
 			path: src/Messaging/Contracts/SupportsDynamicOptions.php
 
 		-
+			message: '#^Method WSms\\Messaging\\Contracts\\SupportsRegulatoryIds\:\:buildRegulatoryPayload\(\) has parameter \$regulatoryMeta with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Contracts/SupportsRegulatoryIds.php
+
+		-
+			message: '#^Method WSms\\Messaging\\Contracts\\SupportsRegulatoryIds\:\:buildRegulatoryPayload\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Contracts/SupportsRegulatoryIds.php
+
+		-
+			message: '#^Method WSms\\Messaging\\Contracts\\SupportsRegulatoryIds\:\:getRegulatoryConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Contracts/SupportsRegulatoryIds.php
+
+		-
 			message: '#^Method WSms\\Messaging\\Contracts\\SupportsTemplates\:\:buildTemplatePayload\(\) has parameter \$resolvedVariables with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -5207,6 +6431,18 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Messaging/Contracts/TestConnectionResult.php
+
+		-
+			message: '#^Method WSms\\Messaging\\Email\\UnsubscribeTokenService\:\:base64UrlDecode\(\) never returns false so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Messaging/Email/UnsubscribeTokenService.php
+
+		-
+			message: '#^Parameter \#1 \$data of method WSms\\Messaging\\Email\\UnsubscribeTokenService\:\:base64UrlEncode\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Messaging/Email/UnsubscribeTokenService.php
 
 		-
 			message: '#^Method WSms\\Messaging\\Gateway\\AbstractProvider\:\:fetchJsonOrFail\(\) has parameter \$args with no value type specified in iterable type array\.$#'
@@ -5299,6 +6535,18 @@ parameters:
 			path: src/Messaging/Gateway/AbstractProvider.php
 
 		-
+			message: '#^Method WSms\\Messaging\\Gateway\\Email\\MailtrapGateway\:\:authHeaders\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Gateway/Email/MailtrapGateway.php
+
+		-
+			message: '#^Method WSms\\Messaging\\Gateway\\Email\\MailtrapGateway\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 2
+			path: src/Messaging/Gateway/Email/MailtrapGateway.php
+
+		-
 			message: '#^Method WSms\\Messaging\\Gateway\\Email\\WpMailGateway\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 2
@@ -5311,9 +6559,69 @@ parameters:
 			path: src/Messaging/Gateway/Email/WpMailGateway.php
 
 		-
+			message: '#^Method WSms\\Messaging\\Gateway\\Line\\LineGateway\:\:buildLineMessages\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Gateway/Line/LineGateway.php
+
+		-
+			message: '#^Method WSms\\Messaging\\Gateway\\Line\\LineGateway\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 2
+			path: src/Messaging/Gateway/Line/LineGateway.php
+
+		-
+			message: '#^Method WSms\\Messaging\\Gateway\\Line\\LineGateway\:\:validateConfig\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Gateway/Line/LineGateway.php
+
+		-
+			message: '#^Variable \$messages in empty\(\) always exists and is not falsy\.$#'
+			identifier: empty.variable
+			count: 1
+			path: src/Messaging/Gateway/Line/LineGateway.php
+
+		-
+			message: '#^Method WSms\\Messaging\\Gateway\\Provider\\KavenegarProvider\:\:buildTemplatePayload\(\) has parameter \$resolvedVariables with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Gateway/Provider/KavenegarProvider.php
+
+		-
+			message: '#^Method WSms\\Messaging\\Gateway\\Provider\\KavenegarProvider\:\:buildTemplatePayload\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Gateway/Provider/KavenegarProvider.php
+
+		-
 			message: '#^Method WSms\\Messaging\\Gateway\\Provider\\KavenegarProvider\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 2
+			path: src/Messaging/Gateway/Provider/KavenegarProvider.php
+
+		-
+			message: '#^Method WSms\\Messaging\\Gateway\\Provider\\KavenegarProvider\:\:packTokenParams\(\) has parameter \$resolvedVariables with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Gateway/Provider/KavenegarProvider.php
+
+		-
+			message: '#^Method WSms\\Messaging\\Gateway\\Provider\\KavenegarProvider\:\:packTokenParams\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Gateway/Provider/KavenegarProvider.php
+
+		-
+			message: '#^Method WSms\\Messaging\\Gateway\\Provider\\KavenegarProvider\:\:parseKavenegarResponse\(\) has parameter \$result with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Gateway/Provider/KavenegarProvider.php
+
+		-
+			message: '#^Method WSms\\Messaging\\Gateway\\Provider\\KavenegarProvider\:\:sendLookup\(\) has parameter \$resolvedVariables with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
 			path: src/Messaging/Gateway/Provider/KavenegarProvider.php
 
 		-
@@ -5371,6 +6679,18 @@ parameters:
 			path: src/Messaging/Gateway/Provider/TwilioProvider.php
 
 		-
+			message: '#^Variable \$from might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: src/Messaging/Gateway/Provider/TwilioProvider.php
+
+		-
+			message: '#^Variable \$messagingServiceSid might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: src/Messaging/Gateway/Provider/TwilioProvider.php
+
+		-
 			message: '#^Method WSms\\Messaging\\Gateway\\Provider\\VonageProvider\:\:getConfigOptions\(\) has parameter \$config with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -5386,6 +6706,12 @@ parameters:
 			message: '#^Method WSms\\Messaging\\Gateway\\Provider\\VonageProvider\:\:getConfigSchema\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 2
+			path: src/Messaging/Gateway/Provider/VonageProvider.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between mixed~\(0\|0\.0\|''''\|''0''\|array\{\}\|false\|null\) and ''0'' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
 			path: src/Messaging/Gateway/Provider/VonageProvider.php
 
 		-
@@ -5503,6 +6829,18 @@ parameters:
 			path: src/Messaging/Template/Renderer/EmailRenderer.php
 
 		-
+			message: '#^Method WSms\\Messaging\\Template\\Renderer\\LineRenderer\:\:render\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Template/Renderer/LineRenderer.php
+
+		-
+			message: '#^Method WSms\\Messaging\\Template\\Renderer\\RcsRenderer\:\:render\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Template/Renderer/RcsRenderer.php
+
+		-
 			message: '#^Method WSms\\Messaging\\Template\\Renderer\\SmsRenderer\:\:render\(\) has parameter \$context with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -5613,6 +6951,12 @@ parameters:
 		-
 			message: '#^Parameter \$logger of method WSms\\Messaging\\Template\\TemplateManager\:\:__construct\(\) has invalid type WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
 			identifier: class.notFound
+			count: 1
+			path: src/Messaging/Template/TemplateManager.php
+
+		-
+			message: '#^Property WSms\\Messaging\\Template\\TemplateManager\:\:\$brandingResolver type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Messaging/Template/TemplateManager.php
 
@@ -5749,6 +7093,18 @@ parameters:
 			path: src/MessagingButton/MessagingButtonSettings.php
 
 		-
+			message: '#^Method WSms\\MessagingButton\\MessagingButtonSettings\:\:getTranslatedDefaults\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/MessagingButton/MessagingButtonSettings.php
+
+		-
+			message: '#^Method WSms\\MessagingButton\\MessagingButtonSettings\:\:mergeDefaults\(\) has parameter \$defaults with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/MessagingButton/MessagingButtonSettings.php
+
+		-
 			message: '#^Method WSms\\MessagingButton\\MessagingButtonSettings\:\:mergeDefaults\(\) has parameter \$raw with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -5873,6 +7229,12 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Mfa/Channels/EmailChannel.php
+
+		-
+			message: '#^Method WSms\\Mfa\\Channels\\LineChannel\:\:enroll\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Mfa/Channels/LineChannel.php
 
 		-
 			message: '#^Access to an undefined property object\:\:\$expires_at\.$#'
@@ -6229,6 +7591,330 @@ parameters:
 			path: src/Mfa/ValueObjects/UserFactor.php
 
 		-
+			message: '#^Call to an undefined method object\{preview\: callable, migrateBatch\: callable\}&WSms\\Migration\\Contracts\\MigrationStepInterface\:\:migrateBatch\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Migration/Adapters/Digits/DigitsMigrator.php
+
+		-
+			message: '#^Call to an undefined method object\{preview\: callable, migrateBatch\: callable\}&WSms\\Migration\\Contracts\\MigrationStepInterface\:\:preview\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Migration/Adapters/Digits/DigitsMigrator.php
+
+		-
+			message: '#^Method WSms\\Migration\\Adapters\\Digits\\DigitsMigrator\:\:migrateBatch\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Adapters/Digits/DigitsMigrator.php
+
+		-
+			message: '#^Method WSms\\Migration\\Adapters\\Digits\\DigitsMigrator\:\:preview\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Adapters/Digits/DigitsMigrator.php
+
+		-
+			message: '#^Property WSms\\Migration\\Adapters\\Digits\\DigitsMigrator\:\:\$steps \(array\<string, object\{preview\: callable\(\)\: mixed, migrateBatch\: callable\(\)\: mixed\}&WSms\\Migration\\Contracts\\MigrationStepInterface\>\) does not accept non\-empty\-array\<string, WSms\\Migration\\Adapters\\Digits\\Steps\\SettingsStep\|WSms\\Migration\\Adapters\\Digits\\Steps\\TotpEnrollmentStep\|WSms\\Migration\\Adapters\\Digits\\Steps\\UserPhoneStep\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Migration/Adapters/Digits/DigitsMigrator.php
+
+		-
+			message: '#^Method WSms\\Migration\\Adapters\\Digits\\DigitsRedirectCompat\:\:buildRedirects\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Adapters/Digits/DigitsRedirectCompat.php
+
+		-
+			message: '#^Method WSms\\Migration\\Adapters\\Digits\\DigitsRedirectCompat\:\:getRedirects\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Adapters/Digits/DigitsRedirectCompat.php
+
+		-
+			message: '#^Parameter \#1 \$string of function trim expects string, string\|false\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Migration/Adapters/Digits/DigitsRedirectCompat.php
+
+		-
+			message: '#^Method WSms\\Migration\\Adapters\\Digits\\DigitsShortcodeCompat\:\:detectAffectedPages\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Adapters/Digits/DigitsShortcodeCompat.php
+
+		-
+			message: '#^Method WSms\\Migration\\Adapters\\Digits\\DigitsShortcodeCompat\:\:getAffectedPages\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Adapters/Digits/DigitsShortcodeCompat.php
+
+		-
+			message: '#^Method WSms\\Migration\\Adapters\\Digits\\DigitsShortcodeCompat\:\:scheduleExpiryNotice\(\) has parameter \$affectedPages with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Adapters/Digits/DigitsShortcodeCompat.php
+
+		-
+			message: '#^Variable \$likeConditions in empty\(\) always exists and is not falsy\.$#'
+			identifier: empty.variable
+			count: 1
+			path: src/Migration/Adapters/Digits/DigitsShortcodeCompat.php
+
+		-
+			message: '#^Method WSms\\Migration\\Adapters\\Digits\\Steps\\SettingsStep\:\:buildSettingsDiff\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Adapters/Digits/Steps/SettingsStep.php
+
+		-
+			message: '#^Method WSms\\Migration\\Adapters\\Digits\\Steps\\SettingsStep\:\:getNestedValue\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Adapters/Digits/Steps/SettingsStep.php
+
+		-
+			message: '#^Method WSms\\Migration\\Adapters\\Digits\\Steps\\SettingsStep\:\:migrateBatch\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Adapters/Digits/Steps/SettingsStep.php
+
+		-
+			message: '#^Method WSms\\Migration\\Adapters\\Digits\\Steps\\SettingsStep\:\:preview\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Adapters/Digits/Steps/SettingsStep.php
+
+		-
+			message: '#^Method WSms\\Migration\\Adapters\\Digits\\Steps\\SettingsStep\:\:setNestedValue\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Adapters/Digits/Steps/SettingsStep.php
+
+		-
+			message: '#^Method WSms\\Migration\\Adapters\\Digits\\Steps\\TotpEnrollmentStep\:\:migrateBatch\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Adapters/Digits/Steps/TotpEnrollmentStep.php
+
+		-
+			message: '#^Method WSms\\Migration\\Adapters\\Digits\\Steps\\TotpEnrollmentStep\:\:preview\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Adapters/Digits/Steps/TotpEnrollmentStep.php
+
+		-
+			message: '#^Offset float\|int might not exist on ''ABCDEFGHIJKLMNOPQRS…''\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Migration/Adapters/Digits/Steps/TotpEnrollmentStep.php
+
+		-
+			message: '#^Parameter \#1 \$string of function base64_decode expects string, array\<mixed\>\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Migration/Adapters/Digits/Steps/TotpEnrollmentStep.php
+
+		-
+			message: '#^Parameter \#1 \$string of function hex2bin expects string, array\<mixed\>\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Migration/Adapters/Digits/Steps/TotpEnrollmentStep.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strlen expects string, array\<mixed\>\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Migration/Adapters/Digits/Steps/TotpEnrollmentStep.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtoupper expects string, array\<mixed\>\|string given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Migration/Adapters/Digits/Steps/TotpEnrollmentStep.php
+
+		-
+			message: '#^Parameter \#2 \$subject of function preg_match expects string, array\<mixed\>\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Migration/Adapters/Digits/Steps/TotpEnrollmentStep.php
+
+		-
+			message: '#^Method WSms\\Migration\\Adapters\\Digits\\Steps\\UserPhoneStep\:\:migrateBatch\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Adapters/Digits/Steps/UserPhoneStep.php
+
+		-
+			message: '#^Method WSms\\Migration\\Adapters\\Digits\\Steps\\UserPhoneStep\:\:preview\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Adapters/Digits/Steps/UserPhoneStep.php
+
+		-
+			message: '#^Method WSms\\Migration\\BatchResult\:\:__construct\(\) has parameter \$errors with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/BatchResult.php
+
+		-
+			message: '#^Method WSms\\Migration\\BatchResult\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/BatchResult.php
+
+		-
+			message: '#^Method WSms\\Migration\\Contracts\\PluginMigratorInterface\:\:migrateBatch\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Contracts/PluginMigratorInterface.php
+
+		-
+			message: '#^Method WSms\\Migration\\Contracts\\PluginMigratorInterface\:\:preview\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/Contracts/PluginMigratorInterface.php
+
+		-
+			message: '#^Method WSms\\Migration\\DetectionResult\:\:__construct\(\) has parameter \$summary with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/DetectionResult.php
+
+		-
+			message: '#^Method WSms\\Migration\\DetectionResult\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/DetectionResult.php
+
+		-
+			message: '#^Call to an undefined method WSms\\Log\\WpLogger\:\:error\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Migration/MigrationBatchHandler.php
+
+		-
+			message: '#^Call to an undefined method WSms\\Log\\WpLogger\:\:warning\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Migration/MigrationBatchHandler.php
+
+		-
+			message: '#^Method WSms\\Migration\\MigrationBatchHandler\:\:handle\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/MigrationBatchHandler.php
+
+		-
+			message: '#^Method WSms\\Migration\\MigrationManager\:\:getProgress\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/MigrationManager.php
+
+		-
+			message: '#^Method WSms\\Migration\\MigrationManager\:\:startMigration\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/MigrationManager.php
+
+		-
+			message: '#^Parameter \#1 \$stepId of method WSms\\Migration\\Contracts\\PluginMigratorInterface\:\:rollback\(\) expects string, int\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Migration/MigrationManager.php
+
+		-
+			message: '#^Method WSms\\Migration\\MigrationStateManager\:\:getProgress\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/MigrationStateManager.php
+
+		-
+			message: '#^Method WSms\\Migration\\MigrationStateManager\:\:getState\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/MigrationStateManager.php
+
+		-
+			message: '#^Method WSms\\Migration\\MigrationStateManager\:\:initializeState\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/MigrationStateManager.php
+
+		-
+			message: '#^Method WSms\\Migration\\MigrationStateManager\:\:initializeState\(\) has parameter \$stepIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/MigrationStateManager.php
+
+		-
+			message: '#^Method WSms\\Migration\\MigrationStateManager\:\:updateStepProgress\(\) has parameter \$update with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/MigrationStateManager.php
+
+		-
+			message: '#^Method WSms\\Migration\\PreviewResult\:\:__construct\(\) has parameter \$sampleConflicts with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/PreviewResult.php
+
+		-
+			message: '#^Method WSms\\Migration\\PreviewResult\:\:__construct\(\) has parameter \$sampleErrors with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/PreviewResult.php
+
+		-
+			message: '#^Method WSms\\Migration\\PreviewResult\:\:__construct\(\) has parameter \$warnings with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/PreviewResult.php
+
+		-
+			message: '#^Method WSms\\Migration\\PreviewResult\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/PreviewResult.php
+
+		-
+			message: '#^Method WSms\\Migration\\RollbackResult\:\:__construct\(\) has parameter \$errors with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/RollbackResult.php
+
+		-
+			message: '#^Method WSms\\Migration\\RollbackResult\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/RollbackResult.php
+
+		-
+			message: '#^Method WSms\\Migration\\TransitionNotice\:\:renderCompletedNotice\(\) has parameter \$state with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/TransitionNotice.php
+
+		-
+			message: '#^Method WSms\\Migration\\TransitionNotice\:\:renderDetectedNotice\(\) has parameter \$state with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/TransitionNotice.php
+
+		-
+			message: '#^Method WSms\\Migration\\TransitionNotice\:\:renderProgressNotice\(\) has parameter \$state with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Migration/TransitionNotice.php
+
+		-
+			message: '#^Parameter \#1 \$message of function wp_die expects string\|WP_Error, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Migration/TransitionNotice.php
+
+		-
 			message: '#^Method WSms\\PhoneRestriction\\CountryResolver\:\:getAllCountries\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -6337,6 +8023,96 @@ parameters:
 			path: src/PhoneRestriction/RestrictionSettings.php
 
 		-
+			message: '#^Method WSms\\Privacy\\AuthLogEraser\:\:erase\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Privacy/AuthLogEraser.php
+
+		-
+			message: '#^Method WSms\\Privacy\\ContactDataEraser\:\:erase\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Privacy/ContactDataEraser.php
+
+		-
+			message: '#^Method WSms\\Privacy\\ContactDataExporter\:\:export\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Privacy/ContactDataExporter.php
+
+		-
+			message: '#^Property WSms\\Privacy\\ContactDataExporter\:\:\$db is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/Privacy/ContactDataExporter.php
+
+		-
+			message: '#^Method WSms\\Privacy\\MessageLogHandler\:\:erase\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Privacy/MessageLogHandler.php
+
+		-
+			message: '#^Method WSms\\Privacy\\MessageLogHandler\:\:export\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Privacy/MessageLogHandler.php
+
+		-
+			message: '#^Method WSms\\Privacy\\PrivacyRequestService\:\:collectRecipients\(\) has parameter \$contacts with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Privacy/PrivacyRequestService.php
+
+		-
+			message: '#^Method WSms\\Privacy\\PrivacyRequestService\:\:countMessageLogs\(\) has parameter \$recipients with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Privacy/PrivacyRequestService.php
+
+		-
+			message: '#^Method WSms\\Privacy\\PrivacyRequestService\:\:findContacts\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Privacy/PrivacyRequestService.php
+
+		-
+			message: '#^Method WSms\\Privacy\\PrivacyRequestService\:\:findWpUser\(\) has parameter \$contacts with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Privacy/PrivacyRequestService.php
+
+		-
+			message: '#^Method WSms\\Privacy\\PrivacyRequestService\:\:getMessageLogs\(\) has parameter \$recipients with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Privacy/PrivacyRequestService.php
+
+		-
+			message: '#^Method WSms\\Privacy\\PrivacyRequestService\:\:getMessageLogs\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Privacy/PrivacyRequestService.php
+
+		-
+			message: '#^Method WSms\\Privacy\\PrivacyRequestService\:\:lookup\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 2
+			path: src/Privacy/PrivacyRequestService.php
+
+		-
+			message: '#^Method WSms\\Privacy\\PrivacyRequestService\:\:placeholders\(\) has parameter \$items with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Privacy/PrivacyRequestService.php
+
+		-
+			message: '#^Method WSms\\Privacy\\PrivacyRequestService\:\:serializeWpUser\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Privacy/PrivacyRequestService.php
+
+		-
 			message: '#^Access to constant STATUS_PENDING on an unknown class ActionScheduler_Store\.$#'
 			identifier: class.notFound
 			count: 1
@@ -6421,6 +8197,12 @@ parameters:
 			path: src/Queue/Job/MarketingPushContactJob.php
 
 		-
+			message: '#^Method WSms\\Queue\\Job\\MigrationBatchJob\:\:getPayload\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Queue/Job/MigrationBatchJob.php
+
+		-
 			message: '#^Method WSms\\Queue\\Job\\ProcessCampaignBatchJob\:\:getPayload\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -6445,10 +8227,10 @@ parameters:
 			path: src/Queue/Job/SendMessageJob.php
 
 		-
-			message: '#^Method WSms\\Queue\\Job\\SyncContactSourceBatchJob\:\:getPayload\(\) return type has no value type specified in iterable type array\.$#'
+			message: '#^Method WSms\\Queue\\Job\\SyncContactImportBatchJob\:\:getPayload\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: src/Queue/Job/SyncContactSourceBatchJob.php
+			path: src/Queue/Job/SyncContactImportBatchJob.php
 
 		-
 			message: '#^Call to method error\(\) on an unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
@@ -6523,6 +8305,12 @@ parameters:
 			path: src/Rest/AdminController.php
 
 		-
+			message: '#^Strict comparison using \!\=\= between WSms\\Messaging\\Contracts\\GatewayInterface and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: src/Rest/AdminController.php
+
+		-
 			message: '#^Access to an undefined property object\:\:\$channel_id\.$#'
 			identifier: property.notFound
 			count: 1
@@ -6575,6 +8363,18 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Rest/AuthController.php
+
+		-
+			message: '#^Method WSms\\Rest\\BrandingController\:\:validate\(\) has parameter \$branding with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Rest/BrandingController.php
+
+		-
+			message: '#^Method WSms\\Rest\\BrandingController\:\:validate\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Rest/BrandingController.php
 
 		-
 			message: '#^Method WSms\\Rest\\ContactController\:\:getContactActivities\(\) has parameter \$contact with no value type specified in iterable type array\.$#'
@@ -6715,6 +8515,12 @@ parameters:
 			path: src/Rest/IntegrationController.php
 
 		-
+			message: '#^Method WSms\\Rest\\LineController\:\:routeEvent\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Rest/LineController.php
+
+		-
 			message: '#^Method WSms\\Rest\\MessagingButtonController\:\:sanitizeSettings\(\) has parameter \$settings with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -6737,6 +8543,36 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Rest/MessagingButtonController.php
+
+		-
+			message: '#^Call to private static method parseMemoryLimit\(\) of class WSms\\Migration\\MigrationBatchHandler\.$#'
+			identifier: staticMethod.private
+			count: 1
+			path: src/Rest/MigrationController.php
+
+		-
+			message: '#^Method WSms\\Rest\\OutboundWebhookController\:\:findOrFail\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Rest/OutboundWebhookController.php
+
+		-
+			message: '#^Method WSms\\Rest\\OutboundWebhookController\:\:validateEvents\(\) has parameter \$events with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Rest/OutboundWebhookController.php
+
+		-
+			message: '#^Method WSms\\Rest\\OutboundWebhookController\:\:validateWebhookData\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Rest/OutboundWebhookController.php
+
+		-
+			message: '#^Parameter \#2 \$body of static method WSms\\Webhook\\WebhookHttpClient\:\:send\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Rest/OutboundWebhookController.php
 
 		-
 			message: '#^Method WSms\\Rest\\PhoneRestrictionController\:\:sanitizeSection\(\) has parameter \$values with no value type specified in iterable type array\.$#'
@@ -6793,10 +8629,34 @@ parameters:
 			path: src/Rest/SubscriptionFormController.php
 
 		-
+			message: '#^Parameter \$consentText of class WSms\\SubscriptionForm\\SubscriptionForm constructor expects string\|null, array\|float\|int\|string\|false\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Rest/SubscriptionFormController.php
+
+		-
+			message: '#^Parameter \$privacyUrl of class WSms\\SubscriptionForm\\SubscriptionForm constructor expects string\|null, array\|float\|int\|string\|false\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Rest/SubscriptionFormController.php
+
+		-
 			message: '#^Method WSms\\Rest\\TelegramController\:\:dispatchUpdate\(\) has parameter \$body with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Rest/TelegramController.php
+
+		-
+			message: '#^Method WSms\\Rest\\TemplateController\:\:buildChannelTemplateInfo\(\) has parameter \$visibleChannels with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Rest/TemplateController.php
+
+		-
+			message: '#^Method WSms\\Rest\\TemplateController\:\:buildChannelTemplateInfo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Rest/TemplateController.php
 
 		-
 			message: '#^Method WSms\\Service\\Admin\\UserListManager\:\:addColumns\(\) has parameter \$columns with no value type specified in iterable type array\.$#'
@@ -7045,6 +8905,12 @@ parameters:
 			path: src/Social/SocialAuthOrchestrator.php
 
 		-
+			message: '#^Method WSms\\Social\\SocialAuthOrchestrator\:\:autoEnrollLineMfa\(\) has parameter \$userInfo with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Social/SocialAuthOrchestrator.php
+
+		-
 			message: '#^Method WSms\\Social\\SocialAuthOrchestrator\:\:autoEnrollTelegramMfa\(\) has parameter \$userInfo with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -7285,6 +9151,120 @@ parameters:
 			path: src/SubscriptionForm/SubscriptionHandler.php
 
 		-
+			message: '#^Method WSms\\Support\\PhoneValidator\:\:restArg\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Support/PhoneValidator.php
+
+		-
+			message: '#^Access to constant STATUS_COMPLETE on an unknown class ActionScheduler_Store\.$#'
+			identifier: class.notFound
+			count: 3
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Access to constant STATUS_FAILED on an unknown class ActionScheduler_Store\.$#'
+			identifier: class.notFound
+			count: 3
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Access to constant STATUS_PENDING on an unknown class ActionScheduler_Store\.$#'
+			identifier: class.notFound
+			count: 2
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Access to constant STATUS_RUNNING on an unknown class ActionScheduler_Store\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Call to method get_args\(\) on an unknown class ActionScheduler_Action\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Call to method get_hook\(\) on an unknown class ActionScheduler_Action\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Call to static method store\(\) on an unknown class ActionScheduler\.$#'
+			identifier: class.notFound
+			count: 3
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Class ActionScheduler_NullAction not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Function as_enqueue_async_action not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:buildActiveCampaigns\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:buildFailedJobs\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:buildHeartbeat\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:buildQueueOverview\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:buildRecentActivity\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:detectCronHealth\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:getFailedAction\(\) has invalid return type ActionScheduler_Action\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:getHealthData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
+			message: '#^Method WSms\\System\\SystemHealthService\:\:getTranslatedTaskLabels\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/System/SystemHealthService.php
+
+		-
 			message: '#^Method WSms\\Telegram\\TelegramBotClient\:\:editMessageText\(\) has parameter \$options with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -7373,6 +9353,12 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Telegram/TelegramBotClient.php
+
+		-
+			message: '#^Method WSms\\Verification\\FormVerification\:\:renderVerifyHtml\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Verification/FormVerification.php
 
 		-
 			message: '#^Parameter \#1 \$length of function random_bytes expects int\<1, max\>, int given\.$#'
@@ -8075,3 +10061,315 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Verification/VerificationSession.php
+
+		-
+			message: '#^Method WSms\\Webhook\\DeliverWebhookJob\:\:__construct\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/DeliverWebhookJob.php
+
+		-
+			message: '#^Method WSms\\Webhook\\DeliverWebhookJob\:\:getPayload\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/DeliverWebhookJob.php
+
+		-
+			message: '#^Call to method debug\(\) on an unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Webhook/OutboundWebhookDispatcher.php
+
+		-
+			message: '#^Call to method error\(\) on an unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Webhook/OutboundWebhookDispatcher.php
+
+		-
+			message: '#^Method WSms\\Webhook\\OutboundWebhookDispatcher\:\:dispatchToMatchingWebhooks\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/OutboundWebhookDispatcher.php
+
+		-
+			message: '#^Method WSms\\Webhook\\OutboundWebhookDispatcher\:\:enrichContactPayload\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/OutboundWebhookDispatcher.php
+
+		-
+			message: '#^Method WSms\\Webhook\\OutboundWebhookDispatcher\:\:enrichContactPayload\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/OutboundWebhookDispatcher.php
+
+		-
+			message: '#^Method WSms\\Webhook\\OutboundWebhookDispatcher\:\:handleHookEvent\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/OutboundWebhookDispatcher.php
+
+		-
+			message: '#^Parameter \$logger of method WSms\\Webhook\\OutboundWebhookDispatcher\:\:__construct\(\) has invalid type WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Webhook/OutboundWebhookDispatcher.php
+
+		-
+			message: '#^Property WSms\\Webhook\\OutboundWebhookDispatcher\:\:\$logger has unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface as its type\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Webhook/OutboundWebhookDispatcher.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:eventMeta\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:getGroupedEvents\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:getSamplePayload\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeCampaignCancelled\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeCampaignCompleted\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeCampaignStarted\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeContactCreated\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeContactCreated\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeContactIssue\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeContactOptedIn\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeContactOptedOut\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeContactUpdated\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeContactUpdated\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeFlowCompleted\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeFlowStarted\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeHookPayload\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeHookPayload\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeInboundSms\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeMessageFailed\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeMessageSent\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializePayload\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeSubscriptionConfirmed\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookEventMap\:\:serializeSubscriptionConfirmed\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Parameter \#1 \$e of static method WSms\\Webhook\\WebhookEventMap\:\:serializeCampaignCancelled\(\) expects WSms\\Event\\Events\\CampaignCancelledEvent, object given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Parameter \#1 \$e of static method WSms\\Webhook\\WebhookEventMap\:\:serializeCampaignCompleted\(\) expects WSms\\Event\\Events\\CampaignCompletedEvent, object given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Parameter \#1 \$e of static method WSms\\Webhook\\WebhookEventMap\:\:serializeCampaignStarted\(\) expects WSms\\Event\\Events\\CampaignStartedEvent, object given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Parameter \#1 \$e of static method WSms\\Webhook\\WebhookEventMap\:\:serializeContactIssue\(\) expects WSms\\Event\\Events\\ContactBouncedEvent\|WSms\\Event\\Events\\ContactComplainedEvent, object given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Parameter \#1 \$e of static method WSms\\Webhook\\WebhookEventMap\:\:serializeContactOptedIn\(\) expects WSms\\Event\\Events\\ContactOptedInEvent, object given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Parameter \#1 \$e of static method WSms\\Webhook\\WebhookEventMap\:\:serializeContactOptedOut\(\) expects WSms\\Event\\Events\\ContactOptedOutEvent, object given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Parameter \#1 \$e of static method WSms\\Webhook\\WebhookEventMap\:\:serializeFlowCompleted\(\) expects WSms\\Event\\Events\\FlowCompletedEvent, object given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Parameter \#1 \$e of static method WSms\\Webhook\\WebhookEventMap\:\:serializeFlowStarted\(\) expects WSms\\Event\\Events\\FlowStartedEvent, object given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Parameter \#1 \$e of static method WSms\\Webhook\\WebhookEventMap\:\:serializeInboundSms\(\) expects WSms\\Event\\Events\\InboundSmsReceivedEvent, object given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Parameter \#1 \$e of static method WSms\\Webhook\\WebhookEventMap\:\:serializeMessageFailed\(\) expects WSms\\Event\\Events\\MessageFailedEvent, object given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Parameter \#1 \$e of static method WSms\\Webhook\\WebhookEventMap\:\:serializeMessageSent\(\) expects WSms\\Event\\Events\\MessageSentEvent, object given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Webhook/WebhookEventMap.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookHttpClient\:\:isSuccess\(\) has parameter \$response with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookHttpClient.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookHttpClient\:\:send\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookHttpClient.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\Symfony\\Component\\Uid\\Ulid not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Webhook/WebhookRepository.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookRepository\:\:find\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookRepository.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookRepository\:\:findActiveForEvent\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookRepository.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookRepository\:\:findAll\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookRepository.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookRepository\:\:loadAll\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookRepository.php
+
+		-
+			message: '#^Method WSms\\Webhook\\WebhookRepository\:\:save\(\) has parameter \$webhook with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Webhook/WebhookRepository.php
