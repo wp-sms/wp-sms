@@ -2,14 +2,14 @@ import { __ } from '@wordpress/i18n';
 import { useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from '@/components/ui/select';
 import { SegmentedGroup } from '@/components/ui/segmented-group';
 import { ColorPickerField } from '@/components/ui/color-picker-field';
 import { PresetGrid } from '@/components/ui/preset-grid';
 import { ImagePickerField } from '@/components/ui/image-picker-field';
 import { Palette, Sun, Moon, Monitor } from 'lucide-react';
 import { COLOR_PRESETS, getActivePresetId } from './color-presets';
-import { SYSTEM_FONTS, GOOGLE_FONTS, ALL_FONTS } from './font-list';
+import { ALL_FONTS } from './font-list';
+import { FontPicker } from './font-picker';
 import type { BrandingSettings, ColorMode } from '@/lib/api';
 
 const COLOR_MODE_OPTIONS = [
@@ -29,16 +29,19 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
 
   useEffect(() => {
     const font = ALL_FONTS.find((f) => f.value === branding.font_family);
-    if (!font?.google) return;
-    const id = `google-font-${font.value.replace(/\s+/g, '-')}`;
+    // Load if it's a known Google font OR a custom font marked as google_font
+    const isGoogle = font?.google || (!font && branding.google_font);
+    if (!isGoogle) return;
+    const name = branding.font_family;
+    const id = `google-font-${name.replace(/\s+/g, '-')}`;
     if (document.getElementById(id)) return;
     const link = document.createElement('link');
     link.id = id;
     link.rel = 'stylesheet';
-    link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font.value)}:wght@400;500;600&display=swap`;
+    link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(name)}:wght@400;500;600&display=swap`;
     document.head.appendChild(link);
     return () => { link.remove(); };
-  }, [branding.font_family]);
+  }, [branding.font_family, branding.google_font]);
 
   function applyPreset(presetId: string) {
     const preset = COLOR_PRESETS.find((p) => p.id === presetId);
@@ -50,14 +53,6 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
       error_color: preset.error_color,
       background_color: preset.background_color,
       split_panel_bg_color: preset.split_panel_bg_color,
-    });
-  }
-
-  function handleFontChange(value: string) {
-    const font = ALL_FONTS.find((f) => f.value === value);
-    onChange({
-      font_family: value,
-      google_font: font?.google ?? false,
     });
   }
 
@@ -168,32 +163,10 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
 
         <div className="max-w-md">
           <Field>
-            <FieldLabel htmlFor="branding-font-family">{__('Font Family', 'wp-sms')}</FieldLabel>
-            <Select value={branding.font_family} onValueChange={handleFontChange}>
-              <SelectTrigger id="branding-font-family">
-                <SelectValue placeholder={__('Select a font', 'wp-sms')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>{__('System Fonts', 'wp-sms')}</SelectLabel>
-                  {SYSTEM_FONTS.map((font) => (
-                    <SelectItem key={font.value} value={font.value}>
-                      {font.label}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-                <SelectGroup>
-                  <SelectLabel>{__('Google Fonts', 'wp-sms')}</SelectLabel>
-                  {GOOGLE_FONTS.map((font) => (
-                    <SelectItem key={font.value} value={font.value}>
-                      {font.label}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            <FieldLabel>{__('Font Family', 'wp-sms')}</FieldLabel>
+            <FontPicker value={branding.font_family} onChange={onChange} />
             <FieldDescription>
-              {__('Google Fonts are loaded with display=swap for fast rendering', 'wp-sms')}
+              {__('Search system fonts or the full Google Fonts catalog', 'wp-sms')}
             </FieldDescription>
           </Field>
 

@@ -11,6 +11,7 @@ declare global {
       area: string;
       currentUserHasMfa: boolean;
       currentUserRoles: string[];
+      pluginUrl: string;
     };
   }
 }
@@ -301,6 +302,7 @@ const FALLBACK_CONFIG: Window['wpSmsSettings'] = {
   area: 'unified',
   currentUserHasMfa: false,
   currentUserRoles: [],
+  pluginUrl: '',
 };
 
 export function getConfig() {
