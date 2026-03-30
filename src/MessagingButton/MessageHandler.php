@@ -7,6 +7,7 @@ use WSms\Contact\ListRepository;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Message\EmailMessage;
 use WSms\Messaging\Message\Message;
+use WSms\Support\PhoneValidator;
 
 defined('ABSPATH') || exit;
 
@@ -67,6 +68,11 @@ class MessageHandler
     {
         $email = $data['email'] ?? null;
         $phone = $data['phone'] ?? null;
+
+        // Drop non-E.164 phones silently — don't block message submission.
+        if ($phone && !PhoneValidator::isE164($phone)) {
+            $phone = null;
+        }
 
         if (!$email && !$phone) {
             return null;

@@ -39,7 +39,7 @@ class ContactImporterTest extends TestCase
         $csv = $this->writeCsv([
             ['email', 'phone', 'first_name', 'last_name'],
             ['john@example.com', '+1234567890', 'John', 'Doe'],
-            ['jane@example.com', '+0987654321', 'Jane', 'Smith'],
+            ['jane@example.com', '+9876543210', 'Jane', 'Smith'],
         ]);
 
         $this->contacts->method('findByEmails')->willReturn([]);
@@ -165,7 +165,7 @@ class ContactImporterTest extends TestCase
     {
         $csv = $this->writeCsv([
             ['Email Address', 'Mobile', 'Given Name'],
-            ['mapped@test.com', '+111', 'Mapped'],
+            ['mapped@test.com', '+15551234567', 'Mapped'],
         ]);
 
         $mapping = [
@@ -178,7 +178,7 @@ class ContactImporterTest extends TestCase
         $this->contacts->expects($this->once())->method('create')
             ->with($this->callback(function ($data) {
                 return $data['email'] === 'mapped@test.com'
-                    && $data['phone'] === '+111'
+                    && $data['phone'] === '+15551234567'
                     && $data['first_name'] === 'Mapped'
                     && $data['source'] === 'import';
             }));
@@ -291,6 +291,26 @@ class ContactImporterTest extends TestCase
             }));
 
         $this->importer->importFromCsv($csv, $mapping);
+    }
+
+    public function test_import_skips_rows_with_invalid_phone(): void
+    {
+        $csv = $this->writeCsv([
+            ['email', 'phone', 'first_name'],
+            ['', '2025551234', 'Bad Phone'],       // no + prefix
+            ['', '+12025551234', 'Good Phone'],     // valid E.164
+        ]);
+
+        $this->contacts->method('findByEmails')->willReturn([]);
+        $this->contacts->method('findByPhones')->willReturn([]);
+        $this->contacts->expects($this->once())->method('create');
+
+        $result = $this->importer->importFromCsv($csv, [], ['match_field' => 'phone']);
+
+        $this->assertSame(1, $result['imported']);
+        $this->assertSame(1, $result['skipped']);
+        $this->assertCount(1, $result['errors']);
+        $this->assertStringContainsString('country code', $result['errors'][0]);
     }
 
     private function writeCsv(array $rows): string

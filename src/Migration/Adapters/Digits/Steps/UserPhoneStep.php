@@ -9,6 +9,7 @@ use WSms\Migration\MigrationBackupService;
 use WSms\Migration\Adapters\Digits\DigitsDetector;
 use WSms\Migration\Contracts\MigrationStepInterface;
 use WSms\Migration\PreviewResult;
+use WSms\Support\PhoneValidator;
 use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
@@ -310,9 +311,7 @@ class UserPhoneStep implements MigrationStepInterface
 
     private function validateE164(string $phone): ?string
     {
-        // Strip trunk prefix after country code: find where CC ends and national begins.
-        // E.164: + followed by 1-3 digit CC then 6-14 digit subscriber.
-        return preg_match('/^\+[1-9]\d{6,14}$/', $phone) ? $phone : null;
+        return PhoneValidator::toE164($phone);
     }
 
     private function findPhoneOwner(string $phone): ?int

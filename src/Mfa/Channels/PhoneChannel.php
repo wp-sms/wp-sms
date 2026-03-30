@@ -17,6 +17,7 @@ use WSms\Mfa\Support\PhoneMasker;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
 use WSms\PhoneRestriction\SendingPolicyGuard;
+use WSms\Support\PhoneValidator;
 use WSms\Verification\OtpService;
 use WSms\Verification\VerificationRepository;
 
@@ -74,8 +75,8 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
     {
         $phone = $data['phone'] ?? '';
 
-        if (!preg_match('/^\+[1-9]\d{1,14}$/', $phone)) {
-            return new EnrollmentResult(false, __('Invalid phone number. Use E.164 format (e.g. +12025551234).', 'wp-sms'));
+        if (!PhoneValidator::isE164($phone)) {
+            return new EnrollmentResult(false, __('Please enter a valid phone number with country code (e.g. +12025551234).', 'wp-sms'));
         }
 
         if ($this->sendingPolicyGuardResolver !== null) {

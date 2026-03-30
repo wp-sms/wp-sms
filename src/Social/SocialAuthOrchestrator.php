@@ -15,6 +15,7 @@ use WSms\Enums\AuthErrorCode;
 use WSms\Enums\EventType;
 use WSms\Mfa\Channels\LineChannel;
 use WSms\Mfa\Channels\TelegramChannel;
+use WSms\Support\PhoneValidator;
 use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
@@ -310,8 +311,8 @@ class SocialAuthOrchestrator
             update_user_meta($userId, UserMeta::REGISTRATION_STATUS, 'active');
         }
 
-        // Store phone number from provider (e.g. Telegram).
-        if (!empty($userInfo['phone_number'])) {
+        // Store phone number from provider (e.g. Telegram) — only if valid E.164.
+        if (!empty($userInfo['phone_number']) && PhoneValidator::isE164($userInfo['phone_number'])) {
             update_user_meta($userId, UserMeta::PHONE, $userInfo['phone_number']);
             update_user_meta($userId, UserMeta::PHONE_VERIFIED, '1');
         }

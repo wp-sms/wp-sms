@@ -6,6 +6,7 @@ use WSms\Database\Connection;
 use WSms\Dependencies\Symfony\Component\Uid\Ulid;
 use WSms\Contact\Contracts\ContactRepositoryInterface;
 use WSms\Exception\NotFoundException;
+use WSms\Support\PhoneValidator;
 
 defined('ABSPATH') || exit;
 
@@ -155,15 +156,19 @@ class ContactRepository implements ContactRepositoryInterface
 
     public function findByPhone(string $phone): ?array
     {
+        $normalized = PhoneValidator::toE164($phone);
+        if ($normalized === null) {
+            return null;
+        }
+
         $t = $this->db->table(Connection::TABLE_CONTACTS);
-        $normalized = self::normalizePhone($phone);
         $row = $this->db->getRow("SELECT * FROM {$t} WHERE phone = %s", $normalized);
         return $row ? self::decodeRow($row) : null;
     }
 
     public function findByPhones(array $phones): array
     {
-        $phones = array_filter(array_map([self::class, 'normalizePhone'], $phones));
+        $phones = array_filter(array_map([PhoneValidator::class, 'toE164'], $phones));
         if (empty($phones)) {
             return [];
         }
@@ -181,8 +186,12 @@ class ContactRepository implements ContactRepositoryInterface
 
     public function findAllByPhone(string $phone): array
     {
+        $normalized = PhoneValidator::toE164($phone);
+        if ($normalized === null) {
+            return [];
+        }
+
         $t = $this->db->table(Connection::TABLE_CONTACTS);
-        $normalized = self::normalizePhone($phone);
         $rows = $this->db->getResults("SELECT * FROM {$t} WHERE phone = %s", $normalized);
 
         return array_map([self::class, 'decodeRow'], $rows);
@@ -490,7 +499,7 @@ class ContactRepository implements ContactRepositoryInterface
 
     public static function normalizePhone(string $phone): string
     {
-        return preg_replace('/[\s\-\(\)\.]+/', '', $phone);
+        return PhoneValidator::assertE164($phone);
     }
 
     private static function placeholders(array $items): string

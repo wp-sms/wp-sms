@@ -3,6 +3,7 @@
 namespace WSms\Verification\Plugin\WooCommerce;
 
 use WSms\Branding\BrandingRepository;
+use WSms\Support\PhoneValidator;
 use WSms\Verification\FormVerification;
 use WSms\Verification\VerificationService;
 
@@ -79,6 +80,9 @@ class WooClassicCheckoutVerification extends FormVerification
             $phone = sanitize_text_field(wp_unslash($_POST['billing_phone'] ?? ''));
 
             if ($this->config->shouldSkipForBillingValue('phone', $phone)) {
+                $this->phoneVerified = true;
+            } elseif (!PhoneValidator::isE164($phone)) {
+                // Skip verification for non-E.164 phones — don't block checkout.
                 $this->phoneVerified = true;
             } else {
                 $token = sanitize_text_field(wp_unslash($_POST['wsms_checkout_token_phone'] ?? ''));

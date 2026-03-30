@@ -3,6 +3,7 @@
 namespace WSms\Verification\Plugin\WooCommerce;
 
 use Automattic\WooCommerce\StoreApi\Exceptions\RouteException;
+use WSms\Support\PhoneValidator;
 use WSms\Verification\VerificationService;
 
 defined('ABSPATH') || exit;
@@ -97,6 +98,8 @@ class WooBlockCheckoutValidation
             if ($this->config->shouldSkipForBillingValue('phone', $phone)) {
                 $order->update_meta_data('_wsms_phone_verified', '1');
                 $metaUpdated = true;
+            } elseif (!PhoneValidator::isE164($phone)) {
+                // Skip verification for non-E.164 phones — don't block checkout.
             } else {
                 $token = sanitize_text_field($data['phone_session_token'] ?? '');
 

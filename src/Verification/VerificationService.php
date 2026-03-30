@@ -12,6 +12,7 @@ use WSms\Messaging\Template\TemplateManager;
 use WSms\Verification\OtpGenerator;
 use WSms\Mfa\Support\EmailMasker;
 use WSms\Mfa\Support\PhoneMasker;
+use WSms\Support\PhoneValidator;
 
 defined('ABSPATH') || exit;
 
@@ -269,18 +270,7 @@ class VerificationService
         }
 
         if ($channel === 'phone') {
-            $phone = preg_replace('/[^\d+]/', '', sanitize_text_field($identifier));
-
-            if (preg_match('/^\+[1-9]\d{1,14}$/', $phone)) {
-                return $phone;
-            }
-
-            // Accept digits-only as local format.
-            if (preg_match('/^\d{4,15}$/', $phone)) {
-                return $phone;
-            }
-
-            return null;
+            return PhoneValidator::toE164(sanitize_text_field($identifier));
         }
 
         return sanitize_text_field($identifier);

@@ -308,11 +308,12 @@ class VerificationServiceTest extends TestCase
         $this->assertSame('+12****7890', $result->maskedIdentifier);
     }
 
-    public function testPhoneAcceptsLocalFormat(): void
+    public function testPhoneRejectsLocalFormat(): void
     {
         $result = $this->service->sendCode('phone', '09123456789');
 
-        $this->assertTrue($result->success);
+        $this->assertFalse($result->success);
+        $this->assertSame('invalid_identifier', $result->error);
     }
 
     public function testPhoneRejectsInvalidFormat(): void

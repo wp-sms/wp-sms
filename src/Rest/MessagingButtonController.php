@@ -8,6 +8,7 @@ use WSms\Exception\ValidationException;
 use WSms\MessagingButton\MessageHandler;
 use WSms\MessagingButton\MessagingButtonSettings;
 use WSms\Messaging\Gateway\GatewayRegistry;
+use WSms\Support\PhoneValidator;
 use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
@@ -33,7 +34,7 @@ class MessagingButtonController extends Controller
                 'args' => [
                     'name' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'email' => ['type' => 'string', 'sanitize_callback' => 'sanitize_email'],
-                    'phone' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'phone' => PhoneValidator::restArg(),
                     'message' => ['type' => 'string', 'required' => true, 'sanitize_callback' => 'sanitize_textarea_field'],
                     'page_url' => ['type' => 'string', 'sanitize_callback' => 'sanitize_url'],
                     'gdpr_consent' => ['type' => 'boolean'],

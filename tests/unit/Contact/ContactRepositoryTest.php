@@ -201,9 +201,14 @@ class ContactRepositoryTest extends TestCase
             'strips spaces and parens' => ['+1 (234) 567-8900', '+12345678900'],
             'strips dots'              => ['+1.234.567.8900', '+12345678900'],
             'already clean'            => ['+12345678900', '+12345678900'],
-            'just digits'              => ['12345678900', '12345678900'],
             'leading plus preserved'   => ['+44 7911 123456', '+447911123456'],
         ];
+    }
+
+    public function test_normalizePhone_throws_for_non_e164(): void
+    {
+        $this->expectException(\WSms\Exception\ValidationException::class);
+        ContactRepository::normalizePhone('12345678900');
     }
 
     private function createWpdb(): \wpdb

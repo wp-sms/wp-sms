@@ -4,6 +4,7 @@ namespace WSms\Verification\Plugin\ContactForm7;
 
 use WSms\Branding\BrandingRepository;
 use WSms\PhoneRestriction\RestrictionSettings;
+use WSms\Support\PhoneValidator;
 use WSms\Verification\FormVerification;
 use WSms\Verification\VerificationService;
 
@@ -313,7 +314,7 @@ class CF7Integration extends FormVerification
             return $result;
         }
 
-        if (!preg_match('/^\+[1-9]\d{1,14}$/', $phone)) {
+        if (!PhoneValidator::isE164($phone)) {
             $result->invalidate($tag, $this->getMessage('wsms_phone_invalid'));
 
             return $result;

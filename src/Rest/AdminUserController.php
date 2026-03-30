@@ -19,13 +19,13 @@ use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Template\TemplateManager;
 use WSms\Mfa\MfaManager;
 use WSms\Social\SocialAccountRepository;
+use WSms\Support\PhoneValidator;
 use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
 
 class AdminUserController extends Controller
 {
-    private const PHONE_PATTERN = '/^\+[1-9]\d{1,14}$/';
     private const VERIFICATION_CHANNELS = ['email', 'phone'];
 
     public function __construct(
@@ -318,8 +318,8 @@ class AdminUserController extends Controller
                 return $this->ok(['message' => __('Phone number removed.', 'wp-sms')]);
             }
 
-            if (!preg_match(self::PHONE_PATTERN, $phone)) {
-                throw ValidationException::field('phone', __('Phone number must be in E.164 format (e.g. +1234567890).', 'wp-sms'));
+            if (!PhoneValidator::isE164($phone)) {
+                throw ValidationException::field('phone', __('Please enter a valid phone number with country code (e.g. +12025551234).', 'wp-sms'));
             }
 
             if (AccountManager::isPhoneTaken($phone, $userId)) {

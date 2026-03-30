@@ -187,6 +187,11 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
                   </Select>
                 </div>
               ))}
+              {Object.values(mapping).includes('phone') && (
+                <p className="text-xs text-muted-foreground">
+                  {__('Phone numbers must include country code (e.g. +12025551234). Rows with invalid phone numbers will be skipped.', 'wp-sms')}
+                </p>
+              )}
             </div>
           )}
 

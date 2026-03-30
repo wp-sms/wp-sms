@@ -8,6 +8,7 @@ use WSms\Exception\NotFoundException;
 use WSms\SubscriptionForm\SubscriptionForm;
 use WSms\SubscriptionForm\SubscriptionFormRepository;
 use WSms\SubscriptionForm\SubscriptionHandler;
+use WSms\Support\PhoneValidator;
 
 defined('ABSPATH') || exit;
 
@@ -30,7 +31,7 @@ class SubscriptionFormPublicController extends Controller
                 'permission_callback' => '__return_true',
                 'args'                => [
                     'email'      => ['type' => 'string', 'sanitize_callback' => 'sanitize_email'],
-                    'phone'      => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'phone'      => PhoneValidator::restArg(),
                     'first_name' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'last_name'  => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     '_hp'        => ['type' => 'string'],

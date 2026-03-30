@@ -10,6 +10,7 @@ use WSms\Enums\EventType;
 use WSms\Enums\SessionStage;
 use WSms\Mfa\Contracts\SupportsTokenVerification;
 use WSms\Mfa\MfaManager;
+use WSms\Support\PhoneValidator;
 use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
@@ -566,13 +567,7 @@ class AuthOrchestrator
     private function resolveUserByIdentifier(string $channel, string $identifier): ?object
     {
         if ($channel === 'phone') {
-            $users = get_users([
-                'meta_key'   => UserMeta::PHONE,
-                'meta_value' => $identifier,
-                'number'     => 1,
-            ]);
-
-            return !empty($users) ? $users[0] : null;
+            return $this->fuzzyPhoneLookup($identifier);
         }
 
         // email channel uses email.
@@ -592,12 +587,7 @@ class AuthOrchestrator
         }
 
         if ($type === 'phone') {
-            $users = get_users([
-                'meta_key'   => UserMeta::PHONE,
-                'meta_value' => $identifier,
-                'number'     => 1,
-            ]);
-            return !empty($users) ? $users[0] : null;
+            return $this->fuzzyPhoneLookup($identifier);
         }
 
         // Username.
@@ -646,6 +636,52 @@ class AuthOrchestrator
             return $identifier;
         }
         return $identifier[0] . str_repeat('*', $len - 2) . $identifier[$len - 1];
+    }
+
+    /**
+     * Look up a user by phone, trying E.164 first then fuzzy variants.
+     *
+     * Handles the common case where a user types `12025551234` instead of `+12025551234`.
+     */
+    private function fuzzyPhoneLookup(string $identifier): ?object
+    {
+        // Fast path: valid E.164 input → single query.
+        $e164 = PhoneValidator::toE164($identifier);
+        if ($e164 !== null) {
+            $user = $this->findUserByPhone($e164);
+            if ($user) {
+                return $user;
+            }
+        }
+
+        // Fallback: stripped input that couldn't be normalized to E.164.
+        $cleaned = PhoneValidator::stripFormatting($identifier);
+        if ($cleaned === $e164) {
+            return null;
+        }
+
+        $user = $this->findUserByPhone($cleaned);
+        if ($user) {
+            return $user;
+        }
+
+        // Try with/without + prefix.
+        if (str_starts_with($cleaned, '+')) {
+            return $this->findUserByPhone(substr($cleaned, 1));
+        } else {
+            return $this->findUserByPhone('+' . $cleaned);
+        }
+    }
+
+    private function findUserByPhone(string $phone): ?object
+    {
+        $users = get_users([
+            'meta_key'   => UserMeta::PHONE,
+            'meta_value' => $phone,
+            'number'     => 1,
+        ]);
+
+        return !empty($users) ? $users[0] : null;
     }
 
 }

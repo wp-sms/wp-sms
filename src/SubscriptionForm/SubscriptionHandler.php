@@ -4,6 +4,7 @@ namespace WSms\SubscriptionForm;
 
 use WSms\Contact\ContactRepository;
 use WSms\Contact\ListRepository;
+use WSms\Support\PhoneValidator;
 use WSms\Verification\VerificationService;
 
 defined('ABSPATH') || exit;
@@ -46,6 +47,10 @@ class SubscriptionHandler
 
         if ($email !== null && !is_email($email)) {
             return SubmissionResult::failed('validation_error', __('Please provide a valid email address.', 'wp-sms'));
+        }
+
+        if ($phone !== null && !PhoneValidator::isE164($phone)) {
+            return SubmissionResult::failed('validation_error', __('Please enter a valid phone number with country code (e.g. +12025551234).', 'wp-sms'));
         }
 
         $contact = null;

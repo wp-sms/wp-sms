@@ -16,6 +16,7 @@ use WSms\Mfa\MfaManager;
 use WSms\Auth\ValueObjects\OperationResult;
 use WSms\Enums\AuthErrorCode;
 use WSms\PhoneRestriction\SendingPolicyGuard;
+use WSms\Support\PhoneValidator;
 use WSms\Support\UserMeta;
 use WSms\Verification\OtpService;
 use WSms\Verification\VerificationRepository;
@@ -182,7 +183,7 @@ class AccountManager
 
         $this->cleanupExpiredPendingUsers($data, $email, $emailVerifyEnabled, $phoneVerifyEnabled, $settings);
 
-        if (!empty($data['phone']) && self::isPhoneTaken(sanitize_text_field($data['phone']))) {
+        if (!empty($data['phone']) && self::isPhoneTaken($data['phone'])) {
             return OperationResult::fail(AuthErrorCode::PhoneExists, __('This phone number is already associated with another account.', 'wp-sms'));
         }
 
@@ -375,7 +376,7 @@ class AccountManager
         }
 
         if (!empty($data['phone'])) {
-            update_user_meta($userId, UserMeta::PHONE, sanitize_text_field($data['phone']));
+            update_user_meta($userId, UserMeta::PHONE, PhoneValidator::assertE164($data['phone']));
         }
     }
 
@@ -550,7 +551,7 @@ class AccountManager
         $phone = null;
 
         if (isset($data['phone'])) {
-            $phone = sanitize_text_field($data['phone']);
+            $phone = $data['phone'] === '' ? '' : PhoneValidator::assertE164($data['phone']);
             $currentPhone = get_user_meta($userId, UserMeta::PHONE, true);
             $phoneChanged = ($phone !== $currentPhone);
         }
@@ -1244,9 +1245,14 @@ class AccountManager
      */
     public static function isPhoneTaken(string $phone, ?int $excludeUserId = null): bool
     {
+        $normalized = PhoneValidator::toE164($phone);
+        if ($normalized === null) {
+            return false;
+        }
+
         $args = [
             'meta_key'   => UserMeta::PHONE,
-            'meta_value' => $phone,
+            'meta_value' => $normalized,
             'number'     => 1,
             'fields'     => 'ID',
         ];

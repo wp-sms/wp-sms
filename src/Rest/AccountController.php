@@ -14,6 +14,7 @@ use WSms\Auth\RegistrationFormRepository;
 use WSms\Enums\AuthErrorCode;
 use WSms\Enums\SessionStage;
 use WSms\Exception\ValidationException;
+use WSms\Support\PhoneValidator;
 
 defined('ABSPATH') || exit;
 
@@ -43,7 +44,7 @@ class AccountController extends Controller
                 'display_name' => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 'first_name'   => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 'last_name'    => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                'phone'        => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                'phone'        => PhoneValidator::restArg(),
                 'form_id'      => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
             ],
         ]);
@@ -84,7 +85,7 @@ class AccountController extends Controller
                 'display_name' => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 'first_name'   => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 'last_name'    => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                'phone'        => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                'phone'        => PhoneValidator::restArg(),
                 'email'        => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_email'],
             ],
         ]);

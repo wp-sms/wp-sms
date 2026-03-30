@@ -9,6 +9,7 @@ use WSms\Contact\Contracts\SegmentEvaluatorInterface;
 use WSms\Exception\NotFoundException;
 use WSms\Exception\ValidationException;
 use WSms\Log\Contracts\MessageLoggerInterface;
+use WSms\Support\PhoneValidator;
 
 defined('ABSPATH') || exit;
 
@@ -45,7 +46,7 @@ class ContactController extends Controller
                 'permission_callback' => [$this, 'canManage'],
                 'args'                => [
                     'email'         => ['type' => 'string', 'sanitize_callback' => 'sanitize_email'],
-                    'phone'         => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'phone'         => PhoneValidator::restArg(),
                     'first_name'    => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'last_name'     => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'status'        => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -110,7 +111,12 @@ class ContactController extends Controller
                 'permission_callback' => [$this, 'canManage'],
                 'args'                => [
                     'email'           => ['type' => 'string', 'sanitize_callback' => 'sanitize_email'],
-                    'phone'           => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'phone'           => [
+                        'type' => 'string',
+                        'sanitize_callback' => 'sanitize_text_field',
+                        'validate_callback' => static fn($v) => $v === '' || PhoneValidator::isE164($v)
+                            || new \WP_Error('invalid_phone', __('Please enter a valid phone number with country code (e.g. +12025551234).', 'wp-sms')),
+                    ],
                     'first_name'      => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'last_name'       => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'status'          => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],

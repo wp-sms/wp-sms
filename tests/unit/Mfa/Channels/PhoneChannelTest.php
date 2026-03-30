@@ -80,7 +80,7 @@ class PhoneChannelTest extends TestCase
         $result = $this->channel->enroll(1, ['phone' => '12345']);
 
         $this->assertFalse($result->success);
-        $this->assertStringContainsString('E.164', $result->message);
+        $this->assertStringContainsString('country code', $result->message);
     }
 
     public function testEnrollRejectsEmptyPhone(): void

@@ -6,6 +6,7 @@ use WSms\Dependencies\League\Csv\Reader;
 use WSms\Contact\ContactRepository;
 use WSms\Contact\Contracts\ContactRepositoryInterface;
 use WSms\Database\Connection;
+use WSms\Support\PhoneValidator;
 
 defined('ABSPATH') || exit;
 
@@ -74,6 +75,17 @@ class ContactImporter
                     $offset = $item['offset'];
 
                     if (empty($data['email']) && empty($data['phone'])) {
+                        $skipped++;
+                        continue;
+                    }
+
+                    // Validate phone E.164 format if present.
+                    if (!empty($data['phone']) && !PhoneValidator::isE164($data['phone'])) {
+                        $errors[] = sprintf(
+                            __('Row %d: Invalid phone number "%s". Must include country code (e.g. +12025551234).', 'wp-sms'),
+                            $offset,
+                            $data['phone'],
+                        );
                         $skipped++;
                         continue;
                     }
