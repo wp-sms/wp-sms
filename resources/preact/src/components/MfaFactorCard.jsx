@@ -232,7 +232,6 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
 
             {expanding && !enrolled && method.id === 'totp' && totpEnroll && (
                 <div className="wsms-auth-mfa-card__body wsms-auth-stack-4 wsms-auth-fade-in">
-                    {error && <p className="wsms-auth-text-sm wsms-auth-text-destructive">{error}</p>}
                     <div className="wsms-auth-flex-center">
                         <img src={totpEnroll.qrCodeUri} alt={__('QR code for authenticator app setup. Use the manual key below if you cannot scan.', 'wp-sms')} className="wsms-auth-qr-image" />
                     </div>
@@ -247,7 +246,8 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                     <p className="wsms-auth-text-sm wsms-auth-text-muted">
                         {__('Enter the 6-digit code from your app to verify setup', 'wp-sms')}
                     </p>
-                    <OtpInput onComplete={(code) => handleVerifyEnrollment('totp', code)} disabled={loading} />
+                    {error && <p className="wsms-auth-text-sm wsms-auth-text-destructive">{error}</p>}
+                    <OtpInput onComplete={(code) => handleVerifyEnrollment('totp', code)} disabled={loading} error={!!error} />
                 </div>
             )}
 
@@ -292,9 +292,9 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
 
             {verifying && (
                 <div className="wsms-auth-mfa-card__body wsms-auth-stack-3 wsms-auth-fade-in">
-                    {error && <p className="wsms-auth-text-sm wsms-auth-text-destructive">{error}</p>}
                     <p className="wsms-auth-text-sm wsms-auth-text-muted">{__('Enter the code sent to your phone', 'wp-sms')}</p>
-                    <OtpInput onComplete={(code) => handleVerifyEnrollment('phone', code)} disabled={loading} />
+                    {error && <p className="wsms-auth-text-sm wsms-auth-text-destructive">{error}</p>}
+                    <OtpInput onComplete={(code) => handleVerifyEnrollment('phone', code)} disabled={loading} error={!!error} />
                 </div>
             )}
         </div>

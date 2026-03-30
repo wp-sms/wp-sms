@@ -113,7 +113,7 @@ export function VerifyOtp() {
                 </form>
             ) : (
                 <div className="wsms-auth-stack-4">
-                    <OtpInput autoFocus onComplete={handleVerify} disabled={authLoading.value} />
+                    <OtpInput autoFocus onComplete={handleVerify} disabled={authLoading.value} error={!!authError.value} />
 
                     <div className="wsms-auth-flex-gap">
                         <Button

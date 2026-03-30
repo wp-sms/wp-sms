@@ -1,51 +1,40 @@
-import { useState } from 'preact/hooks';
+import { useState, useEffect, useRef } from 'preact/hooks';
 import { OTPInput } from 'input-otp';
 import { __ } from '@wordpress/i18n';
+import { cn } from '../utils/cn';
 import { useAutoFocus } from '../hooks/useAutoFocus';
 import { normalizeDigits, extractDigits, REGEXP_UNICODE_DIGITS } from '../utils/digits';
 
-function Slot({ char, isActive, hasFakeCaret }) {
+function Slot({ char, isActive, hasFakeCaret, error, prefix }) {
     return (
-        <div className={`wsms-auth-otp-slot${isActive ? ' wsms-auth-otp-slot--active' : ''}`}>
+        <div className={cn(`${prefix}-slot`, isActive && `${prefix}-slot--active`, error && `${prefix}-slot--error`)}>
             {char || (hasFakeCaret && (
-                <span className="wsms-auth-otp-caret" />
-            ))}
-        </div>
-    );
-}
-
-function WidgetSlot({ char, isActive, hasFakeCaret }) {
-    return (
-        <div className={`wsms-vw-otp-slot${isActive ? ' wsms-vw-otp-slot--active' : ''}`}>
-            {char || (hasFakeCaret && (
-                <span className="wsms-vw-otp-caret" />
-            ))}
-        </div>
-    );
-}
-
-function SubscriptionSlot({ char, isActive, hasFakeCaret }) {
-    return (
-        <div className={`wsms-sub-form__otp-slot${isActive ? ' wsms-sub-form__otp-slot--active' : ''}`}>
-            {char || (hasFakeCaret && (
-                <span className="wsms-sub-form__otp-caret" />
+                <span className={`${prefix}-caret`} />
             ))}
         </div>
     );
 }
 
 const VARIANT_CONFIG = {
-    default: { Slot, container: 'wsms-auth-otp', slots: 'wsms-auth-otp-slots', separator: 'wsms-auth-otp-separator' },
-    widget: { Slot: WidgetSlot, container: 'wsms-vw-otp', slots: 'wsms-vw-otp-slots', separator: 'wsms-vw-otp-separator' },
-    subscription: { Slot: SubscriptionSlot, container: 'wsms-sub-form__otp', slots: 'wsms-sub-form__otp-slots', separator: 'wsms-sub-form__otp-separator' },
+    default: { prefix: 'wsms-auth-otp', container: 'wsms-auth-otp', slots: 'wsms-auth-otp-slots', separator: 'wsms-auth-otp-separator' },
+    widget: { prefix: 'wsms-vw-otp', container: 'wsms-vw-otp', slots: 'wsms-vw-otp-slots', separator: 'wsms-vw-otp-separator' },
+    subscription: { prefix: 'wsms-sub-form__otp', container: 'wsms-sub-form__otp', slots: 'wsms-sub-form__otp-slots', separator: 'wsms-sub-form__otp-separator' },
 };
 
-export function OtpInput({ length = 6, onComplete, disabled, autoFocus = false, variant = 'default' }) {
+export function OtpInput({ length = 6, onComplete, disabled, autoFocus = false, variant = 'default', error = false }) {
     const focusRef = useAutoFocus(autoFocus);
     const [value, setValue] = useState('');
+    const prevErrorRef = useRef(false);
+
+    useEffect(() => {
+        if (error && !prevErrorRef.current) {
+            setValue('');
+        }
+        prevErrorRef.current = error;
+    }, [error]);
+
     const half = Math.ceil(length / 2);
     const cfg = VARIANT_CONFIG[variant] || VARIANT_CONFIG.default;
-    const SlotComponent = cfg.Slot;
 
     const handleChange = (newValue) => {
         setValue(normalizeDigits(newValue));
@@ -69,11 +58,11 @@ export function OtpInput({ length = 6, onComplete, disabled, autoFocus = false, 
             render={({ slots }) => (
                 <div className={cfg.slots} dir="ltr">
                     {slots.slice(0, half).map((slot, i) => (
-                        <SlotComponent key={i} {...slot} />
+                        <Slot key={i} {...slot} error={error} prefix={cfg.prefix} />
                     ))}
                     <span className={cfg.separator} aria-hidden="true">&ndash;</span>
                     {slots.slice(half).map((slot, i) => (
-                        <SlotComponent key={i + half} {...slot} />
+                        <Slot key={i + half} {...slot} error={error} prefix={cfg.prefix} />
                     ))}
                 </div>
             )}

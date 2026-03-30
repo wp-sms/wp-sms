@@ -283,7 +283,7 @@ export function MfaStep() {
                         </div>
                     ) : (
                         <>
-                            {challengeSent && <OtpInput autoFocus onComplete={handleVerify} disabled={authLoading.value} />}
+                            {challengeSent && <OtpInput autoFocus onComplete={handleVerify} disabled={authLoading.value} error={!!authError.value} />}
 
                             {challengeSent && showTrustCheckbox && (
                                 <TrustDeviceCheckbox id="wsms-trust-device" checked={trustDevice}

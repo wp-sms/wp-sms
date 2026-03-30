@@ -100,6 +100,7 @@
 .wsms-vw.wsms-vw .wsms-vw-otp {
     display: flex;
     justify-content: center;
+    overflow: hidden;
 }
 
 /* Protect the hidden input from CSS resets */
@@ -140,6 +141,10 @@
 .wsms-vw.wsms-vw .wsms-vw-otp-slot--active {
     border-color: var(--wsms-vw-link);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--wsms-vw-link) 25%, transparent);
+}
+
+.wsms-vw.wsms-vw .wsms-vw-otp-slot--error {
+    border-color: var(--wsms-vw-error);
 }
 
 .wsms-vw.wsms-vw .wsms-vw-otp-caret {

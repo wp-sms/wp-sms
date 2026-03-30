@@ -22,16 +22,19 @@ import { OtpInput } from '../OtpInput';
  */
 export function OtpVerifyInline({ verifyEndpoint, resendEndpoint, headers, onVerified, onError, label, className, initialCooldown = 0, codeLength, autoFocus = true }) {
     const [verifying, setVerifying] = useState(false);
+    const [hasError, setHasError] = useState(false);
     const [cooldown, resetCooldown] = useResendCooldown(initialCooldown);
 
     async function handleVerify(code) {
         setVerifying(true);
+        setHasError(false);
         try {
             const res = await api.post(verifyEndpoint, { code }, headers);
             if (res.success) {
                 onVerified?.();
             }
         } catch (err) {
+            setHasError(true);
             onError?.(extractError(err).message);
         } finally {
             setVerifying(false);
@@ -52,7 +55,7 @@ export function OtpVerifyInline({ verifyEndpoint, resendEndpoint, headers, onVer
         <div className={cn('wsms-auth-stack-3', className)}>
             <p className="wsms-auth-text-sm wsms-auth-text-muted wsms-auth-center">{label}</p>
 
-            <OtpInput length={codeLength} onComplete={handleVerify} disabled={verifying} autoFocus={autoFocus} />
+            <OtpInput length={codeLength} onComplete={handleVerify} disabled={verifying} autoFocus={autoFocus} error={hasError} />
 
             {resendEndpoint && (
                 <div className="wsms-auth-flex-center">

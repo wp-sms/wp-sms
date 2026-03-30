@@ -171,6 +171,7 @@ export function SubscriptionFormApp({ config }) {
                     onComplete={handleVerify}
                     disabled={verifying}
                     autoFocus
+                    error={!!error}
                 />
 
                 <button

@@ -903,6 +903,7 @@
 .wsms-auth-otp {
     display: flex;
     justify-content: center;
+    overflow: hidden;
 }
 
 .wsms-auth-otp-slots {
@@ -936,6 +937,10 @@
 .wsms-auth-otp-slot--active {
     border-color: var(--ring);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 50%, transparent);
+}
+
+.wsms-auth-otp-slot--error {
+    border-color: var(--destructive);
 }
 
 .wsms-auth-otp-caret {

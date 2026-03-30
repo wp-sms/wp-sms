@@ -168,6 +168,7 @@ function VerifyWidget({ channel, identifier, onVerified, onError, codeLength = 6
                     onComplete={handleVerify}
                     disabled={state === 'verifying'}
                     autoFocus={true}
+                    error={!!errorMsg}
                 />
 
                 {state === 'verifying' && (
