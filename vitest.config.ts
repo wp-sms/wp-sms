@@ -5,6 +5,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, 'resources/react/src'),
+      '@preact': resolve(__dirname, 'resources/preact/src'),
     },
   },
   test: {
