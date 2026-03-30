@@ -166,7 +166,7 @@ export function MigrationPage() {
           onRollback={async () => {
             const ok = await confirm({
               title: __('Roll back import?', 'wp-sms'),
-              description: __('This will undo the imported data and restore your previous WP-SMS settings. Your Digits data is never affected.', 'wp-sms'),
+              description: __('This will undo the imported data and restore your previous WSMS settings. Your Digits data is never affected.', 'wp-sms'),
               confirmLabel: __('Roll Back', 'wp-sms'),
               variant: 'destructive',
             });
@@ -178,14 +178,14 @@ export function MigrationPage() {
           }}
           onSwitchover={async () => {
             const ok = await confirm({
-              title: __('Activate WP-SMS Authentication?', 'wp-sms'),
-              description: __('This will deactivate Digits and enable WP-SMS authentication. Your users will sign in through WP-SMS from this point forward. Already logged-in users are not affected. Your Digits data is never deleted. You can reactivate Digits and roll back at any time.', 'wp-sms'),
-              confirmLabel: __('Activate WP-SMS Auth', 'wp-sms'),
+              title: __('Activate WSMS Authentication?', 'wp-sms'),
+              description: __('This will deactivate Digits and enable WSMS authentication. Your users will sign in through WSMS from this point forward. Already logged-in users are not affected. Your Digits data is never deleted. You can reactivate Digits and roll back at any time.', 'wp-sms'),
+              confirmLabel: __('Activate WSMS Auth', 'wp-sms'),
             });
             if (ok) {
               try {
                 const result = await migration.switchover(selectedMigrator);
-                toast.success(result?.message || __('WP-SMS authentication activated!', 'wp-sms'));
+                toast.success(result?.message || __('WSMS authentication activated!', 'wp-sms'));
               } catch {
                 toast.error(__('Switchover failed.', 'wp-sms'));
               }
@@ -237,7 +237,7 @@ function DetectionStep({ available, onSelect, status, onViewResults, onViewProgr
               <CheckCircle2 className="size-5 text-green-600" />
               {__('Import complete', 'wp-sms')}
             </CardTitle>
-            <CardDescription>{__('Your data has been imported. Review the results and activate WP-SMS authentication.', 'wp-sms')}</CardDescription>
+            <CardDescription>{__('Your data has been imported. Review the results and activate WSMS authentication.', 'wp-sms')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Button onClick={onViewResults}>{__('Review Results', 'wp-sms')}</Button>
@@ -395,11 +395,11 @@ function PreviewStep({ preview, preflight, loading, onBack, onContinue }: {
         </CardHeader>
         <CardContent>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>{__('Login history — Fresh start in WP-SMS monitoring.', 'wp-sms')}</li>
+            <li>{__('Login history — Fresh start in WSMS monitoring.', 'wp-sms')}</li>
             <li>{__('Security keys (WebAuthn) — Users will need to re-register them.', 'wp-sms')}</li>
             <li>{__('Custom form fields — Recreate them in Profile Fields settings.', 'wp-sms')}</li>
             <li>{__('WhatsApp OTP configuration — Set up separately if needed.', 'wp-sms')}</li>
-            <li>{__('Custom CSS/branding — Use WP-SMS Branding settings instead.', 'wp-sms')}</li>
+            <li>{__('Custom CSS/branding — Use WSMS Branding settings instead.', 'wp-sms')}</li>
             <li>{__('SMS gateway credentials — Set up your gateway on the Gateways page.', 'wp-sms')}</li>
           </ul>
         </CardContent>
@@ -447,7 +447,7 @@ function ConfigureStep({ preview, conflictResolution, onConflictResolutionChange
       {phoneConflicts > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">{__('When a user already has a different phone number in WP-SMS', 'wp-sms')}</CardTitle>
+            <CardTitle className="text-base">{__('When a user already has a different phone number in WSMS', 'wp-sms')}</CardTitle>
             <CardDescription>
               {phoneConflicts.toLocaleString()} {__('users have a phone in both systems.', 'wp-sms')}
             </CardDescription>
@@ -458,7 +458,7 @@ function ConfigureStep({ preview, conflictResolution, onConflictResolutionChange
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="skip">{__('Keep WP-SMS phone (recommended)', 'wp-sms')}</SelectItem>
+                <SelectItem value="skip">{__('Keep WSMS phone (recommended)', 'wp-sms')}</SelectItem>
                 <SelectItem value="overwrite">{__('Use Digits phone (backup existing)', 'wp-sms')}</SelectItem>
                 <SelectItem value="keep_existing">{__('Flag for review', 'wp-sms')}</SelectItem>
               </SelectContent>
@@ -718,13 +718,13 @@ function ResultsStep({ status, errors, onFetchErrors, onRollback, onSwitchover, 
               {__('Ready to switch?', 'wp-sms')}
             </CardTitle>
             <CardDescription>
-              {__('Activate WP-SMS authentication to replace Digits. We recommend doing this during your site\'s quietest hours.', 'wp-sms')}
+              {__('Activate WSMS authentication to replace Digits. We recommend doing this during your site\'s quietest hours.', 'wp-sms')}
             </CardDescription>
           </CardHeader>
           <CardContent className="flex gap-3">
             <Button onClick={onSwitchover} disabled={actionLoading}>
               {actionLoading && <Loader2 className="size-4 me-1 animate-spin" />}
-              {__('Activate WP-SMS Auth', 'wp-sms')}
+              {__('Activate WSMS Auth', 'wp-sms')}
             </Button>
             <Button variant="outline" onClick={onRollback} disabled={actionLoading}>
               <RotateCcw className="size-4 me-1" />

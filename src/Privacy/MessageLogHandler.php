@@ -42,7 +42,7 @@ class MessageLogHandler
         foreach ($rows as $row) {
             $items[] = [
                 'group_id'    => 'wsms-message-log',
-                'group_label' => __('WP SMS Message History', 'wp-sms'),
+                'group_label' => __('WSMS Message History', 'wp-sms'),
                 'item_id'     => 'wsms-message-' . $row['id'],
                 'data'        => [
                     ['name' => __('Date', 'wp-sms'), 'value' => $row['sent_at'] ?? $row['created_at']],

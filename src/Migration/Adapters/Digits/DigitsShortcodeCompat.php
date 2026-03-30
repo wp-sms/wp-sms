@@ -128,7 +128,7 @@ class DigitsShortcodeCompat
             printf(
                 '<div class="notice notice-info"><p>%s</p></div>',
                 sprintf(
-                    esc_html__('You still have %d pages using Digits shortcodes. Consider updating them to WP-SMS shortcodes.', 'wp-sms'),
+                    esc_html__('You still have %d pages using Digits shortcodes. Consider updating them to WSMS shortcodes.', 'wp-sms'),
                     $count,
                 ),
             );

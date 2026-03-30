@@ -271,7 +271,7 @@ class MigrationController extends Controller
         delete_option('wsms_transition_mode');
 
         return $this->ok([
-            'message'        => __('WP-SMS authentication is now active. Digits has been deactivated.', 'wp-sms'),
+            'message'        => __('WSMS authentication is now active. Digits has been deactivated.', 'wp-sms'),
             'affected_pages' => $this->shortcodeCompat->getAffectedPages(),
             'redirects'      => $this->redirectCompat->getRedirects(),
         ]);

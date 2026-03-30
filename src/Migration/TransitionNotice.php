@@ -105,7 +105,7 @@ class TransitionNotice
         }
 
         echo '<div class="notice notice-info">';
-        echo '<p><strong>' . esc_html__('Welcome to WP-SMS!', 'wp-sms') . '</strong> ';
+        echo '<p><strong>' . esc_html__('Welcome to WSMS!', 'wp-sms') . '</strong> ';
         echo esc_html__('We noticed you\'re using Digits.', 'wp-sms') . '</p>';
         echo '<p>' . sprintf(
             esc_html__('We can import your %s. Your Digits data stays completely untouched — you can roll back at any time.', 'wp-sms'),
@@ -179,12 +179,12 @@ class TransitionNotice
         echo '<p><strong>' . esc_html__('Import complete! Your data is ready.', 'wp-sms') . '</strong></p>';
         if (!empty($summaryParts)) {
             echo '<p>' . sprintf(
-                esc_html__('%s have been imported. When you\'re ready, activate WP-SMS authentication to replace Digits.', 'wp-sms'),
+                esc_html__('%s have been imported. When you\'re ready, activate WSMS authentication to replace Digits.', 'wp-sms'),
                 esc_html(implode(', ', $summaryParts)),
             ) . '</p>';
         }
         echo '<p>';
-        echo '<a href="' . esc_url($migrationUrl) . '" class="button button-primary">' . esc_html__('Activate WP-SMS Auth', 'wp-sms') . '</a> ';
+        echo '<a href="' . esc_url($migrationUrl) . '" class="button button-primary">' . esc_html__('Activate WSMS Auth', 'wp-sms') . '</a> ';
         echo '<a href="' . esc_url($migrationUrl) . '" class="button">' . esc_html__('Review Results', 'wp-sms') . '</a> ';
         echo '<a href="' . esc_url($snoozeUrl) . '" class="button">' . esc_html__('Later', 'wp-sms') . '</a>';
         echo '</p>';

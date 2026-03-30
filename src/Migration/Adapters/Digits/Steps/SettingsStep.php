@@ -70,7 +70,7 @@ class SettingsStep implements MigrationStepInterface
 
     public function getDescription(): string
     {
-        return __('Map Digits plugin settings to WP-SMS equivalents.', 'wp-sms');
+        return __('Map Digits plugin settings to WSMS equivalents.', 'wp-sms');
     }
 
     public function getPriority(): int
@@ -107,7 +107,7 @@ class SettingsStep implements MigrationStepInterface
         $unmappable = $this->getUnmappableSettings();
         if (!empty($unmappable)) {
             $warnings[] = sprintf(
-                __('The following Digits settings have no WP-SMS equivalent: %s. You may need to configure these manually.', 'wp-sms'),
+                __('The following Digits settings have no WSMS equivalent: %s. You may need to configure these manually.', 'wp-sms'),
                 implode(', ', $unmappable),
             );
         }

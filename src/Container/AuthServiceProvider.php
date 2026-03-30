@@ -280,7 +280,7 @@ class AuthServiceProvider implements ServiceProvider
                 return;
             }
             wp_add_privacy_policy_content(
-                'WP SMS',
+                'WSMS',
                 wp_kses_post($this->buildPrivacyPolicyText()),
             );
         });
@@ -373,7 +373,7 @@ class AuthServiceProvider implements ServiceProvider
                 return;
             }
             wp_add_privacy_policy_content(
-                'WP SMS',
+                'WSMS',
                 wp_kses_post($this->buildPrivacyPolicyText()),
             );
         });

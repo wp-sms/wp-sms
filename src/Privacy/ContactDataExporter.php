@@ -70,7 +70,7 @@ class ContactDataExporter
             'data' => [
                 [
                     'group_id'    => 'wsms-contact',
-                    'group_label' => __('WP SMS Contact Data', 'wp-sms'),
+                    'group_label' => __('WSMS Contact Data', 'wp-sms'),
                     'item_id'     => 'wsms-contact-' . $contact['id'],
                     'data'        => array_values($data),
                 ],
