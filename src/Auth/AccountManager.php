@@ -152,7 +152,7 @@ class AccountManager
             $settings = RegistrationForm::applyOverrides($settings, $form->getAuthOverrides());
         }
 
-        $emailRequired = $socialLogin ? false : ($settings['email']['required_at_signup'] ?? true);
+        $emailRequired = $socialLogin ? false : (!empty($settings['email']['enabled']) && !empty($settings['email']['required_at_signup']));
 
         $validationError = $this->validateRegistrationFields($data, $settings, $socialLogin, $emailRequired, $form);
         if ($validationError !== null) {
@@ -230,7 +230,7 @@ class AccountManager
             return OperationResult::fail(AuthErrorCode::MissingEmail, __('Email is required.', 'wp-sms'));
         }
 
-        $passwordRequired = $socialLogin ? false : (!empty($settings['password']['enabled']) && ($settings['password']['required_at_signup'] ?? true));
+        $passwordRequired = $socialLogin ? false : (!empty($settings['password']['enabled']) && !empty($settings['password']['required_at_signup']));
         if ($form) {
             $passwordRequired = $passwordRequired && $form->hasField('password') && $form->isFieldRequired('password');
         }

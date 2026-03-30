@@ -370,48 +370,34 @@ class PolicyEngine
     /**
      * Compute effective registration fields from channel settings.
      *
-     * Email and password are included only when their channel has required_at_signup.
-     * Other fields from registration_fields (phone, first_name, last_name, etc.) pass through.
+     * Channel fields (email, password, phone) are included only when their channel
+     * is enabled and has required_at_signup. Other fields pass through.
      *
      * @return string[]
      */
     public function getEffectiveRegistrationFields(): array
     {
-        $settings = $this->settingsRepo->all();
-
-        // When the field registry is available, derive from it.
         if ($this->fieldRegistry) {
-            $defs = $this->fieldRegistry->getFieldsForContext('registration');
-            $effectiveFields = [];
-
-            foreach ($defs as $def) {
-                // System fields: apply channel-level overrides.
-                if ($def->id === 'email' && empty($settings['email']['required_at_signup'])) {
-                    continue;
-                }
-                if ($def->id === 'password' && (empty($settings['password']['enabled']) || empty($settings['password']['required_at_signup']))) {
-                    continue;
-                }
-
-                $effectiveFields[] = $def->id;
-            }
-
-            return $effectiveFields;
+            return array_map(fn($d) => $d->id, $this->getGatedRegistrationDefs());
         }
 
         // Legacy path (no registry injected).
+        $settings = $this->settingsRepo->all();
         $regFields = $settings['registration_fields'] ?? ['email', 'password'];
         $effectiveFields = [];
 
-        if (!empty($settings['email']['required_at_signup'])) {
+        if ($this->isChannelRequiredAtSignup('email', $settings)) {
             $effectiveFields[] = 'email';
         }
 
-        if (!empty($settings['password']['enabled']) && !empty($settings['password']['required_at_signup'])) {
+        if ($this->isChannelRequiredAtSignup('password', $settings)) {
             $effectiveFields[] = 'password';
         }
 
         foreach ($regFields as $f) {
+            if ($f === 'phone' && !$this->isChannelRequiredAtSignup('phone', $settings)) {
+                continue;
+            }
             if (!in_array($f, ['email', 'password'], true) && !in_array($f, $effectiveFields, true)) {
                 $effectiveFields[] = $f;
             }
@@ -431,22 +417,26 @@ class PolicyEngine
             return [];
         }
 
+        return array_map(fn($d) => $d->toArray(), $this->getGatedRegistrationDefs());
+    }
+
+    private function getGatedRegistrationDefs(): array
+    {
         $settings = $this->settingsRepo->all();
         $defs = $this->fieldRegistry->getFieldsForContext('registration');
-        $result = [];
 
-        foreach ($defs as $def) {
-            if ($def->id === 'email' && empty($settings['email']['required_at_signup'])) {
-                continue;
-            }
-            if ($def->id === 'password' && (empty($settings['password']['enabled']) || empty($settings['password']['required_at_signup']))) {
-                continue;
+        return array_values(array_filter($defs, function ($def) use ($settings) {
+            if (in_array($def->id, ['email', 'password', 'phone'], true)) {
+                return $this->isChannelRequiredAtSignup($def->id, $settings);
             }
 
-            $result[] = $def->toArray();
-        }
+            return true;
+        }));
+    }
 
-        return $result;
+    private function isChannelRequiredAtSignup(string $channel, array $settings): bool
+    {
+        return !empty($settings[$channel]['enabled']) && !empty($settings[$channel]['required_at_signup']);
     }
 
     /**

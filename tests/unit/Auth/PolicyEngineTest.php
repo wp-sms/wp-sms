@@ -411,19 +411,21 @@ class PolicyEngineTest extends TestCase
             ['email', 'password'],
         ];
 
-        yield 'email not required, password required' => [
+        yield 'email not required, password required, phone enabled' => [
             [
                 'email'    => ['required_at_signup' => false],
                 'password' => ['required_at_signup' => true],
+                'phone'    => ['enabled' => true, 'required_at_signup' => true],
                 'registration_fields' => ['email', 'password', 'phone'],
             ],
             ['password', 'phone'],
         ];
 
-        yield 'both not required, phone in fields' => [
+        yield 'both not required, phone enabled in fields' => [
             [
                 'email'    => ['required_at_signup' => false],
                 'password' => ['required_at_signup' => false],
+                'phone'    => ['enabled' => true, 'required_at_signup' => true],
                 'registration_fields' => ['phone'],
             ],
             ['phone'],
@@ -442,10 +444,75 @@ class PolicyEngineTest extends TestCase
             [
                 'email'    => ['required_at_signup' => false],
                 'password' => ['required_at_signup' => false],
-                'phone'    => ['required_at_signup' => true],
+                'phone'    => ['enabled' => true, 'required_at_signup' => true],
                 'registration_fields' => ['phone'],
             ],
             ['phone'],
+        ];
+
+        yield 'email channel disabled ignores required_at_signup' => [
+            [
+                'email'    => ['enabled' => false, 'required_at_signup' => true],
+                'password' => ['required_at_signup' => true],
+            ],
+            ['password'],
+        ];
+
+        yield 'phone channel disabled ignores required_at_signup' => [
+            [
+                'email'    => ['required_at_signup' => false],
+                'password' => ['required_at_signup' => false],
+                'phone'    => ['enabled' => false, 'required_at_signup' => true],
+                'registration_fields' => ['phone'],
+            ],
+            [],
+        ];
+
+        yield 'phone disabled excluded from registration_fields' => [
+            [
+                'password' => ['required_at_signup' => true],
+                'phone'    => ['enabled' => false],
+                'registration_fields' => ['email', 'password', 'phone'],
+            ],
+            ['email', 'password'],
+        ];
+
+        yield 'phone enabled but not required at signup excluded' => [
+            [
+                'password' => ['required_at_signup' => true],
+                'phone'    => ['enabled' => true, 'required_at_signup' => false],
+                'registration_fields' => ['email', 'password', 'phone'],
+            ],
+            ['email', 'password'],
+        ];
+
+        yield 'password on, email off, phone on' => [
+            [
+                'email'    => ['enabled' => false],
+                'password' => ['required_at_signup' => true],
+                'phone'    => ['enabled' => true, 'required_at_signup' => true],
+                'registration_fields' => ['email', 'password', 'phone'],
+            ],
+            ['password', 'phone'],
+        ];
+
+        yield 'all channels disabled yields empty fields' => [
+            [
+                'email'    => ['enabled' => false],
+                'password' => ['enabled' => false],
+                'phone'    => ['enabled' => false],
+                'registration_fields' => ['email', 'password', 'phone'],
+            ],
+            [],
+        ];
+
+        yield 'password disabled, email only' => [
+            [
+                'password' => ['enabled' => false],
+                'phone'    => ['enabled' => false],
+                'registration_fields' => ['email', 'password'],
+            ],
+            ['email'],
         ];
     }
 

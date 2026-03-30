@@ -144,13 +144,45 @@ class AccountManagerTest extends TestCase
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'registration_fields' => ['email', 'password'],
-            'phone' => ['required_at_signup' => true],
+            'phone' => ['enabled' => true, 'required_at_signup' => true],
         ];
 
         $result = $this->manager->registerUser([
             'email'    => 'test@example.com',
             'password' => 'StrongPass1!',
             'phone'    => '+1234567890',
+        ]);
+
+        $this->assertTrue($result->success);
+    }
+
+    public function testRegisterUserEmailNotRequiredWhenEmailChannelDisabled(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 51;
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'email'    => ['enabled' => false, 'required_at_signup' => true],
+            'password' => ['enabled' => true, 'required_at_signup' => true],
+        ];
+
+        $result = $this->manager->registerUser([
+            'password' => 'StrongPass1!',
+        ]);
+
+        $this->assertTrue($result->success);
+    }
+
+    public function testRegisterUserPhoneNotRequiredWhenPhoneChannelDisabled(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 52;
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'phone' => ['enabled' => false, 'required_at_signup' => true],
+        ];
+
+        $result = $this->manager->registerUser([
+            'email'    => 'test@example.com',
+            'password' => 'StrongPass1!',
         ]);
 
         $this->assertTrue($result->success);

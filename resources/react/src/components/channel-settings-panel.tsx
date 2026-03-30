@@ -65,8 +65,11 @@ function PasswordContent({
               checked={settings.allow_sign_in}
               onCheckedChange={(checked) => onUpdate({ allow_sign_in: !!checked })}
             />
-            <span className="text-sm">{__('Allow to sign in', 'wp-sms')}</span>
+            <span className="text-sm">{__('Password login', 'wp-sms')}</span>
           </label>
+          <p className="text-xs text-muted-foreground ltr:pl-6 rtl:pr-6">
+            {__('Users can sign in using their email, username, or phone with a password', 'wp-sms')}
+          </p>
         </div>
       </div>
     </div>
@@ -255,8 +258,11 @@ function ChannelContent({
               checked={settings.allow_sign_in}
               onCheckedChange={(checked) => onUpdate({ allow_sign_in: !!checked })}
             />
-            <span className="text-sm">{__('Allow to sign in', 'wp-sms')}</span>
+            <span className="text-sm">{__('Passwordless login', 'wp-sms')}</span>
           </label>
+          <p className="text-xs text-muted-foreground ltr:pl-6 rtl:pr-6">
+            {__('Users can sign in with a one-time code or magic link, without needing a password', 'wp-sms')}
+          </p>
           <label className="flex items-center gap-2 cursor-pointer">
             <Checkbox
               checked={settings.reverify_on_change}

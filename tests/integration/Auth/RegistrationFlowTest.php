@@ -31,9 +31,12 @@ class RegistrationFlowTest extends IntegrationTestCase
         $this->assertEmpty($this->wpdb->getVerificationsByType(VerificationType::PhoneVerify->value));
     }
 
-    public function testRegisterFailsWithMissingEmail(): void
+    public function testRegisterFailsWithMissingEmailWhenEmailEnabled(): void
     {
-        $this->setSettings(AuthScenarios::passwordOnly());
+        $settings = AuthScenarios::withOverrides(AuthScenarios::passwordOnly(), [
+            'email' => ['enabled' => true, 'required_at_signup' => true],
+        ]);
+        $this->setSettings($settings);
 
         $result = $this->accountManager->registerUser([
             'password' => 'StrongPass1!',
@@ -41,6 +44,18 @@ class RegistrationFlowTest extends IntegrationTestCase
 
         $this->assertFalse($result->success);
         $this->assertSame('missing_email', $result->error);
+    }
+
+    public function testRegisterSucceedsWithoutEmailWhenEmailDisabled(): void
+    {
+        $this->setSettings(AuthScenarios::passwordOnly());
+        $this->simulateUserCreation(43);
+
+        $result = $this->accountManager->registerUser([
+            'password' => 'StrongPass1!',
+        ]);
+
+        $this->assertTrue($result->success);
     }
 
     public function testRegisterFailsWithMissingPassword(): void

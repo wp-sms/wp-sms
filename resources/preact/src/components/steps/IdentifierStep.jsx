@@ -2,7 +2,7 @@ import { useState, useEffect } from 'preact/hooks';
 import { __, sprintf } from '@wordpress/i18n';
 import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { api } from '../../api/client';
-import { primaryMethods } from '../../signals/config';
+import { primaryMethods, enabledChannels } from '../../signals/config';
 import {
     authError,
     authLoading,
@@ -23,23 +23,23 @@ import { Input } from '../ui/Input';
 import { Label } from '../ui/Label';
 import { SocialBlock } from '../SocialBlock';
 
-function getIdentifierHints(methods) {
-    const hasPhone = methods.includes('phone');
-    const hasEmail = methods.includes('email');
+function getIdentifierHints(methods, channels) {
+    const hasPhone = methods.includes('phone') || channels.includes('phone');
+    const hasEmail = methods.includes('email') || channels.includes('email');
     const hasPassword = methods.includes('password');
 
     const parts = [];
-    if (hasEmail || hasPassword) parts.push(__('Email', 'wp-sms'));
+    if (hasEmail) parts.push(__('Email', 'wp-sms'));
     if (hasPhone) parts.push(__('phone', 'wp-sms'));
     if (hasPassword) parts.push(__('username', 'wp-sms'));
 
-    if (parts.length === 0) return { label: __('Email or username', 'wp-sms'), placeholder: 'you@example.com' };
+    if (parts.length === 0) return { label: __('Username', 'wp-sms'), placeholder: '' };
 
     const label = parts.length === 1
         ? parts[0]
         : parts.slice(0, -1).join(', ') + ' ' + __('or', 'wp-sms') + ' ' + parts[parts.length - 1];
 
-    const placeholder = (hasEmail || hasPassword) ? 'you@example.com' : hasPhone ? '+1234567890' : '';
+    const placeholder = hasEmail ? 'you@example.com' : hasPhone ? '+1234567890' : '';
 
     return { label, placeholder };
 }
@@ -49,7 +49,8 @@ export function IdentifierStep() {
     const remembered = rememberedIdentifier.value;
     const identifierRef = useAutoFocus(!remembered);
     const methods = primaryMethods.value;
-    const { label: identifierLabel, placeholder } = getIdentifierHints(methods);
+    const channels = enabledChannels.value;
+    const { label: identifierLabel, placeholder } = getIdentifierHints(methods, channels);
 
     // Auto-identify for returning users.
     useEffect(() => {
