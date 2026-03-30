@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
 class AdminManager
 {
     /** @var string Menu slug used for the top-level admin page. */
-    const MENU_SLUG = 'wsms-auth';
+    const MENU_SLUG = 'wsms';
 
     public function __construct()
     {
@@ -81,6 +81,6 @@ class AdminManager
     {
         $screen = get_current_screen();
 
-        return $screen && str_contains($screen->id, 'wsms-');
+        return $screen && str_contains($screen->id, self::MENU_SLUG);
     }
 }

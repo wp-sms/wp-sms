@@ -3,6 +3,7 @@
 namespace WSms\Service\Assets;
 
 use WSms\PhoneRestriction\RestrictionSettings;
+use WSms\Service\Admin\AdminManager;
 use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
@@ -81,6 +82,6 @@ class AssetManager
      */
     private function isWsmsPage(string $hook): bool
     {
-        return strpos($hook, 'wsms-auth') !== false;
+        return str_contains($hook, AdminManager::MENU_SLUG);
     }
 }

@@ -23,7 +23,7 @@ if (!BASE || !user || !pass) {
   );
 }
 
-const ADMIN = `${BASE}/wp-admin/admin.php?page=wsms-auth`;
+const ADMIN = `${BASE}/wp-admin/admin.php?page=wsms`;
 
 const loginActions = [
   `navigate to ${BASE}/wp-login.php`,

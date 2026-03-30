@@ -3,6 +3,7 @@
 namespace WSms\Migration;
 
 use WSms\Migration\Adapters\Digits\DigitsDetector;
+use WSms\Service\Admin\AdminManager;
 
 defined('ABSPATH') || exit;
 
@@ -84,8 +85,8 @@ class TransitionNotice
     private function renderDetectedNotice(DetectionResult $detection, ?array $state): void
     {
         $summary = implode(', ', $detection->summary);
-        $migrationUrl = admin_url('admin.php?page=wsms-settings#/s-migration');
-        $snoozeUrl = wp_nonce_url(admin_url('admin-ajax.php?action=wsms_snooze_migration_notice'), 'wsms_snooze_migration');
+        $migrationUrl = $this->migrationUrl();
+        $snoozeUrl = $this->snoozeUrl();
 
         // Show initiator info if migration was started by another admin.
         $initiatorInfo = '';
@@ -126,7 +127,7 @@ class TransitionNotice
     {
         $progress = $this->stateManager->getProgress();
         $percent = $progress['percent'] ?? 0;
-        $migrationUrl = admin_url('admin.php?page=wsms-settings#/s-migration');
+        $migrationUrl = $this->migrationUrl();
 
         // Find current step label.
         $currentStepLabel = '';
@@ -162,8 +163,8 @@ class TransitionNotice
      */
     private function renderCompletedNotice(array $state): void
     {
-        $migrationUrl = admin_url('admin.php?page=wsms-settings#/s-migration');
-        $snoozeUrl = wp_nonce_url(admin_url('admin-ajax.php?action=wsms_snooze_migration_notice'), 'wsms_snooze_migration');
+        $migrationUrl = $this->migrationUrl();
+        $snoozeUrl = $this->snoozeUrl();
 
         $steps = $state['steps'] ?? [];
         $summaryParts = [];
@@ -195,8 +196,8 @@ class TransitionNotice
      */
     private function renderDeactivatedDataNotice(DetectionResult $detection): void
     {
-        $migrationUrl = admin_url('admin.php?page=wsms-settings#/s-migration');
-        $snoozeUrl = wp_nonce_url(admin_url('admin-ajax.php?action=wsms_snooze_migration_notice'), 'wsms_snooze_migration');
+        $migrationUrl = $this->migrationUrl();
+        $snoozeUrl = $this->snoozeUrl();
 
         echo '<div class="notice notice-info">';
         echo '<p>' . esc_html__('We found phone numbers and settings from Digits in your database. Want to import them into WP-SMS? Nothing will be deleted.', 'wp-sms') . '</p>';
@@ -205,6 +206,16 @@ class TransitionNotice
         echo '<a href="' . esc_url($snoozeUrl) . '" class="button">' . esc_html__('Remind Me Later', 'wp-sms') . '</a>';
         echo '</p>';
         echo '</div>';
+    }
+
+    private function migrationUrl(): string
+    {
+        return admin_url('admin.php?page=' . AdminManager::MENU_SLUG . '#/s-migration');
+    }
+
+    private function snoozeUrl(): string
+    {
+        return wp_nonce_url(admin_url('admin-ajax.php?action=wsms_snooze_migration_notice'), 'wsms_snooze_migration');
     }
 
     public function handleSnooze(): void
