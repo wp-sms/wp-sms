@@ -4,7 +4,7 @@ SMS & MMS Notifications, 2FA, OTP, and Integrations with E-Commerce and Form Bui
 
 ## Requirements
 
-- PHP 7.4+
+- PHP 8.1+
 - WordPress 6.0+
 - Node.js 20+
 
