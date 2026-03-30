@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
+import { PhoneDisplay } from '@/components/ui/phone-display';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { NameCell } from '@/components/ui/name-cell';
@@ -191,7 +192,7 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
                   {[contact.first_name, contact.last_name].filter(Boolean).join(' ') || '\u2014'}
                 </NameCell>
                 <TableCell className="text-sm">{contact.email || '\u2014'}</TableCell>
-                <TableCell className="text-sm">{contact.phone || '\u2014'}</TableCell>
+                <TableCell className="text-sm"><PhoneDisplay value={contact.phone} /></TableCell>
                 <TableCell>
                   <Badge variant={STATUS_VARIANTS[contact.status] || 'neutral'}>
                     {contactStatusLabel(contact.status)}

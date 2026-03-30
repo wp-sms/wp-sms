@@ -13,6 +13,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { EmptyState } from '@/components/ui/empty-state';
 import { DataTable } from '@/components/ui/data-table';
 import { Send, ScrollText, SlidersHorizontal } from 'lucide-react';
+import { PhoneDisplay } from '@/components/ui/phone-display';
 import { useMessageLogs } from '@/hooks/use-message-logs';
 import { StatusBadge, ChannelBadge } from '@/components/messaging/message-badges';
 import { MessageLogDetailPanel } from '@/components/messaging/message-log-detail-panel';
@@ -172,7 +173,7 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
                   onClick={() => setSelectedLog(log)}
                 >
                   <TableCell><ChannelBadge channel={log.channel} /></TableCell>
-                  <TableCell className="font-mono text-xs">{log.recipient}</TableCell>
+                  <TableCell><PhoneDisplay value={log.recipient} channel={log.channel} /></TableCell>
                   <TableCell><StatusBadge status={log.status} /></TableCell>
                   <TableCell className="text-xs">{log.gateway_id}</TableCell>
                   <TableCell className="text-xs">{log.cost ?? '\u2014'}</TableCell>

@@ -5,6 +5,7 @@ import type { Campaign, CampaignRecipient, CampaignStats } from '@/lib/api';
 import { MessageLogDetailPanel } from '@/components/messaging/message-log-detail-panel';
 import { CampaignStatusBadge } from '@/components/campaigns/campaign-status-badge';
 import { StatusBadge } from '@/components/messaging/message-badges';
+import { PhoneDisplay } from '@/components/ui/phone-display';
 import { PageHeader } from '@/components/layout/page-header';
 import { PageSection } from '@/components/ui/page-section';
 import { DataTable } from '@/components/ui/data-table';
@@ -682,7 +683,7 @@ function RecipientsSection({
                     )}
                     onClick={() => setSelectedLog(log)}
                   >
-                    <TableCell className="font-mono text-sm">{log.recipient}</TableCell>
+                    <TableCell><PhoneDisplay value={log.recipient} channel={log.channel} /></TableCell>
                     <TableCell>
                       <StatusBadge status={log.status} />
                     </TableCell>

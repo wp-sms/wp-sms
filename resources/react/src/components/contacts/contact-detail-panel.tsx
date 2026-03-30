@@ -13,6 +13,7 @@ import { contactStatusLabel } from '@/lib/constants';
 import { formatDate } from '@/lib/format';
 import { SourceLabel } from './source-label';
 import { CheckCircle2, XCircle } from 'lucide-react';
+import { PhoneDisplay } from '@/components/ui/phone-display';
 
 interface ContactDetailPanelProps {
   open: boolean;
@@ -109,7 +110,7 @@ export function ContactDetailPanel({
                 )}
                 {contact.phone && (
                   <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground">{contact.phone}</span>
+                    <span className="text-muted-foreground"><PhoneDisplay value={contact.phone} /></span>
                     <VerifiedBadge verified={!!contact.phone_verified} />
                   </div>
                 )}

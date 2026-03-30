@@ -144,6 +144,7 @@ class RestrictionSettings
         $displayMode = $pi['display_mode'] ?? 'separate_dial_code';
 
         $config = [
+            'displayMode'        => $displayMode,
             'defaultCountry'     => $defaultCountry,
             'preferredCountries' => $preferredCountries,
             'separateDialCode'   => $displayMode === 'separate_dial_code',

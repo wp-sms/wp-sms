@@ -9,6 +9,10 @@ declare global {
       roles: Record<string, string>;
       timezone: string;
       area: string;
+      phoneInput?: {
+        displayMode?: string;
+        defaultCountry?: string;
+      };
       currentUserHasMfa: boolean;
       currentUserRoles: string[];
       pluginUrl: string;
@@ -300,6 +304,7 @@ const FALLBACK_CONFIG: Window['wpSmsSettings'] = {
   roles: {},
   timezone: 'UTC',
   area: 'unified',
+  phoneInput: { displayMode: 'international' },
   currentUserHasMfa: false,
   currentUserRoles: [],
   pluginUrl: '',

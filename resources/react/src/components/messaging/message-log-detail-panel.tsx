@@ -5,6 +5,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/u
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { StatusBadge, ChannelBadge } from '@/components/messaging/message-badges';
+import { PhoneDisplay } from '@/components/ui/phone-display';
 import { formatLabel } from '@/lib/constants';
 
 interface MessageLogDetailPanelProps {
@@ -41,7 +42,7 @@ export function MessageLogDetailPanel({ log, onClose }: MessageLogDetailPanelPro
               {/* Recipient */}
               <div>
                 <span className="text-xs text-muted-foreground">{__('Recipient', 'wp-sms')}</span>
-                <p className="text-lg font-mono font-medium">{log.recipient}</p>
+                <p className="text-lg font-medium"><PhoneDisplay value={log.recipient} channel={log.channel} /></p>
               </div>
 
               {/* Error callout */}
