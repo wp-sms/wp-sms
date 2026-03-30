@@ -22,6 +22,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
+import { useIsRtl } from '@/hooks/use-is-rtl';
 import {
   Collapsible,
   CollapsibleContent,
@@ -147,6 +148,7 @@ function CollapsedGroupItem({ item, activeSection, isActive, onNavigate }: {
 }) {
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const isRtl = useIsRtl();
   const Icon = item.icon;
 
   useEffect(() => () => clearTimeout(closeTimer.current), []);
@@ -175,7 +177,7 @@ function CollapsedGroupItem({ item, activeSection, isActive, onNavigate }: {
           </SidebarMenuButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          side="right"
+          side={isRtl ? "left" : "right"}
           align="start"
           sideOffset={4}
           onMouseEnter={scheduleOpen}
