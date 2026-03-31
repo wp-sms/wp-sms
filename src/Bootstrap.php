@@ -16,6 +16,7 @@ use WSms\Container\LogServiceProvider;
 use WSms\Container\QueueServiceProvider;
 use WSms\Container\MessagingServiceProvider;
 use WSms\Container\ContactServiceProvider;
+use WSms\Container\PrivacyServiceProvider;
 use WSms\Container\FlowServiceProvider;
 use WSms\Container\CampaignServiceProvider;
 use WSms\Container\IntegrationServiceProvider;
@@ -66,6 +67,7 @@ class Bootstrap
         QueueServiceProvider::class,
         MessagingServiceProvider::class,
         ContactServiceProvider::class,
+        PrivacyServiceProvider::class,
         FlowServiceProvider::class,
         CampaignServiceProvider::class,
         PhoneRestrictionServiceProvider::class,

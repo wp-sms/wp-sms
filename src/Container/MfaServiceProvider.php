@@ -11,7 +11,6 @@ use WSms\Mfa\Channels\TelegramChannel;
 use WSms\Mfa\Channels\PasskeyChannel;
 use WSms\Mfa\Channels\TotpChannel;
 use WSms\Mfa\MfaManager;
-use WSms\Verification\OtpGenerator;
 use WSms\Mfa\SecretEncryptor;
 use WSms\Mfa\UserFactorRepository;
 use WSms\Line\LineBotClient;
@@ -154,16 +153,23 @@ class MfaServiceProvider implements ServiceProvider
         $manager->registerChannel($container->get('mfa.channel.line'));
         $manager->registerChannel($container->get('mfa.channel.totp'));
         $manager->registerChannel($container->get('mfa.channel.passkey'));
-        // Inject UserFactorRepository into channels.
+        // Inject dependencies into all registered channels.
         $factorRepo = $container->get('mfa.factor_repository');
+        $settingsRepo = $container->get('auth.settings');
+        $manager->setSettingsRepository($settingsRepo);
+
         foreach ($manager->getAvailableChannels() as $channel) {
             if (method_exists($channel, 'setUserFactorRepository')) {
                 $channel->setUserFactorRepository($factorRepo);
             }
+            if (method_exists($channel, 'setSettingsRepository')) {
+                $channel->setSettingsRepository($settingsRepo);
+            }
         }
-        // Also inject into internal magic link channel.
-        $container->get('mfa.channel.magic')->setUserFactorRepository($factorRepo);
 
-        // MagicLinkChannel is NOT registered — it's used internally by phone/email channels.
+        // MagicLinkChannel is internal (not in getAvailableChannels) — inject separately.
+        $magicChannel = $container->get('mfa.channel.magic');
+        $magicChannel->setUserFactorRepository($factorRepo);
+        $magicChannel->setSettingsRepository($settingsRepo);
     }
 }
