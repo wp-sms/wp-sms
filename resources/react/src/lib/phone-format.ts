@@ -9,6 +9,8 @@ import type { PhoneDisplayMode } from '@/lib/constants';
 
 export interface FormattedPhone {
   formatted: string;
+  dialCode?: string;
+  tooltipText?: string;
   flag: string;
 }
 
@@ -38,16 +40,21 @@ export function formatPhoneDisplay(
   const formatted = formatPhone(national, country.format);
   const flag = getFlag(country.code);
 
-  let display: string;
+  const dialCode = `+${country.dialCode}`;
+
   if (mode === 'national') {
+    let display: string;
     if (country.displayNationalPrefix && country.nationalPrefix) {
       display = country.nationalPrefix + formatted;
     } else {
       display = formatted;
     }
-  } else {
-    display = `+${country.dialCode} ${formatted}`;
+    return { formatted: display, tooltipText: `${dialCode} ${formatted}`, flag };
   }
 
-  return { formatted: display, flag };
+  if (mode === 'separate_dial_code') {
+    return { formatted, dialCode, flag };
+  }
+
+  return { formatted: `${dialCode} ${formatted}`, dialCode, flag };
 }

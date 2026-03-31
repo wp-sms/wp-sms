@@ -53,10 +53,52 @@ describe('formatPhoneDisplay', () => {
   });
 
   describe('separate_dial_code mode', () => {
-    it('formats same as international for display', () => {
+    it('returns national part only in formatted', () => {
       const result = formatPhoneDisplay('+12025551234', 'separate_dial_code');
       expect(result).not.toBeNull();
-      expect(result!.formatted).toMatch(/^\+1\s/);
+      expect(result!.formatted).not.toMatch(/^\+/);
+      expect(result!.dialCode).toBe('+1');
+    });
+
+    it('returns dial code for UK number', () => {
+      const result = formatPhoneDisplay('+442079460958', 'separate_dial_code');
+      expect(result).not.toBeNull();
+      expect(result!.dialCode).toBe('+44');
+      expect(result!.formatted).not.toMatch(/^\+/);
+    });
+  });
+
+  describe('dialCode field', () => {
+    it('is present for international mode', () => {
+      const result = formatPhoneDisplay('+12025551234', 'international');
+      expect(result!.dialCode).toBe('+1');
+    });
+
+    it('is present for separate_dial_code mode', () => {
+      const result = formatPhoneDisplay('+492012345678', 'separate_dial_code');
+      expect(result!.dialCode).toBe('+49');
+    });
+
+    it('is absent for national mode', () => {
+      const result = formatPhoneDisplay('+12025551234', 'national');
+      expect(result!.dialCode).toBeUndefined();
+    });
+  });
+
+  describe('tooltipText field', () => {
+    it('is present for national mode with international format', () => {
+      const result = formatPhoneDisplay('+442079460958', 'national');
+      expect(result!.tooltipText).toMatch(/^\+44\s/);
+    });
+
+    it('is absent for international mode', () => {
+      const result = formatPhoneDisplay('+12025551234', 'international');
+      expect(result!.tooltipText).toBeUndefined();
+    });
+
+    it('is absent for separate_dial_code mode', () => {
+      const result = formatPhoneDisplay('+12025551234', 'separate_dial_code');
+      expect(result!.tooltipText).toBeUndefined();
     });
   });
 

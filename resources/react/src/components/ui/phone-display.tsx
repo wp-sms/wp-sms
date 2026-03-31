@@ -1,6 +1,7 @@
 import { formatPhoneDisplay } from '@/lib/phone-format';
 import type { PhoneDisplayMode } from '@/lib/constants';
 import { getConfig } from '@/lib/api';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface PhoneDisplayProps {
   value: string | null | undefined;
@@ -15,13 +16,30 @@ export function PhoneDisplay({ value, channel, fallback = '\u2014' }: PhoneDispl
   if (!value) return <>{fallback}</>;
   if (channel && channel !== 'sms') return <>{value}</>;
 
-  const result = formatPhoneDisplay(value, getDisplayMode());
+  const mode = getDisplayMode();
+  const result = formatPhoneDisplay(value, mode);
   if (!result) return <>{value}</>;
 
-  return (
-    <span dir="ltr" className="inline-flex items-center gap-1.5 font-mono text-sm tabular-nums">
-      <span aria-hidden="true">{result.flag}</span>
+  const showFlag = mode !== 'national';
+
+  const display = (
+    <span dir="ltr" className="inline-flex items-center gap-1 font-mono text-xs tabular-nums">
+      {showFlag && <span aria-hidden="true">{result.flag}</span>}
+      {result.dialCode && mode === 'separate_dial_code' && (
+        <span className="text-muted-foreground">{result.dialCode}</span>
+      )}
       {result.formatted}
     </span>
   );
+
+  if (result.tooltipText) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>{display}</TooltipTrigger>
+        <TooltipContent>{result.tooltipText}</TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return display;
 }
