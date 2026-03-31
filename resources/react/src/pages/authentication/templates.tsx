@@ -22,6 +22,7 @@ import { DataTable } from '@/components/ui/data-table';
 import { Mail, MessageSquare, Send, Smartphone, Eye, RotateCcw, Settings, RefreshCw, AlertTriangle, ExternalLink, FileText } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 import { CHANNEL_LABELS } from '@/components/gateway-config-form';
+import { AuthDisabledNotice } from '@/components/auth-disabled-notice';
 
 interface VariableInfo {
   name: string;
@@ -189,7 +190,7 @@ function PreviewDialog({
   );
 }
 
-export function Templates() {
+export function Templates({ authEnabled = true }: { authEnabled?: boolean }) {
   const [templates, setTemplates] = useState<TemplateData[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingTemplate, setEditingTemplate] = useState<TemplateData | null>(null);
@@ -209,6 +210,7 @@ export function Templates() {
 
   return (
     <>
+      {!authEnabled && <AuthDisabledNotice />}
       <div className="space-y-4">
         <PageHeader icon={FileText} title={__('Message Templates', 'wp-sms')} metadata={!loading ? sprintf(_n('%d template', '%d templates', templates.length, 'wp-sms'), templates.length) : undefined} />
         <DataTable loading={loading} isEmpty={templates.length === 0} empty={<p className="py-8 text-center text-sm text-muted-foreground">{__('No templates found.', 'wp-sms')}</p>}>

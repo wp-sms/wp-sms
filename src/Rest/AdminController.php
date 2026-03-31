@@ -24,6 +24,7 @@ class AdminController extends Controller
 {
     /** Top-level scalar/array setting keys allowed for direct writes. */
     private const ALLOWED_SCALAR_SETTINGS = [
+        'auth_enabled',
         'mfa_required_roles',
         'enrollment_timing',
         'grace_period_days',
@@ -203,8 +204,9 @@ class AdminController extends Controller
             update_option('wsms_auth_settings', $updated);
             $this->settingsRepo->invalidateCache();
 
-            // Flush rewrite rules when auth_base_url changes.
-            if (($current['auth_base_url'] ?? '/account') !== ($updated['auth_base_url'] ?? '/account')) {
+            $baseUrlChanged = ($current['auth_base_url'] ?? '/account') !== ($updated['auth_base_url'] ?? '/account');
+            $authToggled = ($current['auth_enabled'] ?? false) !== ($updated['auth_enabled'] ?? false);
+            if ($baseUrlChanged || $authToggled) {
                 update_option('wsms_flush_rewrite', '1', true);
             }
 

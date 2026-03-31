@@ -167,6 +167,15 @@ class AuthServiceProvider implements ServiceProvider
     /** {@inheritDoc} */
     public function boot(ServiceContainer $container): void
     {
+        $settings = $container->get('auth.settings');
+
+        // Auth disabled: skip all public-facing auth hooks, register no-op shortcode.
+        if (!$settings->get('auth_enabled', false)) {
+            $this->bootNonAuthHooks($container);
+            add_shortcode('wsms_auth', fn() => '');
+            return;
+        }
+
         // Transition mode: skip auth hooks that conflict with the active migration source plugin.
         if (get_option('wsms_transition_mode')) {
             $this->bootNonAuthHooks($container);

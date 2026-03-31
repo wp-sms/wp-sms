@@ -47,6 +47,7 @@ import { copyToClipboard, generateSlug, getAvailableRoles } from '@/lib/utils';
 import { SYSTEM_FIELD_OPTIONS } from '@/lib/constants';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/error-utils';
+import { AuthDisabledNotice } from '@/components/auth-disabled-notice';
 
 interface FormEditorState {
   name: string;
@@ -75,7 +76,7 @@ const EMPTY_FORM: FormEditorState = {
   branding: {},
 };
 
-export function RegistrationForms() {
+export function RegistrationForms({ authEnabled = true }: { authEnabled?: boolean }) {
   const { forms, loading, create, update, remove, duplicate } = useRegistrationForms();
   const confirm = useConfirm();
   const [panelOpen, setPanelOpen] = useState(false);
@@ -198,6 +199,7 @@ export function RegistrationForms() {
 
   return (
     <>
+      {!authEnabled && <AuthDisabledNotice />}
       <div className="space-y-4">
         <PageHeader
           icon={FileText}

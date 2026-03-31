@@ -269,15 +269,22 @@ class RestServiceProvider implements ServiceProvider
     public function boot(ServiceContainer $container): void
     {
         add_action('rest_api_init', function () use ($container) {
-            $container->get('rest.auth')->registerRoutes();
-            $container->get('rest.mfa')->registerRoutes();
-            $container->get('rest.enrollment')->registerRoutes();
-            $container->get('rest.account')->registerRoutes();
+            $authEnabled = $container->get('auth.settings')->get('auth_enabled', false);
+
+            if ($authEnabled) {
+                $container->get('rest.auth')->registerRoutes();
+                $container->get('rest.mfa')->registerRoutes();
+                $container->get('rest.enrollment')->registerRoutes();
+                $container->get('rest.account')->registerRoutes();
+                $container->get('rest.social')->registerRoutes();
+                $container->get('rest.telegram')->registerRoutes();
+                $container->get('rest.line')->registerRoutes();
+            }
+
+            // Admin routes always registered (settings management).
             $container->get('rest.admin')->registerRoutes();
-            $container->get('rest.social')->registerRoutes();
-            $container->get('rest.telegram')->registerRoutes();
-            $container->get('rest.line')->registerRoutes();
             $container->get('rest.admin_user')->registerRoutes();
+
             // Messaging platform routes
             $container->get('rest.flows')->registerRoutes();
             $container->get('rest.gateways')->registerRoutes();

@@ -116,6 +116,7 @@
         "enabled": false,
         "ttl": 2592000
     },
+    "auth_enabled": false,
     "mfa_required_roles": [],
     "enrollment_timing": "voluntary",
     "grace_period_days": 7,

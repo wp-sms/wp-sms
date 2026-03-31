@@ -8,6 +8,7 @@ import { PageHeader } from '@/components/layout/page-header';
 import { FIELD_TYPES, FIELD_SOURCES, FIELD_VISIBILITY } from '@/lib/constants';
 import { useConfirm } from '@/components/confirm-provider';
 import type { AuthSettings, ProfileFieldDefinition } from '@/lib/api';
+import { AuthDisabledNotice } from '@/components/auth-disabled-notice';
 
 interface ProfileFieldsProps {
   settings: Required<AuthSettings>;
@@ -118,7 +119,9 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
   }
 
   return (
-    <div className="space-y-4">
+    <>
+      {!settings.auth_enabled && <AuthDisabledNotice />}
+      <div className="space-y-4">
       <PageHeader
         icon={ListChecks}
         title={__('Profile Fields', 'wp-sms')}
@@ -188,6 +191,7 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
         existingIds={allFields.map((f) => f.id)}
         onSave={handleSaveField}
       />
-    </div>
+      </div>
+    </>
   );
 }

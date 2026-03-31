@@ -6,7 +6,7 @@ import { DEFAULTS } from '@/lib/constants';
 
 describe('AuthenticationPage', () => {
   const defaultProps = {
-    settings: { ...DEFAULTS },
+    settings: { ...DEFAULTS, auth_enabled: true },
     onUpdate: vi.fn(),
   };
 
@@ -22,12 +22,13 @@ describe('AuthenticationPage', () => {
     it('shows email as enabled by default', () => {
       render(<AuthenticationPage section="channels" {...defaultProps} />);
 
-      // Email channel is enabled by default, password is enabled by default
+      // switches[0] is the auth_enabled toggle (on in test defaults)
       const switches = screen.getAllByRole('switch');
-      // Phone (off), Email (on), Password (on)
-      expect(switches[0]).not.toBeChecked(); // Phone
-      expect(switches[1]).toBeChecked(); // Email
-      expect(switches[2]).toBeChecked(); // Password
+      // Auth toggle (on), Phone (off), Email (on), Password (on)
+      expect(switches[0]).toBeChecked(); // Auth toggle
+      expect(switches[1]).not.toBeChecked(); // Phone
+      expect(switches[2]).toBeChecked(); // Email
+      expect(switches[3]).toBeChecked(); // Password
     });
 
     it('calls onUpdate when toggling phone channel', async () => {

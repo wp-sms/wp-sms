@@ -124,6 +124,7 @@ export const SYSTEM_FIELD_OPTIONS = [
 
 /** Must match PHP SettingsRepository::DEFAULTS — enforced by test. */
 export const DEFAULTS: Required<AuthSettings> = {
+  auth_enabled: false,
   phone: {
     enabled: false,
     usage: 'login',

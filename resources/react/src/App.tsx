@@ -80,11 +80,11 @@ export default function App() {
       case 'channels':
         return <Channels settings={settings} onUpdate={updateSetting} />;
       case 'registration-forms':
-        return <RegistrationForms />;
+        return <RegistrationForms authEnabled={!!settings.auth_enabled} />;
       case 'profile-fields':
         return <ProfileFields settings={settings} onUpdate={updateSetting} />;
       case 'templates':
-        return <Templates />;
+        return <Templates authEnabled={!!settings.auth_enabled} />;
 
       // Platform
       case 'gateways':

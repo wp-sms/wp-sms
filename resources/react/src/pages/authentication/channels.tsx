@@ -13,7 +13,8 @@ import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import type { ChannelId } from '@/lib/constants';
 import { GoogleIcon, TelegramIcon, LineIcon, AppleIcon, LinkedInIcon, FacebookIcon, MicrosoftIcon, GitHubIcon, TwitterIcon } from '@/components/icons/social';
 import { SOCIAL_METHODS } from '@/lib/constants';
-import { Smartphone, Mail, KeyRound, Fingerprint, Send, MessageCircle, ExternalLink, LogIn } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Smartphone, Mail, KeyRound, Fingerprint, Send, MessageCircle, ExternalLink, LogIn, Shield } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 import type { AuthSettings, PhoneChannelSettings, EmailChannelSettings, TelegramSettings, LineSettings } from '@/lib/api';
 
@@ -111,10 +112,33 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
   const emailInLogin = settings.email.enabled && emailUsage === 'login';
   const emailInMfa = settings.email.enabled && emailUsage === 'mfa';
 
+  const authEnabled = !!settings.auth_enabled;
+
   return (
     <>
       <PageHeader icon={LogIn} title={__('Channels', 'wp-sms')} />
-      <div className="mt-4 grid gap-6 lg:grid-cols-2">
+
+      <div className="mt-4 flex items-center justify-between rounded-lg border bg-card px-4 py-3">
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10">
+            <Shield className="h-4 w-4 text-primary" />
+          </div>
+          <div>
+            <h3 className="text-sm font-medium">{__('Authentication', 'wp-sms')}</h3>
+            <p className="text-xs text-muted-foreground">
+              {authEnabled
+                ? __('Auth pages are live. Login, registration, and account pages are active.', 'wp-sms')
+                : __('Enable custom login, registration, and account pages.', 'wp-sms')}
+            </p>
+          </div>
+        </div>
+        <Switch
+          checked={authEnabled}
+          onCheckedChange={(v) => onUpdate('auth_enabled', v)}
+        />
+      </div>
+
+      <div className={`mt-4 grid gap-6 lg:grid-cols-2 ${!authEnabled ? 'opacity-60' : ''}`}>
         {/* Left Column — Sign-in Methods */}
         <div className="space-y-4">
           <Card>

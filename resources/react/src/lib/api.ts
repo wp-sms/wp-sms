@@ -197,6 +197,7 @@ export interface BrandingSettings {
 }
 
 export interface AuthSettings {
+  auth_enabled?: boolean;
   phone?: PhoneChannelSettings;
   email?: EmailChannelSettings;
   password?: PasswordSettings;

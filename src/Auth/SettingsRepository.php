@@ -109,6 +109,7 @@ class SettingsRepository
         ],
 
         // --- Top-level scalars ---
+        'auth_enabled'                    => false,
         'mfa_required_roles'              => [],
         'enrollment_timing'               => 'voluntary',
         'grace_period_days'               => 7,

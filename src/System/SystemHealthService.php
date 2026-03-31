@@ -417,6 +417,15 @@ class SystemHealthService
         $checks = [];
         $settings = $this->authSettings->all();
 
+        if (empty($settings['auth_enabled'])) {
+            return [$this->makeCheck(
+                'auth_disabled',
+                __('Authentication', 'wp-sms'),
+                'skip',
+                __('Authentication is disabled. Enable it in Authentication → Channels.', 'wp-sms'),
+            )];
+        }
+
         // auth_primary_methods — At least one login method available
         $passwordEnabled = !empty($settings['password']['enabled']);
         $phoneLogin = !empty($settings['phone']['enabled']) && ($settings['phone']['usage'] ?? '') === 'login';
