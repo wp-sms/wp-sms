@@ -25,6 +25,7 @@ use WSms\Auth\RateLimiter;
 use WSms\Auth\RegistrationFormRepository;
 use WSms\Auth\SettingsRepository;
 use WSms\Auth\TrustedDeviceManager;
+use WSms\Service\Admin\AdminBarManager;
 
 defined('ABSPATH') || exit;
 
@@ -163,6 +164,12 @@ class AuthServiceProvider implements ServiceProvider
                 $container->get('auth.suspension'),
             );
         });
+
+        $container->register('auth.admin_bar', function () use ($container) {
+            return new AdminBarManager(
+                $container->get('auth.settings'),
+            );
+        });
     }
 
     /** {@inheritDoc} */
@@ -190,6 +197,7 @@ class AuthServiceProvider implements ServiceProvider
 
         $container->get('auth.login_guard')->registerHooks();
         $container->get('auth.api_guard')->registerHooks();
+        $container->get('auth.admin_bar')->registerHooks();
 
         // Register custom profile field meta on init.
         add_action('init', function () use ($container) {
