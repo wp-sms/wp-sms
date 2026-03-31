@@ -514,6 +514,11 @@ class PolicyEngine
         return $this->settingsRepo->get($key, $default);
     }
 
+    public function getPrivacyUrl(): string
+    {
+        return $this->settingsRepo->getPrivacyUrl();
+    }
+
     /**
      * Resolve effective settings for a registration form.
      *

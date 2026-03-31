@@ -129,7 +129,6 @@ class SettingsRepository
         'privacy_url'                     => '',
         'subscription_consent_text'       => '',
         'subscription_consent_required'   => false,
-        'subscription_consent_privacy_url' => '',
     ];
 
     /**
@@ -200,6 +199,20 @@ class SettingsRepository
     public function get(string $key, mixed $default = null): mixed
     {
         return $this->all()[$key] ?? $default;
+    }
+
+    /**
+     * Resolve the effective privacy policy URL.
+     *
+     * Falls back to the WordPress Privacy Policy page when the setting is empty.
+     */
+    public function getPrivacyUrl(): string
+    {
+        $url = $this->get('privacy_url', '');
+        if (!$url) {
+            $url = get_privacy_policy_url();
+        }
+        return (string) $url;
     }
 
     /**

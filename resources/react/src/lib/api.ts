@@ -230,7 +230,6 @@ export interface AuthSettings {
   trusted_devices?: TrustedDevicesSettings;
   subscription_consent_text?: string;
   subscription_consent_required?: boolean;
-  subscription_consent_privacy_url?: string;
 }
 
 export interface TrustedDevicesSettings {

@@ -565,7 +565,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                     onChange={(e) =>
                       setFormState((prev) => ({ ...prev, privacy_url: e.target.value || null }))
                     }
-                    placeholder={__('Leave empty to use WordPress privacy page', 'wp-sms')}
+                    placeholder={__('Leave empty to use global setting', 'wp-sms')}
                   />
                 </Field>
 

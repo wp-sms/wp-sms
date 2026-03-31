@@ -20,6 +20,7 @@ class SubscriptionFormRenderer
         private readonly RestrictionSettings $restrictionSettings,
         private readonly BrandingRepository $brandingRepo,
         private readonly CaptchaGuard $captchaGuard,
+        private readonly \WSms\Auth\SettingsRepository $settingsRepo,
     ) {
     }
 
@@ -125,13 +126,9 @@ class SubscriptionFormRenderer
         }
 
         // Resolve consent config: per-form override > global settings > WP privacy page.
-        $authSettings = get_option('wsms_auth_settings', []);
-        $consentText = $form->getConsentText() ?? ($authSettings['subscription_consent_text'] ?? '');
-        $consentRequired = $form->isConsentRequired() ?? ($authSettings['subscription_consent_required'] ?? false);
-        $privacyUrl = $form->getPrivacyUrl() ?? ($authSettings['subscription_consent_privacy_url'] ?? '');
-        if (!$privacyUrl && function_exists('get_privacy_policy_url')) {
-            $privacyUrl = get_privacy_policy_url();
-        }
+        $consentText = $form->getConsentText() ?? $this->settingsRepo->get('subscription_consent_text', '');
+        $consentRequired = $form->isConsentRequired() ?? $this->settingsRepo->get('subscription_consent_required', false);
+        $privacyUrl = $form->getPrivacyUrl() ?? $this->settingsRepo->getPrivacyUrl();
 
         if ($consentText !== '') {
             $config['consent'] = [

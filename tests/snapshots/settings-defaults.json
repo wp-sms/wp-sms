@@ -138,6 +138,5 @@
     "terms_url": "",
     "privacy_url": "",
     "subscription_consent_text": "",
-    "subscription_consent_required": false,
-    "subscription_consent_privacy_url": ""
+    "subscription_consent_required": false
 }

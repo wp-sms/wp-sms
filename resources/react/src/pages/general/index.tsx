@@ -138,7 +138,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
                 placeholder="https://example.com/privacy"
               />
               <FieldDescription>
-                {__('When set, a consent line appears on the registration page.', 'wp-sms')}
+                {__('Used on auth pages and as the default for subscription forms. Falls back to the WordPress privacy page if empty.', 'wp-sms')}
               </FieldDescription>
             </Field>
           </div>
@@ -162,16 +162,6 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
               <FieldDescription>
                 {sprintf(__('HTML allowed. Use %s as a placeholder for the privacy policy link.', 'wp-sms'), '{privacy_url}')}
               </FieldDescription>
-            </Field>
-
-            <Field>
-              <FieldLabel htmlFor="subscription_consent_privacy_url">{__('Privacy Policy URL', 'wp-sms')}</FieldLabel>
-              <Input
-                id="subscription_consent_privacy_url"
-                value={settings.subscription_consent_privacy_url}
-                onChange={(e) => onUpdate('subscription_consent_privacy_url', e.target.value)}
-                placeholder={__('Leave empty to use WordPress privacy page', 'wp-sms')}
-              />
             </Field>
 
             <SwitchField

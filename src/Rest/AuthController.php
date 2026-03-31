@@ -327,7 +327,7 @@ class AuthController extends Controller
         }
 
         $termsUrl = $this->policy->getSetting('terms_url', '');
-        $privacyUrl = $this->policy->getSetting('privacy_url', '');
+        $privacyUrl = $this->policy->getPrivacyUrl();
         if ($termsUrl || $privacyUrl) {
             $config['legal_links'] = [
                 'terms_url'   => $termsUrl,

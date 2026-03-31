@@ -161,7 +161,6 @@ class SettingsRepositoryTest extends TestCase
         $this->assertEquals('', $settings['privacy_url']);
         $this->assertEquals('', $settings['subscription_consent_text']);
         $this->assertFalse($settings['subscription_consent_required']);
-        $this->assertEquals('', $settings['subscription_consent_privacy_url']);
     }
 
     // --- invalidateCache ---

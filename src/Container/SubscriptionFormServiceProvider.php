@@ -25,6 +25,7 @@ class SubscriptionFormServiceProvider implements ServiceProvider
             $c->get('phone_restriction.settings'),
             $c->get('branding.repository'),
             $c->get('auth.captcha_guard'),
+            $c->get('auth.settings'),
         ));
     }
 

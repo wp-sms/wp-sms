@@ -45,7 +45,6 @@ class AdminController extends Controller
         'mfa_policy_activated_at',
         'subscription_consent_text',
         'subscription_consent_required',
-        'subscription_consent_privacy_url',
     ];
 
     /** Channel keys that accept nested sub-objects. */
