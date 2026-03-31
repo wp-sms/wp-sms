@@ -1,14 +1,17 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { __ } from '@wordpress/i18n';
 import { api, type PlatformIntegration, type IntegrationDetail, type ImportFields, type ImportSettings, type ImportStats, type ListResponse } from '@/lib/api';
-import { isAbortError } from '@/lib/error-utils';
+import { isAbortError, getErrorMessage } from '@/lib/error-utils';
 
 export function useIntegrations(): {
   integrations: PlatformIntegration[];
   loading: boolean;
+  error: string | null;
   refetch: () => void;
 } {
   const [integrations, setIntegrations] = useState<PlatformIntegration[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController>();
 
   const fetchIntegrations = useCallback(async () => {
@@ -17,6 +20,7 @@ export function useIntegrations(): {
     abortRef.current = controller;
 
     setLoading(true);
+    setError(null);
     try {
       const res = await api.get<ListResponse<PlatformIntegration>>('integrations', { signal: controller.signal });
       if (!controller.signal.aborted) {
@@ -25,6 +29,7 @@ export function useIntegrations(): {
     } catch (e) {
       if (isAbortError(e)) return;
       setIntegrations([]);
+      setError(getErrorMessage(e, __('Failed to load integrations', 'wp-sms')));
     } finally {
       if (!controller.signal.aborted) {
         setLoading(false);
@@ -37,7 +42,7 @@ export function useIntegrations(): {
     return () => { abortRef.current?.abort(); };
   }, [fetchIntegrations]);
 
-  return { integrations, loading, refetch: fetchIntegrations };
+  return { integrations, loading, error, refetch: fetchIntegrations };
 }
 
 export function useIntegrationDetail(id: string | null): {

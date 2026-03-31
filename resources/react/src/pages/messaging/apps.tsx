@@ -10,7 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Blocks, ChevronRight, Info, RefreshCw, Search, Settings2, Zap, type LucideIcon } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle, ArrowLeft, Blocks, ChevronRight, Info, RefreshCw, Search, Settings2, Zap, type LucideIcon } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 import { INTEGRATION_CATEGORY_LABELS } from '@/lib/constants';
 
@@ -185,7 +186,7 @@ function AppDetailPage({ integrationId, settings, onUpdate, onBack }: {
 }
 
 export function IntegrationsPage({ settings, onUpdate }: AppsProps) {
-  const { integrations, loading } = useIntegrations();
+  const { integrations, loading, error } = useIntegrations();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
@@ -197,13 +198,17 @@ export function IntegrationsPage({ settings, onUpdate }: AppsProps) {
   }, [integrations]);
 
   const filtered = useMemo(() => {
-    return integrations.filter((i) => {
+    const matched = integrations.filter((i) => {
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
         if (!i.name.toLowerCase().includes(q) && !i.id.toLowerCase().includes(q)) return false;
       }
       if (categoryFilter !== 'all' && i.category !== categoryFilter) return false;
       return true;
+    });
+    return matched.sort((a, b) => {
+      if (a.connected !== b.connected) return a.connected ? -1 : 1;
+      return a.name.localeCompare(b.name);
     });
   }, [integrations, searchQuery, categoryFilter]);
 
@@ -230,6 +235,18 @@ export function IntegrationsPage({ settings, onUpdate }: AppsProps) {
             <Skeleton key={i} className="h-48" />
           ))}
         </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <PageHeader icon={Blocks} title={__('Integrations', 'wp-sms')} />
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       </div>
     );
   }

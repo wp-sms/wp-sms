@@ -25,6 +25,7 @@ defined('ABSPATH') || exit;
 class IntegrationController extends Controller
 {
     private const CONFIG_OPTION = 'wsms_integration_configs';
+    private const INTERNAL_IDS = ['wp_sms', 'wsms_contacts', 'wsms_auth', 'wsms_schedule', 'webhook'];
 
     public function __construct(
         private readonly IntegrationRegistry $integrationRegistry,
@@ -194,6 +195,9 @@ class IntegrationController extends Controller
             $integrations = [];
 
             foreach ($this->integrationRegistry->getAll() as $integration) {
+                if (in_array($integration->getId(), self::INTERNAL_IDS, true)) {
+                    continue;
+                }
                 $integrations[] = $this->formatIntegrationSummary($integration, $configs, $syncState);
             }
 

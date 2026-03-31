@@ -142,13 +142,7 @@ class IntegrationServiceProvider implements ServiceProvider
 
             // Simple integrations (no constructor injection)
             foreach ($this->integrations as $integrationClass) {
-                $integration = new $integrationClass();
-
-                if (!$integration->isAvailable()) {
-                    continue;
-                }
-
-                $this->registerIntegration($integration, $registry, $triggers, $actions);
+                $this->registerIntegration(new $integrationClass(), $registry, $triggers, $actions);
             }
 
             do_action('wsms_register_integrations', $registry, $triggers, $actions);

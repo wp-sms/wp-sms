@@ -340,6 +340,8 @@ export const INTEGRATION_CATEGORY_LABELS: Record<string, string> = {
   security: __('Security', 'wp-sms'),
   forms: __('Forms', 'wp-sms'),
   email_marketing: __('Email Marketing', 'wp-sms'),
+  automation: __('Automation', 'wp-sms'),
+  contacts: __('Contacts', 'wp-sms'),
 };
 
 /** Integration IDs that have auth-area settings (used for cross-reference notes). */
