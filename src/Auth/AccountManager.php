@@ -25,9 +25,6 @@ defined('ABSPATH') || exit;
 
 class AccountManager
 {
-    public const PLACEHOLDER_EMAIL_DOMAIN = 'noreply.wsms.local';
-    public const PLACEHOLDER_USERNAME_PREFIX = 'wsms_';
-    public const DEFAULT_PENDING_USER_TTL_HOURS = 24;
     private const USERNAME_FALLBACK = 'user';
     /** WordPress `user_login` column is 60 chars; reserve 10 for numeric suffix. */
     private const USERNAME_MAX_BASE_LENGTH = 50;
@@ -55,58 +52,14 @@ class AccountManager
         $this->sendingPolicyGuardResolver = $resolver;
     }
 
-    public static function isPlaceholderEmail(string $email): bool
-    {
-        return str_ends_with($email, '@' . self::PLACEHOLDER_EMAIL_DOMAIN);
-    }
-
-    public static function isPlaceholderUsername(string $username): bool
-    {
-        return str_starts_with($username, self::PLACEHOLDER_USERNAME_PREFIX);
-    }
-
-    /**
-     * Whether a user has a usable (known) password.
-     *
-     * '' = meta not set → pre-existing WP user, assume has password.
-     * '1' = explicitly has password. '0' = explicitly no password (social login).
-     */
-    public static function hasUsablePassword(int $userId): bool
-    {
-        $meta = get_user_meta($userId, UserMeta::HAS_USABLE_PASSWORD, true);
-
-        return $meta === '' || $meta === '1';
-    }
-
-    /**
-     * Get the raw verification state for a user's email and phone channels.
-     *
-     * @return array{email: array{has: bool, verified: bool}, phone: array{has: bool, verified: bool}}
-     */
-    public static function getUserVerificationState(int $userId): array
-    {
-        $userEmail = get_userdata($userId)?->user_email ?? '';
-
-        return [
-            'email' => [
-                'has'      => !empty($userEmail) && !self::isPlaceholderEmail($userEmail),
-                'verified' => (bool) get_user_meta($userId, UserMeta::EMAIL_VERIFIED, true),
-            ],
-            'phone' => [
-                'has'      => !empty(get_user_meta($userId, UserMeta::PHONE, true)),
-                'verified' => (bool) get_user_meta($userId, UserMeta::PHONE_VERIFIED, true),
-            ],
-        ];
-    }
-
     private static function generatePlaceholderEmail(): string
     {
-        return bin2hex(random_bytes(5)) . '@' . self::PLACEHOLDER_EMAIL_DOMAIN;
+        return bin2hex(random_bytes(5)) . '@' . UserInfo::PLACEHOLDER_EMAIL_DOMAIN;
     }
 
     private static function generatePlaceholderUsername(): string
     {
-        return self::PLACEHOLDER_USERNAME_PREFIX . bin2hex(random_bytes(5));
+        return UserInfo::PLACEHOLDER_USERNAME_PREFIX . bin2hex(random_bytes(5));
     }
 
     /**
@@ -140,7 +93,7 @@ class AccountManager
         }
 
         // Exhausted numeric suffixes — fall back to random
-        return self::PLACEHOLDER_USERNAME_PREFIX . bin2hex(random_bytes(5));
+        return UserInfo::PLACEHOLDER_USERNAME_PREFIX . bin2hex(random_bytes(5));
     }
 
     /**
@@ -183,7 +136,7 @@ class AccountManager
 
         $this->cleanupExpiredPendingUsers($data, $email, $emailVerifyEnabled, $phoneVerifyEnabled, $settings);
 
-        if (!empty($data['phone']) && self::isPhoneTaken($data['phone'])) {
+        if (!empty($data['phone']) && UserInfo::isPhoneTaken($data['phone'])) {
             return OperationResult::fail(AuthErrorCode::PhoneExists, __('This phone number is already associated with another account.', 'wp-sms'));
         }
 
@@ -342,7 +295,7 @@ class AccountManager
             return;
         }
 
-        $ttlHours = (int) ($settings['pending_user_ttl_hours'] ?? self::DEFAULT_PENDING_USER_TTL_HOURS);
+        $ttlHours = (int) ($settings['pending_user_ttl_hours'] ?? UserInfo::DEFAULT_PENDING_USER_TTL_HOURS);
 
         if ($emailVerifyEnabled && !empty($email)) {
             $this->deleteExpiredPendingUser(get_user_by('email', $email), $ttlHours);
@@ -570,7 +523,7 @@ class AccountManager
                 return OperationResult::fail(AuthErrorCode::Cooldown, __('Please wait before changing your phone number.', 'wp-sms'));
             }
 
-            if (self::isPhoneTaken($phone, $userId)) {
+            if (UserInfo::isPhoneTaken($phone, $userId)) {
                 return OperationResult::fail(AuthErrorCode::PhoneExists, __('This phone number is already associated with another account.', 'wp-sms'));
             }
 
@@ -683,7 +636,7 @@ class AccountManager
             return OperationResult::fail(AuthErrorCode::UserNotFound, __('User not found.', 'wp-sms'));
         }
 
-        $hasUsablePassword = self::hasUsablePassword($userId);
+        $hasUsablePassword = UserInfo::hasUsablePassword($userId);
 
         if ($hasUsablePassword) {
             if (empty($currentPassword) || !wp_check_password($currentPassword, $user->user_pass, $userId)) {
@@ -785,7 +738,7 @@ class AccountManager
      */
     public function getVerificationStatus(int $userId): array
     {
-        $state = self::getUserVerificationState($userId);
+        $state = UserInfo::getUserVerificationState($userId);
         $pending = [];
 
         foreach ($state as $channel => $channelState) {
@@ -852,7 +805,7 @@ class AccountManager
 
         if ($channel === 'email') {
             $email = get_userdata($userId)?->user_email;
-            return (!empty($email) && !self::isPlaceholderEmail($email)) ? $email : null;
+            return (!empty($email) && !UserInfo::isPlaceholderEmail($email)) ? $email : null;
         }
 
         // For future channels, check user meta by convention: wsms_{channel}.
@@ -1023,7 +976,7 @@ class AccountManager
         }
 
         $settings = $this->settingsRepo->all();
-        $state = self::getUserVerificationState($userId);
+        $state = UserInfo::getUserVerificationState($userId);
 
         // Collect all channels that require verify_at_signup.
         $requiredChannels = [];
@@ -1063,7 +1016,7 @@ class AccountManager
         }
 
         $user = get_userdata($userId);
-        if (!$user || self::isPlaceholderEmail($user->user_email)) {
+        if (!$user || UserInfo::isPlaceholderEmail($user->user_email)) {
             return;
         }
 
@@ -1239,29 +1192,4 @@ class AccountManager
 
         return !empty($gatewayId) ? $gatewayId : null;
     }
-
-    /**
-     * Check if a phone number is already in use by another user.
-     */
-    public static function isPhoneTaken(string $phone, ?int $excludeUserId = null): bool
-    {
-        $normalized = PhoneValidator::toE164($phone);
-        if ($normalized === null) {
-            return false;
-        }
-
-        $args = [
-            'meta_key'   => UserMeta::PHONE,
-            'meta_value' => $normalized,
-            'number'     => 1,
-            'fields'     => 'ID',
-        ];
-
-        if ($excludeUserId !== null) {
-            $args['exclude'] = [$excludeUserId];
-        }
-
-        return !empty(get_users($args));
-    }
-
 }

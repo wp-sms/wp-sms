@@ -6,6 +6,7 @@ use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountLockout;
 use WSms\Auth\AccountManager;
 use WSms\Auth\AccountSuspension;
+use WSms\Auth\UserInfo;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthSession;
 use WSms\Auth\AvatarManager;
@@ -153,7 +154,7 @@ class SocialAuthOrchestrator
 
         // Ensure user has another auth method before unlinking.
         $user = get_userdata($userId);
-        $hasPassword = $user && !AccountManager::isPlaceholderUsername($user->user_login);
+        $hasPassword = $user && !UserInfo::isPlaceholderUsername($user->user_login);
         $otherLinks = $this->repository->findByUserId($userId);
         $otherLinkCount = count(array_filter($otherLinks, fn($l) => $l->channel_id !== $providerId));
 

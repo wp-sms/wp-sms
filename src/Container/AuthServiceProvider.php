@@ -5,6 +5,7 @@ namespace WSms\Container;
 use WSms\Auth\AccountLockout;
 use WSms\Auth\AccountManager;
 use WSms\Auth\AccountSuspension;
+use WSms\Auth\UserInfo;
 use WSms\Database\Connection;
 use WSms\Auth\ApiAuthGuard;
 use WSms\Auth\AuthOrchestrator;
@@ -313,7 +314,7 @@ class AuthServiceProvider implements ServiceProvider
             $recipients = array_map('trim', explode(',', $to));
 
             foreach ($recipients as $r) {
-                if (!AccountManager::isPlaceholderEmail($r)) {
+                if (!UserInfo::isPlaceholderEmail($r)) {
                     return $null; // At least one real recipient — allow.
                 }
             }
@@ -395,7 +396,7 @@ class AuthServiceProvider implements ServiceProvider
             $recipients = array_map('trim', explode(',', $to));
 
             foreach ($recipients as $r) {
-                if (!AccountManager::isPlaceholderEmail($r)) {
+                if (!UserInfo::isPlaceholderEmail($r)) {
                     return $null;
                 }
             }

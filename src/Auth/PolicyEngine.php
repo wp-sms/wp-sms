@@ -338,7 +338,7 @@ class PolicyEngine
     public function getPendingVerifications(int $userId): array
     {
         $settings = $this->settingsRepo->all();
-        $state = AccountManager::getUserVerificationState($userId);
+        $state = UserInfo::getUserVerificationState($userId);
         $pending = [];
 
         // Dynamically check each verification channel.

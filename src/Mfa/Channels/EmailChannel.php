@@ -6,7 +6,7 @@ use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
 use WSms\Enums\TemplateType;
 use WSms\Audit\AuditLogger;
-use WSms\Auth\AccountManager;
+use WSms\Auth\UserInfo;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Template\TemplateManager;
 use WSms\Mfa\Contracts\SupportsTokenVerification;
@@ -67,7 +67,7 @@ class EmailChannel extends AbstractOtpChannel implements SupportsTokenVerificati
     {
         $email = $this->getIdentifier($userId);
 
-        return $email !== null && !AccountManager::isPlaceholderEmail($email);
+        return $email !== null && !UserInfo::isPlaceholderEmail($email);
     }
 
     /** {@inheritDoc} */

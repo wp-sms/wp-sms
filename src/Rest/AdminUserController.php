@@ -8,6 +8,7 @@ use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountLockout;
 use WSms\Auth\AccountManager;
 use WSms\Auth\AccountSuspension;
+use WSms\Auth\UserInfo;
 use WSms\Auth\SettingsRepository;
 use WSms\Enums\EventType;
 use WSms\Enums\TemplateType;
@@ -175,8 +176,8 @@ class AdminUserController extends Controller
             $lockout = $this->lockout->isLocked($userId);
             $registrationStatus = get_user_meta($userId, UserMeta::REGISTRATION_STATUS, true) ?: null;
             $registrationCreatedAt = get_user_meta($userId, UserMeta::REGISTRATION_CREATED_AT, true) ?: null;
-            $hasPassword = AccountManager::hasUsablePassword($userId);
-            $isPlaceholderEmail = AccountManager::isPlaceholderEmail($user->user_email);
+            $hasPassword = UserInfo::hasUsablePassword($userId);
+            $isPlaceholderEmail = UserInfo::isPlaceholderEmail($user->user_email);
 
             return $this->ok([
                 'verification' => [
@@ -322,7 +323,7 @@ class AdminUserController extends Controller
                 throw ValidationException::field('phone', __('Please enter a valid phone number with country code (e.g. +12025551234).', 'wp-sms'));
             }
 
-            if (AccountManager::isPhoneTaken($phone, $userId)) {
+            if (UserInfo::isPhoneTaken($phone, $userId)) {
                 throw ConflictException::duplicate('Phone number', $phone);
             }
 
@@ -347,7 +348,7 @@ class AdminUserController extends Controller
 
             $user = $this->resolveUser($userId);
 
-            if (AccountManager::isPlaceholderEmail($user->user_email)) {
+            if (UserInfo::isPlaceholderEmail($user->user_email)) {
                 throw ValidationException::field('email', __('User has no real email address.', 'wp-sms'));
             }
 
@@ -403,7 +404,7 @@ class AdminUserController extends Controller
                 throw ValidationException::field('channel', sprintf(__('The %s channel is disabled in settings.', 'wp-sms'), $channel));
             }
 
-            if ($channel === 'email' && AccountManager::isPlaceholderEmail($user->user_email)) {
+            if ($channel === 'email' && UserInfo::isPlaceholderEmail($user->user_email)) {
                 throw ValidationException::field('email', __('No email on file.', 'wp-sms'));
             }
 
@@ -482,7 +483,7 @@ class AdminUserController extends Controller
             return;
         }
 
-        if (AccountManager::isPlaceholderEmail($user->user_email)) {
+        if (UserInfo::isPlaceholderEmail($user->user_email)) {
             return;
         }
 

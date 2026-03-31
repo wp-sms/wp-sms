@@ -5,7 +5,7 @@ namespace WSms\Service\Admin;
 use WP_User;
 use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountLockout;
-use WSms\Auth\AccountManager;
+use WSms\Auth\UserInfo;
 use WSms\Auth\AccountSuspension;
 use WSms\Auth\SettingsRepository;
 use WSms\Components\View;
@@ -54,8 +54,8 @@ class UserProfileSection
         $canManage = current_user_can('manage_options');
 
         $lockout = $this->lockout->isLocked($userId);
-        $hasPassword = AccountManager::hasUsablePassword($userId);
-        $isPlaceholderEmail = AccountManager::isPlaceholderEmail($user->user_email);
+        $hasPassword = UserInfo::hasUsablePassword($userId);
+        $isPlaceholderEmail = UserInfo::isPlaceholderEmail($user->user_email);
         $registrationStatus = get_user_meta($userId, UserMeta::REGISTRATION_STATUS, true) ?: null;
         $registrationCreatedAt = get_user_meta($userId, UserMeta::REGISTRATION_CREATED_AT, true) ?: null;
 

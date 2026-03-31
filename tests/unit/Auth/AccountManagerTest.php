@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountManager;
 use WSms\Auth\AuthSession;
+use WSms\Auth\UserInfo;
 use WSms\Enums\VerificationType;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\MessageDispatcher;
@@ -571,23 +572,6 @@ class AccountManagerTest extends TestCase
         $this->assertSame(0, $GLOBALS['_test_current_user_id']);
     }
 
-    // --- isPlaceholderEmail ---
-
-    public function testIsPlaceholderEmailReturnsTrueForPlaceholder(): void
-    {
-        $this->assertTrue(AccountManager::isPlaceholderEmail('abc123def0@noreply.wsms.local'));
-    }
-
-    public function testIsPlaceholderEmailReturnsFalseForRealEmail(): void
-    {
-        $this->assertFalse(AccountManager::isPlaceholderEmail('user@example.com'));
-    }
-
-    public function testIsPlaceholderEmailReturnsFalseForSimilarDomain(): void
-    {
-        $this->assertFalse(AccountManager::isPlaceholderEmail('user@notnoreply.wsms.local'));
-    }
-
     // --- Placeholder registration ---
 
     public function testRegisterUserWithPlaceholderEmailWhenEmailNotRequired(): void
@@ -654,7 +638,7 @@ class AccountManagerTest extends TestCase
         $this->assertSame('1', $GLOBALS['_test_user_meta'][102]['wsms_email_placeholder'] ?? '');
 
         $capturedUsername = $GLOBALS['_test_wp_insert_user_data']['user_login'] ?? '';
-        $this->assertTrue(AccountManager::isPlaceholderUsername($capturedUsername));
+        $this->assertTrue(UserInfo::isPlaceholderUsername($capturedUsername));
         $this->assertStringNotContainsString('+1234567890', $capturedUsername);
     }
 
@@ -1168,7 +1152,7 @@ class AccountManagerTest extends TestCase
         ]);
 
         $this->assertTrue($result->success);
-        $this->assertTrue(AccountManager::isPlaceholderUsername(
+        $this->assertTrue(UserInfo::isPlaceholderUsername(
             $GLOBALS['_test_wp_insert_user_data']['user_login']
         ));
     }

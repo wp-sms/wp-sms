@@ -2,7 +2,7 @@
 
 namespace WSms\Tests\Integration\Auth;
 
-use WSms\Auth\AccountManager;
+use WSms\Auth\UserInfo;
 use WSms\Enums\VerificationType;
 use WSms\Tests\Support\AuthScenarios;
 use WSms\Tests\Support\IntegrationTestCase;
@@ -332,7 +332,7 @@ class RegistrationFlowTest extends IntegrationTestCase
         $this->assertSame('1', $GLOBALS['_test_user_meta'][90]['wsms_email_placeholder'] ?? '');
 
         $capturedUsername = $GLOBALS['_test_wp_insert_user_data']['user_login'] ?? '';
-        $this->assertTrue(AccountManager::isPlaceholderUsername($capturedUsername));
+        $this->assertTrue(UserInfo::isPlaceholderUsername($capturedUsername));
         $this->assertStringNotContainsString('+1234567890', $capturedUsername);
     }
 

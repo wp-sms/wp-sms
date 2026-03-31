@@ -2,7 +2,7 @@
 
 namespace WSms\Mfa\Channels;
 
-use WSms\Auth\AccountManager;
+use WSms\Auth\UserInfo;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\TemplateType;
 use WSms\Support\UserMeta;
@@ -87,7 +87,7 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
             }
         }
 
-        if (AccountManager::isPhoneTaken($phone, $userId)) {
+        if (UserInfo::isPhoneTaken($phone, $userId)) {
             return new EnrollmentResult(false, __('This phone number is already associated with another account.', 'wp-sms'));
         }
 

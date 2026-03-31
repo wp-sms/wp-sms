@@ -4,7 +4,7 @@ namespace WSms\Rest;
 
 use WP_REST_Request;
 use WP_REST_Response;
-use WSms\Auth\AccountManager;
+use WSms\Auth\UserInfo;
 use WSms\Auth\AvatarManager;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\ProfileFieldRegistry;
@@ -318,7 +318,7 @@ class EnrollmentController extends Controller
                 );
             }
 
-            $isPlaceholder = AccountManager::isPlaceholderEmail($user->user_email);
+            $isPlaceholder = UserInfo::isPlaceholderEmail($user->user_email);
 
             $pendingPhone = get_user_meta($userId, UserMeta::PENDING_PHONE, true) ?: null;
             $pendingEmail = get_user_meta($userId, UserMeta::PENDING_EMAIL, true) ?: null;
@@ -336,7 +336,7 @@ class EnrollmentController extends Controller
                     'phone_verified'        => (bool) get_user_meta($userId, UserMeta::PHONE_VERIFIED, true),
                     'email_verified'        => $isPlaceholder ? true : (bool) get_user_meta($userId, UserMeta::EMAIL_VERIFIED, true),
                     'has_placeholder_email' => $isPlaceholder,
-                    'has_usable_password'   => AccountManager::hasUsablePassword($userId),
+                    'has_usable_password'   => UserInfo::hasUsablePassword($userId),
                     'pending_phone'         => $pendingPhone,
                     'pending_email'         => $pendingEmail,
                     'roles'                 => $user->roles,
