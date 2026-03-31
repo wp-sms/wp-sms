@@ -1,13 +1,8 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { channelLabel, channelBadgeVariant } from '@/lib/channel';
 import type { SystemHealthResponse } from '@/lib/api';
-
-const CHANNEL_VARIANT = {
-  sms: 'info',
-  email: 'purple',
-  whatsapp: 'success',
-} as const;
 
 interface ActiveCampaignsCardProps {
   data: SystemHealthResponse['active_campaigns'];
@@ -41,8 +36,8 @@ export function ActiveCampaignsCard({ data }: ActiveCampaignsCardProps) {
                 <p className="text-sm font-medium truncate">{campaign.name}</p>
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <Badge variant={CHANNEL_VARIANT[campaign.channel as keyof typeof CHANNEL_VARIANT] ?? 'neutral'}>
-                  {campaign.channel}
+                <Badge variant={channelBadgeVariant(campaign.channel)}>
+                  {channelLabel(campaign.channel)}
                 </Badge>
                 <Badge variant={isSending ? 'success' : 'warning'}>
                   {campaign.status}

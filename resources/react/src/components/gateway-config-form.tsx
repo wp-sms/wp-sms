@@ -13,20 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
 import { DynamicConfigField } from '@/components/dynamic-config-field';
 import type { GatewayConfigSchema, GatewayConfigField, GatewayConfig } from '@/lib/api';
-
-const CHANNEL_LABELS: Record<string, string> = {
-  sms: __('SMS', 'wp-sms'),
-  whatsapp: __('WhatsApp', 'wp-sms'),
-  viber: __('Viber', 'wp-sms'),
-  email: __('Email', 'wp-sms'),
-  voice: __('Voice', 'wp-sms'),
-  telegram: __('Telegram', 'wp-sms'),
-  line: __('LINE', 'wp-sms'),
-};
-
-function channelLabel(channel: string): string {
-  return CHANNEL_LABELS[channel] ?? channel.charAt(0).toUpperCase() + channel.slice(1);
-}
+import { CHANNEL_LABELS, channelLabel } from '@/lib/channel';
 
 interface GatewayConfigFormProps {
   gatewayId: string;

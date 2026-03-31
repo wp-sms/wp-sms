@@ -986,6 +986,95 @@ export interface SystemHealthResponse {
   generated_at: string;
 }
 
+// --- Dashboard Types ---
+
+export interface ActiveCampaignSummary {
+  id: string;
+  name: string;
+  channel: string;
+  status: string;
+  total_recipients: number;
+  sent_count: number;
+  delivered_count: number;
+  failed_count: number;
+}
+
+export interface ChannelBreakdown {
+  channel: string;
+  sent: number;
+  successful: number;
+  failed: number;
+  success_rate: number | null;
+  cost: number;
+}
+
+export interface DashboardGateway {
+  id: string;
+  name: string;
+  channels: string[];
+  healthy: boolean;
+}
+
+export interface DashboardSummaryResponse {
+  range: number;
+  feature_state: {
+    auth_enabled: boolean;
+    gateways_configured: boolean;
+    delivery_tracking_available: boolean;
+    has_contacts: boolean;
+    has_campaigns: boolean;
+  };
+  messaging: {
+    messages_sent: number;
+    messages_sent_delta: number | null;
+    success_rate: number | null;
+    success_rate_insight: string | null;
+    success_rate_status: 'success' | 'warning' | 'destructive' | null;
+    messages_failed: number;
+    total_cost: number;
+    active_campaigns: number;
+    completed_campaigns: number;
+    top_active_campaigns: ActiveCampaignSummary[];
+  };
+  channels: ChannelBreakdown[];
+  contacts: {
+    total: number;
+    subscribed: number;
+    new_in_period: number;
+    growth_delta: number | null;
+  };
+  flows: {
+    active: number;
+    paused: number;
+    draft: number;
+    executions_completed: number;
+    executions_failed: number;
+  };
+  gateways: DashboardGateway[];
+  auth: {
+    enabled: boolean;
+    total_logins?: number;
+    login_success_rate?: number | null;
+    login_success_status?: 'success' | 'warning' | 'destructive' | null;
+    registrations?: number;
+    failed_logins?: number;
+    accounts_locked?: number;
+    accounts_suspended?: number;
+  };
+  system_health: {
+    level: 'healthy' | 'warnings' | 'critical';
+    summary: string;
+    section_statuses: Record<string, string>;
+    top_issue: {
+      section: string;
+      label: string;
+      status: string;
+      description: string;
+    } | null;
+  };
+  generated_at: string;
+}
+
 export type GatewayCreditsResponse = Record<string, {
   gateway_id: string;
   name: string;

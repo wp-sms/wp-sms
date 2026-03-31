@@ -33,11 +33,13 @@ use WSms\Rest\TemplateCatalogController;
 use WSms\Rest\TemplateController;
 use WSms\Rest\BrandingController;
 use WSms\Rest\OutboundWebhookController;
+use WSms\Rest\DashboardController;
 use WSms\Rest\GeoController;
 use WSms\Rest\PrivacyController;
 use WSms\Rest\SystemHealthController;
 use WSms\Rest\WebhookReceiverController;
 use WSms\Privacy\PrivacyRequestService;
+use WSms\Service\Dashboard\DashboardService;
 use WSms\System\SystemHealthService;
 
 defined('ABSPATH') || exit;
@@ -263,6 +265,13 @@ class RestServiceProvider implements ServiceProvider
             $c->get('flow.triggers'),
         ));
         $container->register('rest.system_health', fn($c) => new SystemHealthController($c->get('system.health')));
+        $container->register('dashboard.service', fn($c) => new DashboardService(
+            $c->get(Connection::class),
+            $c->get('system.health'),
+            $c->get('auth.settings'),
+            $c->get('gateway.registry'),
+        ));
+        $container->register('rest.dashboard', fn($c) => new DashboardController($c->get('dashboard.service')));
     }
 
     /** {@inheritDoc} */
@@ -310,6 +319,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.privacy')->registerRoutes();
             $container->get('rest.geo')->registerRoutes();
             $container->get('rest.system_health')->registerRoutes();
+            $container->get('rest.dashboard')->registerRoutes();
         });
     }
 }

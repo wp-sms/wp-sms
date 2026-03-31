@@ -22,6 +22,7 @@ import { PrivacyPage } from '@/pages/privacy';
 import { MonitoringPage } from '@/pages/monitoring';
 import { SettingsPage } from '@/pages/settings';
 import { MigrationPage } from '@/pages/migration';
+import { DashboardPage } from '@/pages/dashboard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Toaster } from '@/components/ui/sonner';
@@ -30,7 +31,7 @@ import { DirectionProvider } from '@/components/ui/direction';
 import { ConfirmProvider } from '@/components/confirm-provider';
 import { AlertCircle } from 'lucide-react';
 
-const DEFAULT_SECTION = 'campaigns';
+const DEFAULT_SECTION = 'dashboard';
 const { roles, version } = getConfig();
 
 export default function App() {
@@ -66,6 +67,9 @@ export default function App() {
     const parent = getParentSection(section);
 
     switch (parent) {
+      case 'dashboard':
+        return <DashboardPage onNavigate={setSection} />;
+
       // Messaging
       case 'campaigns':
         return <Campaigns />;

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { __ } from '@wordpress/i18n';
-import { LogIn, Paintbrush, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Settings2, MessageSquare, ClipboardList, Webhook, Bell, Sparkles, Contact, FileText, type LucideIcon } from 'lucide-react';
+import { LayoutDashboard, LogIn, Paintbrush, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Settings2, MessageSquare, ClipboardList, Webhook, Bell, Sparkles, Contact, FileText, type LucideIcon } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { SaveBar } from '@/components/layout/save-bar';
 import {
@@ -60,6 +60,10 @@ export interface NavSection {
 }
 
 // --- Navigation structure ---
+
+export const DASHBOARD_NAV: NavItem = {
+  id: 'dashboard', label: __('Dashboard', 'wp-sms'), icon: LayoutDashboard,
+};
 
 export const NAV_SECTIONS: readonly NavSection[] = [
   {
@@ -123,11 +127,12 @@ export function getParentSection(sectionId: string): string {
 }
 
 /** All valid section IDs (both parent-level and child-level). */
-export const VALID_SECTIONS: Set<string> = new Set(
-  NAV_ITEMS.flatMap((item) =>
+export const VALID_SECTIONS: Set<string> = new Set([
+  DASHBOARD_NAV.id,
+  ...NAV_ITEMS.flatMap((item) =>
     item.children ? item.children.map((c) => c.id) : [item.id]
-  )
-);
+  ),
+]);
 
 // --- Sidebar components ---
 
@@ -290,6 +295,11 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
           </div>
         </SidebarHeader>
         <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <NavMenu activeSection={activeSection} onNavigate={onNavigate} items={[DASHBOARD_NAV]} />
+            </SidebarGroupContent>
+          </SidebarGroup>
           {NAV_SECTIONS.map((section) => (
             <SidebarGroup key={section.label}>
               <SidebarGroupLabel>{section.label}</SidebarGroupLabel>
