@@ -3,6 +3,7 @@
 namespace WSms\Tests\Unit\Social\Providers;
 
 use PHPUnit\Framework\TestCase;
+use WSms\Auth\SettingsRepository;
 use WSms\Social\Providers\GitHubProvider;
 
 class GitHubProviderTest extends TestCase
@@ -12,7 +13,7 @@ class GitHubProviderTest extends TestCase
     protected function setUp(): void
     {
         $GLOBALS['_test_options'] = [
-            'wsms_auth_settings' => [
+            SettingsRepository::OPTION_KEY => [
                 'social' => [
                     'github' => [
                         'enabled'       => true,

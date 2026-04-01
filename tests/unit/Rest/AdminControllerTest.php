@@ -131,7 +131,7 @@ class AdminControllerTest extends TestCase
 
     public function testValidationRejectsInvalidCodeLength(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [];
 
         $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
         $request->set_param('phone', ['code_length' => 5]);
@@ -144,7 +144,7 @@ class AdminControllerTest extends TestCase
 
     public function testValidationRejectsInvalidAuthBaseUrl(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [];
 
         $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
         $request->set_param('auth_base_url', 'no-leading-slash');
@@ -157,7 +157,7 @@ class AdminControllerTest extends TestCase
 
     public function testValidationAcceptsValidCodeLength(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [];
 
         $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
         $request->set_param('phone', ['code_length' => 4]);
@@ -170,7 +170,7 @@ class AdminControllerTest extends TestCase
 
     public function testRewriteFlushOptionSetWhenAuthBaseUrlChanges(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['auth_base_url' => '/account'];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['auth_base_url' => '/account'];
 
         $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
         $request->set_param('auth_base_url', '/my-auth');
@@ -183,7 +183,7 @@ class AdminControllerTest extends TestCase
 
     public function testNoRewriteFlushWhenAuthBaseUrlUnchanged(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['auth_base_url' => '/account'];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['auth_base_url' => '/account'];
         unset($GLOBALS['_test_options']['wsms_flush_rewrite']);
 
         $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
@@ -197,7 +197,7 @@ class AdminControllerTest extends TestCase
 
     public function testValidationRejectsNoIdentifierConfig(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [];
 
         $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
         $request->set_param('email', ['required_at_signup' => false]);
@@ -215,7 +215,7 @@ class AdminControllerTest extends TestCase
 
     public function testValidationAcceptsPhoneOnlyConfig(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [];
 
         $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
         $request->set_param('email', ['required_at_signup' => false]);
@@ -230,7 +230,7 @@ class AdminControllerTest extends TestCase
 
     public function testSavingWithSocialTelegramSucceeds(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [];
 
         $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
         $request->set_param('social', [
@@ -245,7 +245,7 @@ class AdminControllerTest extends TestCase
 
     public function testTelegramChannelSettingsAreSaved(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [];
 
         $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
         $request->set_param('telegram', [
@@ -265,7 +265,7 @@ class AdminControllerTest extends TestCase
 
     public function testPendingUserCleanupSettingsAreSaved(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [];
 
         $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
         $request->set_param('pending_user_cleanup_enabled', true);
@@ -281,7 +281,7 @@ class AdminControllerTest extends TestCase
 
     public function testTelegramChannelValidationRejectsInvalidValues(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [];
 
         $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
         $request->set_param('telegram', [

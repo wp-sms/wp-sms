@@ -13,6 +13,7 @@ use WSms\Messaging\Catalog\TemplateCatalogManager;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\TemplateEngineInterface;
 use WSms\Messaging\Gateway\GatewayRegistry;
+use WSms\Auth\SettingsRepository;
 use WSms\Messaging\MessageDispatcher;
 
 class SendMessageActionTest extends TestCase
@@ -188,8 +189,7 @@ class SendMessageActionTest extends TestCase
 
     public function testExecuteAdminModeSmsUsesSitePhone(): void
     {
-        // Stub get_option for wsms_auth_settings
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['site_phone' => '+15551234'];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['site_phone' => '+15551234'];
 
         $this->dispatcher->expects($this->once())
             ->method('sendImmediate')
@@ -206,7 +206,7 @@ class SendMessageActionTest extends TestCase
 
         $this->assertTrue($result->success);
 
-        unset($GLOBALS['_test_options']['wsms_auth_settings']);
+        unset($GLOBALS['_test_options'][SettingsRepository::OPTION_KEY]);
     }
 
     public function testExecuteAdminModeEmailUsesAdminEmail(): void
@@ -233,7 +233,7 @@ class SendMessageActionTest extends TestCase
 
     public function testExecuteAdminModeFailsWhenNoPhoneConfigured(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [];
 
         $result = $this->action->execute(
             [],
@@ -243,7 +243,7 @@ class SendMessageActionTest extends TestCase
         $this->assertFalse($result->success);
         $this->assertStringContainsString('Admin recipient not configured', $result->error);
 
-        unset($GLOBALS['_test_options']['wsms_auth_settings']);
+        unset($GLOBALS['_test_options'][SettingsRepository::OPTION_KEY]);
     }
 
     public function testExecuteAdminModeFailsForWebhookChannel(): void

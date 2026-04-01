@@ -20,7 +20,7 @@ class AuditLoggerTest extends TestCase
     {
         $this->wpdb = new WpdbFake();
         $GLOBALS['wpdb'] = $this->wpdb;
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['log_verbosity' => 'verbose'];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['log_verbosity' => 'verbose'];
         $GLOBALS['_test_do_action_calls'] = [];
         $GLOBALS['_test_apply_filters'] = [];
         unset($_SERVER['HTTP_USER_AGENT']);
@@ -146,7 +146,7 @@ class AuditLoggerTest extends TestCase
 
     public function testMetaNotStoredInMinimalMode(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['log_verbosity' => 'minimal'];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['log_verbosity' => 'minimal'];
         $logger = new AuditLogger(new Connection($this->wpdb), new SettingsRepository());
 
         $logger->log(EventType::LoginSuccess, 'success', 1, ['key' => 'val']);

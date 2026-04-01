@@ -206,7 +206,7 @@ class TrustedDeviceManagerTest extends TestCase
 
     private function enableTrustedDevices(int $ttl = 2592000): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'trusted_devices' => [
                 'enabled' => true,
                 'ttl'     => $ttl,
@@ -216,7 +216,7 @@ class TrustedDeviceManagerTest extends TestCase
 
     private function disableTrustedDevices(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'trusted_devices' => [
                 'enabled' => false,
             ],

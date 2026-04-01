@@ -3,6 +3,7 @@
 namespace WSms\Tests\Unit\Social\Providers;
 
 use PHPUnit\Framework\TestCase;
+use WSms\Auth\SettingsRepository;
 use WSms\Social\Providers\GoogleProvider;
 
 class GoogleProviderTest extends TestCase
@@ -12,7 +13,7 @@ class GoogleProviderTest extends TestCase
     protected function setUp(): void
     {
         $GLOBALS['_test_options'] = [
-            'wsms_auth_settings' => [
+            SettingsRepository::OPTION_KEY => [
                 'social' => [
                     'google' => [
                         'enabled'       => true,

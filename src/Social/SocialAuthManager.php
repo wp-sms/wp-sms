@@ -2,6 +2,7 @@
 
 namespace WSms\Social;
 
+use WSms\Auth\SettingsRepository;
 use WSms\Social\Contracts\SocialProviderInterface;
 
 defined('ABSPATH') || exit;
@@ -38,7 +39,7 @@ class SocialAuthManager
      */
     public function getEnabledProviders(): array
     {
-        $settings = get_option('wsms_auth_settings', []);
+        $settings = get_option(SettingsRepository::OPTION_KEY, []);
         $socialSettings = $settings['social'] ?? [];
 
         return array_values(array_filter(

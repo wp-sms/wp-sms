@@ -2,9 +2,10 @@
 
 namespace WSms\Migration\Adapters\Digits\Steps;
 
+use WSms\Auth\SettingsRepository;
 use WSms\Migration\BatchResult;
-use WSms\Migration\MigrationBackupService;
 use WSms\Migration\Contracts\MigrationStepInterface;
+use WSms\Migration\MigrationBackupService;
 use WSms\Migration\PreviewResult;
 
 defined('ABSPATH') || exit;
@@ -129,7 +130,7 @@ class SettingsStep implements MigrationStepInterface
      */
     public function buildSettingsDiff(): array
     {
-        $wsmsSettings = get_option('wsms_auth_settings', []);
+        $wsmsSettings = get_option(SettingsRepository::OPTION_KEY, []);
         $diff = [];
 
         // Build the full map: base settings + provider-specific captcha keys.
@@ -201,7 +202,7 @@ class SettingsStep implements MigrationStepInterface
 
         $this->backup->backupSettings();
 
-        $wsmsSettings = get_option('wsms_auth_settings', []);
+        $wsmsSettings = get_option(SettingsRepository::OPTION_KEY, []);
         $migrated = 0;
         $skipped = 0;
 
@@ -219,7 +220,7 @@ class SettingsStep implements MigrationStepInterface
             $migrated++;
         }
 
-        update_option('wsms_auth_settings', $wsmsSettings, false);
+        update_option(SettingsRepository::OPTION_KEY, $wsmsSettings, false);
 
         return new BatchResult(
             processed: count($diff),

@@ -2,6 +2,7 @@
 
 namespace WSms\Social\Providers;
 
+use WSms\Auth\SettingsRepository;
 use WSms\Social\Contracts\SocialProviderInterface;
 use WSms\Social\OAuthStateManager;
 
@@ -121,14 +122,14 @@ class GoogleProvider implements SocialProviderInterface
 
     private function getClientId(): string
     {
-        $settings = get_option('wsms_auth_settings', []);
+        $settings = get_option(SettingsRepository::OPTION_KEY, []);
 
         return $settings['social']['google']['client_id'] ?? '';
     }
 
     private function getClientSecret(): string
     {
-        $settings = get_option('wsms_auth_settings', []);
+        $settings = get_option(SettingsRepository::OPTION_KEY, []);
 
         return $settings['social']['google']['client_secret'] ?? '';
     }

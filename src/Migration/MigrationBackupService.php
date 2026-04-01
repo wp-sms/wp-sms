@@ -2,6 +2,7 @@
 
 namespace WSms\Migration;
 
+use WSms\Auth\SettingsRepository;
 use WSms\Database\Connection;
 use WSms\Migration\RollbackResult;
 use WSms\Support\UserMeta;
@@ -17,7 +18,7 @@ class MigrationBackupService
 {
     private const PHONE_BACKUP_META = 'wsms_pre_migration_phone';
     private const MFA_ENABLED_BACKUP_META = 'wsms_pre_migration_mfa_enabled';
-    private const SETTINGS_BACKUP_OPTION = 'wsms_auth_settings_pre_migration';
+    private const SETTINGS_BACKUP_OPTION = 'wsms_settings_pre_migration';
     private const MIGRATION_TAG = 'digits';
 
     public function __construct(
@@ -121,7 +122,7 @@ class MigrationBackupService
 
     public function backupSettings(): void
     {
-        $current = get_option('wsms_auth_settings', []);
+        $current = get_option(SettingsRepository::OPTION_KEY, []);
         update_option(self::SETTINGS_BACKUP_OPTION, $current, false);
     }
 
@@ -132,7 +133,7 @@ class MigrationBackupService
             return new RollbackResult(0, 0, [['reason' => __('No settings backup found.', 'wp-sms')]]);
         }
 
-        update_option('wsms_auth_settings', $backup, false);
+        update_option(SettingsRepository::OPTION_KEY, $backup, false);
         delete_option(self::SETTINGS_BACKUP_OPTION);
 
         return new RollbackResult(1, 0);

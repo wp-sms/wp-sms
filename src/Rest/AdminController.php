@@ -162,7 +162,7 @@ class AdminController extends Controller
     public function handleUpdateSettings(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
-            $current = get_option('wsms_auth_settings', []);
+            $current = get_option(SettingsRepository::OPTION_KEY, []);
             $body = $request->get_params();
             $updated = $current;
 
@@ -200,7 +200,7 @@ class AdminController extends Controller
                 throw new ValidationException($errors);
             }
 
-            update_option('wsms_auth_settings', $updated);
+            update_option(SettingsRepository::OPTION_KEY, $updated);
             $this->settingsRepo->invalidateCache();
 
             $baseUrlChanged = ($current['auth_base_url'] ?? '/account') !== ($updated['auth_base_url'] ?? '/account');

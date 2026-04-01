@@ -12,6 +12,7 @@ defined('WP_UNINSTALL_PLUGIN') || exit;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+use WSms\Auth\SettingsRepository;
 use WSms\Database\CleanupScheduler;
 use WSms\Database\Migrator;
 
@@ -24,7 +25,7 @@ function wsms_uninstall_single_site(): void
 
     Migrator::dropTables();
 
-    delete_option('wsms_auth_settings');
+    delete_option(SettingsRepository::OPTION_KEY);
 
     if (function_exists('as_unschedule_all_actions')) {
         as_unschedule_all_actions(CleanupScheduler::HOOK_NAME, [], CleanupScheduler::AS_GROUP);

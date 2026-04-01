@@ -169,7 +169,7 @@ abstract class IntegrationTestCase extends TestCase
      */
     protected function setSettings(array $settings): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = $settings;
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = $settings;
     }
 
     // ──────────────────────────────────────────────

@@ -84,7 +84,7 @@ class CleanupSchedulerTest extends TestCase
 
     public function testRunCallsDeleteOlderThanWithConfiguredDays(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'log_retention_days' => 30,
         ];
 
@@ -128,7 +128,7 @@ class CleanupSchedulerTest extends TestCase
         $user->ID = 10;
         $GLOBALS['_test_get_users_result'] = [$user];
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'pending_user_cleanup_enabled' => true,
             'pending_user_ttl_hours'       => 24,
         ];
@@ -148,7 +148,7 @@ class CleanupSchedulerTest extends TestCase
         $user->ID = 11;
         $GLOBALS['_test_get_users_result'] = [$user];
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'pending_user_cleanup_enabled' => false,
         ];
 
@@ -167,7 +167,7 @@ class CleanupSchedulerTest extends TestCase
         $user->ID = 12;
         $GLOBALS['_test_get_users_result'] = [$user];
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [];
 
         $this->scheduler->run();
 
@@ -181,7 +181,7 @@ class CleanupSchedulerTest extends TestCase
         $GLOBALS['wpdb'] = $wpdb;
 
         $GLOBALS['_test_get_users_result'] = [];
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [];
 
         $this->scheduler->run();
 

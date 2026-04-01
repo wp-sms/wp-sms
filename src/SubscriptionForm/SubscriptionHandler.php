@@ -2,6 +2,7 @@
 
 namespace WSms\SubscriptionForm;
 
+use WSms\Auth\SettingsRepository;
 use WSms\Contact\ContactRepository;
 use WSms\Contact\ListRepository;
 use WSms\Support\PhoneValidator;
@@ -276,7 +277,7 @@ class SubscriptionHandler
             return $formRequired;
         }
 
-        $authSettings = get_option('wsms_auth_settings', []);
+        $authSettings = get_option(SettingsRepository::OPTION_KEY, []);
 
         return !empty($authSettings['subscription_consent_required']);
     }

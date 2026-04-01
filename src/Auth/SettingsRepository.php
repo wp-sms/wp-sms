@@ -6,6 +6,8 @@ defined('ABSPATH') || exit;
 
 class SettingsRepository
 {
+    public const OPTION_KEY = 'wsms_settings';
+
     private ?array $settings = null;
 
     /**
@@ -142,7 +144,7 @@ class SettingsRepository
             return $this->settings;
         }
 
-        $raw = get_option('wsms_auth_settings', []);
+        $raw = get_option(self::OPTION_KEY, []);
         $merged = self::deepMergeDefaults(self::DEFAULTS, $raw);
 
         // Migrate old registration_fields to profile_fields if needed.

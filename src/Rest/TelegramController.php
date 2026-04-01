@@ -4,9 +4,10 @@ namespace WSms\Rest;
 
 use WP_REST_Request;
 use WP_REST_Response;
+use WSms\Auth\SettingsRepository;
 use WSms\Exception\ValidationException;
-use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Message\Message;
+use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Channels\TelegramChannel;
 use WSms\Telegram\TelegramBotClient;
 
@@ -85,7 +86,7 @@ class TelegramController extends Controller
     {
         $secrets = [];
 
-        $authSettings = get_option('wsms_auth_settings', []);
+        $authSettings = get_option(SettingsRepository::OPTION_KEY, []);
         if (!empty($authSettings['telegram']['webhook_secret'])) {
             $secrets[] = $authSettings['telegram']['webhook_secret'];
         }
@@ -161,13 +162,13 @@ class TelegramController extends Controller
             }
 
             // Save settings.
-            $settings = get_option('wsms_auth_settings', []);
+            $settings = get_option(SettingsRepository::OPTION_KEY, []);
             $settings['telegram'] = array_merge($settings['telegram'] ?? [], [
                 'bot_token'      => $botToken,
                 'bot_username'   => $me['username'] ?? '',
                 'webhook_secret' => $webhookSecret,
             ]);
-            update_option('wsms_auth_settings', $settings);
+            update_option(SettingsRepository::OPTION_KEY, $settings);
 
             return new WP_REST_Response([
                 'success'      => true,

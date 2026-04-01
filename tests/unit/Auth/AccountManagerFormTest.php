@@ -46,7 +46,7 @@ class AccountManagerFormTest extends TestCase
         $this->otpService->method('createOtp')->willReturn('123456');
         $this->authSession->method('create')->willReturn('reg-session-token');
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'password' => ['enabled' => true, 'required_at_signup' => true],
             'email'    => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => false],
             'phone'    => ['enabled' => true, 'required_at_signup' => false, 'verify_at_signup' => false],
@@ -229,8 +229,8 @@ class AccountManagerFormTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 42;
 
         // Global settings have first_name in registration_fields
-        $GLOBALS['_test_options']['wsms_auth_settings'] = array_merge(
-            $GLOBALS['_test_options']['wsms_auth_settings'],
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = array_merge(
+            $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY],
             ['registration_fields' => ['email', 'password', 'first_name']],
         );
 
@@ -256,7 +256,7 @@ class AccountManagerFormTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 42;
 
         // Global: email verify at signup enabled
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'password' => ['enabled' => true, 'required_at_signup' => true],
             'email'    => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
             'phone'    => ['enabled' => false],
@@ -283,7 +283,7 @@ class AccountManagerFormTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 42;
 
         // Global: phone verify at signup enabled
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'password' => ['enabled' => true, 'required_at_signup' => true],
             'email'    => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => false],
             'phone'    => ['enabled' => true, 'required_at_signup' => false, 'verify_at_signup' => true],

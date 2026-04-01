@@ -8,6 +8,7 @@ use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Message\Message;
 use WSms\Mfa\Channels\TelegramChannel;
+use WSms\Auth\SettingsRepository;
 use WSms\Rest\TelegramController;
 
 class TelegramControllerTest extends TestCase
@@ -24,7 +25,7 @@ class TelegramControllerTest extends TestCase
         $this->controller = new TelegramController($this->telegramChannel, $this->messageDispatcher);
 
         $GLOBALS['_test_options'] = [
-            'wsms_auth_settings' => [
+            SettingsRepository::OPTION_KEY => [
                 'telegram' => [
                     'bot_token'      => '123:ABC',
                     'webhook_secret' => 'valid-secret-token',
@@ -245,7 +246,7 @@ class TelegramControllerTest extends TestCase
     {
         // Only integration config secret, no auth settings secret
         $GLOBALS['_test_options'] = [
-            'wsms_auth_settings' => [],
+            SettingsRepository::OPTION_KEY => [],
             'wsms_integration_configs' => [
                 'telegram' => [
                     'credentials' => ['webhook_secret' => 'apps-secret'],

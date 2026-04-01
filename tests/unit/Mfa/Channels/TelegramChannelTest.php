@@ -48,7 +48,7 @@ class TelegramChannelTest extends TestCase
         $this->channel = new TelegramChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->verificationRepo, $templateManager, $otpService);
 
         $this->setupWpdbMock(null);
-        $GLOBALS['_test_options'] = ['wsms_auth_settings' => ['telegram' => ['bot_username' => 'test_bot']]];
+        $GLOBALS['_test_options'] = [SettingsRepository::OPTION_KEY => ['telegram' => ['bot_username' => 'test_bot']]];
         $this->channel->setSettingsRepository(new SettingsRepository());
         unset($GLOBALS['_test_transients']);
     }

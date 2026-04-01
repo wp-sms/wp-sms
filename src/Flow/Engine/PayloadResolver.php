@@ -2,6 +2,7 @@
 
 namespace WSms\Flow\Engine;
 
+use WSms\Auth\SettingsRepository;
 use WSms\Messaging\Contracts\TemplateEngineInterface;
 
 defined('ABSPATH') || exit;
@@ -44,7 +45,7 @@ class PayloadResolver
                 'name'      => get_bloginfo('name'),
                 'url'       => get_site_url(),
                 'email'     => get_option('admin_email'),
-                'phone'     => (get_option('wsms_auth_settings', []))['site_phone'] ?? '',
+                'phone'     => (get_option(SettingsRepository::OPTION_KEY, []))['site_phone'] ?? '',
                 'login_url' => wp_login_url(),
                 'admin_url' => admin_url(),
                 'tagline'   => get_bloginfo('description'),

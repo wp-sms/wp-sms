@@ -6,6 +6,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountLockout;
+use WSms\Auth\SettingsRepository;
 use WSms\Auth\AccountManager;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthSession;
@@ -56,7 +57,7 @@ class SocialAuthOrchestratorTest extends TestCase
         );
 
         unset(
-            $GLOBALS['_test_options']['wsms_auth_settings'],
+            $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY],
             $GLOBALS['_test_get_user_by_result'],
             $GLOBALS['_test_userdata'],
         );

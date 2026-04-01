@@ -5,6 +5,7 @@ namespace WSms\Tests\Unit\Messaging\Gateway;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Messaging\Gateway\Telegram\TelegramGateway;
+use WSms\Auth\SettingsRepository;
 use WSms\Messaging\Message\Message;
 use WSms\Telegram\TelegramBotClient;
 
@@ -80,7 +81,7 @@ class TelegramGatewayTest extends TestCase
     public function testIsConfiguredReturnsTrueWhenBotTokenSet(): void
     {
         $GLOBALS['_test_options'] = [
-            'wsms_auth_settings' => ['telegram' => ['bot_token' => 'abc:123']],
+            SettingsRepository::OPTION_KEY => ['telegram' => ['bot_token' => 'abc:123']],
         ];
 
         $this->assertTrue($this->gateway->isConfigured());
@@ -88,7 +89,7 @@ class TelegramGatewayTest extends TestCase
 
     public function testIsConfiguredReturnsFalseWhenNoBotToken(): void
     {
-        $GLOBALS['_test_options'] = ['wsms_auth_settings' => []];
+        $GLOBALS['_test_options'] = [SettingsRepository::OPTION_KEY => []];
 
         $this->assertFalse($this->gateway->isConfigured());
     }

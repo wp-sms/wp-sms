@@ -14,13 +14,13 @@ class AccountLockoutTest extends TestCase
     {
         $this->lockout = new AccountLockout(new SettingsRepository());
         $GLOBALS['_test_user_meta'] = [];
-        unset($GLOBALS['_test_options']['wsms_auth_settings']);
+        unset($GLOBALS['_test_options'][SettingsRepository::OPTION_KEY]);
     }
 
     protected function tearDown(): void
     {
         $GLOBALS['_test_user_meta'] = [];
-        unset($GLOBALS['_test_options']['wsms_auth_settings']);
+        unset($GLOBALS['_test_options'][SettingsRepository::OPTION_KEY]);
     }
 
     public function testIsLockedReturnsFalseInitially(): void
@@ -123,7 +123,7 @@ class AccountLockoutTest extends TestCase
 
     public function testCustomThresholdsFromSettings(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'lockout_thresholds' => [
                 3 => 60,
             ],

@@ -2,6 +2,7 @@
 
 namespace WSms\Flow\Action;
 
+use WSms\Auth\SettingsRepository;
 use WSms\Campaign\AudienceResolver;
 use WSms\Contact\Contracts\ListRepositoryInterface;
 use WSms\Contact\Contracts\TagRepositoryInterface;
@@ -303,7 +304,7 @@ class SendMessageAction extends AbstractAction
     private function executeAdmin(array $payload, array $config, string $channel, string $gatewayId): ActionResult
     {
         $to = match (true) {
-            in_array($channel, ['sms', 'whatsapp', 'telegram']) => (get_option('wsms_auth_settings', []))['site_phone'] ?? '',
+            in_array($channel, ['sms', 'whatsapp', 'telegram']) => (get_option(SettingsRepository::OPTION_KEY, []))['site_phone'] ?? '',
             $channel === 'email' => get_option('admin_email', ''),
             default => '',
         };

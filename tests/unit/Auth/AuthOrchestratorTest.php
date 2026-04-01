@@ -52,7 +52,7 @@ class AuthOrchestratorTest extends TestCase
             $GLOBALS['_test_userdata'],
             $GLOBALS['_test_get_users_result'],
             $GLOBALS['_test_get_user_by_result'],
-            $GLOBALS['_test_options']['wsms_auth_settings'],
+            $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY],
         );
 
         $GLOBALS['_test_do_action_calls'] = [];
@@ -440,7 +440,7 @@ class AuthOrchestratorTest extends TestCase
 
     public function testIdentifyNotFoundAutoCreateOn(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'auto_create_users'    => true,
             'registration_fields'  => ['email', 'phone', 'password'],
         ];
@@ -457,7 +457,7 @@ class AuthOrchestratorTest extends TestCase
 
     public function testIdentifyNotFoundAutoCreateOff(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'auto_create_users' => false,
         ];
 

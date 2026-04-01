@@ -72,7 +72,7 @@ class InstallManager
         switch_to_blog((int) $oldSite->blog_id);
         Migrator::dropTables();
         static::deactivateSingleSite();
-        delete_option('wsms_auth_settings');
+        delete_option(SettingsRepository::OPTION_KEY);
         delete_option(BrandingRepository::OPTION_KEY);
         restore_current_blog();
     }
@@ -92,7 +92,7 @@ class InstallManager
 
         add_option(BrandingRepository::OPTION_KEY, BrandingRepository::DEFAULTS);
 
-        add_option('wsms_auth_settings', SettingsRepository::DEFAULTS);
+        add_option(SettingsRepository::OPTION_KEY, SettingsRepository::DEFAULTS);
     }
 
     /**

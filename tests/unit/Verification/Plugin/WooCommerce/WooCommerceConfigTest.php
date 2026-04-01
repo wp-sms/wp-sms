@@ -29,7 +29,7 @@ class WooCommerceConfigTest extends TestCase
     public function testCheckoutEmailEnabledWhenBothToggleAndChannelEnabled(): void
     {
         $GLOBALS['_test_options']['wsms_verification_settings'] = ['email' => ['enabled' => true]];
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['woocommerce' => ['verify_email_at_checkout' => true]];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['woocommerce' => ['verify_email_at_checkout' => true]];
 
         $config = new WooCommerceConfig(new VerificationConfig(), new SettingsRepository());
 
@@ -39,7 +39,7 @@ class WooCommerceConfigTest extends TestCase
     public function testCheckoutEmailDisabledWhenChannelDisabled(): void
     {
         $GLOBALS['_test_options']['wsms_verification_settings'] = ['email' => ['enabled' => false]];
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['woocommerce' => ['verify_email_at_checkout' => true]];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['woocommerce' => ['verify_email_at_checkout' => true]];
 
         $config = new WooCommerceConfig(new VerificationConfig(), new SettingsRepository());
 
@@ -49,7 +49,7 @@ class WooCommerceConfigTest extends TestCase
     public function testCheckoutPhoneEnabled(): void
     {
         $GLOBALS['_test_options']['wsms_verification_settings'] = ['phone' => ['enabled' => true]];
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['woocommerce' => ['verify_phone_at_checkout' => true]];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['woocommerce' => ['verify_phone_at_checkout' => true]];
 
         $config = new WooCommerceConfig(new VerificationConfig(), new SettingsRepository());
 
@@ -58,7 +58,7 @@ class WooCommerceConfigTest extends TestCase
 
     public function testSkipVerifiedUsersCanBeDisabled(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['woocommerce' => ['skip_verified_users' => false]];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['woocommerce' => ['skip_verified_users' => false]];
 
         $config = new WooCommerceConfig(new VerificationConfig(), new SettingsRepository());
 
@@ -69,7 +69,7 @@ class WooCommerceConfigTest extends TestCase
 
     public function testShouldSkipForBillingValueReturnsTrueWhenEmailMatches(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['woocommerce' => ['skip_verified_users' => true]];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['woocommerce' => ['skip_verified_users' => true]];
         $GLOBALS['_test_current_user_id'] = 1;
         $GLOBALS['_test_user_meta'][1]['wsms_email_verified'] = '1';
 
@@ -84,7 +84,7 @@ class WooCommerceConfigTest extends TestCase
 
     public function testShouldSkipForBillingValueReturnsFalseWhenEmailDiffers(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['woocommerce' => ['skip_verified_users' => true]];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['woocommerce' => ['skip_verified_users' => true]];
         $GLOBALS['_test_current_user_id'] = 1;
         $GLOBALS['_test_user_meta'][1]['wsms_email_verified'] = '1';
 
@@ -99,7 +99,7 @@ class WooCommerceConfigTest extends TestCase
 
     public function testShouldSkipForBillingValueReturnsFalseForGuest(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['woocommerce' => ['skip_verified_users' => true]];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['woocommerce' => ['skip_verified_users' => true]];
         $GLOBALS['_test_current_user_id'] = 0;
 
         $config = new WooCommerceConfig(new VerificationConfig(), new SettingsRepository());
@@ -109,7 +109,7 @@ class WooCommerceConfigTest extends TestCase
 
     public function testShouldSkipForBillingValueReturnsFalseWhenNotVerified(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['woocommerce' => ['skip_verified_users' => true]];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['woocommerce' => ['skip_verified_users' => true]];
         $GLOBALS['_test_current_user_id'] = 1;
         // No wsms_email_verified meta.
 
@@ -120,7 +120,7 @@ class WooCommerceConfigTest extends TestCase
 
     public function testShouldSkipForBillingValueReturnsFalseWhenSkipDisabled(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['woocommerce' => ['skip_verified_users' => false]];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['woocommerce' => ['skip_verified_users' => false]];
         $GLOBALS['_test_current_user_id'] = 1;
         $GLOBALS['_test_user_meta'][1]['wsms_email_verified'] = '1';
 
@@ -131,7 +131,7 @@ class WooCommerceConfigTest extends TestCase
 
     public function testShouldSkipForBillingValueCaseInsensitive(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['woocommerce' => ['skip_verified_users' => true]];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['woocommerce' => ['skip_verified_users' => true]];
         $GLOBALS['_test_current_user_id'] = 1;
         $GLOBALS['_test_user_meta'][1]['wsms_email_verified'] = '1';
 
@@ -148,7 +148,7 @@ class WooCommerceConfigTest extends TestCase
 
     public function testGetVerifiedAccountValueReturnsEmailWhenVerified(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['woocommerce' => ['skip_verified_users' => true]];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['woocommerce' => ['skip_verified_users' => true]];
         $GLOBALS['_test_current_user_id'] = 1;
         $GLOBALS['_test_user_meta'][1]['wsms_email_verified'] = '1';
 

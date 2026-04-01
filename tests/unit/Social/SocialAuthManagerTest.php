@@ -3,6 +3,7 @@
 namespace WSms\Tests\Unit\Social;
 
 use PHPUnit\Framework\TestCase;
+use WSms\Auth\SettingsRepository;
 use WSms\Social\Contracts\SocialProviderInterface;
 use WSms\Social\SocialAuthManager;
 
@@ -51,7 +52,7 @@ class SocialAuthManagerTest extends TestCase
         $this->manager->registerProvider($google);
         $this->manager->registerProvider($apple);
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'social' => [
                 'google' => ['enabled' => true, 'client_id' => 'gid', 'client_secret' => 'gsecret'],
                 'apple'  => ['enabled' => false, 'client_id' => '', 'client_secret' => ''],
@@ -69,7 +70,7 @@ class SocialAuthManagerTest extends TestCase
         $google = $this->makeProvider('google');
         $this->manager->registerProvider($google);
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'social' => [
                 'google' => ['enabled' => true, 'client_id' => '', 'client_secret' => ''],
             ],

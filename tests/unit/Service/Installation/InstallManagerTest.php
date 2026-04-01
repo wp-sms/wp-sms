@@ -3,6 +3,7 @@
 namespace WSms\Tests\Unit\Service\Installation;
 
 use PHPUnit\Framework\TestCase;
+use WSms\Auth\SettingsRepository;
 use WSms\Database\CleanupScheduler;
 use WSms\Service\Installation\InstallManager;
 use WSms\Tests\Support\WpdbFake;
@@ -65,7 +66,7 @@ class InstallManagerTest extends TestCase
     {
         TestableInstallManager::activate(false);
 
-        $settings = $GLOBALS['_test_options']['wsms_auth_settings'];
+        $settings = $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY];
         $this->assertTrue($settings['password']['enabled']);
         $this->assertTrue($settings['email']['enabled']);
         $this->assertFalse($settings['phone']['enabled']);
@@ -179,7 +180,7 @@ class InstallManagerTest extends TestCase
     {
         $GLOBALS['_test_is_multisite'] = true;
         $GLOBALS['_test_active_sitewide_plugins'] = ['wp-sms/wp-sms.php' => true];
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['some' => 'settings'];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['some' => 'settings'];
 
         $site = new \WP_Site();
         $site->blog_id = '3';
@@ -189,7 +190,7 @@ class InstallManagerTest extends TestCase
         $this->assertSame([3], $GLOBALS['_test_switched_blog_calls']);
         $this->assertSame(1, $GLOBALS['_test_restore_blog_calls']);
         $this->assertSame(1, TestableInstallManager::$deactivateCalls);
-        $this->assertArrayNotHasKey('wsms_auth_settings', $GLOBALS['_test_options']);
+        $this->assertArrayNotHasKey(SettingsRepository::OPTION_KEY, $GLOBALS['_test_options']);
     }
 
     public function testOnSiteDeletedSkipsWhenNotNetworkActive(): void
@@ -228,7 +229,7 @@ class TestableInstallManager extends InstallManager
             as_schedule_recurring_action(time(), DAY_IN_SECONDS, CleanupScheduler::HOOK_NAME, [], CleanupScheduler::AS_GROUP);
         }
 
-        add_option('wsms_auth_settings', [
+        add_option(SettingsRepository::OPTION_KEY, [
             'phone'    => ['enabled' => false],
             'email'    => ['enabled' => true],
             'password' => ['enabled' => true],

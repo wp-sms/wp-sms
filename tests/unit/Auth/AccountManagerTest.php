@@ -96,7 +96,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 10;
 
         // Simulate on_registration enrollment timing.
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'registration_fields' => ['email', 'password'],
             'enrollment_timing'   => 'on_registration',
         ];
@@ -125,7 +125,7 @@ class AccountManagerTest extends TestCase
 
     public function testRegisterUserFailsWhenPhoneRequiredButMissing(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'registration_fields' => ['email', 'password'],
             'phone' => ['enabled' => true, 'required_at_signup' => true],
         ];
@@ -143,7 +143,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 50;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'registration_fields' => ['email', 'password'],
             'phone' => ['enabled' => true, 'required_at_signup' => true],
         ];
@@ -161,7 +161,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 51;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email'    => ['enabled' => false, 'required_at_signup' => true],
             'password' => ['enabled' => true, 'required_at_signup' => true],
         ];
@@ -177,7 +177,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 52;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => false, 'required_at_signup' => true],
         ];
 
@@ -191,7 +191,7 @@ class AccountManagerTest extends TestCase
 
     public function testRegisterUserFailsWhenFirstNameRequired(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'registration_fields' => ['email', 'password', 'first_name'],
         ];
 
@@ -228,7 +228,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 50;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'registration_fields' => ['email', 'password'],
             'email' => ['required_at_signup' => true],
             'password' => ['enabled' => true, 'required_at_signup' => true],
@@ -244,7 +244,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 51;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'registration_fields' => ['email', 'password'],
             'password' => ['enabled' => true, 'required_at_signup' => true],
         ];
@@ -261,7 +261,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 60;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'registration_fields' => ['email', 'password'],
             'phone' => ['required_at_signup' => true],
             'email' => [],
@@ -282,7 +282,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 61;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'registration_fields' => ['email', 'password'],
             'email' => ['verify_at_signup' => true],
         ];
@@ -302,7 +302,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 62;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'registration_fields' => ['email', 'password'],
             'phone' => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
         ];
@@ -323,7 +323,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 63;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'registration_fields' => ['email', 'password'],
             'phone' => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
             'email' => ['verify_at_signup' => true],
@@ -578,7 +578,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 100;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email'    => ['required_at_signup' => false],
             'password' => ['required_at_signup' => false],
             'phone'    => ['required_at_signup' => true],
@@ -600,7 +600,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 101;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email'    => ['required_at_signup' => false, 'verify_at_signup' => true],
             'password' => ['required_at_signup' => false],
             'phone'    => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
@@ -621,7 +621,7 @@ class AccountManagerTest extends TestCase
 
     public function testRegisterUserPlaceholderGeneratesDummyUsername(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email'    => ['required_at_signup' => false],
             'password' => ['required_at_signup' => false],
             'phone'    => ['required_at_signup' => true],
@@ -694,7 +694,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 70;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'registration_fields' => ['email', 'password'],
         ];
 
@@ -711,7 +711,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 71;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'registration_fields' => ['email', 'password'],
             'email' => ['verify_at_signup' => true],
         ];
@@ -729,7 +729,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 72;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'registration_fields' => ['email', 'password'],
             'phone' => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
         ];
@@ -747,7 +747,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 73;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email'    => ['required_at_signup' => false],
             'password' => ['required_at_signup' => false],
             'phone'    => ['required_at_signup' => true],
@@ -765,7 +765,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 74;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email'    => ['required_at_signup' => false, 'verify_at_signup' => true],
             'password' => ['required_at_signup' => false],
             'phone'    => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
@@ -796,7 +796,7 @@ class AccountManagerTest extends TestCase
         $user->user_email = 'test@example.com';
         $GLOBALS['_test_userdata'] = $user;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email' => ['verify_at_signup' => true],
             'phone' => ['enabled' => true, 'verify_at_signup' => true],
         ];
@@ -819,7 +819,7 @@ class AccountManagerTest extends TestCase
         $user->user_email = 'test@example.com';
         $GLOBALS['_test_userdata'] = $user;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email' => ['verify_at_signup' => true],
         ];
 
@@ -841,7 +841,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_userdata'] = $user;
 
         // Admin disabled all verify_at_signup.
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email' => ['verify_at_signup' => false],
             'phone' => ['verify_at_signup' => false],
         ];
@@ -886,7 +886,7 @@ class AccountManagerTest extends TestCase
             'wsms_registration_created_at' => gmdate('Y-m-d H:i:s', time() - 90000), // 25 hours ago
         ];
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'registration_fields'     => ['email', 'password'],
             'email'                   => ['verify_at_signup' => true],
             'pending_user_ttl_hours'  => 24,
@@ -916,7 +916,7 @@ class AccountManagerTest extends TestCase
             'wsms_registration_created_at' => gmdate('Y-m-d H:i:s', time() - 3600), // 1 hour ago
         ];
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'registration_fields'     => ['email', 'password'],
             'email'                   => ['verify_at_signup' => true],
             'pending_user_ttl_hours'  => 24,
@@ -948,7 +948,7 @@ class AccountManagerTest extends TestCase
         // No email collision (get_user_by returns false for email check).
         $GLOBALS['_test_get_user_by_result'] = false;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email'    => ['required_at_signup' => false],
             'password' => ['required_at_signup' => false],
             'phone'    => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
@@ -1000,7 +1000,7 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserSetsUsablePasswordFlag(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 120;
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'registration_fields' => ['email', 'password'],
         ];
 
@@ -1139,7 +1139,7 @@ class AccountManagerTest extends TestCase
 
     public function testRegisterUserPhoneOnlyStillUsesPlaceholderUsername(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email'    => ['required_at_signup' => false],
             'password' => ['required_at_signup' => false],
             'phone'    => ['required_at_signup' => true],
@@ -1226,7 +1226,7 @@ class AccountManagerTest extends TestCase
     {
         $manager = $this->makeManagerWithDispatcher(canDeliver: false);
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email' => ['verification_methods' => ['otp']],
         ];
 

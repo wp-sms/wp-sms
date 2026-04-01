@@ -24,14 +24,14 @@ class PolicyEngineFormTest extends TestCase
 
         $this->engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
 
-        unset($GLOBALS['_test_options']['wsms_auth_settings']);
+        unset($GLOBALS['_test_options'][SettingsRepository::OPTION_KEY]);
     }
 
     // --- resolveFormConfig ---
 
     public function testResolveFormConfigInheritsGlobalSettings(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email' => ['enabled' => true, 'verify_at_signup' => true],
             'phone' => ['enabled' => true, 'verify_at_signup' => true],
         ];
@@ -52,7 +52,7 @@ class PolicyEngineFormTest extends TestCase
 
     public function testResolveFormConfigCanDisableVerifyAtSignup(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email' => ['enabled' => true, 'verify_at_signup' => true],
             'phone' => ['enabled' => true, 'verify_at_signup' => true],
         ];
@@ -75,7 +75,7 @@ class PolicyEngineFormTest extends TestCase
 
     public function testResolveFormConfigCannotEnableDisabledChannel(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => false, 'verify_at_signup' => false],
         ];
 
@@ -96,7 +96,7 @@ class PolicyEngineFormTest extends TestCase
 
     public function testResolveFormConfigCanEnableVerifyOnEnabledChannel(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email' => ['enabled' => true, 'verify_at_signup' => false],
         ];
 
@@ -117,7 +117,7 @@ class PolicyEngineFormTest extends TestCase
 
     public function testResolveFormConfigIgnoresNonAllowedKeys(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email' => ['enabled' => true, 'usage' => 'login', 'verify_at_signup' => true],
         ];
 
@@ -140,7 +140,7 @@ class PolicyEngineFormTest extends TestCase
 
     public function testFormVerificationRequirementsReflectsOverrides(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email' => ['enabled' => true, 'verify_at_signup' => true],
             'phone' => ['enabled' => true, 'verify_at_signup' => true],
         ];

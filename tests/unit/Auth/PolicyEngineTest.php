@@ -26,7 +26,7 @@ class PolicyEngineTest extends TestCase
         $this->engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
 
         unset(
-            $GLOBALS['_test_options']['wsms_auth_settings'],
+            $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY],
             $GLOBALS['_test_userdata'],
         );
         $GLOBALS['_test_user_meta'] = [];
@@ -48,7 +48,7 @@ class PolicyEngineTest extends TestCase
     public function testIsMfaRequiredReturnsTrueForVoluntarilyEnrolledUser(): void
     {
         // Enable an MFA channel (phone with usage=mfa).
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => true, 'usage' => 'mfa'],
             // No mfa_required_roles set — user enrolled voluntarily.
         ];
@@ -63,7 +63,7 @@ class PolicyEngineTest extends TestCase
 
     public function testIsMfaRequiredReturnsFalseForUnenrolledUserWithNoRequiredRoles(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => true, 'usage' => 'mfa'],
         ];
 
@@ -78,7 +78,7 @@ class PolicyEngineTest extends TestCase
      */
     public function testGetAvailablePrimaryMethods(array $settings, array $expected): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = $settings;
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = $settings;
 
         // Need fresh engine because settings are cached.
         $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
@@ -171,7 +171,7 @@ class PolicyEngineTest extends TestCase
 
     public function testUserMethodsDefaultSettingsReturnsPasswordAndEmail(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [];
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
 
         $methods = $this->engine->getAvailableMethodsForUser(1);
@@ -184,7 +184,7 @@ class PolicyEngineTest extends TestCase
 
     public function testUserMethodsWithPhoneReturnsPhoneOtp(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'password' => ['enabled' => true],
             'phone'    => ['enabled' => true, 'usage' => 'login', 'verification_methods' => ['otp']],
         ];
@@ -200,7 +200,7 @@ class PolicyEngineTest extends TestCase
 
     public function testUserMethodsPhoneOtpAndMagicLink(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'password' => ['enabled' => true],
             'phone'    => ['enabled' => true, 'usage' => 'login', 'verification_methods' => ['otp', 'magic_link']],
         ];
@@ -216,7 +216,7 @@ class PolicyEngineTest extends TestCase
 
     public function testUserMethodsNoPhoneSkipsPhoneMethods(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'password' => ['enabled' => true],
             'phone'    => ['enabled' => true, 'usage' => 'login', 'verification_methods' => ['otp']],
             'email'    => ['enabled' => false],
@@ -231,7 +231,7 @@ class PolicyEngineTest extends TestCase
 
     public function testUserMethodsEmailOtpAndMagicLink(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'password' => ['enabled' => true],
             'email'    => ['enabled' => true, 'usage' => 'login', 'verification_methods' => ['otp', 'magic_link']],
         ];
@@ -246,7 +246,7 @@ class PolicyEngineTest extends TestCase
 
     public function testUserMethodsNoEmailSkipsEmailMethods(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'password' => ['enabled' => true],
             'email'    => ['enabled' => true, 'usage' => 'login', 'verification_methods' => ['otp']],
         ];
@@ -260,7 +260,7 @@ class PolicyEngineTest extends TestCase
 
     public function testUserMethodsAllMethodsAllData(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'password' => ['enabled' => true],
             'phone'    => ['enabled' => true, 'usage' => 'login', 'verification_methods' => ['otp', 'magic_link']],
             'email'    => ['enabled' => true, 'usage' => 'login', 'verification_methods' => ['otp', 'magic_link']],
@@ -275,7 +275,7 @@ class PolicyEngineTest extends TestCase
 
     public function testUserMethodsNonexistentUserReturnsEmpty(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'password' => ['enabled' => true],
         ];
 
@@ -286,7 +286,7 @@ class PolicyEngineTest extends TestCase
 
     public function testUserMethodsOnlyEmailOtp(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'password' => ['enabled' => false],
             'email'    => ['enabled' => true, 'usage' => 'login', 'verification_methods' => ['otp']],
         ];
@@ -347,7 +347,7 @@ class PolicyEngineTest extends TestCase
 
     public function testGetPendingVerificationsReadsEmailVerifyAtSignup(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email' => ['enabled' => true, 'verify_at_signup' => true],
         ];
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
@@ -362,7 +362,7 @@ class PolicyEngineTest extends TestCase
 
     public function testGetPendingVerificationsReadsPhoneVerifyAtSignup(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => true, 'verify_at_signup' => true],
         ];
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
@@ -377,7 +377,7 @@ class PolicyEngineTest extends TestCase
 
     public function testGetPendingVerificationsEmptyWhenVerifyAtSignupDisabled(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email' => ['enabled' => true, 'verify_at_signup' => false],
             'phone' => ['enabled' => true, 'verify_at_signup' => false],
         ];
@@ -397,7 +397,7 @@ class PolicyEngineTest extends TestCase
      */
     public function testGetEffectiveRegistrationFields(array $settings, array $expected): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = $settings;
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = $settings;
 
         // PolicyEngine caches settings, need fresh instance.
         $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
@@ -520,7 +520,7 @@ class PolicyEngineTest extends TestCase
 
     public function testUserMethodsSkipsEmailForPlaceholderEmail(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'password' => ['enabled' => true],
             'email'    => ['enabled' => true, 'usage' => 'login', 'verification_methods' => ['otp']],
         ];
@@ -535,7 +535,7 @@ class PolicyEngineTest extends TestCase
 
     public function testPendingVerificationsSkipsPlaceholderEmail(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email' => ['enabled' => true, 'verify_at_signup' => true],
         ];
         $GLOBALS['_test_userdata'] = $this->makeUser(1, 'abc123@noreply.wsms.local');
@@ -551,7 +551,7 @@ class PolicyEngineTest extends TestCase
 
     public function testIsMfaRequiredOnRegistrationForUnenrolledUser(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => true, 'usage' => 'mfa'],
             'mfa_required_roles' => ['administrator'],
             'enrollment_timing'  => 'on_registration',
@@ -567,7 +567,7 @@ class PolicyEngineTest extends TestCase
 
     public function testIsMfaRequiredGracePeriodExpiredForUnenrolled(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => true, 'usage' => 'mfa'],
             'mfa_required_roles' => ['administrator'],
             'enrollment_timing'  => 'grace_period',
@@ -586,7 +586,7 @@ class PolicyEngineTest extends TestCase
 
     public function testIsMfaRequiredGracePeriodExactBoundary(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => true, 'usage' => 'mfa'],
             'mfa_required_roles' => ['administrator'],
             'enrollment_timing'  => 'grace_period',
@@ -606,7 +606,7 @@ class PolicyEngineTest extends TestCase
 
     public function testIsMfaRequiredInvalidTimingDefaultsToVoluntary(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => true, 'usage' => 'mfa'],
             'mfa_required_roles' => ['administrator'],
             'enrollment_timing'  => 'invalid_value',
@@ -623,7 +623,7 @@ class PolicyEngineTest extends TestCase
 
     public function testVoluntaryModeIgnoresRequiredRoles(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => true, 'usage' => 'mfa'],
             'mfa_required_roles' => ['administrator'],
             'enrollment_timing'  => 'voluntary',
@@ -642,7 +642,7 @@ class PolicyEngineTest extends TestCase
 
     public function testGetGracePeriodInfoWithinGrace(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => true, 'usage' => 'mfa'],
             'mfa_required_roles' => ['administrator'],
             'enrollment_timing'  => 'grace_period',
@@ -666,7 +666,7 @@ class PolicyEngineTest extends TestCase
 
     public function testGetGracePeriodInfoExpired(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => true, 'usage' => 'mfa'],
             'mfa_required_roles' => ['administrator'],
             'enrollment_timing'  => 'grace_period',
@@ -685,7 +685,7 @@ class PolicyEngineTest extends TestCase
 
     public function testGetGracePeriodInfoNotGracePeriodTiming(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => true, 'usage' => 'mfa'],
             'mfa_required_roles' => ['administrator'],
             'enrollment_timing'  => 'on_registration',
@@ -704,7 +704,7 @@ class PolicyEngineTest extends TestCase
     {
         // User registered 60 days ago but policy activated 2 days ago with 7-day grace.
         // Without activation time, grace would be expired. With it, user is within grace.
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => true, 'usage' => 'mfa'],
             'mfa_required_roles' => ['administrator'],
             'enrollment_timing'  => 'grace_period',
@@ -732,7 +732,7 @@ class PolicyEngineTest extends TestCase
     {
         // Policy activated 30 days ago, user registered 2 days ago with 7-day grace.
         // max(user_registered, policy_activated) = user_registered → within grace.
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => true, 'usage' => 'mfa'],
             'mfa_required_roles' => ['subscriber'],
             'enrollment_timing'  => 'grace_period',
@@ -755,7 +755,7 @@ class PolicyEngineTest extends TestCase
         // No mfa_policy_activated_at set — fallback to time().
         // User registered 60 days ago. Grace start = max(60d_ago, now) = now.
         // So grace expires in 7 days from now → not expired.
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => true, 'usage' => 'mfa'],
             'mfa_required_roles' => ['administrator'],
             'enrollment_timing'  => 'grace_period',
@@ -774,7 +774,7 @@ class PolicyEngineTest extends TestCase
 
     public function testGetGracePeriodInfoAlreadyEnrolled(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'phone' => ['enabled' => true, 'usage' => 'mfa'],
             'mfa_required_roles' => ['administrator'],
             'enrollment_timing'  => 'grace_period',

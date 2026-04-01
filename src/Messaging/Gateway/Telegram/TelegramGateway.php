@@ -2,6 +2,7 @@
 
 namespace WSms\Messaging\Gateway\Telegram;
 
+use WSms\Auth\SettingsRepository;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\GatewayInterface;
 use WSms\Messaging\Contracts\MessageInterface;
@@ -70,7 +71,7 @@ class TelegramGateway implements GatewayInterface
 
     public function isConfigured(): bool
     {
-        $settings = get_option('wsms_auth_settings', []);
+        $settings = get_option(SettingsRepository::OPTION_KEY, []);
         return !empty($settings['telegram']['bot_token']);
     }
 

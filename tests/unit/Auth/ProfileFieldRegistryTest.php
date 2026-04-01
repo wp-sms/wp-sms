@@ -13,7 +13,7 @@ class ProfileFieldRegistryTest extends TestCase
 
     protected function setUp(): void
     {
-        unset($GLOBALS['_test_options']['wsms_auth_settings']);
+        unset($GLOBALS['_test_options'][SettingsRepository::OPTION_KEY]);
         $GLOBALS['_test_user_meta'] = [];
         $GLOBALS['_test_registered_meta'] = [];
 
@@ -65,7 +65,7 @@ class ProfileFieldRegistryTest extends TestCase
 
     public function testGetAllFieldsMergesCustomFields(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'profile_fields' => [
                 ['id' => 'company', 'type' => 'text', 'label' => 'Company', 'source' => 'custom', 'meta_key' => 'company', 'sort_order' => 7],
             ],
@@ -84,7 +84,7 @@ class ProfileFieldRegistryTest extends TestCase
 
     public function testGetAllFieldsSortsBySortOrder(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'profile_fields' => [
                 ['id' => 'company', 'type' => 'text', 'label' => 'Company', 'source' => 'custom', 'meta_key' => 'company', 'sort_order' => 3],
                 ['id' => 'department', 'type' => 'select', 'label' => 'Department', 'source' => 'custom', 'meta_key' => 'department', 'sort_order' => 99],
@@ -102,7 +102,7 @@ class ProfileFieldRegistryTest extends TestCase
 
     public function testSystemFieldOverridesFromProfileFields(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'profile_fields' => [
                 ['id' => 'phone', 'sort_order' => 1, 'required' => true, 'visibility' => 'registration'],
             ],
@@ -122,7 +122,7 @@ class ProfileFieldRegistryTest extends TestCase
 
     public function testGetFieldsForRegistrationExcludesProfileOnlyFields(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'profile_fields' => [
                 ['id' => 'bio', 'type' => 'textarea', 'label' => 'Bio', 'source' => 'custom', 'meta_key' => 'bio', 'visibility' => 'profile', 'sort_order' => 7],
             ],
@@ -145,7 +145,7 @@ class ProfileFieldRegistryTest extends TestCase
 
     public function testGetFieldsForRegistrationIncludesBothVisibility(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'profile_fields' => [
                 ['id' => 'company', 'type' => 'text', 'label' => 'Company', 'source' => 'custom', 'meta_key' => 'company', 'visibility' => 'both', 'sort_order' => 7],
             ],
@@ -162,7 +162,7 @@ class ProfileFieldRegistryTest extends TestCase
 
     public function testGetCustomFieldsExcludesSystemFields(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'profile_fields' => [
                 ['id' => 'company', 'type' => 'text', 'label' => 'Company', 'source' => 'custom', 'meta_key' => 'company', 'sort_order' => 7],
                 ['id' => 'phone', 'sort_order' => 1], // System override.
@@ -297,7 +297,7 @@ class ProfileFieldRegistryTest extends TestCase
 
     public function testHiddenFieldExcludedFromAllContexts(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'profile_fields' => [
                 ['id' => 'company', 'type' => 'text', 'label' => 'Company', 'source' => 'custom', 'meta_key' => 'company', 'sort_order' => 7, 'visibility' => 'hidden'],
                 ['id' => 'dept', 'type' => 'text', 'label' => 'Department', 'source' => 'custom', 'meta_key' => 'dept', 'sort_order' => 8],
@@ -315,7 +315,7 @@ class ProfileFieldRegistryTest extends TestCase
 
     public function testGetAllFieldsReturnsHiddenFields(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'profile_fields' => [
                 ['id' => 'company', 'type' => 'text', 'label' => 'Company', 'source' => 'custom', 'meta_key' => 'company', 'sort_order' => 7, 'visibility' => 'hidden'],
             ],
@@ -329,7 +329,7 @@ class ProfileFieldRegistryTest extends TestCase
 
     public function testHiddenSystemFieldExcludedFromContext(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'profile_fields' => [
                 ['id' => 'display_name', 'visibility' => 'hidden'],
             ],

@@ -5,8 +5,9 @@ namespace WSms\Rest;
 use WP_REST_Request;
 use WP_REST_Response;
 use WSms\Auth\RateLimiter;
-use WSms\Social\SocialAuthOrchestrator;
+use WSms\Auth\SettingsRepository;
 use WSms\Social\SocialAuthManager;
+use WSms\Social\SocialAuthOrchestrator;
 
 defined('ABSPATH') || exit;
 
@@ -199,7 +200,7 @@ class SocialAuthController extends Controller
 
     private function getAuthBaseUrl(): string
     {
-        $settings = get_option('wsms_auth_settings', []);
+        $settings = get_option(SettingsRepository::OPTION_KEY, []);
 
         return get_site_url() . ($settings['auth_base_url'] ?? '/account');
     }

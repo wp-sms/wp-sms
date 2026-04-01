@@ -29,7 +29,7 @@ class CaptchaGuardTest extends TestCase
 
     private function enableCaptcha(array $overrides = []): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'captcha' => array_merge([
                 'enabled'           => true,
                 'provider'          => 'turnstile',
@@ -54,7 +54,7 @@ class CaptchaGuardTest extends TestCase
 
     public function testReturnsNullWhenCaptchaDisabled(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['captcha' => ['enabled' => false]];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['captcha' => ['enabled' => false]];
 
         $result = $this->guard->verify($this->makeRequest(), 'login');
 
@@ -269,7 +269,7 @@ class CaptchaGuardTest extends TestCase
 
     public function testGetPublicConfigWhenDisabled(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['captcha' => ['enabled' => false]];
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = ['captcha' => ['enabled' => false]];
 
         $config = $this->guard->getPublicConfig();
 

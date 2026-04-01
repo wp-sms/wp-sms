@@ -42,7 +42,7 @@ class SettingsRepositoryTest extends TestCase
 
     public function testDbOverridesMergeWhilePreservingDefaults(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'email' => ['enabled' => false],
         ];
 
@@ -67,7 +67,7 @@ class SettingsRepositoryTest extends TestCase
 
     public function testIndexedArraysReplacedWholesale(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'captcha' => [
                 'protected_actions' => ['login'],
             ],
@@ -82,7 +82,7 @@ class SettingsRepositoryTest extends TestCase
 
     public function testMfaRequiredRolesReplacedWholesale(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'mfa_required_roles' => ['administrator'],
         ];
 
@@ -96,7 +96,7 @@ class SettingsRepositoryTest extends TestCase
 
     public function testSocialNestedMergePreservesSiblingProviders(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'social' => [
                 'google' => ['enabled' => true, 'client_id' => 'gid', 'client_secret' => 'gsecret'],
             ],
@@ -120,7 +120,7 @@ class SettingsRepositoryTest extends TestCase
 
     public function testSocialNestedMergePreservesMissingKeys(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'social' => [
                 'google' => ['client_id' => 'myid'],
             ],
@@ -167,7 +167,7 @@ class SettingsRepositoryTest extends TestCase
 
     public function testInvalidateCacheReReadsFromDb(): void
     {
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'log_verbosity' => 'verbose',
         ];
 
@@ -175,7 +175,7 @@ class SettingsRepositoryTest extends TestCase
         $this->assertEquals('verbose', $repo->all()['log_verbosity']);
 
         // Simulate settings change.
-        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'log_verbosity' => 'minimal',
         ];
 
