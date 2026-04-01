@@ -296,6 +296,8 @@ export const SEGMENT_OPERATORS = {
   starts_with: __('Starts with', 'wp-sms'),
   is_empty: __('Is empty', 'wp-sms'),
   is_not_empty: __('Is not empty', 'wp-sms'),
+  is_true: __('Yes', 'wp-sms'),
+  is_false: __('No', 'wp-sms'),
   has: __('Has tag', 'wp-sms'),
   not_has: __('Does not have tag', 'wp-sms'),
 } as const;
@@ -308,6 +310,8 @@ export const ATTRIBUTE_FIELDS = [
   { value: 'status', label: __('Status', 'wp-sms') },
   { value: 'channel_opt_outs', label: __('Channel opt-outs', 'wp-sms') },
   { value: 'source', label: __('Source', 'wp-sms') },
+  { value: 'email_verified', label: __('Email verified', 'wp-sms'), boolean: true },
+  { value: 'phone_verified', label: __('Phone verified', 'wp-sms'), boolean: true },
 ] as const;
 
 export const MATCH_FIELD_OPTIONS = [

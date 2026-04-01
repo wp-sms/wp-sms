@@ -15,15 +15,22 @@ interface ConditionRowProps {
 
 const OPERATORS_BY_TYPE: Record<string, string[]> = {
   attribute: ['equals', 'not_equals', 'contains', 'starts_with', 'is_empty', 'is_not_empty'],
+  boolean: ['is_true', 'is_false'],
   tag: ['has', 'not_has'],
 };
 
-const NO_VALUE_OPS = ['is_empty', 'is_not_empty'];
+const BOOLEAN_FIELDS = new Set(ATTRIBUTE_FIELDS.filter((f) => 'boolean' in f && f.boolean).map((f) => f.value));
+const NO_VALUE_OPS = new Set(['is_empty', 'is_not_empty', 'is_true', 'is_false']);
+
+function isBooleanField(field: string): boolean {
+  return BOOLEAN_FIELDS.has(field);
+}
 
 export function ConditionRow({ condition, tags, onChange, onRemove }: ConditionRowProps) {
   const type = condition.type || 'attribute';
-  const operators = OPERATORS_BY_TYPE[type] || OPERATORS_BY_TYPE.attribute;
-  const showValue = !NO_VALUE_OPS.includes(condition.operator);
+  const isBoolean = type === 'attribute' && isBooleanField(condition.field || '');
+  const operators = isBoolean ? OPERATORS_BY_TYPE.boolean : (OPERATORS_BY_TYPE[type] || OPERATORS_BY_TYPE.attribute);
+  const showValue = !NO_VALUE_OPS.has(condition.operator);
 
   return (
     <div className="flex items-center gap-2">
@@ -38,7 +45,10 @@ export function ConditionRow({ condition, tags, onChange, onRemove }: ConditionR
       </Select>
 
       {type === 'attribute' && (
-        <Select value={condition.field || ''} onValueChange={(v) => onChange({ ...condition, field: v })}>
+        <Select value={condition.field || ''} onValueChange={(v) => {
+          if (v === condition.field) return;
+          onChange({ ...condition, field: v, operator: isBooleanField(v) ? 'is_true' : 'equals', value: '' });
+        }}>
           <SelectTrigger className="h-8 w-28 text-xs">
             <SelectValue placeholder={__('Field', 'wp-sms')} />
           </SelectTrigger>

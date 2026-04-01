@@ -93,7 +93,7 @@ class SegmentEvaluator implements SegmentEvaluatorInterface
             }
             $column = "JSON_UNQUOTE(JSON_EXTRACT(c.custom_fields, '$.{$jsonKey}'))";
         } else {
-            $allowed = ['email', 'phone', 'first_name', 'last_name', 'status', 'source'];
+            $allowed = ['email', 'phone', 'first_name', 'last_name', 'status', 'source', 'email_verified', 'phone_verified'];
             if (!in_array($field, $allowed)) {
                 return null;
             }
@@ -107,6 +107,8 @@ class SegmentEvaluator implements SegmentEvaluatorInterface
             'starts_with'  => $this->db->prepare("{$column} LIKE %s", $this->db->escLike($value) . '%'),
             'is_empty'     => "({$column} IS NULL OR {$column} = '')",
             'is_not_empty' => "({$column} IS NOT NULL AND {$column} != '')",
+            'is_true'      => "{$column} = 1",
+            'is_false'     => "{$column} = 0",
             default        => null,
         };
     }
