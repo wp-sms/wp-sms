@@ -41,7 +41,7 @@ import {
 
 type WizardStep = 'detection' | 'preview' | 'configure' | 'progress' | 'results';
 
-export function MigrationPage() {
+export function MigrationPage({ embedded }: { embedded?: boolean } = {}) {
   const migration = useMigration();
   const confirm = useConfirm();
 
@@ -78,11 +78,13 @@ export function MigrationPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        icon={ArrowRightLeft}
-        title={__('Migration', 'wp-sms')}
-        metadata={__('Import data from other plugins. Your original data is never modified or deleted.', 'wp-sms')}
-      />
+      {!embedded && (
+        <PageHeader
+          icon={ArrowRightLeft}
+          title={__('Migration', 'wp-sms')}
+          metadata={__('Import data from other plugins. Your original data is never modified or deleted.', 'wp-sms')}
+        />
+      )}
 
       {step === 'detection' && (
         <DetectionStep

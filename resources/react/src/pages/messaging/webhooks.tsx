@@ -57,7 +57,7 @@ function truncateUrl(url: string, maxLen = 40): string {
   return url.slice(0, maxLen) + '\u2026';
 }
 
-export function Webhooks() {
+export function Webhooks({ embedded }: { embedded?: boolean } = {}) {
   const {
     webhooks, loading, eventGroups, eventsLoading,
     createWebhook, updateWebhook, deleteWebhook, toggleWebhook, testConnection,
@@ -146,17 +146,19 @@ export function Webhooks() {
 
   return (
     <div className="space-y-4">
-      <PageHeader
-        icon={Webhook}
-        title={__('Webhooks', 'wp-sms')}
-        metadata={sprintf(_n('%d webhook', '%d webhooks', webhooks.length, 'wp-sms'), webhooks.length)}
-        actions={
-          <Button size="sm" onClick={() => setView({ mode: 'create' })}>
-            <Plus className="me-1.5 h-3.5 w-3.5" />
-            {__('Create Webhook', 'wp-sms')}
-          </Button>
-        }
-      />
+      {!embedded && (
+        <PageHeader
+          icon={Webhook}
+          title={__('Webhooks', 'wp-sms')}
+          metadata={sprintf(_n('%d webhook', '%d webhooks', webhooks.length, 'wp-sms'), webhooks.length)}
+          actions={
+            <Button size="sm" onClick={() => setView({ mode: 'create' })}>
+              <Plus className="me-1.5 h-3.5 w-3.5" />
+              {__('Create Webhook', 'wp-sms')}
+            </Button>
+          }
+        />
+      )}
 
       <DataTable
         loading={loading}

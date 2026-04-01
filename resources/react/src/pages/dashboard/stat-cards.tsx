@@ -82,7 +82,7 @@ const messagesFailedCard: StatCardConfig = {
   getInsight: (d) => d.messaging.messages_failed > 0
     ? { text: __('Review message logs', 'wp-sms'), status: d.messaging.messages_failed > 50 ? 'destructive' : 'warning' }
     : null,
-  navigateTo: 'monitoring',
+  navigateTo: 'monitoring/message-logs',
 };
 
 const registrationsCard: StatCardConfig = {
@@ -97,7 +97,7 @@ const totalContactsCard: StatCardConfig = {
   label: __('Total Contacts', 'wp-sms'),
   getValue: (d) => formatCompact(d.contacts.total),
   getDelta: () => null,
-  navigateTo: 'contacts',
+  navigateTo: 'audience/contacts',
 };
 
 const failedLoginsCard: StatCardConfig = {

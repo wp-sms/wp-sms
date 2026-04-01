@@ -13,6 +13,7 @@ import { AuthDisabledNotice } from '@/components/auth-disabled-notice';
 interface ProfileFieldsProps {
   settings: Required<AuthSettings>;
   onUpdate: <K extends keyof AuthSettings>(key: K, value: AuthSettings[K]) => void;
+  embedded?: boolean;
 }
 
 const SYSTEM_FIELDS: ProfileFieldDefinition[] = [
@@ -58,7 +59,7 @@ function mergeFields(profileFields: ProfileFieldDefinition[]): ProfileFieldDefin
   return merged.sort((a, b) => a.sort_order - b.sort_order);
 }
 
-export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
+export function ProfileFields({ settings, onUpdate, embedded }: ProfileFieldsProps) {
   const [panelOpen, setPanelOpen] = useState(false);
   const [editingField, setEditingField] = useState<ProfileFieldDefinition | null>(null);
   const [panelMode, setPanelMode] = useState<'create' | 'meta' | 'edit'>('create');
@@ -122,22 +123,24 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
     <>
       {!settings.auth_enabled && <AuthDisabledNotice />}
       <div className="space-y-4">
-      <PageHeader
-        icon={ListChecks}
-        title={__('Profile Fields', 'wp-sms')}
-        metadata={sprintf(_n('%d field', '%d fields', allFields.length, 'wp-sms'), allFields.length)}
-        actions={
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => handleAdd('meta')}>
-              {__('Pick Meta Key', 'wp-sms')}
-            </Button>
-            <Button size="sm" onClick={() => handleAdd('create')}>
-              <Plus className="me-1 h-3.5 w-3.5" />
-              {__('Add Field', 'wp-sms')}
-            </Button>
-          </div>
-        }
-      />
+      {!embedded && (
+        <PageHeader
+          icon={ListChecks}
+          title={__('Profile Fields', 'wp-sms')}
+          metadata={sprintf(_n('%d field', '%d fields', allFields.length, 'wp-sms'), allFields.length)}
+          actions={
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => handleAdd('meta')}>
+                {__('Pick Meta Key', 'wp-sms')}
+              </Button>
+              <Button size="sm" onClick={() => handleAdd('create')}>
+                <Plus className="me-1 h-3.5 w-3.5" />
+                {__('Add Field', 'wp-sms')}
+              </Button>
+            </div>
+          }
+        />
+      )}
       <div className="rounded-lg border border-border/50 divide-y divide-border/50">
         {allFields.map((field, index) => (
             <div key={field.id} className="flex items-center gap-3 px-4 py-3">

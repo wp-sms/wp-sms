@@ -9,6 +9,7 @@ import { WidgetPreview } from './widget-preview';
 import { useSaveBar } from '@/contexts/save-bar-context';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
@@ -17,15 +18,16 @@ import { AlertCircle, Eye, MessageSquare } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 
 interface MessagingButtonPageProps {
-  section: string;
+  embedded?: boolean;
 }
 
-export function MessagingButtonPage({ section }: MessagingButtonPageProps) {
+export function MessagingButtonPage({ embedded }: MessagingButtonPageProps) {
   const { settings, updateSettings, isDirty, saveStatus, save, loading, error, rawResponse } = useMessagingButtonSettings();
   const wpTimezone = rawResponse?.wp_timezone;
   const handleSave = useCallback(() => { void save(); }, [save]);
   useSaveBar({ isDirty, saveStatus, onSave: handleSave });
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [section, setSection] = useState('appearance');
 
   if (loading) {
     return (
@@ -47,49 +49,90 @@ export function MessagingButtonPage({ section }: MessagingButtonPageProps) {
 
   const renderSection = () => {
     switch (section) {
-      case 'mb-pages':
+      case 'pages':
         return <PagesConfigPage settings={settings} onUpdate={updateSettings} />;
-      case 'mb-team':
+      case 'team':
         return <TeamPage settings={settings} onUpdate={updateSettings} />;
-      case 'mb-display-rules':
+      case 'display-rules':
         return <DisplayRulesPage settings={settings} wpTimezone={wpTimezone} onUpdate={updateSettings} />;
       default:
         return <AppearancePage settings={settings} onUpdate={updateSettings} />;
     }
   };
 
+  const tabsList = (
+    <TabsList variant="line" className={embedded ? '' : 'mt-3'}>
+      <TabsTrigger value="appearance">{__('Appearance', 'wp-sms')}</TabsTrigger>
+      <TabsTrigger value="pages">{__('Pages', 'wp-sms')}</TabsTrigger>
+      <TabsTrigger value="team">{__('Team', 'wp-sms')}</TabsTrigger>
+      <TabsTrigger value="display-rules">{__('Display Rules', 'wp-sms')}</TabsTrigger>
+    </TabsList>
+  );
+
   return (
-    <>
-      <PageHeader
-        icon={MessageSquare}
-        title={__('Messaging Button', 'wp-sms')}
-        metadata={
-          <Badge variant={settings.enabled ? 'success' : 'neutral'} dot>
-            {settings.enabled ? __('Active', 'wp-sms') : __('Inactive', 'wp-sms')}
-          </Badge>
-        }
-        actions={
-          <>
-            <Button
-              variant="outline"
-              size="sm"
-              className="xl:hidden"
-              onClick={() => setDrawerOpen(true)}
-            >
-              <Eye className="me-1.5 h-3.5 w-3.5" />
-              {__('Preview', 'wp-sms')}
-            </Button>
-            <label className="flex items-center gap-2 text-sm text-muted-foreground">
-              {__('Enable', 'wp-sms')}
-              <Switch
-                checked={settings.enabled}
-                onCheckedChange={(checked) => updateSettings('enabled', checked)}
-                aria-label={__('Toggle widget', 'wp-sms')}
-              />
-            </label>
-          </>
-        }
-      />
+    <Tabs value={section} onValueChange={setSection}>
+      {!embedded ? (
+        <PageHeader
+          icon={MessageSquare}
+          title={__('Messaging Button', 'wp-sms')}
+          metadata={
+            <Badge variant={settings.enabled ? 'success' : 'neutral'} dot>
+              {settings.enabled ? __('Active', 'wp-sms') : __('Inactive', 'wp-sms')}
+            </Badge>
+          }
+          actions={
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                className="xl:hidden"
+                onClick={() => setDrawerOpen(true)}
+              >
+                <Eye className="me-1.5 h-3.5 w-3.5" />
+                {__('Preview', 'wp-sms')}
+              </Button>
+              <label className="flex items-center gap-2 text-sm text-muted-foreground">
+                {__('Enable', 'wp-sms')}
+                <Switch
+                  checked={settings.enabled}
+                  onCheckedChange={(checked) => updateSettings('enabled', checked)}
+                  aria-label={__('Toggle widget', 'wp-sms')}
+                />
+              </label>
+            </>
+          }
+        >
+          {tabsList}
+        </PageHeader>
+      ) : (
+        <>
+          <div className="flex items-center justify-between mb-4">
+            <Badge variant={settings.enabled ? 'success' : 'neutral'} dot>
+              {settings.enabled ? __('Active', 'wp-sms') : __('Inactive', 'wp-sms')}
+            </Badge>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                className="xl:hidden"
+                onClick={() => setDrawerOpen(true)}
+              >
+                <Eye className="me-1.5 h-3.5 w-3.5" />
+                {__('Preview', 'wp-sms')}
+              </Button>
+              <label className="flex items-center gap-2 text-sm text-muted-foreground">
+                {__('Enable', 'wp-sms')}
+                <Switch
+                  checked={settings.enabled}
+                  onCheckedChange={(checked) => updateSettings('enabled', checked)}
+                  aria-label={__('Toggle widget', 'wp-sms')}
+                />
+              </label>
+            </div>
+          </div>
+          {tabsList}
+        </>
+      )}
       <div className="mt-4 flex gap-6">
         <div className="min-w-0 flex-1">
           {renderSection()}
@@ -111,6 +154,6 @@ export function MessagingButtonPage({ section }: MessagingButtonPageProps) {
           </div>
         </DrawerContent>
       </Drawer>
-    </>
+    </Tabs>
   );
 }

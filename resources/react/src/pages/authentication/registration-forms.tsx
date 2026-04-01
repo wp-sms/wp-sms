@@ -76,7 +76,7 @@ const EMPTY_FORM: FormEditorState = {
   branding: {},
 };
 
-export function RegistrationForms({ authEnabled = true }: { authEnabled?: boolean }) {
+export function RegistrationForms({ authEnabled = true, embedded }: { authEnabled?: boolean; embedded?: boolean }) {
   const { forms, loading, create, update, remove, duplicate } = useRegistrationForms();
   const confirm = useConfirm();
   const [panelOpen, setPanelOpen] = useState(false);
@@ -201,17 +201,19 @@ export function RegistrationForms({ authEnabled = true }: { authEnabled?: boolea
     <>
       {!authEnabled && <AuthDisabledNotice />}
       <div className="space-y-4">
-        <PageHeader
-          icon={FileText}
-          title={__('Registration Forms', 'wp-sms')}
-          metadata={sprintf(_n('%d form', '%d forms', forms.length, 'wp-sms'), forms.length)}
-          actions={
-            <Button onClick={openCreate} size="sm">
-              <Plus className="me-1 h-3.5 w-3.5" />
-              {__('Create Form', 'wp-sms')}
-            </Button>
-          }
-        />
+        {!embedded && (
+          <PageHeader
+            icon={FileText}
+            title={__('Registration Forms', 'wp-sms')}
+            metadata={sprintf(_n('%d form', '%d forms', forms.length, 'wp-sms'), forms.length)}
+            actions={
+              <Button onClick={openCreate} size="sm">
+                <Plus className="me-1 h-3.5 w-3.5" />
+                {__('Create Form', 'wp-sms')}
+              </Button>
+            }
+          />
+        )}
         <DataTable
           loading={loading}
           isEmpty={forms.length === 0}

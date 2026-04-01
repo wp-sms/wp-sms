@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { __ } from '@wordpress/i18n';
-import { LayoutDashboard, LogIn, Paintbrush, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Settings2, MessageSquare, ClipboardList, Webhook, Bell, Sparkles, Contact, FileText, type LucideIcon } from 'lucide-react';
+import { LayoutDashboard, LogIn, ChevronRight, BarChart3, Megaphone, Workflow, Users, Radio, Settings2, Bell, Sparkles, type LucideIcon } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { SaveBar } from '@/components/layout/save-bar';
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarGroupContent,
   SidebarHeader,
   SidebarInset,
@@ -54,90 +53,69 @@ export interface NavItem {
   children?: readonly NavChild[];
 }
 
-export interface NavSection {
-  label: string;
-  items: readonly NavItem[];
-}
-
 // --- Navigation structure ---
 
-export const DASHBOARD_NAV: NavItem = {
-  id: 'dashboard', label: __('Dashboard', 'wp-sms'), icon: LayoutDashboard,
-};
-
-export const NAV_SECTIONS: readonly NavSection[] = [
+export const NAV_ITEMS: readonly NavItem[] = [
+  { id: 'dashboard', label: __('Dashboard', 'wp-sms'), icon: LayoutDashboard },
   {
-    label: __('Messaging', 'wp-sms'),
-    items: [
-      { id: 'campaigns', label: __('Campaigns', 'wp-sms'), icon: Megaphone },
-      { id: 'flows', label: __('Flows', 'wp-sms'), icon: Workflow },
-      { id: 'contacts', label: __('Contacts', 'wp-sms'), icon: Users },
-      {
-        id: 'messaging-button', label: __('Messaging Button', 'wp-sms'), icon: MessageSquare,
-        children: [
-          { id: 'mb-appearance', label: __('Appearance', 'wp-sms') },
-          { id: 'mb-pages', label: __('Pages', 'wp-sms') },
-          { id: 'mb-team', label: __('Team', 'wp-sms') },
-          { id: 'mb-display-rules', label: __('Display Rules', 'wp-sms') },
-        ],
-      },
+    id: 'audience', label: __('Audience', 'wp-sms'), icon: Users,
+    children: [
+      { id: 'contacts', label: __('Contacts', 'wp-sms') },
+      { id: 'tags', label: __('Tags', 'wp-sms') },
+      { id: 'lists', label: __('Lists', 'wp-sms') },
+      { id: 'forms', label: __('Subscription Forms', 'wp-sms') },
+    ],
+  },
+  { id: 'campaigns', label: __('Campaigns', 'wp-sms'), icon: Megaphone },
+  { id: 'automation', label: __('Automation', 'wp-sms'), icon: Workflow },
+  {
+    id: 'channels', label: __('Channels', 'wp-sms'), icon: Radio,
+    children: [
+      { id: 'gateways', label: __('Gateways', 'wp-sms') },
+      { id: 'integrations', label: __('Integrations', 'wp-sms') },
+      { id: 'webhooks', label: __('Webhooks', 'wp-sms') },
+      { id: 'messaging-button', label: __('Messaging Button', 'wp-sms') },
     ],
   },
   {
-    label: __('Authentication', 'wp-sms'),
-    items: [
-      { id: 'channels', label: __('Channels', 'wp-sms'), icon: LogIn },
-      { id: 'registration-forms', label: __('Registration Forms', 'wp-sms'), icon: ClipboardList },
-      { id: 'profile-fields', label: __('Profile Fields', 'wp-sms'), icon: Contact },
-      { id: 'templates', label: __('Templates', 'wp-sms'), icon: FileText },
+    id: 'identity', label: __('Identity', 'wp-sms'), icon: LogIn,
+    children: [
+      { id: 'auth-channels', label: __('Auth Channels', 'wp-sms') },
+      { id: 'registration-forms', label: __('Registration Forms', 'wp-sms') },
+      { id: 'profile-fields', label: __('Profile Fields', 'wp-sms') },
+      { id: 'templates', label: __('Templates', 'wp-sms') },
     ],
   },
   {
-    label: __('Platform', 'wp-sms'),
-    items: [
-      { id: 'gateways', label: __('Gateways', 'wp-sms'), icon: Radio },
-      { id: 'integrations', label: __('Integrations', 'wp-sms'), icon: Plug },
-      { id: 'webhooks', label: __('Webhooks', 'wp-sms'), icon: Webhook },
-      { id: 'branding', label: __('Branding', 'wp-sms'), icon: Paintbrush },
-      { id: 'monitoring', label: __('Monitoring', 'wp-sms'), icon: BarChart3 },
-      {
-        id: 'settings', label: __('Settings', 'wp-sms'), icon: Settings2,
-        children: [
-          { id: 's-general', label: __('General', 'wp-sms') },
-          { id: 's-security', label: __('Security', 'wp-sms') },
-          { id: 's-privacy', label: __('Privacy', 'wp-sms') },
-          { id: 's-migration', label: __('Migration', 'wp-sms') },
-        ],
-      },
+    id: 'monitoring', label: __('Monitoring', 'wp-sms'), icon: BarChart3,
+    children: [
+      { id: 'health', label: __('Health', 'wp-sms') },
+      { id: 'auth-logs', label: __('Auth Logs', 'wp-sms') },
+      { id: 'message-logs', label: __('Message Logs', 'wp-sms') },
+      { id: 'reports', label: __('Reports', 'wp-sms') },
+    ],
+  },
+  {
+    id: 'settings', label: __('Settings', 'wp-sms'), icon: Settings2,
+    children: [
+      { id: 'general', label: __('General', 'wp-sms') },
+      { id: 'security', label: __('Security', 'wp-sms') },
+      { id: 'privacy', label: __('Privacy', 'wp-sms') },
+      { id: 'compliance', label: __('Compliance', 'wp-sms') },
+      { id: 'branding', label: __('Branding', 'wp-sms') },
+      { id: 'migration', label: __('Migration', 'wp-sms') },
     ],
   },
 ];
 
-/** Flat list of all nav items across all sections. */
-export const NAV_ITEMS: readonly NavItem[] = NAV_SECTIONS.flatMap(s => s.items);
-
-/** Derive parent section from a child section ID, using NAV_ITEMS as the source of truth. */
-export function getParentSection(sectionId: string): string {
-  for (const item of NAV_ITEMS) {
-    if (item.children?.some((c) => c.id === sectionId)) {
-      return item.id;
-    }
-  }
-  return sectionId;
-}
-
-/** All valid section IDs (both parent-level and child-level). */
-export const VALID_SECTIONS: Set<string> = new Set([
-  DASHBOARD_NAV.id,
-  ...NAV_ITEMS.flatMap((item) =>
-    item.children ? item.children.map((c) => c.id) : [item.id]
-  ),
-]);
+/** All valid top-level section IDs. */
+export const VALID_SECTIONS: Set<string> = new Set(NAV_ITEMS.map(item => item.id));
 
 // --- Sidebar components ---
 
 interface AppShellProps {
   activeSection: string;
+  activeSubTab?: string;
   onNavigate: (section: string) => void;
   version: string;
   children: ReactNode;
@@ -145,9 +123,10 @@ interface AppShellProps {
 
 type NavItemWithChildren = NavItem & { children: readonly NavChild[] };
 
-function CollapsedGroupItem({ item, activeSection, isActive, onNavigate }: {
+function CollapsedGroupItem({ item, activeSection, activeSubTab, isActive, onNavigate }: {
   item: NavItemWithChildren;
   activeSection: string;
+  activeSubTab?: string;
   isActive: boolean;
   onNavigate: (s: string) => void;
 }) {
@@ -192,8 +171,8 @@ function CollapsedGroupItem({ item, activeSection, isActive, onNavigate }: {
           {item.children.map((child) => (
             <DropdownMenuItem
               key={child.id}
-              onClick={() => { setOpen(false); onNavigate(child.id); }}
-              className={activeSection === child.id ? 'bg-accent' : ''}
+              onClick={() => { setOpen(false); onNavigate(item.id + '/' + child.id); }}
+              className={activeSection === item.id && activeSubTab === child.id ? 'bg-accent' : ''}
             >
               {child.label}
             </DropdownMenuItem>
@@ -204,7 +183,12 @@ function CollapsedGroupItem({ item, activeSection, isActive, onNavigate }: {
   );
 }
 
-function NavMenu({ activeSection, onNavigate, items }: { activeSection: string; onNavigate: (s: string) => void; items: readonly NavItem[] }) {
+function NavMenu({ activeSection, activeSubTab, onNavigate, items }: {
+  activeSection: string;
+  activeSubTab?: string;
+  onNavigate: (s: string) => void;
+  items: readonly NavItem[];
+}) {
   const { state, isMobile } = useSidebar();
   const isCollapsed = !isMobile && state === 'collapsed';
 
@@ -229,9 +213,7 @@ function NavMenu({ activeSection, onNavigate, items }: { activeSection: string; 
           );
         }
 
-        const isParentActive =
-          activeSection === item.id ||
-          item.children!.some((c) => c.id === activeSection);
+        const isParentActive = activeSection === item.id;
 
         if (isCollapsed) {
           return (
@@ -239,6 +221,7 @@ function NavMenu({ activeSection, onNavigate, items }: { activeSection: string; 
               key={item.id}
               item={item as NavItemWithChildren}
               activeSection={activeSection}
+              activeSubTab={activeSubTab}
               isActive={isParentActive}
               onNavigate={onNavigate}
             />
@@ -252,7 +235,7 @@ function NavMenu({ activeSection, onNavigate, items }: { activeSection: string; 
               className="group/collapsible"
             >
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.label}>
+                <SidebarMenuButton tooltip={item.label} isActive={isParentActive && !activeSubTab}>
                   <Icon />
                   <span>{item.label}</span>
                   <ChevronRight className="ms-auto transition-transform rtl:rotate-180 group-data-[state=open]/collapsible:rotate-90" />
@@ -263,8 +246,8 @@ function NavMenu({ activeSection, onNavigate, items }: { activeSection: string; 
                   {item.children!.map((child) => (
                     <SidebarMenuSubItem key={child.id}>
                       <SidebarMenuSubButton
-                        isActive={activeSection === child.id}
-                        onClick={() => onNavigate(child.id)}
+                        isActive={isParentActive && activeSubTab === child.id}
+                        onClick={() => onNavigate(item.id + '/' + child.id)}
                       >
                         <span>{child.label}</span>
                       </SidebarMenuSubButton>
@@ -280,7 +263,7 @@ function NavMenu({ activeSection, onNavigate, items }: { activeSection: string; 
   );
 }
 
-export function AppShell({ activeSection, onNavigate, version, children }: AppShellProps) {
+export function AppShell({ activeSection, activeSubTab, onNavigate, version, children }: AppShellProps) {
   return (
     <SidebarProvider defaultOpen={SIDEBAR_DEFAULT_OPEN}>
       <Sidebar collapsible="icon">
@@ -297,17 +280,9 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupContent>
-              <NavMenu activeSection={activeSection} onNavigate={onNavigate} items={[DASHBOARD_NAV]} />
+              <NavMenu activeSection={activeSection} activeSubTab={activeSubTab} onNavigate={onNavigate} items={NAV_ITEMS} />
             </SidebarGroupContent>
           </SidebarGroup>
-          {NAV_SECTIONS.map((section) => (
-            <SidebarGroup key={section.label}>
-              <SidebarGroupLabel>{section.label}</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <NavMenu activeSection={activeSection} onNavigate={onNavigate} items={section.items} />
-              </SidebarGroupContent>
-            </SidebarGroup>
-          ))}
         </SidebarContent>
       </Sidebar>
 
@@ -325,7 +300,7 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
             <span className="sr-only">{__('Notifications', 'wp-sms')}</span>
           </Button>
         </header>
-        <div key={activeSection} className="animate-fade-up p-7">
+        <div key={`${activeSection}/${activeSubTab ?? ''}`} className="animate-fade-up p-7">
           {children}
         </div>
         <SaveBar />

@@ -64,7 +64,7 @@ export function PlatformStatusCard({ data, onNavigate }: PlatformStatusCardProps
             ) : (
               <div className="py-3 text-center">
                 <p className="text-sm text-muted-foreground">{__('No gateways configured.', 'wp-sms')}</p>
-                <Button variant="outline" size="sm" className="mt-2" onClick={() => onNavigate('gateways')}>
+                <Button variant="outline" size="sm" className="mt-2" onClick={() => onNavigate('channels/gateways')}>
                   {__('Configure Gateway', 'wp-sms')}
                 </Button>
               </div>
@@ -116,7 +116,7 @@ export function PlatformStatusCard({ data, onNavigate }: PlatformStatusCardProps
             ) : (
               <div className="py-3 text-center">
                 <p className="text-sm text-muted-foreground">{__('No flows created yet.', 'wp-sms')}</p>
-                <Button variant="outline" size="sm" className="mt-2" onClick={() => onNavigate('flows')}>
+                <Button variant="outline" size="sm" className="mt-2" onClick={() => onNavigate('automation')}>
                   {__('Create Flow', 'wp-sms')}
                 </Button>
               </div>
@@ -126,13 +126,13 @@ export function PlatformStatusCard({ data, onNavigate }: PlatformStatusCardProps
       </CardContent>
       <CardFooter className="border-t pt-4 justify-between">
         {hasGateways && (
-          <Button variant="ghost" size="sm" onClick={() => onNavigate('gateways')}>
+          <Button variant="ghost" size="sm" onClick={() => onNavigate('channels/gateways')}>
             {__('Manage Gateways', 'wp-sms')}
             <ArrowRight className="size-3.5" />
           </Button>
         )}
         {hasFlows && (
-          <Button variant="ghost" size="sm" className={cn(!hasGateways && 'ms-auto')} onClick={() => onNavigate('flows')}>
+          <Button variant="ghost" size="sm" className={cn(!hasGateways && 'ms-auto')} onClick={() => onNavigate('automation')}>
             {__('View Flows', 'wp-sms')}
             <ArrowRight className="size-3.5" />
           </Button>

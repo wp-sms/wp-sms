@@ -21,6 +21,7 @@ import type { AuthSettings, PhoneChannelSettings, EmailChannelSettings, Telegram
 interface ChannelsProps {
   settings: Required<AuthSettings>;
   onUpdate: <K extends keyof AuthSettings>(key: K, value: AuthSettings[K]) => void;
+  embedded?: boolean;
 }
 
 const SOCIAL_ICONS: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
@@ -78,7 +79,7 @@ function getLineMfaSummary(line: LineSettings): string {
   return sprintf(__('%d-digit OTP via LINE', 'wp-sms'), line.code_length ?? 6);
 }
 
-export function Channels({ settings, onUpdate }: ChannelsProps) {
+export function Channels({ settings, onUpdate, embedded }: ChannelsProps) {
   const [editingChannel, setEditingChannel] = useState<ChannelId | null>(null);
   const [editingSocial, setEditingSocial] = useState<string | null>(null);
   const [editingTelegramMfa, setEditingTelegramMfa] = useState(false);
@@ -116,7 +117,7 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
 
   return (
     <>
-      <PageHeader icon={LogIn} title={__('Channels', 'wp-sms')} />
+      {!embedded && <PageHeader icon={LogIn} title={__('Channels', 'wp-sms')} />}
 
       <div className="mt-4 flex items-center justify-between rounded-lg border bg-card px-4 py-3">
         <div className="flex items-center gap-3">

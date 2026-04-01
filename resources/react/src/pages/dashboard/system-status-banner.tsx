@@ -43,7 +43,7 @@ export function SystemStatusBanner({ health, onNavigate }: SystemStatusBannerPro
             variant="outline"
             size="sm"
             className="shrink-0 text-xs"
-            onClick={() => onNavigate('monitoring')}
+            onClick={() => onNavigate('monitoring/health')}
           >
             {isCritical && issue
               ? sprintf(__('Fix: %s', 'wp-sms'), issue.section)

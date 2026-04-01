@@ -190,7 +190,7 @@ function PreviewDialog({
   );
 }
 
-export function Templates({ authEnabled = true }: { authEnabled?: boolean }) {
+export function Templates({ authEnabled = true, embedded }: { authEnabled?: boolean; embedded?: boolean }) {
   const [templates, setTemplates] = useState<TemplateData[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingTemplate, setEditingTemplate] = useState<TemplateData | null>(null);
@@ -212,7 +212,7 @@ export function Templates({ authEnabled = true }: { authEnabled?: boolean }) {
     <>
       {!authEnabled && <AuthDisabledNotice />}
       <div className="space-y-4">
-        <PageHeader icon={FileText} title={__('Message Templates', 'wp-sms')} metadata={!loading ? sprintf(_n('%d template', '%d templates', templates.length, 'wp-sms'), templates.length) : undefined} />
+        {!embedded && <PageHeader icon={FileText} title={__('Message Templates', 'wp-sms')} metadata={!loading ? sprintf(_n('%d template', '%d templates', templates.length, 'wp-sms'), templates.length) : undefined} />}
         <DataTable loading={loading} isEmpty={templates.length === 0} empty={<p className="py-8 text-center text-sm text-muted-foreground">{__('No templates found.', 'wp-sms')}</p>}>
           <Table>
             <TableHeader>

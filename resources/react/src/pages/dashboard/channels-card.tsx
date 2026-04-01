@@ -95,7 +95,7 @@ export function ChannelsCard({ data, onNavigate }: ChannelsCardProps) {
       </CardContent>
       {channels.length > 0 && (
         <CardFooter className="border-t pt-4">
-          <Button variant="ghost" size="sm" className="ms-auto" onClick={() => onNavigate('monitoring')}>
+          <Button variant="ghost" size="sm" className="ms-auto" onClick={() => onNavigate('monitoring/message-logs')}>
             {__('View Message Logs', 'wp-sms')}
             <ArrowRight className="size-3.5" />
           </Button>

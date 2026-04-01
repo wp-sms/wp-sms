@@ -26,6 +26,7 @@ import type { AuthSettings, PlatformIntegration } from '@/lib/api';
 interface AppsProps {
   settings?: Required<AuthSettings>;
   onUpdate?: <K extends keyof AuthSettings>(key: K, value: AuthSettings[K]) => void;
+  embedded?: boolean;
 }
 
 function IntegrationCard({ integration, onClick }: {
@@ -185,7 +186,7 @@ function AppDetailPage({ integrationId, settings, onUpdate, onBack }: {
   );
 }
 
-export function IntegrationsPage({ settings, onUpdate }: AppsProps) {
+export function IntegrationsPage({ settings, onUpdate, embedded }: AppsProps) {
   const { integrations, loading, error } = useIntegrations();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -242,7 +243,7 @@ export function IntegrationsPage({ settings, onUpdate }: AppsProps) {
   if (error) {
     return (
       <div className="space-y-6">
-        <PageHeader icon={Blocks} title={__('Integrations', 'wp-sms')} />
+        {!embedded && <PageHeader icon={Blocks} title={__('Integrations', 'wp-sms')} />}
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
@@ -253,7 +254,7 @@ export function IntegrationsPage({ settings, onUpdate }: AppsProps) {
 
   return (
     <div className="space-y-6">
-      <PageHeader icon={Blocks} title={__('Integrations', 'wp-sms')} metadata={sprintf(_n('%d integration', '%d integrations', integrations.length, 'wp-sms'), integrations.length)} />
+      {!embedded && <PageHeader icon={Blocks} title={__('Integrations', 'wp-sms')} metadata={sprintf(_n('%d integration', '%d integrations', integrations.length, 'wp-sms'), integrations.length)} />}
       <div className="flex items-center gap-3">
         <div className="relative flex-1 max-w-xs">
           <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

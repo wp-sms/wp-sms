@@ -18,9 +18,10 @@ interface BrandingPageProps {
   branding: BrandingSettings;
   onChange: (patch: Partial<BrandingSettings>) => void;
   authBaseUrl: string;
+  embedded?: boolean;
 }
 
-export function BrandingPage({ branding, onChange, authBaseUrl }: BrandingPageProps) {
+export function BrandingPage({ branding, onChange, authBaseUrl, embedded }: BrandingPageProps) {
   type BrandingTab = 'colors' | 'logo' | 'layout';
   const [activeTab, setActiveTab] = useState<BrandingTab>('colors');
   const [previewVisible, setPreviewVisible] = useState(true);

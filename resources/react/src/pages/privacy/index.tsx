@@ -54,7 +54,7 @@ interface EraseResult {
   };
 }
 
-export function PrivacyPage() {
+export function PrivacyPage({ embedded }: { embedded?: boolean } = {}) {
   const [identifier, setIdentifier] = useState('');
   const [lookup, setLookup] = useState<LookupResult['data'] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -121,7 +121,7 @@ export function PrivacyPage() {
 
   return (
     <>
-      <PageHeader icon={Shield} title={__('Privacy', 'wp-sms')} />
+      {!embedded && <PageHeader icon={Shield} title={__('Privacy', 'wp-sms')} />}
 
       <div className="space-y-6 max-w-2xl">
         <p className="text-sm text-muted-foreground">

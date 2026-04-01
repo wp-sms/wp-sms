@@ -19,13 +19,13 @@ describe('SecurityPage', () => {
 
   describe('MFA Policies', () => {
     it('renders backup codes card', () => {
-      render(<SecurityPage subTab="mfa-policies" {...defaultProps} />);
+      render(<SecurityPage {...defaultProps} />);
 
       expect(screen.getByText('Backup Codes')).toBeInTheDocument();
     });
 
     it('renders role matrix with roles from WordPress', () => {
-      render(<SecurityPage subTab="mfa-policies" {...defaultProps} />);
+      render(<SecurityPage {...defaultProps} />);
 
       expect(screen.getByText('Administrator')).toBeInTheDocument();
       expect(screen.getByText('Editor')).toBeInTheDocument();
@@ -33,7 +33,7 @@ describe('SecurityPage', () => {
     });
 
     it('renders enrollment timing selector', () => {
-      render(<SecurityPage subTab="mfa-policies" {...defaultProps} />);
+      render(<SecurityPage {...defaultProps} />);
 
       expect(screen.getByText('Enrollment Timing')).toBeInTheDocument();
     });
@@ -44,7 +44,6 @@ describe('SecurityPage', () => {
 
       render(
         <SecurityPage
-          subTab="mfa-policies"
           settings={{ ...DEFAULTS }}
           onUpdate={onUpdate}
           roles={testRoles}
@@ -63,7 +62,6 @@ describe('SecurityPage', () => {
 
       render(
         <SecurityPage
-          subTab="mfa-policies"
           settings={{ ...DEFAULTS }}
           onUpdate={onUpdate}
           roles={testRoles}
@@ -78,8 +76,11 @@ describe('SecurityPage', () => {
   });
 
   describe('Rate Limiting', () => {
-    it('renders Phone and Email rate limit settings', () => {
-      render(<SecurityPage subTab="rate-limiting" {...defaultProps} />);
+    it('renders Phone and Email rate limit settings', async () => {
+      const user = userEvent.setup();
+      render(<SecurityPage {...defaultProps} />);
+
+      await user.click(screen.getByRole('tab', { name: /rate limiting/i }));
 
       expect(screen.getByText('Phone Channel Limits')).toBeInTheDocument();
       expect(screen.getByText('Email Channel Limits')).toBeInTheDocument();
@@ -91,12 +92,13 @@ describe('SecurityPage', () => {
 
       render(
         <SecurityPage
-          subTab="rate-limiting"
           settings={{ ...DEFAULTS }}
           onUpdate={onUpdate}
           roles={testRoles}
         />
       );
+
+      await user.click(screen.getByRole('tab', { name: /rate limiting/i }));
 
       const maxAttemptsInput = screen.getByLabelText('Max Attempts', { selector: '#phone_max_attempts' });
       await user.clear(maxAttemptsInput);

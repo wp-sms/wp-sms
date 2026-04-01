@@ -114,7 +114,7 @@ const CHANNEL_ICONS: Record<string, React.ReactNode> = {
   line: <MessageCircle className="h-4 w-4" />,
 };
 
-export function Gateways() {
+export function Gateways({ embedded }: { embedded?: boolean } = {}) {
   const { gateways, loading, updateConfig, testGateway, testConnection, getCredit } = useGateways();
   const [selectedGatewayId, setSelectedGatewayId] = useState<string | null>(null);
   const [defaultsOpen, setDefaultsOpen] = useState(false);
@@ -207,18 +207,20 @@ export function Gateways() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        icon={Radio}
-        title={__('Gateways', 'wp-sms')}
-        metadata={sprintf(_n('%d gateway', '%d gateways', gateways.length, 'wp-sms'), gateways.length)}
-        actions={
-          allChannels.length > 0 ? (
-            <Button variant="outline" size="sm" onClick={() => setDefaultsOpen(true)}>
-              {__('Channel Defaults', 'wp-sms')}
-            </Button>
-          ) : undefined
-        }
-      />
+      {!embedded && (
+        <PageHeader
+          icon={Radio}
+          title={__('Gateways', 'wp-sms')}
+          metadata={sprintf(_n('%d gateway', '%d gateways', gateways.length, 'wp-sms'), gateways.length)}
+          actions={
+            allChannels.length > 0 ? (
+              <Button variant="outline" size="sm" onClick={() => setDefaultsOpen(true)}>
+                {__('Channel Defaults', 'wp-sms')}
+              </Button>
+            ) : undefined
+          }
+        />
+      )}
 
       {/* Filter Bar */}
       <div className="flex items-center gap-3">
