@@ -149,20 +149,22 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
         title={__('Subscription Consent', 'wp-sms')}
         description={__('Default consent checkbox shown on subscription forms. Individual forms can override these settings. Leave consent text empty to disable.', 'wp-sms')}
       >
-          <div className="space-y-4 max-w-md">
-            <Field>
-              <FieldLabel htmlFor="subscription_consent_text">{__('Consent Text', 'wp-sms')}</FieldLabel>
-              <Textarea
-                id="subscription_consent_text"
-                rows={3}
-                value={settings.subscription_consent_text}
-                onChange={(e) => onUpdate('subscription_consent_text', e.target.value)}
-                placeholder='I agree to receive messages and accept the <a href="{privacy_url}">Privacy Policy</a>.'
-              />
-              <FieldDescription>
-                {sprintf(__('HTML allowed. Use %s as a placeholder for the privacy policy link.', 'wp-sms'), '{privacy_url}')}
-              </FieldDescription>
-            </Field>
+          <div className="space-y-4">
+            <div className="max-w-md">
+              <Field>
+                <FieldLabel htmlFor="subscription_consent_text">{__('Consent Text', 'wp-sms')}</FieldLabel>
+                <Textarea
+                  id="subscription_consent_text"
+                  rows={3}
+                  value={settings.subscription_consent_text}
+                  onChange={(e) => onUpdate('subscription_consent_text', e.target.value)}
+                  placeholder='I agree to receive messages and accept the <a href="{privacy_url}">Privacy Policy</a>.'
+                />
+                <FieldDescription>
+                  {sprintf(__('HTML allowed. Use %s as a placeholder for the privacy policy link.', 'wp-sms'), '{privacy_url}')}
+                </FieldDescription>
+              </Field>
+            </div>
 
             <SwitchField
               id="subscription_consent_required"
