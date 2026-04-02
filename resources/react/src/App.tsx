@@ -27,6 +27,7 @@ import { PrivacyPage } from '@/pages/privacy';
 import { OptOutSettings } from '@/pages/messaging/opt-out-settings';
 import { BrandingAreaPage } from '@/pages/branding/branding-area-page';
 import { MigrationPage } from '@/pages/migration';
+import { ExtensionsPage } from '@/pages/extensions';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Toaster } from '@/components/ui/sonner';
@@ -40,7 +41,7 @@ const { roles, version } = getConfig();
 
 export default function App() {
   const [section, setSection, subTab] = useHashSection(DEFAULT_SECTION, VALID_SECTIONS);
-  const { settings, updateSetting, isDirty, saveStatus, save, loading, error } = useSettings();
+  const { settings, updateSetting, isDirty, saveStatus, save, loading, error, socialProviders, mfaChannels } = useSettings();
   const isRtl = useIsRtl();
   const handleSave = useCallback(() => { void save(); }, [save]);
   const defaultSaveBarState = useMemo(
@@ -102,7 +103,7 @@ export default function App() {
           case 'templates':
             return <Templates authEnabled={!!settings.auth_enabled} />;
           default:
-            return <Channels settings={settings} onUpdate={updateSetting} />;
+            return <Channels settings={settings} onUpdate={updateSetting} socialProviders={socialProviders} mfaChannels={mfaChannels} />;
         }
 
       case 'monitoring':
@@ -127,6 +128,8 @@ export default function App() {
             return <OptOutSettings />;
           case 'branding':
             return <BrandingAreaPage />;
+          case 'extensions':
+            return <ExtensionsPage />;
           case 'migration':
             return <MigrationPage />;
           default:

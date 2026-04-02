@@ -6,8 +6,10 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Auth\SettingsRepository;
+use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\MfaManager;
 use WSms\Rest\AdminController;
+use WSms\Social\Contracts\SocialProviderInterface;
 use WSms\Social\SocialAuthManager;
 
 class AdminControllerTest extends TestCase
@@ -15,21 +17,24 @@ class AdminControllerTest extends TestCase
     private AdminController $controller;
     private MockObject&AuditLogger $auditLogger;
     private MockObject&MfaManager $mfaManager;
+    private MockObject&SocialAuthManager $socialManager;
 
     protected function setUp(): void
     {
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->mfaManager = $this->createMock(MfaManager::class);
+        $this->mfaManager->method('getAvailableChannels')->willReturn([]);
 
-        $socialManager = $this->createMock(SocialAuthManager::class);
-        $socialManager->method('getProviderIds')
+        $this->socialManager = $this->createMock(SocialAuthManager::class);
+        $this->socialManager->method('getProviderIds')
             ->willReturn(['google', 'github', 'telegram']);
+        $this->socialManager->method('getAllProviders')->willReturn([]);
 
         $this->controller = new AdminController(
             $this->auditLogger,
             $this->mfaManager,
             new SettingsRepository(),
-            socialAuthManager: $socialManager,
+            socialAuthManager: $this->socialManager,
         );
 
         unset(
@@ -45,6 +50,7 @@ class AdminControllerTest extends TestCase
             $GLOBALS['_test_current_user_can'],
             $GLOBALS['_test_userdata'],
             $GLOBALS['_test_current_user_id'],
+            $GLOBALS['_test_apply_filters'],
         );
     }
 
@@ -302,6 +308,96 @@ class AdminControllerTest extends TestCase
         $this->assertSame(422, $response->get_status());
         $errors = $response->get_data()['errors'];
         $this->assertNotEmpty($errors);
+    }
+
+    public function testGetSettingsIncludesSocialProvidersMetadata(): void
+    {
+        $provider = $this->createMock(SocialProviderInterface::class);
+        $provider->method('getId')->willReturn('google');
+        $provider->method('getName')->willReturn('Google');
+        $provider->method('getIconSvg')->willReturn('<svg></svg>');
+
+        $socialManager = $this->createMock(SocialAuthManager::class);
+        $socialManager->method('getProviderIds')->willReturn(['google']);
+        $socialManager->method('getAllProviders')->willReturn([$provider]);
+
+        $controller = new AdminController(
+            $this->auditLogger,
+            $this->mfaManager,
+            new SettingsRepository(),
+            socialAuthManager: $socialManager,
+        );
+
+        $request = new \WP_REST_Request('GET', '/auth/admin/settings');
+        $response = $controller->handleGetSettings($request);
+        $data = $response->get_data();
+
+        $this->assertArrayHasKey('social_providers', $data);
+        $this->assertCount(1, $data['social_providers']);
+        $this->assertSame('google', $data['social_providers'][0]['id']);
+        $this->assertSame('Google', $data['social_providers'][0]['name']);
+        $this->assertTrue($data['social_providers'][0]['builtin']);
+    }
+
+    public function testGetSettingsIncludesMfaChannelsMetadata(): void
+    {
+        $channel = $this->createMock(ChannelInterface::class);
+        $channel->method('getId')->willReturn('discord');
+        $channel->method('getName')->willReturn('Discord');
+        $channel->method('supportsMfa')->willReturn(true);
+        $channel->method('supportsPrimaryAuth')->willReturn(false);
+        $channel->method('getEnabledSettingKey')->willReturn('enabled');
+
+        $mfaManager = $this->createMock(MfaManager::class);
+        $mfaManager->method('getAvailableChannels')->willReturn([$channel]);
+
+        $controller = new AdminController(
+            $this->auditLogger,
+            $mfaManager,
+            new SettingsRepository(),
+            socialAuthManager: $this->socialManager,
+        );
+
+        $request = new \WP_REST_Request('GET', '/auth/admin/settings');
+        $response = $controller->handleGetSettings($request);
+        $data = $response->get_data();
+
+        $this->assertArrayHasKey('mfa_channels', $data);
+        $this->assertCount(1, $data['mfa_channels']);
+        $this->assertSame('discord', $data['mfa_channels'][0]['id']);
+        $this->assertFalse($data['mfa_channels'][0]['builtin']);
+        $this->assertTrue($data['mfa_channels'][0]['supports_mfa']);
+    }
+
+    public function testDynamicChannelKeysAcceptAddonChannels(): void
+    {
+        $channel = $this->createMock(ChannelInterface::class);
+        $channel->method('getId')->willReturn('discord');
+        $channel->method('getName')->willReturn('Discord');
+        $channel->method('supportsMfa')->willReturn(true);
+        $channel->method('supportsPrimaryAuth')->willReturn(false);
+        $channel->method('getEnabledSettingKey')->willReturn('enabled');
+
+        $mfaManager = $this->createMock(MfaManager::class);
+        $mfaManager->method('getAvailableChannels')->willReturn([$channel]);
+
+        $controller = new AdminController(
+            $this->auditLogger,
+            $mfaManager,
+            new SettingsRepository(),
+            socialAuthManager: $this->socialManager,
+        );
+
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [];
+
+        $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
+        $request->set_param('discord', ['enabled' => true]);
+
+        $response = $controller->handleUpdateSettings($request);
+
+        $this->assertSame(200, $response->get_status());
+        $settings = $response->get_data()['settings'];
+        $this->assertTrue($settings['discord']['enabled']);
     }
 
     private function makeUser(int $id): object

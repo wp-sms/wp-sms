@@ -86,21 +86,12 @@ class SocialServiceProvider implements ServiceProvider
         $manager = $container->get('social.manager');
         $container->get('social.repository')->setSocialAuthManager($manager);
 
-        // Only register built-in providers if at least one has credentials configured.
-        $social = $container->get('auth.settings')->channel('social');
-        $hasConfigured = false;
-        foreach ($social as $provider) {
-            if (!empty($provider['client_id'])) {
-                $hasConfigured = true;
-                break;
-            }
-        }
-
-        if ($hasConfigured) {
-            $manager->registerProvider($container->get('social.provider.google'));
-            $manager->registerProvider($container->get('social.provider.github'));
-            $manager->registerProvider($container->get('social.provider.telegram'));
-        }
+        // Always register built-in providers so the admin UI can list them
+        // even before credentials are configured. Public auth flows still gate
+        // on getEnabledProviders() which requires enabled + client_id + client_secret.
+        $manager->registerProvider($container->get('social.provider.google'));
+        $manager->registerProvider($container->get('social.provider.github'));
+        $manager->registerProvider($container->get('social.provider.telegram'));
 
         try {
             do_action('wsms_register_social_providers', $manager);

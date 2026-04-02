@@ -103,6 +103,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
       { id: 'privacy', label: __('Privacy', 'wp-sms') },
       { id: 'compliance', label: __('Compliance', 'wp-sms') },
       { id: 'branding', label: __('Branding', 'wp-sms') },
+      { id: 'extensions', label: __('Extensions', 'wp-sms') },
       { id: 'migration', label: __('Migration', 'wp-sms') },
     ],
   },

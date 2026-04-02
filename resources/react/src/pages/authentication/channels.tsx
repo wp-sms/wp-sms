@@ -1,5 +1,5 @@
 import { __, sprintf } from '@wordpress/i18n';
-import { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
@@ -16,12 +16,27 @@ import { SOCIAL_METHODS } from '@/lib/constants';
 import { Switch } from '@/components/ui/switch';
 import { Smartphone, Mail, KeyRound, Fingerprint, Send, MessageCircle, ExternalLink, LogIn, Shield } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
-import type { AuthSettings, PhoneChannelSettings, EmailChannelSettings, TelegramSettings, LineSettings } from '@/lib/api';
+import type { AuthSettings, PhoneChannelSettings, EmailChannelSettings, TelegramSettings, LineSettings, SocialProviderMeta, MfaChannelMeta } from '@/lib/api';
 
 interface ChannelsProps {
   settings: Required<AuthSettings>;
   onUpdate: <K extends keyof AuthSettings>(key: K, value: AuthSettings[K]) => void;
   embedded?: boolean;
+  socialProviders?: SocialProviderMeta[];
+  mfaChannels?: MfaChannelMeta[];
+}
+
+interface MergedSocialMethod {
+  id: string;
+  label: string;
+  comingSoon: boolean;
+  iconSvg?: string;
+}
+
+function makeSvgIcon(svg: string): React.ComponentType<React.SVGProps<SVGSVGElement>> {
+  return function SvgIcon(props: React.SVGProps<SVGSVGElement>) {
+    return <span className={props.className} dangerouslySetInnerHTML={{ __html: svg }} aria-hidden="true" />;
+  };
 }
 
 const SOCIAL_ICONS: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
@@ -79,12 +94,47 @@ function getLineMfaSummary(line: LineSettings): string {
   return sprintf(__('%d-digit OTP via LINE', 'wp-sms'), line.code_length ?? 6);
 }
 
-export function Channels({ settings, onUpdate, embedded }: ChannelsProps) {
+export function Channels({ settings, onUpdate, embedded, socialProviders = [], mfaChannels = [] }: ChannelsProps) {
   const [editingChannel, setEditingChannel] = useState<ChannelId | null>(null);
   const [editingSocial, setEditingSocial] = useState<string | null>(null);
   const [editingTelegramMfa, setEditingTelegramMfa] = useState(false);
   const [editingLineMfa, setEditingLineMfa] = useState(false);
   const socialSettings = settings.social ?? {};
+
+  const mergedSocialProviders = useMemo((): MergedSocialMethod[] => {
+    const builtinIds = new Set(SOCIAL_METHODS.map(m => m.id));
+    const apiMap = new Map(socialProviders.map(p => [p.id, p]));
+
+    // Built-in: keep hardcoded order. If a "comingSoon" provider is now registered, promote it.
+    const result: MergedSocialMethod[] = SOCIAL_METHODS
+      .filter(m => !m.comingSoon || !apiMap.has(m.id))
+      .map(m => ({ id: m.id, label: m.label, comingSoon: m.comingSoon, iconSvg: apiMap.get(m.id)?.icon_svg }));
+
+    // Add-on providers not in hardcoded list
+    for (const p of socialProviders) {
+      if (!builtinIds.has(p.id)) {
+        result.push({ id: p.id, label: p.name, comingSoon: false, iconSvg: p.icon_svg });
+      }
+    }
+    return result;
+  }, [socialProviders]);
+
+  const addonMfaChannels = useMemo(
+    () => mfaChannels.filter(ch => !ch.builtin && ch.supports_mfa),
+    [mfaChannels],
+  );
+
+  // Cache SVG icon components so we don't create new references on every render.
+  const svgIconCache = useMemo(() => {
+    const cache = new Map<string, React.ComponentType<React.SVGProps<SVGSVGElement>>>();
+    for (const p of mergedSocialProviders) {
+      if (p.iconSvg && !SOCIAL_ICONS[p.id]) {
+        cache.set(p.id, makeSvgIcon(p.iconSvg));
+      }
+    }
+    return cache;
+  }, [mergedSocialProviders]);
+
   const telegramSettings = settings.telegram ?? {} as TelegramSettings;
   const lineSettings = settings.line ?? {} as LineSettings;
 
@@ -209,15 +259,16 @@ export function Channels({ settings, onUpdate, embedded }: ChannelsProps) {
               <CardDescription>{__('Allow users to sign in with social accounts', 'wp-sms')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-0">
-              {SOCIAL_METHODS.map((method, i) => {
+              {mergedSocialProviders.map((method, i) => {
                 const providerSettings = socialSettings[method.id] ?? {};
                 const isEnabled = !method.comingSoon && !!providerSettings.enabled;
+                const icon = SOCIAL_ICONS[method.id] ?? svgIconCache.get(method.id);
 
                 return (
                   <div key={method.id}>
                     {i > 0 && <Separator />}
                     <ChannelRow
-                      icon={SOCIAL_ICONS[method.id]}
+                      icon={icon}
                       title={method.label}
                       comingSoon={method.comingSoon}
                       enabled={isEnabled}
@@ -354,27 +405,46 @@ export function Channels({ settings, onUpdate, embedded }: ChannelsProps) {
                 enabled={!!settings.passkey?.enabled}
                 onToggle={(v) => onUpdate('passkey', { ...settings.passkey, enabled: v })}
               />
+
+              {/* Add-on MFA Channels */}
+              {addonMfaChannels.map(ch => {
+                const channelSettings = ((settings as Record<string, unknown>)[ch.id] ?? {}) as Record<string, unknown>;
+                return (
+                  <React.Fragment key={ch.id}>
+                    <Separator />
+                    <ChannelRow
+                      icon={Shield}
+                      title={ch.name}
+                      enabled={!!channelSettings.enabled}
+                      onToggle={(v) => onUpdate(ch.id as keyof AuthSettings, { ...channelSettings, enabled: v })}
+                    />
+                  </React.Fragment>
+                );
+              })}
             </CardContent>
           </Card>
         </div>
       </div>
 
       {/* Social Settings Panel */}
-      {editingSocial && (
-        <SocialSettingsPanel
-          open={editingSocial !== null}
-          onOpenChange={(open) => { if (!open) setEditingSocial(null); }}
-          providerId={editingSocial}
-          providerLabel={SOCIAL_METHODS.find((m) => m.id === editingSocial)?.label ?? editingSocial}
-          icon={SOCIAL_ICONS[editingSocial] ?? GoogleIcon}
-          settings={socialSettings[editingSocial] ?? {}}
-          onUpdate={(partial) => {
-            const social = { ...socialSettings };
-            social[editingSocial] = { ...(social[editingSocial] ?? {}), ...partial };
-            onUpdate('social', social);
-          }}
-        />
-      )}
+      {editingSocial && (() => {
+        const editingProviderMeta = mergedSocialProviders.find(m => m.id === editingSocial);
+        return (
+          <SocialSettingsPanel
+            open={editingSocial !== null}
+            onOpenChange={(open) => { if (!open) setEditingSocial(null); }}
+            providerId={editingSocial}
+            providerLabel={editingProviderMeta?.label ?? editingSocial}
+            icon={SOCIAL_ICONS[editingSocial] ?? svgIconCache.get(editingSocial) ?? GoogleIcon}
+            settings={socialSettings[editingSocial] ?? {}}
+            onUpdate={(partial) => {
+              const social = { ...socialSettings };
+              social[editingSocial] = { ...(social[editingSocial] ?? {}), ...partial };
+              onUpdate('social', social);
+            }}
+          />
+        );
+      })()}
 
       {/* Telegram MFA Settings Drawer */}
       <Drawer open={editingTelegramMfa} onOpenChange={setEditingTelegramMfa}>

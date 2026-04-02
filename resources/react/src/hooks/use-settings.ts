@@ -1,4 +1,5 @@
-import { type AuthSettings, type SettingsResponse } from '@/lib/api';
+import { useMemo } from 'react';
+import { type AuthSettings, type SettingsResponse, type SocialProviderMeta, type MfaChannelMeta } from '@/lib/api';
 import { DEFAULTS } from '@/lib/constants';
 import { useResourceSettings, type SaveStatus } from '@/hooks/use-resource-settings';
 
@@ -12,6 +13,8 @@ export interface UseSettingsReturn {
   save: () => Promise<void>;
   loading: boolean;
   error: string | null;
+  socialProviders: SocialProviderMeta[];
+  mfaChannels: MfaChannelMeta[];
 }
 
 function buildDiffPayload(draft: Required<AuthSettings>, saved: Required<AuthSettings>): Partial<AuthSettings> {
@@ -24,6 +27,9 @@ function buildDiffPayload(draft: Required<AuthSettings>, saved: Required<AuthSet
   return payload;
 }
 
+const EMPTY_PROVIDERS: SocialProviderMeta[] = [];
+const EMPTY_CHANNELS: MfaChannelMeta[] = [];
+
 export function useSettings(): UseSettingsReturn {
   const result = useResourceSettings<Required<AuthSettings>, SettingsResponse>({
     endpoint: 'auth/admin/settings',
@@ -31,6 +37,15 @@ export function useSettings(): UseSettingsReturn {
     extractSettings: (res) => res.settings,
     buildPayload: buildDiffPayload,
   });
+
+  const socialProviders = useMemo(
+    () => result.rawResponse?.social_providers ?? EMPTY_PROVIDERS,
+    [result.rawResponse],
+  );
+  const mfaChannels = useMemo(
+    () => result.rawResponse?.mfa_channels ?? EMPTY_CHANNELS,
+    [result.rawResponse],
+  );
 
   return {
     settings: result.settings,
@@ -40,5 +55,7 @@ export function useSettings(): UseSettingsReturn {
     save: result.save,
     loading: result.loading,
     error: result.error,
+    socialProviders,
+    mfaChannels,
   };
 }

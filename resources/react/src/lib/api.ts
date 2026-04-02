@@ -26,10 +26,37 @@ export interface ApiError {
   message?: string;
 }
 
+export interface SocialProviderMeta {
+  id: string;
+  name: string;
+  icon_svg: string;
+  builtin: boolean;
+}
+
+export interface MfaChannelMeta {
+  id: string;
+  name: string;
+  supports_mfa: boolean;
+  supports_auth: boolean;
+  builtin: boolean;
+  settings_key: string;
+}
+
+export interface ExtensionInfo {
+  id: string;
+  name: string;
+  description: string;
+  version: string;
+  type: string;
+  requires: string;
+}
+
 export interface SettingsResponse {
   success: boolean;
   settings: AuthSettings;
   message?: string;
+  social_providers?: SocialProviderMeta[];
+  mfa_channels?: MfaChannelMeta[];
 }
 
 export interface LogsResponse {
@@ -230,6 +257,8 @@ export interface AuthSettings {
   trusted_devices?: TrustedDevicesSettings;
   subscription_consent_text?: string;
   subscription_consent_required?: boolean;
+  /** Dynamic add-on channel/settings keys. */
+  [key: string]: unknown;
 }
 
 export interface TrustedDevicesSettings {

@@ -154,8 +154,10 @@ class AdminController extends Controller
     {
         return $this->handle(function () {
             return new WP_REST_Response([
-                'success'  => true,
-                'settings' => $this->settingsRepo->all(),
+                'success'          => true,
+                'settings'         => $this->settingsRepo->all(),
+                'social_providers' => $this->serializeSocialProviders(),
+                'mfa_channels'     => $this->serializeMfaChannels(),
             ]);
         });
     }
@@ -168,7 +170,7 @@ class AdminController extends Controller
             $updated = $current;
 
             // Deep-merge channel sub-objects.
-            foreach (self::ALLOWED_CHANNEL_KEYS as $channelKey) {
+            foreach ($this->getAllowedChannelKeys() as $channelKey) {
                 if (array_key_exists($channelKey, $body) && is_array($body[$channelKey])) {
                     $existing = $updated[$channelKey] ?? [];
                     $updated[$channelKey] = array_merge($existing, $body[$channelKey]);
@@ -347,6 +349,55 @@ class AdminController extends Controller
         $newRoles = $updated['mfa_required_roles'] ?? [];
 
         return !empty(array_diff($newRoles, $oldRoles));
+    }
+
+    private function serializeSocialProviders(): array
+    {
+        if (!$this->socialAuthManager) {
+            return [];
+        }
+
+        $builtinIds = ['google', 'github', 'telegram', 'line'];
+
+        return array_map(fn($p) => [
+            'id'       => $p->getId(),
+            'name'     => $p->getName(),
+            'icon_svg' => $p->getIconSvg(),
+            'builtin'  => in_array($p->getId(), $builtinIds, true),
+        ], $this->socialAuthManager->getAllProviders());
+    }
+
+    private function serializeMfaChannels(): array
+    {
+        $builtinIds = ['phone', 'email', 'backup_codes', 'telegram', 'line', 'totp', 'passkey'];
+
+        return array_map(fn($ch) => [
+            'id'            => $ch->getId(),
+            'name'          => $ch->getName(),
+            'supports_mfa'  => $ch->supportsMfa(),
+            'supports_auth' => $ch->supportsPrimaryAuth(),
+            'builtin'       => in_array($ch->getId(), $builtinIds, true),
+            'settings_key'  => $ch->getEnabledSettingKey(),
+        ], $this->mfaManager->getAvailableChannels());
+    }
+
+    private function getAllowedChannelKeys(): array
+    {
+        $keys = self::ALLOWED_CHANNEL_KEYS;
+
+        foreach ($this->mfaManager->getAvailableChannels() as $channel) {
+            $keys[] = $channel->getId();
+        }
+
+        // Also accept any top-level key from filtered defaults (add-on injected keys).
+        $defaults = apply_filters('wsms_settings_defaults', SettingsRepository::DEFAULTS);
+        foreach (array_keys($defaults) as $key) {
+            if (is_array($defaults[$key]) && !array_is_list($defaults[$key])) {
+                $keys[] = $key;
+            }
+        }
+
+        return array_unique($keys);
     }
 
     private function validateSettings(array $settings, array $current = []): array
