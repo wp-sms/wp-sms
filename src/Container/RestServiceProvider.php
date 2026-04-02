@@ -95,6 +95,7 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('auth.rate_limiter'),
                 $container->get('auth.session'),
                 $container->get('auth.captcha_guard'),
+                $container->get('auth.settings'),
                 $container->get('auth.field_registry'),
                 $container->get('auth.avatar_manager'),
                 $container->get('auth.form_repository'),

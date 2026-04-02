@@ -11,6 +11,8 @@ use WSms\Auth\CaptchaGuard;
 use WSms\Auth\ProfileFieldRegistry;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\RegistrationFormRepository;
+use WSms\Auth\SettingsRepository;
+use WSms\Auth\ValueObjects\OperationResult;
 use WSms\Enums\AuthErrorCode;
 use WSms\Enums\SessionStage;
 use WSms\Exception\ValidationException;
@@ -25,6 +27,7 @@ class AccountController extends Controller
         private RateLimiter $rateLimiter,
         private AuthSession $authSession,
         private CaptchaGuard $captchaGuard,
+        private SettingsRepository $settingsRepo,
         private ?ProfileFieldRegistry $fieldRegistry = null,
         private ?AvatarManager $avatarManager = null,
         private ?RegistrationFormRepository $formRepository = null,
@@ -192,6 +195,15 @@ class AccountController extends Controller
                 if (!$form || $form->getStatus() !== 'active') {
                     throw ValidationException::field('form_id', __('The specified registration form is not available.', 'wp-sms'));
                 }
+            }
+
+            // Formless registration requires auto_create_users to be enabled.
+            // Form-based registration is always allowed — the admin created the form intentionally.
+            if (!$form && !$this->settingsRepo->get('auto_create_users')) {
+                return new WP_REST_Response(
+                    OperationResult::fail(AuthErrorCode::RegistrationDisabled, __('Registration is not available.', 'wp-sms'))->toArray(),
+                    403,
+                );
             }
 
             $data = [

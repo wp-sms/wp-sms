@@ -102,6 +102,14 @@ class AccountManager
     public function registerUser(array $data, bool $socialLogin = false, ?RegistrationForm $form = null): OperationResult
     {
         $settings = $this->settingsRepo->all();
+
+        if (!$socialLogin && !$form && empty($settings['auto_create_users'])) {
+            return OperationResult::fail(
+                AuthErrorCode::RegistrationDisabled,
+                __('Registration is not available.', 'wp-sms'),
+            );
+        }
+
         if ($form) {
             $settings = RegistrationForm::applyOverrides($settings, $form->getAuthOverrides());
         }

@@ -75,6 +75,7 @@ enum AuthErrorCode: string
             self::AccountLocked,
             self::AccountSuspended,
             self::CaptchaFailed,
+            self::RegistrationDisabled,
             self::AccountPendingVerification => 403,
 
             self::PhoneExists,

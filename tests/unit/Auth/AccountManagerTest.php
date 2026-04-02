@@ -50,6 +50,11 @@ class AccountManagerTest extends TestCase
         $this->otpService->method('createOtp')->willReturn('123456');
         $this->authSession->method('create')->willReturn('reg-session-token');
 
+        // Default: auto_create_users enabled so registration tests pass.
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
+        ];
+
         unset(
             $GLOBALS['_test_wp_insert_user_result'],
             $GLOBALS['_test_wp_insert_user_data'],
@@ -70,6 +75,7 @@ class AccountManagerTest extends TestCase
             $GLOBALS['_test_get_user_by_result'],
             $GLOBALS['_test_current_user_id'],
             $GLOBALS['_test_username_exists'],
+            $GLOBALS['_test_options'],
         );
     }
 
@@ -97,6 +103,7 @@ class AccountManagerTest extends TestCase
 
         // Simulate on_registration enrollment timing.
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'registration_fields' => ['email', 'password'],
             'enrollment_timing'   => 'on_registration',
         ];
@@ -126,6 +133,7 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserFailsWhenPhoneRequiredButMissing(): void
     {
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'registration_fields' => ['email', 'password'],
             'phone' => ['enabled' => true, 'required_at_signup' => true],
         ];
@@ -144,6 +152,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 50;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'registration_fields' => ['email', 'password'],
             'phone' => ['enabled' => true, 'required_at_signup' => true],
         ];
@@ -162,6 +171,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 51;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'email'    => ['enabled' => false, 'required_at_signup' => true],
             'password' => ['enabled' => true, 'required_at_signup' => true],
         ];
@@ -178,6 +188,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 52;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'phone' => ['enabled' => false, 'required_at_signup' => true],
         ];
 
@@ -192,6 +203,7 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserFailsWhenFirstNameRequired(): void
     {
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'registration_fields' => ['email', 'password', 'first_name'],
         ];
 
@@ -229,6 +241,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 50;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'registration_fields' => ['email', 'password'],
             'email' => ['required_at_signup' => true],
             'password' => ['enabled' => true, 'required_at_signup' => true],
@@ -245,6 +258,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 51;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'registration_fields' => ['email', 'password'],
             'password' => ['enabled' => true, 'required_at_signup' => true],
         ];
@@ -262,6 +276,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 60;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'registration_fields' => ['email', 'password'],
             'phone' => ['required_at_signup' => true],
             'email' => [],
@@ -283,6 +298,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 61;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'registration_fields' => ['email', 'password'],
             'email' => ['verify_at_signup' => true],
         ];
@@ -303,6 +319,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 62;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'registration_fields' => ['email', 'password'],
             'phone' => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
         ];
@@ -324,6 +341,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 63;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'registration_fields' => ['email', 'password'],
             'phone' => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
             'email' => ['verify_at_signup' => true],
@@ -342,6 +360,65 @@ class AccountManagerTest extends TestCase
         $this->assertContains('phone', $types);
         $this->assertContains('email', $types);
         $this->assertArrayHasKey('session_token', $result->meta);
+    }
+
+    // --- registerUser: auto_create_users gate ---
+
+    public function testRegisterRejectsFormlessNonSocialWhenAutoCreateDisabled(): void
+    {
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => false,
+        ];
+
+        $result = $this->manager->registerUser([
+            'email'    => 'test@example.com',
+            'password' => 'StrongPass1!',
+        ]);
+
+        $this->assertFalse($result->success);
+        $this->assertSame('registration_disabled', $result->error);
+    }
+
+    public function testRegisterAllowsFormBasedWhenAutoCreateDisabled(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 60;
+
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => false,
+        ];
+
+        $form = new \WSms\Auth\RegistrationForm(
+            id: 'form-1',
+            name: 'Test Form',
+            slug: 'test-form',
+            fields: [['key' => 'email'], ['key' => 'password']],
+            status: 'active',
+        );
+
+        $result = $this->manager->registerUser([
+            'email'    => 'test@example.com',
+            'password' => 'StrongPass1!',
+        ], form: $form);
+
+        $this->assertTrue($result->success);
+        $this->assertSame(60, $result->userId);
+    }
+
+    public function testRegisterAllowsSocialLoginWhenAutoCreateDisabled(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 61;
+
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => false,
+        ];
+
+        $result = $this->manager->registerUser(
+            ['phone' => '+971500000000'],
+            socialLogin: true,
+        );
+
+        $this->assertTrue($result->success);
+        $this->assertSame(61, $result->userId);
     }
 
     // --- initiatePasswordReset ---
@@ -579,6 +656,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 100;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'email'    => ['required_at_signup' => false],
             'password' => ['required_at_signup' => false],
             'phone'    => ['required_at_signup' => true],
@@ -601,6 +679,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 101;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'email'    => ['required_at_signup' => false, 'verify_at_signup' => true],
             'password' => ['required_at_signup' => false],
             'phone'    => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
@@ -622,6 +701,7 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserPlaceholderGeneratesDummyUsername(): void
     {
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'email'    => ['required_at_signup' => false],
             'password' => ['required_at_signup' => false],
             'phone'    => ['required_at_signup' => true],
@@ -695,6 +775,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 70;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'registration_fields' => ['email', 'password'],
         ];
 
@@ -712,6 +793,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 71;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'registration_fields' => ['email', 'password'],
             'email' => ['verify_at_signup' => true],
         ];
@@ -730,6 +812,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 72;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'registration_fields' => ['email', 'password'],
             'phone' => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
         ];
@@ -748,6 +831,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 73;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'email'    => ['required_at_signup' => false],
             'password' => ['required_at_signup' => false],
             'phone'    => ['required_at_signup' => true],
@@ -766,6 +850,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_wp_insert_user_result'] = 74;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'email'    => ['required_at_signup' => false, 'verify_at_signup' => true],
             'password' => ['required_at_signup' => false],
             'phone'    => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
@@ -797,6 +882,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_userdata'] = $user;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'email' => ['verify_at_signup' => true],
             'phone' => ['enabled' => true, 'verify_at_signup' => true],
         ];
@@ -820,6 +906,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_userdata'] = $user;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'email' => ['verify_at_signup' => true],
         ];
 
@@ -842,6 +929,7 @@ class AccountManagerTest extends TestCase
 
         // Admin disabled all verify_at_signup.
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'email' => ['verify_at_signup' => false],
             'phone' => ['verify_at_signup' => false],
         ];
@@ -887,6 +975,7 @@ class AccountManagerTest extends TestCase
         ];
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'registration_fields'     => ['email', 'password'],
             'email'                   => ['verify_at_signup' => true],
             'pending_user_ttl_hours'  => 24,
@@ -917,6 +1006,7 @@ class AccountManagerTest extends TestCase
         ];
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'registration_fields'     => ['email', 'password'],
             'email'                   => ['verify_at_signup' => true],
             'pending_user_ttl_hours'  => 24,
@@ -949,6 +1039,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_get_user_by_result'] = false;
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'email'    => ['required_at_signup' => false],
             'password' => ['required_at_signup' => false],
             'phone'    => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
@@ -1001,6 +1092,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_wp_insert_user_result'] = 120;
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'registration_fields' => ['email', 'password'],
         ];
 
@@ -1140,6 +1232,7 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserPhoneOnlyStillUsesPlaceholderUsername(): void
     {
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'email'    => ['required_at_signup' => false],
             'password' => ['required_at_signup' => false],
             'phone'    => ['required_at_signup' => true],
@@ -1227,6 +1320,7 @@ class AccountManagerTest extends TestCase
         $manager = $this->makeManagerWithDispatcher(canDeliver: false);
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
             'email' => ['verification_methods' => ['otp']],
         ];
 

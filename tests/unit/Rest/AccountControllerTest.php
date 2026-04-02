@@ -8,6 +8,9 @@ use WSms\Auth\AccountManager;
 use WSms\Auth\AuthSession;
 use WSms\Auth\CaptchaGuard;
 use WSms\Auth\RateLimiter;
+use WSms\Auth\RegistrationForm;
+use WSms\Auth\RegistrationFormRepository;
+use WSms\Auth\SettingsRepository;
 use WSms\Auth\ValueObjects\OperationResult;
 use WSms\Rest\AccountController;
 
@@ -27,11 +30,17 @@ class AccountControllerTest extends TestCase
         $captchaGuard = $this->createMock(CaptchaGuard::class);
         $captchaGuard->method('verify')->willReturn(null);
 
+        // Default: auto_create_users enabled so existing tests pass.
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
+        ];
+
         $this->controller = new AccountController(
             $this->accountManager,
             $this->rateLimiter,
             $this->authSession,
             $captchaGuard,
+            new SettingsRepository(),
         );
 
         // Default: no rate limiting.
@@ -44,7 +53,7 @@ class AccountControllerTest extends TestCase
 
     protected function tearDown(): void
     {
-        unset($GLOBALS['_test_current_user_id']);
+        unset($GLOBALS['_test_current_user_id'], $GLOBALS['_test_options']);
     }
 
     public function testRegisterDelegatesToAccountManager(): void
@@ -88,7 +97,7 @@ class AccountControllerTest extends TestCase
         $captchaGuard = $this->createMock(CaptchaGuard::class);
         $captchaGuard->method('verify')->willReturn(null);
 
-        $controller = new AccountController($this->accountManager, $this->rateLimiter, $this->authSession, $captchaGuard);
+        $controller = new AccountController($this->accountManager, $this->rateLimiter, $this->authSession, $captchaGuard, new SettingsRepository());
 
         $request = new \WP_REST_Request('POST', '/auth/register');
         $request->set_param('email', 'test@example.com');
@@ -184,6 +193,71 @@ class AccountControllerTest extends TestCase
 
         $this->assertSame(200, $response->get_status());
         $this->assertTrue($response->get_data()['success']);
+    }
+
+    public function testRegisterRejectsFormlessWhenAutoCreateDisabled(): void
+    {
+        $controller = $this->buildControllerWithAutoCreateDisabled();
+
+        $request = new \WP_REST_Request('POST', '/auth/register');
+        $request->set_param('email', 'test@example.com');
+        $request->set_param('password', 'Pass123!');
+
+        $response = $controller->handleRegister($request);
+
+        $this->assertSame(403, $response->get_status());
+        $this->assertSame('registration_disabled', $response->get_data()['error']);
+    }
+
+    public function testRegisterAllowsFormBasedWhenAutoCreateDisabled(): void
+    {
+        $this->accountManager->method('registerUser')->willReturn(
+            new OperationResult(success: true, message: 'Registration successful.', userId: 1)
+        );
+
+        $form = new RegistrationForm(
+            id: 'form-1',
+            name: 'Test Form',
+            slug: 'test-form',
+            fields: [['key' => 'email'], ['key' => 'password']],
+            status: 'active',
+        );
+
+        $formRepo = $this->createMock(RegistrationFormRepository::class);
+        $formRepo->method('findBySlug')->willReturn($form);
+
+        $controller = $this->buildControllerWithAutoCreateDisabled($formRepo);
+
+        $request = new \WP_REST_Request('POST', '/auth/register');
+        $request->set_param('email', 'test@example.com');
+        $request->set_param('password', 'Pass123!');
+        $request->set_param('form_id', 'test-form');
+
+        $response = $controller->handleRegister($request);
+
+        $this->assertSame(201, $response->get_status());
+        $this->assertTrue($response->get_data()['success']);
+    }
+
+    private function buildControllerWithAutoCreateDisabled(?RegistrationFormRepository $formRepo = null): AccountController
+    {
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => false,
+        ];
+
+        $captchaGuard = $this->createMock(CaptchaGuard::class);
+        $captchaGuard->method('verify')->willReturn(null);
+
+        return new AccountController(
+            $this->accountManager,
+            $this->rateLimiter,
+            $this->authSession,
+            $captchaGuard,
+            new SettingsRepository(),
+            null,
+            null,
+            $formRepo,
+        );
     }
 
 }
