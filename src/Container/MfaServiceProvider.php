@@ -153,7 +153,14 @@ class MfaServiceProvider implements ServiceProvider
         $manager->registerChannel($container->get('mfa.channel.line'));
         $manager->registerChannel($container->get('mfa.channel.totp'));
         $manager->registerChannel($container->get('mfa.channel.passkey'));
-        // Inject dependencies into all registered channels.
+
+        try {
+            do_action('wsms_register_mfa_channels', $manager, $container);
+        } catch (\Throwable $e) {
+            error_log('[WP-SMS] MFA channel registration failed: ' . $e->getMessage());
+        }
+
+        // Inject dependencies into all registered channels (including add-on channels).
         $factorRepo = $container->get('mfa.factor_repository');
         $settingsRepo = $container->get('auth.settings');
         $manager->setSettingsRepository($settingsRepo);

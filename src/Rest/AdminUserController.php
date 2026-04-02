@@ -266,7 +266,7 @@ class AdminUserController extends Controller
 
             $this->resolveUser($userId);
 
-            if (!in_array($provider, SocialAccountRepository::SOCIAL_PROVIDERS, true)) {
+            if (!$this->socialRepository->isKnownProvider($provider)) {
                 throw ValidationException::field('provider', sprintf(__('Unknown social provider \'%s\'.', 'wp-sms'), $provider));
             }
 

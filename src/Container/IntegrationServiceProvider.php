@@ -145,7 +145,11 @@ class IntegrationServiceProvider implements ServiceProvider
                 $this->registerIntegration(new $integrationClass(), $registry, $triggers, $actions);
             }
 
-            do_action('wsms_register_integrations', $registry, $triggers, $actions);
+            try {
+                do_action('wsms_register_integrations', $registry, $triggers, $actions);
+            } catch (\Throwable $e) {
+                error_log('[WP-SMS] Integration registration failed: ' . $e->getMessage());
+            }
 
             // Wire marketing sync for sync-capable integrations
             $this->wireMarketingSync($registry, $container);

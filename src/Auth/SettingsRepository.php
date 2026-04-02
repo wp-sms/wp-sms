@@ -144,8 +144,9 @@ class SettingsRepository
             return $this->settings;
         }
 
+        $defaults = apply_filters('wsms_settings_defaults', self::DEFAULTS);
         $raw = get_option(self::OPTION_KEY, []);
-        $merged = self::deepMergeDefaults(self::DEFAULTS, $raw);
+        $merged = self::deepMergeDefaults($defaults, $raw);
 
         // Migrate old registration_fields to profile_fields if needed.
         if (empty($merged['profile_fields']) && !empty($merged['registration_fields'])) {

@@ -34,6 +34,7 @@ use WSms\Rest\TemplateController;
 use WSms\Rest\BrandingController;
 use WSms\Rest\OutboundWebhookController;
 use WSms\Rest\DashboardController;
+use WSms\Rest\ExtensionController;
 use WSms\Rest\GeoController;
 use WSms\Rest\PrivacyController;
 use WSms\Rest\SystemHealthController;
@@ -114,6 +115,7 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('auth.field_registry'),
                 $container->get('audit.reports'),
                 $container->get('gateway.registry'),
+                $container->get('social.manager'),
             );
         });
 
@@ -273,6 +275,9 @@ class RestServiceProvider implements ServiceProvider
             $c->get('gateway.registry'),
         ));
         $container->register('rest.dashboard', fn($c) => new DashboardController($c->get('dashboard.service')));
+        $container->register('rest.extensions', fn($c) => new ExtensionController(
+            $c->get('extension.registry'),
+        ));
     }
 
     /** {@inheritDoc} */
@@ -321,6 +326,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.geo')->registerRoutes();
             $container->get('rest.system_health')->registerRoutes();
             $container->get('rest.dashboard')->registerRoutes();
+            $container->get('rest.extensions')->registerRoutes();
         });
     }
 }

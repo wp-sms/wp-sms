@@ -9,9 +9,26 @@ defined('ABSPATH') || exit;
 
 class SocialAccountRepository
 {
-    public const SOCIAL_PROVIDERS = ['google', 'apple', 'facebook', 'microsoft', 'github', 'linkedin', 'twitter', 'telegram'];
+    private ?SocialAuthManager $socialAuthManager = null;
 
     public function __construct(private readonly Connection $db) {}
+
+    public function setSocialAuthManager(SocialAuthManager $manager): void
+    {
+        $this->socialAuthManager = $manager;
+    }
+
+    /**
+     * Check whether a provider ID is registered.
+     */
+    public function isKnownProvider(string $providerId): bool
+    {
+        if (!$this->socialAuthManager) {
+            return false;
+        }
+
+        return in_array($providerId, $this->socialAuthManager->getProviderIds(), true);
+    }
 
     /**
      * Find a WordPress user by their social provider account ID.
@@ -39,13 +56,23 @@ class SocialAccountRepository
      */
     public function findByUserId(int $userId): array
     {
+        if (!$this->socialAuthManager) {
+            return [];
+        }
+
+        $providerIds = $this->socialAuthManager->getProviderIds();
+
+        if (empty($providerIds)) {
+            return [];
+        }
+
         $table = $this->db->table(Connection::TABLE_USER_FACTORS);
-        $placeholders = implode(',', array_fill(0, count(self::SOCIAL_PROVIDERS), '%s'));
+        $placeholders = implode(',', array_fill(0, count($providerIds), '%s'));
 
         $rows = $this->db->getResults(
             "SELECT * FROM {$table} WHERE user_id = %d AND channel_id IN ({$placeholders})",
             $userId,
-            ...self::SOCIAL_PROVIDERS,
+            ...$providerIds,
         );
 
         return $rows ? array_map(fn($r) => (object) $r, $rows) : [];

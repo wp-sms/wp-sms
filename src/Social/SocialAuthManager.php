@@ -33,6 +33,16 @@ class SocialAuthManager
     }
 
     /**
+     * Get all registered provider IDs.
+     *
+     * @return string[]
+     */
+    public function getProviderIds(): array
+    {
+        return array_keys($this->providers);
+    }
+
+    /**
      * Get providers that are enabled (have credentials configured).
      *
      * @return SocialProviderInterface[]

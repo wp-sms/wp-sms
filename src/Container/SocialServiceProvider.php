@@ -83,7 +83,10 @@ class SocialServiceProvider implements ServiceProvider
     /** {@inheritDoc} */
     public function boot(ServiceContainer $container): void
     {
-        // Skip provider registration if no social provider has credentials configured.
+        $manager = $container->get('social.manager');
+        $container->get('social.repository')->setSocialAuthManager($manager);
+
+        // Only register built-in providers if at least one has credentials configured.
         $social = $container->get('auth.settings')->channel('social');
         $hasConfigured = false;
         foreach ($social as $provider) {
@@ -93,14 +96,16 @@ class SocialServiceProvider implements ServiceProvider
             }
         }
 
-        if (!$hasConfigured) {
-            return;
+        if ($hasConfigured) {
+            $manager->registerProvider($container->get('social.provider.google'));
+            $manager->registerProvider($container->get('social.provider.github'));
+            $manager->registerProvider($container->get('social.provider.telegram'));
         }
 
-        $manager = $container->get('social.manager');
-
-        $manager->registerProvider($container->get('social.provider.google'));
-        $manager->registerProvider($container->get('social.provider.github'));
-        $manager->registerProvider($container->get('social.provider.telegram'));
+        try {
+            do_action('wsms_register_social_providers', $manager);
+        } catch (\Throwable $e) {
+            error_log('[WP-SMS] Social provider registration failed: ' . $e->getMessage());
+        }
     }
 }

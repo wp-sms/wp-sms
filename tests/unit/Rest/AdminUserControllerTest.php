@@ -365,6 +365,8 @@ class AdminUserControllerTest extends TestCase
     {
         $GLOBALS['_test_userdata'] = $this->makeUser(5);
 
+        $this->socialRepository->method('isKnownProvider')->with('invalid')->willReturn(false);
+
         $request = new \WP_REST_Request('DELETE', '/auth/admin/users/5/social/invalid');
         $request->set_param('id', 5);
         $request->set_param('provider', 'invalid');
@@ -380,6 +382,7 @@ class AdminUserControllerTest extends TestCase
         $GLOBALS['_test_userdata'] = $this->makeUser(5);
         $GLOBALS['_test_current_user_id'] = 1;
 
+        $this->socialRepository->method('isKnownProvider')->with('google')->willReturn(true);
         $this->socialRepository->expects($this->once())->method('unlinkAccount')->with(5, 'google');
         $this->auditLogger->expects($this->once())->method('log')
             ->with(EventType::SocialAccountUnlinked, 'success', 5, $this->callback(function (array $meta) {

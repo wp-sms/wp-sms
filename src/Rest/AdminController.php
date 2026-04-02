@@ -15,7 +15,7 @@ use WSms\Exception\NotFoundException;
 use WSms\Exception\ValidationException;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Mfa\MfaManager;
-use WSms\Social\SocialAccountRepository;
+use WSms\Social\SocialAuthManager;
 use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
@@ -71,6 +71,7 @@ class AdminController extends Controller
         private ?ProfileFieldRegistry $fieldRegistry = null,
         private ?ReportAggregator $reportAggregator = null,
         private ?GatewayRegistry $gatewayRegistry = null,
+        private ?SocialAuthManager $socialAuthManager = null,
     ) {
     }
 
@@ -506,7 +507,9 @@ class AdminController extends Controller
 
         // Social provider settings validation.
         $social = $settings['social'] ?? [];
-        $validProviders = SocialAccountRepository::SOCIAL_PROVIDERS;
+        $validProviders = $this->socialAuthManager
+            ? $this->socialAuthManager->getProviderIds()
+            : [];
         foreach ($social as $provider => $providerSettings) {
             if (!in_array($provider, $validProviders, true)) {
                 $errors[] = "social: unknown provider '{$provider}'.";

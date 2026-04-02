@@ -139,6 +139,10 @@ class MessagingServiceProvider implements ServiceProvider
             $registry->register($container->get('gateway.test'));
         }
 
-        do_action('wsms_register_gateways', $registry);
+        try {
+            do_action('wsms_register_gateways', $registry);
+        } catch (\Throwable $e) {
+            error_log('[WP-SMS] Gateway registration failed: ' . $e->getMessage());
+        }
     }
 }

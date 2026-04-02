@@ -8,6 +8,7 @@ use WSms\Audit\AuditLogger;
 use WSms\Auth\SettingsRepository;
 use WSms\Mfa\MfaManager;
 use WSms\Rest\AdminController;
+use WSms\Social\SocialAuthManager;
 
 class AdminControllerTest extends TestCase
 {
@@ -20,10 +21,15 @@ class AdminControllerTest extends TestCase
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->mfaManager = $this->createMock(MfaManager::class);
 
+        $socialManager = $this->createMock(SocialAuthManager::class);
+        $socialManager->method('getProviderIds')
+            ->willReturn(['google', 'github', 'telegram']);
+
         $this->controller = new AdminController(
             $this->auditLogger,
             $this->mfaManager,
             new SettingsRepository(),
+            socialAuthManager: $socialManager,
         );
 
         unset(
