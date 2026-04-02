@@ -26,7 +26,7 @@ class VerificationConfigTest extends TestCase
         $this->assertSame(1800, $all['session_ttl']);
         $this->assertTrue($all['email']['enabled']);
         $this->assertSame(6, $all['email']['code_length']);
-        $this->assertSame(300, $all['email']['expiry']);
+        $this->assertSame(600, $all['email']['expiry']);
         $this->assertSame(3, $all['email']['max_attempts']);
         $this->assertSame(60, $all['email']['cooldown']);
     }

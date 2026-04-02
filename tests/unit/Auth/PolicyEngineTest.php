@@ -363,6 +363,7 @@ class PolicyEngineTest extends TestCase
     public function testGetPendingVerificationsReadsPhoneVerifyAtSignup(): void
     {
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'email' => ['verify_at_signup' => false],
             'phone' => ['enabled' => true, 'verify_at_signup' => true],
         ];
         $GLOBALS['_test_userdata'] = $this->makeUser(1);

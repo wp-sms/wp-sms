@@ -35,7 +35,7 @@ class SettingsRepository
             'expiry'               => 300,
             'max_attempts'         => 3,
             'cooldown'             => 60,
-            'reverify_on_change'   => false,
+            'reverify_on_change'   => true,
             'otp_gateway'          => null,
         ],
         'email' => [
@@ -43,13 +43,13 @@ class SettingsRepository
             'usage'                => 'login',
             'verification_methods' => ['otp'],
             'required_at_signup'   => true,
-            'verify_at_signup'     => false,
+            'verify_at_signup'     => true,
             'allow_sign_in'        => true,
             'code_length'          => 6,
             'expiry'               => 600,
             'max_attempts'         => 3,
             'cooldown'             => 60,
-            'reverify_on_change'   => false,
+            'reverify_on_change'   => true,
             'otp_gateway'          => null,
         ],
         'backup_codes' => [
@@ -102,8 +102,8 @@ class SettingsRepository
             'redirect_auth'            => false,
         ],
         'contact_form_7' => [
-            'verification_enabled'  => true,
-            'notifications_enabled' => true,
+            'verification_enabled'  => false,
+            'notifications_enabled' => false,
         ],
         'trusted_devices' => [
             'enabled' => false,

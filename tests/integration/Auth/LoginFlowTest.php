@@ -171,7 +171,7 @@ class LoginFlowTest extends IntegrationTestCase
     public function testPasswordlessVerifyCompletesLogin(): void
     {
         $this->setSettings(AuthScenarios::emailOtpOnly());
-        $user = UserFactory::create();
+        $user = UserFactory::verified();
         UserFactory::install($user);
 
         $channel = $this->configureMfaChannel('email', enrolled: true, verifySuccess: true, supportsPrimaryAuth: true);

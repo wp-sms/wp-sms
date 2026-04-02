@@ -321,6 +321,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'auto_create_users' => true,
             'registration_fields' => ['email', 'password'],
+            'email' => ['verify_at_signup' => false],
             'phone' => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
         ];
 
@@ -777,6 +778,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
             'auto_create_users' => true,
             'registration_fields' => ['email', 'password'],
+            'email' => ['verify_at_signup' => false],
         ];
 
         $this->manager->registerUser([

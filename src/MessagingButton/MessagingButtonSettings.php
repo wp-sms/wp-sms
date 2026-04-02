@@ -41,7 +41,7 @@ class MessagingButtonSettings
                 'auto_tag' => null,
                 'auto_list' => null,
             ],
-            'team' => ['enabled' => true],
+            'team' => ['enabled' => false],
             'resources' => ['enabled' => false, 'links' => []],
         ],
         'team_members' => [],

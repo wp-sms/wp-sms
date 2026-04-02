@@ -10,7 +10,7 @@ class VerificationConfig
 
     private const DEFAULTS = [
         'enabled'     => true,
-        'email'       => ['enabled' => true,  'code_length' => 6, 'expiry' => 300, 'max_attempts' => 3, 'cooldown' => 60],
+        'email'       => ['enabled' => true,  'code_length' => 6, 'expiry' => 600, 'max_attempts' => 3, 'cooldown' => 60],
         'phone'       => ['enabled' => true,  'code_length' => 6, 'expiry' => 300, 'max_attempts' => 3, 'cooldown' => 60],
         'session_ttl' => 1800,
     ];
