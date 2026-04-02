@@ -113,6 +113,7 @@ class MfaManager
             $active[] = [
                 'channel_id' => $factor->channelId,
                 'name'       => $channel->getName(),
+                'icon_svg'   => $channel->getIconSvg(),
             ];
         }
 

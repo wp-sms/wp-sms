@@ -3,16 +3,19 @@ import { useEffect, useState } from 'react';
 import { api, type ExtensionInfo } from '@/lib/api';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/layout/page-header';
+import { PageRenderer } from '@/components/page-renderer';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Puzzle } from 'lucide-react';
+import { AlertCircle, Puzzle, ArrowLeft, ExternalLink } from 'lucide-react';
 import { getErrorMessage } from '@/lib/error-utils';
 
 export function ExtensionsPage() {
   const [extensions, setExtensions] = useState<ExtensionInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeExtensionId, setActiveExtensionId] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -53,6 +56,37 @@ export function ExtensionsPage() {
     );
   }
 
+  // Extension page view
+  if (activeExtensionId) {
+    const ext = extensions.find(e => e.id === activeExtensionId);
+    const backButton = (
+      <Button variant="ghost" size="sm" className="mb-4" onClick={() => setActiveExtensionId(null)}>
+        <ArrowLeft className="h-4 w-4 mr-1" />
+        {__('Back to extensions', 'wp-sms')}
+      </Button>
+    );
+
+    if (!ext?.page) {
+      return (
+        <>
+          {backButton}
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{__('Extension page not found.', 'wp-sms')}</AlertDescription>
+          </Alert>
+        </>
+      );
+    }
+
+    return (
+      <>
+        {backButton}
+        <PageRenderer layout={ext.page.layout} title={ext.page.title} />
+      </>
+    );
+  }
+
+  // Extension list view
   return (
     <>
       <PageHeader icon={Puzzle} title={__('Extensions', 'wp-sms')} />
@@ -98,6 +132,17 @@ export function ExtensionsPage() {
                   <p className="mt-2 text-[10px] text-muted-foreground">
                     {__('Requires:', 'wp-sms')} {ext.requires}
                   </p>
+                )}
+                {ext.page && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-3"
+                    onClick={() => setActiveExtensionId(ext.id)}
+                  >
+                    <ExternalLink className="h-3.5 w-3.5 mr-1" />
+                    {__('Open', 'wp-sms')}
+                  </Button>
                 )}
               </CardContent>
             </Card>

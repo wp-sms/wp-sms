@@ -209,6 +209,10 @@ class PolicyEngineFormTest extends TestCase
                 return true;
             }
 
+            public function getIconSvg(): string { return '<svg></svg>'; }
+            public function getDescription(): string { return ''; }
+            public function getConfigSchema(): array { return []; }
+
             public function enroll(int $userId, array $data): \WSms\Mfa\ValueObjects\EnrollmentResult { return new \WSms\Mfa\ValueObjects\EnrollmentResult(true, 'OK'); }
             public function sendChallenge(int $userId, array $context = []): \WSms\Mfa\ValueObjects\ChallengeResult { return new \WSms\Mfa\ValueObjects\ChallengeResult(true, 'OK'); }
             public function verify(int $userId, string $code, array $context = []): bool { return true; }

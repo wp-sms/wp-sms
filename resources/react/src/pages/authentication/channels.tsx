@@ -16,6 +16,7 @@ import { SOCIAL_METHODS } from '@/lib/constants';
 import { Switch } from '@/components/ui/switch';
 import { Smartphone, Mail, KeyRound, Fingerprint, Send, MessageCircle, ExternalLink, LogIn, Shield } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
+import { SchemaForm } from '@/components/schema-form';
 import type { AuthSettings, PhoneChannelSettings, EmailChannelSettings, TelegramSettings, LineSettings, SocialProviderMeta, MfaChannelMeta } from '@/lib/api';
 
 interface ChannelsProps {
@@ -99,6 +100,7 @@ export function Channels({ settings, onUpdate, embedded, socialProviders = [], m
   const [editingSocial, setEditingSocial] = useState<string | null>(null);
   const [editingTelegramMfa, setEditingTelegramMfa] = useState(false);
   const [editingLineMfa, setEditingLineMfa] = useState(false);
+  const [editingAddonChannel, setEditingAddonChannel] = useState<string | null>(null);
   const socialSettings = settings.social ?? {};
 
   const mergedSocialProviders = useMemo((): MergedSocialMethod[] => {
@@ -132,8 +134,13 @@ export function Channels({ settings, onUpdate, embedded, socialProviders = [], m
         cache.set(p.id, makeSvgIcon(p.iconSvg));
       }
     }
+    for (const ch of addonMfaChannels) {
+      if (ch.icon_svg) {
+        cache.set(ch.id, makeSvgIcon(ch.icon_svg));
+      }
+    }
     return cache;
-  }, [mergedSocialProviders]);
+  }, [mergedSocialProviders, addonMfaChannels]);
 
   const telegramSettings = settings.telegram ?? {} as TelegramSettings;
   const lineSettings = settings.line ?? {} as LineSettings;
@@ -413,10 +420,12 @@ export function Channels({ settings, onUpdate, embedded, socialProviders = [], m
                   <React.Fragment key={ch.id}>
                     <Separator />
                     <ChannelRow
-                      icon={Shield}
+                      icon={svgIconCache.get(ch.id) ?? Shield}
                       title={ch.name}
+                      description={ch.description || undefined}
                       enabled={!!channelSettings.enabled}
                       onToggle={(v) => onUpdate(ch.id as keyof AuthSettings, { ...channelSettings, enabled: v })}
+                      onConfigure={ch.config_schema ? () => setEditingAddonChannel(ch.id) : undefined}
                     />
                   </React.Fragment>
                 );
@@ -653,6 +662,37 @@ export function Channels({ settings, onUpdate, embedded, socialProviders = [], m
           </div>
         </DrawerContent>
       </Drawer>
+
+      {/* Add-on MFA Channel Config Drawer */}
+      {editingAddonChannel && (() => {
+        const ch = addonMfaChannels.find(c => c.id === editingAddonChannel);
+        if (!ch?.config_schema) return null;
+        const channelSettings = ((settings as Record<string, unknown>)[ch.id] ?? {}) as Record<string, unknown>;
+        return (
+          <Drawer open={true} onOpenChange={(open) => { if (!open) setEditingAddonChannel(null); }}>
+            <DrawerContent className="sm:max-w-md overflow-y-auto">
+              <DrawerHeader>
+                <DrawerTitle className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted">
+                    {ch.icon_svg
+                      ? <span className="h-4 w-4 text-muted-foreground [&>svg]:h-4 [&>svg]:w-4" dangerouslySetInnerHTML={{ __html: ch.icon_svg }} aria-hidden="true" />
+                      : <Shield className="h-4 w-4 text-muted-foreground" />}
+                  </div>
+                  {sprintf(__('%s Settings', 'wp-sms'), ch.name)}
+                </DrawerTitle>
+                {ch.description && <DrawerDescription>{ch.description}</DrawerDescription>}
+              </DrawerHeader>
+              <div className="px-4 pb-4">
+                <SchemaForm
+                  schema={ch.config_schema}
+                  values={channelSettings}
+                  onChange={(newValues) => onUpdate(ch.id as keyof AuthSettings, { ...channelSettings, ...newValues })}
+                />
+              </div>
+            </DrawerContent>
+          </Drawer>
+        );
+      })()}
 
       {/* Settings Panel */}
       <ChannelSettingsPanel

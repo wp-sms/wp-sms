@@ -256,6 +256,9 @@ abstract class IntegrationTestCase extends TestCase
         $channel->method('isAvailableForUser')->willReturn(true);
         $channel->method('isEnrolled')->willReturn($enrolled);
         $channel->method('getEnabledSettingKey')->willReturn('enabled');
+        $channel->method('getIconSvg')->willReturn('<svg></svg>');
+        $channel->method('getDescription')->willReturn('Test channel');
+        $channel->method('getConfigSchema')->willReturn([]);
 
         $channel->method('sendChallenge')->willReturn(
             new ChallengeResult($challengeSuccess, $challengeSuccess ? 'Challenge sent.' : 'Failed.', [

@@ -51,6 +51,21 @@ class PasskeyChannel implements ChannelInterface, SupportsEnrollmentConfirmation
         return true;
     }
 
+    public function getIconSvg(): string
+    {
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10a2 2 0 0 0-2 2c0 1.02.1 2.51.68 4.5a.5.5 0 0 0 .49.38h.14a.5.5 0 0 0 .43-.25l.66-1.14c.2-.35.61-.46.96-.27.34.18.46.6.28.94l-.66 1.14a.5.5 0 0 0 .18.66.5.5 0 0 0 .56-.02l1.14-.8a.5.5 0 0 0 .18-.61C14.1 14.51 14 13.02 14 12a2 2 0 0 0-2-2Z"/><path d="M4 4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Z"/><path d="M12 2v2"/><path d="M7 8h.01"/><path d="M17 8h.01"/><path d="M12 8h.01"/></svg>';
+    }
+
+    public function getDescription(): string
+    {
+        return __('Use fingerprint, face recognition, or security key', 'wp-sms');
+    }
+
+    public function getConfigSchema(): array
+    {
+        return [];
+    }
+
     public function supportsAutoEnrollment(): bool
     {
         return false;

@@ -112,6 +112,8 @@ class EnrollmentController extends Controller
                 $methods[] = [
                     'id'                   => $channel->getId(),
                     'name'                 => $channel->getName(),
+                    'icon_svg'             => $channel->getIconSvg(),
+                    'description'          => $channel->getDescription(),
                     'supports_primary'     => $channel->supportsPrimaryAuth(),
                     'supports_mfa'         => $channel->supportsMfa(),
                 ];

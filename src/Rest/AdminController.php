@@ -374,10 +374,13 @@ class AdminController extends Controller
         return array_map(fn($ch) => [
             'id'            => $ch->getId(),
             'name'          => $ch->getName(),
+            'icon_svg'      => $ch->getIconSvg(),
+            'description'   => $ch->getDescription(),
             'supports_mfa'  => $ch->supportsMfa(),
             'supports_auth' => $ch->supportsPrimaryAuth(),
             'builtin'       => in_array($ch->getId(), $builtinIds, true),
             'settings_key'  => $ch->getEnabledSettingKey(),
+            'config_schema' => $ch->getConfigSchema() ?: null,
         ], $this->mfaManager->getAvailableChannels());
     }
 

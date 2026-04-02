@@ -36,10 +36,33 @@ export interface SocialProviderMeta {
 export interface MfaChannelMeta {
   id: string;
   name: string;
+  icon_svg: string;
+  description: string;
   supports_mfa: boolean;
   supports_auth: boolean;
   builtin: boolean;
   settings_key: string;
+  config_schema: JsonSchema | null;
+}
+
+export interface LayoutNode {
+  component: 'form' | 'table' | 'tabs' | 'stats' | 'status' | 'alert' | 'text' | 'actions';
+  endpoint?: string;
+  columns?: { key: string; label: string }[];
+  children?: (LayoutNode & { label?: string })[];
+  buttons?: { label: string; endpoint: string; method: string; variant?: string; confirm?: string }[];
+  variant?: string;
+  message?: string;
+  content?: string;
+  searchable?: boolean;
+  actions?: { label: string; endpoint: string; method: string; confirm?: string }[];
+  test_endpoint?: string;
+}
+
+export interface ExtensionPageLayout {
+  title: string;
+  icon?: string;
+  layout: LayoutNode[];
 }
 
 export interface ExtensionInfo {
@@ -49,6 +72,7 @@ export interface ExtensionInfo {
   version: string;
   type: string;
   requires: string;
+  page?: ExtensionPageLayout;
 }
 
 export interface SettingsResponse {

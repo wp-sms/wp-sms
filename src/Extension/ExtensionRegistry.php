@@ -29,6 +29,7 @@ class ExtensionRegistry
             'version'     => $extension['version'] ?? '',
             'type'        => $extension['type'] ?? 'addon',
             'requires'    => $extension['requires'] ?? '',
+            'page'        => $extension['page'] ?? null,
         ];
     }
 

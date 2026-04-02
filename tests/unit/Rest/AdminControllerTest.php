@@ -347,6 +347,14 @@ class AdminControllerTest extends TestCase
         $channel->method('supportsMfa')->willReturn(true);
         $channel->method('supportsPrimaryAuth')->willReturn(false);
         $channel->method('getEnabledSettingKey')->willReturn('enabled');
+        $channel->method('getIconSvg')->willReturn('<svg>discord</svg>');
+        $channel->method('getDescription')->willReturn('Receive codes via Discord');
+        $channel->method('getConfigSchema')->willReturn([
+            'type' => 'object',
+            'properties' => [
+                'bot_token' => ['type' => 'string', 'title' => 'Bot Token'],
+            ],
+        ]);
 
         $mfaManager = $this->createMock(MfaManager::class);
         $mfaManager->method('getAvailableChannels')->willReturn([$channel]);
@@ -367,6 +375,39 @@ class AdminControllerTest extends TestCase
         $this->assertSame('discord', $data['mfa_channels'][0]['id']);
         $this->assertFalse($data['mfa_channels'][0]['builtin']);
         $this->assertTrue($data['mfa_channels'][0]['supports_mfa']);
+        $this->assertSame('<svg>discord</svg>', $data['mfa_channels'][0]['icon_svg']);
+        $this->assertSame('Receive codes via Discord', $data['mfa_channels'][0]['description']);
+        $this->assertIsArray($data['mfa_channels'][0]['config_schema']);
+        $this->assertArrayHasKey('properties', $data['mfa_channels'][0]['config_schema']);
+    }
+
+    public function testBuiltinChannelReturnsNullConfigSchema(): void
+    {
+        $channel = $this->createMock(ChannelInterface::class);
+        $channel->method('getId')->willReturn('phone');
+        $channel->method('getName')->willReturn('Phone');
+        $channel->method('supportsMfa')->willReturn(true);
+        $channel->method('supportsPrimaryAuth')->willReturn(true);
+        $channel->method('getEnabledSettingKey')->willReturn('enabled');
+        $channel->method('getIconSvg')->willReturn('<svg>phone</svg>');
+        $channel->method('getDescription')->willReturn('Phone verification');
+        $channel->method('getConfigSchema')->willReturn([]);
+
+        $mfaManager = $this->createMock(MfaManager::class);
+        $mfaManager->method('getAvailableChannels')->willReturn([$channel]);
+
+        $controller = new AdminController(
+            $this->auditLogger,
+            $mfaManager,
+            new SettingsRepository(),
+            socialAuthManager: $this->socialManager,
+        );
+
+        $request = new \WP_REST_Request('GET', '/auth/admin/settings');
+        $response = $controller->handleGetSettings($request);
+        $data = $response->get_data();
+
+        $this->assertNull($data['mfa_channels'][0]['config_schema']);
     }
 
     public function testDynamicChannelKeysAcceptAddonChannels(): void
@@ -377,6 +418,9 @@ class AdminControllerTest extends TestCase
         $channel->method('supportsMfa')->willReturn(true);
         $channel->method('supportsPrimaryAuth')->willReturn(false);
         $channel->method('getEnabledSettingKey')->willReturn('enabled');
+        $channel->method('getIconSvg')->willReturn('');
+        $channel->method('getDescription')->willReturn('');
+        $channel->method('getConfigSchema')->willReturn([]);
 
         $mfaManager = $this->createMock(MfaManager::class);
         $mfaManager->method('getAvailableChannels')->willReturn([$channel]);

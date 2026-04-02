@@ -89,4 +89,24 @@ interface ChannelInterface
      * for this channel. Used by PolicyEngine to dynamically build method lists.
      */
     public function isAvailableForUser(int $userId): bool;
+
+    /**
+     * SVG markup for UI display (24x24 icon).
+     */
+    public function getIconSvg(): string;
+
+    /**
+     * Short human-readable description of what this channel does.
+     */
+    public function getDescription(): string;
+
+    /**
+     * JsonSchema for admin settings fields. Return empty array for no config UI.
+     *
+     * Built-in channels return [] — their settings are rendered by handcrafted drawers.
+     * Add-on channels return a schema that gets rendered by SchemaForm.
+     *
+     * Expected format: JsonSchema with 'properties' and optional 'required'.
+     */
+    public function getConfigSchema(): array;
 }

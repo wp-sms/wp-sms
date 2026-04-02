@@ -19,7 +19,13 @@ const CHANNEL_META = {
 };
 
 export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, onRefresh, onBackupCodes }) {
-    const meta = CHANNEL_META[method.id] || { label: method.name, icon: Lock, description: '' };
+    const hardcoded = CHANNEL_META[method.id];
+    const meta = {
+        label: hardcoded?.label ?? method.name,
+        icon: hardcoded?.icon ?? (method.icon_svg ? null : Lock),
+        iconSvg: hardcoded ? null : (method.icon_svg ?? null),
+        description: hardcoded?.description ?? method.description ?? '',
+    };
     const [expanding, setExpanding] = useState(false);
     const [phone, setPhone] = useState('');
     const [verifying, setVerifying] = useState(false);
@@ -175,7 +181,9 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
             )}
         >
             <div className="wsms-auth-mfa-card__header">
-                <meta.icon className="wsms-auth-mfa-card__icon" />
+                {meta.iconSvg
+                    ? <span className="wsms-auth-mfa-card__icon" dangerouslySetInnerHTML={{ __html: meta.iconSvg }} aria-hidden="true" />
+                    : meta.icon && <meta.icon className="wsms-auth-mfa-card__icon" />}
                 <div className="wsms-auth-mfa-card__info">
                     <div className="wsms-auth-mfa-card__name">{meta.label}</div>
                     <div className="wsms-auth-mfa-card__desc">{meta.description}</div>
