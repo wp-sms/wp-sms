@@ -343,8 +343,10 @@ class PolicyEngine
 
         // Dynamically check each verification channel.
         foreach ($this->getVerificationChannelKeys() as $channelKey) {
+            $requiresVerification = !empty($settings[$channelKey]['verify_at_signup'])
+                || !empty($settings[$channelKey]['verify_at_login']);
             if (
-                !empty($settings[$channelKey]['verify_at_signup'])
+                $requiresVerification
                 && ($state[$channelKey]['has'] ?? false)
                 && !($state[$channelKey]['verified'] ?? true)
             ) {

@@ -53,6 +53,10 @@ class SocialAuthOrchestrator
             throw new \InvalidArgumentException("Unknown social provider: {$providerId}");
         }
 
+        if (!$this->isProviderEnabled($providerId)) {
+            throw new \InvalidArgumentException("Social provider is not enabled: {$providerId}");
+        }
+
         $stateData = $this->stateManager->create($linkUserId, $intent);
         $redirectUri = $this->getCallbackUrl($providerId);
 
@@ -76,6 +80,10 @@ class SocialAuthOrchestrator
 
         if (!$provider) {
             return ['result' => AuthResult::failed(AuthErrorCode::InvalidProvider, __('Unknown social provider.', 'wp-sms'))];
+        }
+
+        if (!$this->isProviderEnabled($providerId)) {
+            return ['result' => AuthResult::failed(AuthErrorCode::InvalidProvider, __('Social provider is not enabled.', 'wp-sms'))];
         }
 
         // Validate state (CSRF + PKCE).
@@ -511,6 +519,17 @@ class SocialAuthOrchestrator
         }
 
         return [$firstName, $lastName];
+    }
+
+    private function isProviderEnabled(string $providerId): bool
+    {
+        foreach ($this->socialManager->getEnabledProviders() as $provider) {
+            if ($provider->getId() === $providerId) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function getCallbackUrl(string $providerId): string

@@ -158,6 +158,10 @@ class EnrollmentController extends Controller
                 throw ValidationException::field('channel_id', __('Unknown channel.', 'wp-sms'));
             }
 
+            if (!in_array($channelId, $this->policy->getAvailableMfaFactors(), true)) {
+                throw ValidationException::field('channel_id', __('This MFA method is not enabled.', 'wp-sms'));
+            }
+
             $result = $channel->enroll($userId, $data);
 
             if ($result->success && empty($result->data['requires_confirmation'])) {
@@ -185,6 +189,10 @@ class EnrollmentController extends Controller
 
             if (!$channel) {
                 throw ValidationException::field('channel_id', __('Unknown channel.', 'wp-sms'));
+            }
+
+            if (!in_array($channelId, $this->policy->getAvailableMfaFactors(), true)) {
+                throw ValidationException::field('channel_id', __('This MFA method is not enabled.', 'wp-sms'));
             }
 
             if ($channel instanceof SupportsEnrollmentConfirmation) {
@@ -217,6 +225,20 @@ class EnrollmentController extends Controller
 
             if (!$channel) {
                 throw ValidationException::field('channel_id', __('Unknown channel.', 'wp-sms'));
+            }
+
+            if ($this->policy->isMfaRequired($userId)) {
+                $activeFactors = $this->mfaManager->getActiveMfaFactors($userId);
+                $isLastFactor = count($activeFactors) === 1
+                    && $activeFactors[0]['channel_id'] === $channelId;
+
+                if ($isLastFactor) {
+                    return new WP_REST_Response([
+                        'success' => false,
+                        'error'   => 'mfa_required',
+                        'message' => __('You cannot remove your last MFA method while multi-factor authentication is required for your account.', 'wp-sms'),
+                    ], 403);
+                }
             }
 
             $result = $channel->unenroll($userId);

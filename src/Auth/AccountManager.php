@@ -767,6 +767,11 @@ class AccountManager
      */
     public function sendVerificationChallenge(int $userId, string $channel): void
     {
+        $settings = $this->settingsRepo->all();
+        if (empty($settings[$channel]['enabled'])) {
+            return;
+        }
+
         $identifier = $this->getConfirmedIdentifier($userId, $channel);
 
         if ($identifier === null) {

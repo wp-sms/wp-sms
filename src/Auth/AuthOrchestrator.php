@@ -79,6 +79,10 @@ class AuthOrchestrator
      */
     public function loginWithPassword(string $username, string $password): AuthResult
     {
+        if (!in_array('password', $this->policy->getAvailablePrimaryMethods(), true)) {
+            return AuthResult::failed(AuthErrorCode::MethodDisabled, __('Password login is not enabled.', 'wp-sms'));
+        }
+
         $identifierType = $this->detectIdentifierType($username);
         $resolvedUser = $this->resolveUserByAnyIdentifier($username, $identifierType);
 
@@ -256,7 +260,9 @@ class AuthOrchestrator
             return AuthResult::failed(AuthErrorCode::InvalidChannel, __('Invalid MFA channel.', 'wp-sms'));
         }
 
-        // No conflict validation needed — usage is mutually exclusive per channel.
+        if (!in_array($channelId, $this->policy->getAvailableMfaFactors(), true)) {
+            return AuthResult::failed(AuthErrorCode::MethodDisabled, __('This MFA method is not enabled.', 'wp-sms'));
+        }
 
         if (!$channel->isEnrolled($sessionData['user_id'])) {
             return AuthResult::failed(AuthErrorCode::NotEnrolled, __('You are not enrolled in this MFA method.', 'wp-sms'));
@@ -290,6 +296,10 @@ class AuthOrchestrator
 
         if (!$channel || !$channel->supportsMfa()) {
             return AuthResult::failed(AuthErrorCode::InvalidChannel, __('Invalid MFA channel.', 'wp-sms'));
+        }
+
+        if (!in_array($channelId, $this->policy->getAvailableMfaFactors(), true)) {
+            return AuthResult::failed(AuthErrorCode::MethodDisabled, __('This MFA method is not enabled.', 'wp-sms'));
         }
 
         $verified = $channel->verify($sessionData['user_id'], $code);
@@ -381,7 +391,7 @@ class AuthOrchestrator
             return $sessionData;
         }
 
-        $availableFactors = $this->mfaManager->getActiveMfaFactors($sessionData['user_id']);
+        $availableFactors = $this->getEnabledMfaFactorsForUser($sessionData['user_id']);
 
         return AuthResult::mfaRequired($sessionToken, $availableFactors);
     }
@@ -392,8 +402,8 @@ class AuthOrchestrator
             return $this->resolveLogin($userId, $method);
         }
 
-        // MFA is required — find available factors.
-        $availableFactors = $this->mfaManager->getActiveMfaFactors($userId);
+        // MFA is required — find available factors, filtered by enabled channels.
+        $availableFactors = $this->getEnabledMfaFactorsForUser($userId);
 
         // MFA required but no enrolled factors — gate the user for enrollment.
         if (empty($availableFactors)) {
@@ -559,6 +569,17 @@ class AuthOrchestrator
         }
 
         return null;
+    }
+
+    private function getEnabledMfaFactorsForUser(int $userId): array
+    {
+        $factors = $this->mfaManager->getActiveMfaFactors($userId);
+        $enabledIds = $this->policy->getAvailableMfaFactors();
+
+        return array_values(array_filter(
+            $factors,
+            fn($f) => in_array($f['channel_id'], $enabledIds, true),
+        ));
     }
 
     /**

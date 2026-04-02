@@ -1385,4 +1385,19 @@ class AccountManagerTest extends TestCase
         return $v;
     }
 
+    // --- sendVerificationChallenge ---
+
+    public function testSendVerificationChallengeSkipsDisabledChannel(): void
+    {
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'auto_create_users' => true,
+            'phone' => ['enabled' => false],
+        ];
+
+        // OTP should never be created for a disabled channel.
+        $this->otpService->expects($this->never())->method('createOtp');
+
+        $this->manager->sendVerificationChallenge(42, 'phone');
+    }
+
 }

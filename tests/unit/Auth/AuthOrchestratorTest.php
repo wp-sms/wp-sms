@@ -64,6 +64,7 @@ class AuthOrchestratorTest extends TestCase
         $GLOBALS['_test_wp_authenticate_result'] = $user;
         $GLOBALS['_test_userdata'] = $user;
 
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
         $this->policy->method('isMfaRequired')->willReturn(false);
 
         $result = $this->orchestrator->loginWithPassword('admin', 'pass');
@@ -75,6 +76,7 @@ class AuthOrchestratorTest extends TestCase
 
     public function testLoginWithPasswordFailsWithBadCredentials(): void
     {
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
         $GLOBALS['_test_wp_authenticate_result'] = new \WP_Error('invalid_username', 'Bad');
 
         $result = $this->orchestrator->loginWithPassword('wrong', 'creds');
@@ -89,7 +91,9 @@ class AuthOrchestratorTest extends TestCase
         $GLOBALS['_test_wp_authenticate_result'] = $user;
         $GLOBALS['_test_userdata'] = $user;
 
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
         $this->policy->method('isMfaRequired')->willReturn(true);
+        $this->policy->method('getAvailableMfaFactors')->willReturn(['phone']);
 
         $this->mfaManager->method('getActiveMfaFactors')->willReturn([
             ['channel_id' => 'phone', 'name' => 'Phone'],
@@ -229,6 +233,7 @@ class AuthOrchestratorTest extends TestCase
         $phoneChannel->method('sendChallenge')->willReturn(new ChallengeResult(true, 'Sent', []));
 
         $this->mfaManager->method('getChannel')->with('phone')->willReturn($phoneChannel);
+        $this->policy->method('getAvailableMfaFactors')->willReturn(['phone']);
 
         $result = $this->orchestrator->sendMfaChallenge('token', 'phone');
 
@@ -253,6 +258,7 @@ class AuthOrchestratorTest extends TestCase
         $phoneChannel->method('verify')->willReturn(true);
 
         $this->mfaManager->method('getChannel')->with('phone')->willReturn($phoneChannel);
+        $this->policy->method('getAvailableMfaFactors')->willReturn(['phone']);
 
         $result = $this->orchestrator->verifyMfa('token', '123456', 'phone');
 
@@ -275,6 +281,7 @@ class AuthOrchestratorTest extends TestCase
         $phoneChannel->method('verify')->willReturn(false);
 
         $this->mfaManager->method('getChannel')->with('phone')->willReturn($phoneChannel);
+        $this->policy->method('getAvailableMfaFactors')->willReturn(['phone']);
 
         $result = $this->orchestrator->verifyMfa('token', 'wrong', 'phone');
 
@@ -305,6 +312,7 @@ class AuthOrchestratorTest extends TestCase
 
     public function testLoginWithPasswordRejectsLockedAccount(): void
     {
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
         $user = $this->makeUser(1);
         $GLOBALS['_test_get_user_by_result'] = $user;
 
@@ -323,6 +331,7 @@ class AuthOrchestratorTest extends TestCase
 
     public function testLoginWithPasswordRecordsFailureOnWrongPassword(): void
     {
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
         $user = $this->makeUser(1);
         $GLOBALS['_test_get_user_by_result'] = $user;
         $GLOBALS['_test_wp_authenticate_result'] = new \WP_Error('incorrect_password', 'Wrong');
@@ -340,6 +349,7 @@ class AuthOrchestratorTest extends TestCase
 
     public function testLoginWithPasswordResetsLockoutOnSuccess(): void
     {
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
         $user = $this->makeUser(1);
         $GLOBALS['_test_get_user_by_result'] = $user;
         $GLOBALS['_test_wp_authenticate_result'] = $user;
@@ -498,6 +508,7 @@ class AuthOrchestratorTest extends TestCase
 
     public function testLoginViaPhone(): void
     {
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
         $user = $this->makeUser(1);
         $user->user_login = 'phoneuser';
         $GLOBALS['_test_get_users_result'] = [$user];
@@ -526,6 +537,7 @@ class AuthOrchestratorTest extends TestCase
 
     public function testLoginUnknownIdentifierFails(): void
     {
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
         $GLOBALS['_test_wp_authenticate_result'] = new \WP_Error('invalid_username', 'Unknown user');
 
         $result = $this->orchestrator->loginWithPassword('nonexistent', 'pass');
@@ -536,6 +548,7 @@ class AuthOrchestratorTest extends TestCase
 
     public function testLoginViaEmailLockedAccount(): void
     {
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
         $user = $this->makeUser(1);
         $GLOBALS['_test_get_user_by_result'] = $user;
 
@@ -553,6 +566,7 @@ class AuthOrchestratorTest extends TestCase
 
     public function testLoginViaPhoneRecordsFailure(): void
     {
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
         $user = $this->makeUser(1);
         $GLOBALS['_test_get_users_result'] = [$user];
         $GLOBALS['_test_wp_authenticate_result'] = new \WP_Error('incorrect_password', 'Wrong');
@@ -567,6 +581,7 @@ class AuthOrchestratorTest extends TestCase
 
     public function testLoginWithPasswordFiresWpLoginFailedHook(): void
     {
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
         $user = $this->makeUser(1);
         $GLOBALS['_test_get_user_by_result'] = $user;
         $GLOBALS['_test_wp_authenticate_result'] = new \WP_Error('incorrect_password', 'Wrong');
@@ -634,6 +649,7 @@ class AuthOrchestratorTest extends TestCase
         $phoneChannel->method('verify')->willReturn(true);
 
         $this->mfaManager->method('getChannel')->with('phone')->willReturn($phoneChannel);
+        $this->policy->method('getAvailableMfaFactors')->willReturn(['phone']);
 
         $this->orchestrator->verifyMfa('token', '123456', 'phone');
 
@@ -646,6 +662,7 @@ class AuthOrchestratorTest extends TestCase
         $GLOBALS['_test_wp_authenticate_result'] = $user;
         $GLOBALS['_test_userdata'] = $user;
 
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
         $this->policy->method('isMfaRequired')->willReturn(true);
         $this->mfaManager->method('getActiveMfaFactors')->willReturn([]);
         $this->policy->method('getAvailableMfaFactors')->willReturn(['phone']);
@@ -716,6 +733,7 @@ class AuthOrchestratorTest extends TestCase
         $GLOBALS['_test_wp_authenticate_result'] = $user;
         $GLOBALS['_test_userdata'] = $user;
 
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
         $this->policy->method('isMfaRequired')->willReturn(false);
         $this->policy->method('getGracePeriodInfo')->willReturn([
             'grace_period_remaining_days' => 5,
@@ -735,6 +753,7 @@ class AuthOrchestratorTest extends TestCase
         $GLOBALS['_test_wp_authenticate_result'] = $user;
         $GLOBALS['_test_userdata'] = $user;
 
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
         $this->policy->method('isMfaRequired')->willReturn(false);
         $this->policy->method('getGracePeriodInfo')->willReturn(null);
 
@@ -774,6 +793,122 @@ class AuthOrchestratorTest extends TestCase
 
         $this->lockout->method('isLocked')->willReturn(['locked' => false, 'until' => null, 'attempts' => 0]);
         $this->policy->method('isMfaRequired')->willReturn(false);
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
+    }
+
+    // --- Setting gate tests (Issues 1, 3, 4) ---
+
+    public function testLoginWithPasswordRejectsWhenPasswordSignInDisabled(): void
+    {
+        // password.enabled=true, allow_sign_in=false → not in getAvailablePrimaryMethods
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['email']);
+
+        $result = $this->orchestrator->loginWithPassword('admin', 'pass');
+
+        $this->assertFalse($result->success);
+        $this->assertSame('method_disabled', $result->error);
+    }
+
+    public function testLoginWithPasswordRejectsWhenPasswordChannelDisabled(): void
+    {
+        // password.enabled=false → not in getAvailablePrimaryMethods
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['phone']);
+
+        $result = $this->orchestrator->loginWithPassword('admin', 'pass');
+
+        $this->assertFalse($result->success);
+        $this->assertSame('method_disabled', $result->error);
+    }
+
+    public function testSendMfaChallengeRejectsDisabledChannel(): void
+    {
+        $this->session->method('validate')->willReturn([
+            'user_id'     => 1,
+            'method'      => 'password',
+            'stage'       => 'primary_verified',
+            'session_key' => 'sk456',
+        ]);
+
+        $phoneChannel = $this->createMock(PhoneChannel::class);
+        $phoneChannel->method('supportsMfa')->willReturn(true);
+
+        $this->mfaManager->method('getChannel')->with('phone')->willReturn($phoneChannel);
+        $this->policy->method('getAvailableMfaFactors')->willReturn([]);
+
+        $result = $this->orchestrator->sendMfaChallenge('token', 'phone');
+
+        $this->assertFalse($result->success);
+        $this->assertSame('method_disabled', $result->error);
+    }
+
+    public function testVerifyMfaRejectsDisabledChannel(): void
+    {
+        $this->session->method('validate')->willReturn([
+            'user_id'     => 1,
+            'method'      => 'password',
+            'stage'       => 'mfa_pending',
+            'session_key' => 'sk_mfa',
+        ]);
+
+        $phoneChannel = $this->createMock(PhoneChannel::class);
+        $phoneChannel->method('supportsMfa')->willReturn(true);
+
+        $this->mfaManager->method('getChannel')->with('phone')->willReturn($phoneChannel);
+        $this->policy->method('getAvailableMfaFactors')->willReturn([]);
+
+        $result = $this->orchestrator->verifyMfa('token', '123456', 'phone');
+
+        $this->assertFalse($result->success);
+        $this->assertSame('method_disabled', $result->error);
+    }
+
+    public function testResolvePostPrimaryFiltersDisabledMfaChannels(): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_wp_authenticate_result'] = $user;
+        $GLOBALS['_test_userdata'] = $user;
+
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
+        $this->policy->method('isMfaRequired')->willReturn(true);
+
+        // User has phone and email enrolled, but only email is enabled.
+        $this->mfaManager->method('getActiveMfaFactors')->willReturn([
+            ['channel_id' => 'phone', 'name' => 'Phone'],
+            ['channel_id' => 'email', 'name' => 'Email'],
+        ]);
+        $this->policy->method('getAvailableMfaFactors')->willReturn(['email']);
+
+        $this->session->method('create')->willReturn('session-token');
+
+        $result = $this->orchestrator->loginWithPassword('admin', 'pass');
+
+        $this->assertTrue($result->success);
+        $this->assertSame('mfa_required', $result->status);
+        // Only email should be offered.
+        $this->assertCount(1, $result->meta['available_factors']);
+        $this->assertSame('email', $result->meta['available_factors'][0]['channel_id']);
+    }
+
+    public function testResolvePostPrimaryGatesEnrollmentWhenAllChannelsDisabled(): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_wp_authenticate_result'] = $user;
+        $GLOBALS['_test_userdata'] = $user;
+
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
+        $this->policy->method('isMfaRequired')->willReturn(true);
+
+        // User has phone enrolled, but phone channel is disabled.
+        $this->mfaManager->method('getActiveMfaFactors')->willReturn([
+            ['channel_id' => 'phone', 'name' => 'Phone'],
+        ]);
+        $this->policy->method('getAvailableMfaFactors')->willReturn(['email']);
+
+        $result = $this->orchestrator->loginWithPassword('admin', 'pass');
+
+        // All enrolled channels filtered out → falls through to enrollment gate.
+        $this->assertTrue($result->success);
+        $this->assertSame('mfa_enrollment_required', $result->status);
     }
 
     private function makeUser(int $id): object

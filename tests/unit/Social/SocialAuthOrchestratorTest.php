@@ -44,6 +44,15 @@ class SocialAuthOrchestratorTest extends TestCase
         $this->lockout = $this->createMock(AccountLockout::class);
         $this->policyEngine = $this->createMock(PolicyEngine::class);
 
+        // Default: all common test providers are enabled.
+        $enabledProviders = [];
+        foreach (['google', 'telegram', 'github'] as $id) {
+            $p = $this->createMock(SocialProviderInterface::class);
+            $p->method('getId')->willReturn($id);
+            $enabledProviders[] = $p;
+        }
+        $this->socialManager->method('getEnabledProviders')->willReturn($enabledProviders);
+
         $this->orchestrator = new SocialAuthOrchestrator(
             $this->socialManager,
             $this->repository,
@@ -663,6 +672,32 @@ class SocialAuthOrchestratorTest extends TestCase
         $result = $this->orchestrator->handleCallback('telegram', 'code', 'state');
 
         $this->assertSame(202, $result['user_id']);
+    }
+
+    // --- Setting gate tests (Issue 5) ---
+
+    public function testInitiateAuthorizeRejectsDisabledProvider(): void
+    {
+        // 'apple' is registered (getProvider returns it) but not in getEnabledProviders (setUp has google, telegram, github)
+        $provider = $this->createMock(SocialProviderInterface::class);
+        $provider->method('getId')->willReturn('apple');
+        $this->socialManager->method('getProvider')->willReturn($provider);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('not enabled');
+
+        $this->orchestrator->initiateAuthorize('apple');
+    }
+
+    public function testHandleCallbackRejectsDisabledProvider(): void
+    {
+        $provider = $this->createMock(SocialProviderInterface::class);
+        $provider->method('getId')->willReturn('apple');
+        $this->socialManager->method('getProvider')->willReturn($provider);
+
+        $result = $this->orchestrator->handleCallback('apple', 'code', 'state');
+
+        $this->assertSame('invalid_provider', $result['result']->toArray()['error']);
     }
 
     private function makeProvider(): MockObject&SocialProviderInterface

@@ -533,6 +533,35 @@ class PolicyEngineTest extends TestCase
         $this->assertNotContains('email_otp', $methodNames);
     }
 
+    public function testGetPendingVerificationsIncludesVerifyAtLoginChannel(): void
+    {
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'email' => ['enabled' => true, 'verify_at_signup' => false, 'verify_at_login' => true],
+        ];
+        $GLOBALS['_test_userdata'] = $this->makeUser(1);
+        $GLOBALS['_test_user_meta'][1] = ['wsms_email_verified' => ''];
+
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
+        $pending = $engine->getPendingVerifications(1);
+
+        $this->assertCount(1, $pending);
+        $this->assertSame('email', $pending[0]['type']);
+    }
+
+    public function testGetPendingVerificationsSkipsVerifiedEvenWithVerifyAtLogin(): void
+    {
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'email' => ['enabled' => true, 'verify_at_signup' => false, 'verify_at_login' => true],
+        ];
+        $GLOBALS['_test_userdata'] = $this->makeUser(1);
+        $GLOBALS['_test_user_meta'][1] = ['wsms_email_verified' => '1'];
+
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
+        $pending = $engine->getPendingVerifications(1);
+
+        $this->assertSame([], $pending);
+    }
+
     public function testPendingVerificationsSkipsPlaceholderEmail(): void
     {
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
