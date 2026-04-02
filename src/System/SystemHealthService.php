@@ -734,6 +734,20 @@ class SystemHealthService
             );
         }
 
+        // cfg_timezone — Recommend city-based timezone for DST support
+        $tz = wp_timezone_string();
+        if ($tz === 'UTC' || str_contains($tz, '/')) {
+            $checks[] = $this->makeCheck('cfg_timezone', __('Timezone', 'wp-sms'), 'pass',
+                sprintf(__('Site timezone: %s.', 'wp-sms'), $tz),
+            );
+        } else {
+            $checks[] = $this->makeCheck('cfg_timezone', __('Timezone', 'wp-sms'), 'info',
+                sprintf(__('Site timezone is set to a manual UTC offset (%s). Selecting a city-based timezone (e.g. America/New_York) enables automatic daylight saving time adjustments for scheduled campaigns and quiet hours.', 'wp-sms'), $tz),
+                __('Go to Settings → General and select a city-based timezone.', 'wp-sms'),
+                admin_url('options-general.php'),
+            );
+        }
+
         // cfg_php_extensions
         $required = ['json', 'mbstring', 'openssl', 'curl'];
         $recommended = ['intl'];
