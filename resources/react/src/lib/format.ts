@@ -1,9 +1,42 @@
+import { getConfig } from './api';
+
+let cachedTimezone: string | undefined | false = false;
+
+function getSiteTimezone(): string | undefined {
+  if (cachedTimezone !== false) return cachedTimezone;
+
+  const tz = getConfig().timezone;
+  cachedTimezone = normalizeTimezone(tz);
+  return cachedTimezone;
+}
+
+function normalizeTimezone(tz: string): string | undefined {
+  if (!tz) return undefined;
+  if (tz.includes('/')) return tz;
+  if (tz === 'UTC') return 'UTC';
+
+  const match = tz.match(/^UTC([+-]?\d+(?:\.\d+)?)$/);
+  if (!match) return tz;
+
+  const offset = parseFloat(match[1]);
+  if (offset === 0) return 'UTC';
+
+  // Intl accepts +HH:MM offset strings (ES2024+, all current browsers)
+  const sign = offset >= 0 ? '+' : '-';
+  const abs = Math.abs(offset);
+  const hours = Math.trunc(abs);
+  const minutes = Math.round((abs % 1) * 60);
+  return `${sign}${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+}
+
 export function formatDateTime(iso: string): string {
-  return new Date(iso).toLocaleString();
+  const tz = getSiteTimezone();
+  return new Date(iso).toLocaleString(undefined, tz ? { timeZone: tz } : undefined);
 }
 
 export function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString();
+  const tz = getSiteTimezone();
+  return new Date(iso).toLocaleDateString(undefined, tz ? { timeZone: tz } : undefined);
 }
 
 const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });

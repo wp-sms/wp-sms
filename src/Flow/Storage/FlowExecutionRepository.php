@@ -128,7 +128,7 @@ class FlowExecutionRepository
         $table = $this->db->table(Connection::TABLE_FLOW_EXECUTIONS);
 
         return $this->db->query(
-            "DELETE FROM {$table} WHERE status IN (%s, %s, %s) AND completed_at < DATE_SUB(NOW(), INTERVAL %d DAY)",
+            "DELETE FROM {$table} WHERE status IN (%s, %s, %s) AND completed_at < DATE_SUB(UTC_TIMESTAMP(), INTERVAL %d DAY)",
             ExecutionStatus::Completed->value,
             ExecutionStatus::Failed->value,
             ExecutionStatus::Cancelled->value,

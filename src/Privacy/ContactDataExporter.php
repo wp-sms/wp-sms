@@ -4,6 +4,7 @@ namespace WSms\Privacy;
 
 use WSms\Contact\ContactRepository;
 use WSms\Database\Connection;
+use WSms\Support\DateFormatter;
 
 defined('ABSPATH') || exit;
 
@@ -61,7 +62,7 @@ class ContactDataExporter
             ['name' => __('Source Reference', 'wp-sms'), 'value' => $contact['source_ref'] ?? ''],
             ['name' => __('Tags', 'wp-sms'), 'value' => implode(', ', $tagNames)],
             ['name' => __('Channel Opt-outs', 'wp-sms'), 'value' => $channelOptOuts],
-            ['name' => __('Subscribed At', 'wp-sms'), 'value' => $contact['created_at'] ?? ''],
+            ['name' => __('Subscribed At', 'wp-sms'), 'value' => DateFormatter::formatTimestamp($contact['created_at'] ?? '')],
         ], fn($item) => $item['value'] !== '');
 
         $data = array_merge($data, $customFields);
@@ -78,4 +79,5 @@ class ContactDataExporter
             'done' => true,
         ];
     }
+
 }

@@ -4,6 +4,7 @@ namespace WSms\Privacy;
 
 use WSms\Contact\ContactRepository;
 use WSms\Database\Connection;
+use WSms\Support\DateFormatter;
 
 defined('ABSPATH') || exit;
 
@@ -45,7 +46,7 @@ class MessageLogHandler
                 'group_label' => __('WSMS Message History', 'wp-sms'),
                 'item_id'     => 'wsms-message-' . $row['id'],
                 'data'        => [
-                    ['name' => __('Date', 'wp-sms'), 'value' => $row['sent_at'] ?? $row['created_at']],
+                    ['name' => __('Date', 'wp-sms'), 'value' => DateFormatter::formatTimestamp($row['sent_at'] ?? $row['created_at'])],
                     ['name' => __('Channel', 'wp-sms'), 'value' => $row['channel']],
                     ['name' => __('Type', 'wp-sms'), 'value' => $row['type']],
                     ['name' => __('Status', 'wp-sms'), 'value' => $row['status']],

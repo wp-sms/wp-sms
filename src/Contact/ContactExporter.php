@@ -4,6 +4,7 @@ namespace WSms\Contact;
 
 use WSms\Dependencies\League\Csv\Writer;
 use WSms\Contact\Contracts\ContactRepositoryInterface;
+use WSms\Support\DateFormatter;
 
 defined('ABSPATH') || exit;
 
@@ -70,8 +71,8 @@ class ContactExporter
                     $contact['source_ref'] ?? '',
                     $contact['wp_user_id'] ?? '',
                     $tagNames,
-                    $contact['created_at'] ?? '',
-                    $contact['updated_at'] ?? '',
+                    DateFormatter::formatTimestamp($contact['created_at'] ?? ''),
+                    DateFormatter::formatTimestamp($contact['updated_at'] ?? ''),
                 ];
 
                 foreach ($customFieldKeys as $key) {

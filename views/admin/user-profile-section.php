@@ -25,6 +25,7 @@
 defined('ABSPATH') || exit;
 
 use WSms\Service\Admin\UserListManager;
+use WSms\Support\DateFormatter;
 
 $svgCheck = UserListManager::SVG_CIRCLE_CHECK;
 $svgX = UserListManager::SVG_CIRCLE_X;
@@ -251,7 +252,7 @@ $svgBan = UserListManager::SVG_BAN;
                 <span style="color: #666; font-size: 12px;">
                     <?php
                     if ($suspension['at']) {
-                        echo esc_html(date_i18n('Y-m-d H:i', strtotime($suspension['at'])));
+                        echo esc_html(wp_date(DateFormatter::siteFormat(), strtotime($suspension['at'])));
                     }
                     if ($suspension['by']) {
                         $admin = get_userdata($suspension['by']);
@@ -294,7 +295,7 @@ $svgBan = UserListManager::SVG_BAN;
                 <span class="wsms-pill wsms-pill--locked wsms-profile-badge">
                     <?php echo $svgLock; ?>
                     <?php
-                    $until = date_i18n('H:i', strtotime($lockout['until']));
+                    $until = wp_date(get_option('time_format'), strtotime($lockout['until']));
                     /* translators: %s: time when lockout expires */
                     printf(esc_html__('Locked until %s', 'wp-sms'), $until);
                     ?>

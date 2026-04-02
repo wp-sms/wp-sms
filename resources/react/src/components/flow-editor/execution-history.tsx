@@ -17,19 +17,10 @@ import {
 } from '@/components/ui/table';
 import { RefreshCw } from 'lucide-react';
 import { ExecutionDetailPanel } from './execution-detail-panel';
+import { formatDateTime } from '@/lib/format';
 
 interface ExecutionHistoryProps {
   flowId: string;
-}
-
-function formatTime(iso: string): string {
-  return new Date(iso).toLocaleString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  });
 }
 
 export function ExecutionHistory({ flowId }: ExecutionHistoryProps) {
@@ -84,7 +75,7 @@ export function ExecutionHistory({ flowId }: ExecutionHistoryProps) {
                 <TableCell className="text-xs font-mono max-w-[200px] truncate">
                   {JSON.stringify(exec.trigger_data).slice(0, 80)}
                 </TableCell>
-                <TableCell className="text-sm">{formatTime(exec.started_at)}</TableCell>
+                <TableCell className="text-sm">{formatDateTime(exec.started_at)}</TableCell>
                 <TableCell className="text-sm">
                   {formatElapsed(exec.started_at, exec.completed_at)}
                 </TableCell>

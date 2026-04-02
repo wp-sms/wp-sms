@@ -4,6 +4,7 @@ namespace WSms\Flow\Engine;
 
 use WSms\Auth\SettingsRepository;
 use WSms\Messaging\Contracts\TemplateEngineInterface;
+use WSms\Support\DateFormatter;
 
 defined('ABSPATH') || exit;
 
@@ -51,15 +52,15 @@ class PayloadResolver
                 'tagline'   => get_bloginfo('description'),
             ],
             'now' => [
-                'date'       => current_time('Y-m-d'),
-                'time'       => current_time('H:i'),
-                'datetime'   => current_time('Y-m-d H:i:s'),
-                'year'       => current_time('Y'),
-                'day_name'   => current_time('l'),
-                'month_name' => current_time('F'),
-                'day'        => current_time('d'),
-                'month'      => current_time('m'),
-                'hour'       => current_time('H'),
+                'date'       => wp_date(get_option('date_format')),
+                'time'       => wp_date(get_option('time_format')),
+                'datetime'   => wp_date(DateFormatter::siteFormat()),
+                'year'       => wp_date('Y'),
+                'day_name'   => wp_date('l'),
+                'month_name' => wp_date('F'),
+                'day'        => wp_date('d'),
+                'month'      => wp_date('m'),
+                'hour'       => wp_date('H'),
             ],
         ];
     }
