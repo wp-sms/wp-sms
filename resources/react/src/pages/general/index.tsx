@@ -5,8 +5,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Field, FieldLabel, FieldDescription, SwitchField } from '@/components/ui/field';
 import { PageSection } from '@/components/ui/page-section';
 import { PageHeader } from '@/components/layout/page-header';
-import { SlidersHorizontal, Phone, Globe, Scale, UserPlus, ScrollText, ShieldCheck } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { SlidersHorizontal, Phone, Globe, Scale, UserPlus, ScrollText, ShieldCheck, Sparkles } from 'lucide-react';
 import { SITE_PHONE_CHANNELS, LOG_VERBOSITY } from '@/lib/constants';
+import { useOnboarding } from '@/hooks/use-onboarding';
 import type { AuthSettings, SitePhoneChannel } from '@/lib/api';
 
 interface GeneralPageProps {
@@ -17,10 +20,54 @@ interface GeneralPageProps {
 
 export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) {
   const isTelegram = settings.site_phone_channel === 'telegram';
+  const { state, resetWizard, updating, updateState } = useOnboarding();
+
+  const handleRerun = async () => {
+    await resetWizard();
+    window.location.hash = 'onboarding';
+  };
 
   return (
     <div className="space-y-4">
       {!embedded && <PageHeader icon={SlidersHorizontal} title={__('General', 'wp-sms')} />}
+
+      {/* Setup Wizard section */}
+      {!embedded && (
+        <PageSection
+          icon={Sparkles}
+          title={__('Setup Wizard', 'wp-sms')}
+          description={__('Re-run the guided setup to change your goals or reconfigure your initial settings.', 'wp-sms')}
+        >
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-muted-foreground">{__('Status:', 'wp-sms')}</span>
+              <Badge variant={state?.status === 'completed' ? 'default' : 'secondary'}>
+                {state?.status === 'completed' ? __('Completed', 'wp-sms') :
+                 state?.status === 'skipped' ? __('Skipped', 'wp-sms') :
+                 state?.status === 'in_progress' ? __('In progress', 'wp-sms') :
+                 __('Pending', 'wp-sms')}
+              </Badge>
+            </div>
+            {state?.checklist_dismissed && (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-muted-foreground">{__('Dashboard checklist:', 'wp-sms')}</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => void updateState({ checklist_dismissed: false })}
+                  disabled={updating}
+                >
+                  {__('Show checklist', 'wp-sms')}
+                </Button>
+              </div>
+            )}
+            <Button variant="outline" onClick={handleRerun} disabled={updating}>
+              {__('Re-run Setup Wizard', 'wp-sms')}
+            </Button>
+          </div>
+        </PageSection>
+      )}
+
       <PageSection
         icon={Globe}
         title={__('Auth Pages', 'wp-sms')}

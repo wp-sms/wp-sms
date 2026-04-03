@@ -36,6 +36,8 @@ use WSms\Rest\OutboundWebhookController;
 use WSms\Rest\DashboardController;
 use WSms\Rest\ExtensionController;
 use WSms\Rest\GeoController;
+use WSms\Rest\OnboardingController;
+use WSms\Onboarding\OnboardingManager;
 use WSms\Rest\PrivacyController;
 use WSms\Rest\SystemHealthController;
 use WSms\Rest\WebhookReceiverController;
@@ -278,6 +280,16 @@ class RestServiceProvider implements ServiceProvider
         $container->register('rest.extensions', fn($c) => new ExtensionController(
             $c->get('extension.registry'),
         ));
+        $container->register('onboarding', fn($c) => new OnboardingManager(
+            $c->get('dashboard.service'),
+            $c->get('gateway.registry'),
+            $c->get('integration.registry'),
+            $c->get('migration.manager'),
+            $c->get('migration.state_manager'),
+        ));
+        $container->register('rest.onboarding', fn($c) => new OnboardingController(
+            $c->get('onboarding'),
+        ));
     }
 
     /** {@inheritDoc} */
@@ -327,6 +339,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.system_health')->registerRoutes();
             $container->get('rest.dashboard')->registerRoutes();
             $container->get('rest.extensions')->registerRoutes();
+            $container->get('rest.onboarding')->registerRoutes();
         });
     }
 }

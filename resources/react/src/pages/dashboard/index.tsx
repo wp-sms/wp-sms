@@ -8,6 +8,7 @@ import { SystemStatusBanner } from './system-status-banner';
 import { CampaignsCard, CampaignsCardSkeleton } from './campaigns-card';
 import { ChannelsCard, ChannelsCardSkeleton } from './channels-card';
 import { PlatformStatusCard, PlatformStatusCardSkeleton } from './platform-status-card';
+import { SetupChecklist } from '@/components/onboarding/setup-checklist';
 import { cn } from '@/lib/utils';
 
 interface DashboardPageProps {
@@ -37,6 +38,9 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
           {__('Refresh', 'wp-sms')}
         </Button>
       </div>
+
+      {/* Setup Checklist */}
+      <SetupChecklist onNavigate={onNavigate} />
 
       {/* Error */}
       {error && (

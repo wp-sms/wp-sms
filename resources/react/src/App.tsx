@@ -1,10 +1,11 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useIsRtl } from '@/hooks/use-is-rtl';
 import { AppShell, VALID_SECTIONS } from '@/components/layout/app-shell';
 import { SaveBarProvider } from '@/contexts/save-bar-context';
 import { useSettings } from '@/hooks/use-settings';
 import { useHashSection } from '@/hooks/use-hash-section';
 import { getConfig } from '@/lib/api';
+import { shouldShowOnboarding } from '@/hooks/use-onboarding';
 import { DashboardPage } from '@/pages/dashboard';
 import { Contacts } from '@/pages/messaging/contacts';
 import { Campaigns } from '@/pages/messaging/campaigns';
@@ -28,6 +29,7 @@ import { OptOutSettings } from '@/pages/messaging/opt-out-settings';
 import { BrandingAreaPage } from '@/pages/branding/branding-area-page';
 import { MigrationPage } from '@/pages/migration';
 import { ExtensionsPage } from '@/pages/extensions';
+import { OnboardingWizard } from '@/pages/onboarding';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Toaster } from '@/components/ui/sonner';
@@ -39,10 +41,23 @@ import { AlertCircle } from 'lucide-react';
 const DEFAULT_SECTION = 'dashboard';
 const { roles, version } = getConfig();
 
+/** Extend valid sections with onboarding (not in sidebar nav). */
+const ALL_SECTIONS = new Set([...VALID_SECTIONS, 'onboarding']);
+
 export default function App() {
-  const [section, setSection, subTab] = useHashSection(DEFAULT_SECTION, VALID_SECTIONS);
+  const [section, setSection, subTab] = useHashSection(DEFAULT_SECTION, ALL_SECTIONS);
   const { settings, updateSetting, isDirty, saveStatus, save, loading, error, socialProviders, mfaChannels } = useSettings();
   const isRtl = useIsRtl();
+
+  // Auto-redirect to onboarding when status is pending (once per session).
+  useEffect(() => {
+    if (section === 'onboarding') return;
+    if (sessionStorage.getItem('wsms_onboarding_redirected')) return;
+    if (shouldShowOnboarding()) {
+      sessionStorage.setItem('wsms_onboarding_redirected', '1');
+      setSection('onboarding');
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const handleSave = useCallback(() => { void save(); }, [save]);
   const defaultSaveBarState = useMemo(
     () => ({ isDirty, saveStatus, onSave: handleSave }),
@@ -139,6 +154,24 @@ export default function App() {
       default:
         return null;
     }
+  }
+
+  // Onboarding wizard bypasses the AppShell entirely.
+  if (section === 'onboarding') {
+    return (
+      <DirectionProvider>
+        <TooltipProvider>
+          <ConfirmProvider>
+            <div className="wsms-app">
+              <div className="border border-border">
+                <OnboardingWizard onComplete={() => setSection('dashboard')} onNavigate={setSection} />
+              </div>
+              <Toaster richColors position={isRtl ? "bottom-left" : "bottom-right"} toastOptions={{ duration: 5000 }} />
+            </div>
+          </ConfirmProvider>
+        </TooltipProvider>
+      </DirectionProvider>
+    );
   }
 
   return (

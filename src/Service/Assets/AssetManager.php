@@ -2,6 +2,7 @@
 
 namespace WSms\Service\Assets;
 
+use WSms\Onboarding\OnboardingManager;
 use WSms\PhoneRestriction\RestrictionSettings;
 use WSms\Service\Admin\AdminManager;
 use WSms\Support\UserMeta;
@@ -20,6 +21,7 @@ class AssetManager
 {
     public function __construct(
         private readonly RestrictionSettings $restrictionSettings,
+        private readonly OnboardingManager $onboardingManager,
     ) {
         add_action('admin_enqueue_scripts', [$this, 'enqueueAdmin']);
     }
@@ -75,6 +77,12 @@ class AssetManager
             'currentUserRoles'  => $currentUser->roles,
             'isRtl'             => is_rtl(),
             'pluginUrl'         => WP_SMS_URL,
+            'onboarding'            => $this->onboardingManager->getRawState(),
+            'locale'                => get_locale(),
+            'detectedIntegrations'  => $this->onboardingManager->isPending()
+                ? $this->onboardingManager->getDetectedIntegrations() : [],
+            'detectedMigrations'    => $this->onboardingManager->isPending()
+                ? $this->onboardingManager->getDetectedMigrations() : [],
         ];
 
         return apply_filters('wsms_admin_settings_data', $data);

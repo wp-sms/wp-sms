@@ -20,6 +20,7 @@ class AdminManager
     {
         add_action('admin_menu', [$this, 'registerMenus']);
         add_action('in_admin_header', [$this, 'suppressNotices'], PHP_INT_MAX);
+        add_action('admin_init', [$this, 'maybeRedirectToOnboarding']);
     }
 
     /**
@@ -75,6 +76,32 @@ class AdminManager
     public function renderArea(): void
     {
         View::load('admin/app');
+    }
+
+    /**
+     * Redirect to the onboarding wizard on first activation.
+     */
+    public function maybeRedirectToOnboarding(): void
+    {
+        if (!get_transient('wsms_onboarding_redirect')) {
+            return;
+        }
+
+        delete_transient('wsms_onboarding_redirect');
+
+        // Guards: skip during AJAX, CLI, bulk activation, non-admin, imports.
+        if (wp_doing_ajax() || (defined('WP_CLI') && WP_CLI) || !current_user_can('manage_options')) {
+            return;
+        }
+        if (isset($_GET['activate-multi'])) {
+            return;
+        }
+        if (defined('WP_IMPORTING') && WP_IMPORTING) {
+            return;
+        }
+
+        wp_safe_redirect(admin_url('admin.php?page=' . self::MENU_SLUG . '#onboarding'));
+        exit;
     }
 
     private function isWsmsScreen(): bool

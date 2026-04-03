@@ -8,6 +8,7 @@ use WSms\Database\CleanupScheduler;
 use WSms\Database\Migrator;
 use WSms\Migration\MigrationStateManager;
 use WSms\Migration\MigrationStatus;
+use WSms\Onboarding\OnboardingManager;
 use WSms\PhoneRestriction\DatabaseUpdater;
 
 defined('ABSPATH') || exit;
@@ -93,6 +94,11 @@ class InstallManager
         add_option(BrandingRepository::OPTION_KEY, BrandingRepository::DEFAULTS, '', false);
 
         add_option(SettingsRepository::OPTION_KEY, SettingsRepository::DEFAULTS, '', false);
+
+        add_option(OnboardingManager::OPTION_KEY, OnboardingManager::DEFAULTS, '', false);
+
+        // Schedule redirect to onboarding wizard on first activation.
+        set_transient('wsms_onboarding_redirect', true, 30);
     }
 
     /**

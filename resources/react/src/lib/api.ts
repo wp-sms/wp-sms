@@ -16,8 +16,61 @@ declare global {
       currentUserHasMfa: boolean;
       currentUserRoles: string[];
       pluginUrl: string;
+      isRtl: boolean;
+      onboarding: OnboardingState | null;
+      locale: string;
+      detectedIntegrations: DetectedIntegration[];
+      detectedMigrations: DetectedMigration[];
     };
   }
+}
+
+// --- Onboarding Types ---
+
+export type OnboardingStatus = 'pending' | 'in_progress' | 'completed' | 'skipped';
+export type OnboardingGoal = 'auth' | 'notifications' | 'campaigns';
+
+export interface OnboardingState {
+  status: OnboardingStatus;
+  goals: OnboardingGoal[];
+  current_step: number;
+  skipped_steps: number[];
+  checklist_dismissed: boolean;
+  migration_deferred: boolean;
+  completed_at: string | null;
+  version: string;
+}
+
+export interface DetectedIntegration {
+  id: string;
+  name: string;
+  icon: string;
+  goals: string[];
+}
+
+export interface DetectedMigration {
+  id: string;
+  name: string;
+  active: boolean;
+  version: string | null;
+  summary: string[];
+  migrationStatus: string | null;
+}
+
+export interface ChecklistItem {
+  id: string;
+  label: string;
+  route: string;
+  completed: boolean;
+  goals: string[];
+}
+
+export interface OnboardingResponse {
+  success: boolean;
+  data: {
+    state: OnboardingState;
+    checklist: ChecklistItem[];
+  };
 }
 
 export interface ApiError {
@@ -361,6 +414,11 @@ const FALLBACK_CONFIG: Window['wpSmsSettings'] = {
   currentUserHasMfa: false,
   currentUserRoles: [],
   pluginUrl: '',
+  isRtl: false,
+  onboarding: null,
+  locale: 'en_US',
+  detectedIntegrations: [],
+  detectedMigrations: [],
 };
 
 export function getConfig() {

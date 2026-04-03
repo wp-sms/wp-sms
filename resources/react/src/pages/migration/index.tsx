@@ -30,7 +30,9 @@ import {
   Settings,
   Loader2,
   Shield,
+  Sparkles,
 } from 'lucide-react';
+import { getConfig } from '@/lib/api';
 import {
   useMigration,
   type DetectionResult,
@@ -744,6 +746,28 @@ function ResultsStep({ status, errors, onFetchErrors, onRollback, onSwitchover, 
           </Button>
         </div>
       )}
+
+      <OnboardingContinueCard />
     </div>
+  );
+}
+
+function OnboardingContinueCard() {
+  const onboardingState = getConfig().onboarding;
+  if (!onboardingState || onboardingState.status === 'completed') return null;
+
+  return (
+    <Card className="border-dashed">
+      <CardContent className="flex items-center justify-between py-4">
+        <div className="flex items-center gap-2">
+          <Sparkles className="size-4 text-primary" />
+          <span className="text-sm font-medium">{__('Continue setting up WSMS', 'wp-sms')}</span>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => { window.location.hash = 'onboarding'; }}>
+          {__('Continue Setup', 'wp-sms')}
+          <ArrowRight className="size-3.5 ms-1" />
+        </Button>
+      </CardContent>
+    </Card>
   );
 }
