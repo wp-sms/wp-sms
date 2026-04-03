@@ -49,7 +49,14 @@ composer.lock
 # ============================================
 # Source Files (only built files needed)
 # ============================================
-/resources
+/resources/blocks
+/resources/entries
+/resources/fonts
+/resources/images
+/resources/react
+/resources/scss
+/resources/vendor-css
+/resources/vendor-js
 
 # ============================================
 # Documentation (not needed in production)
