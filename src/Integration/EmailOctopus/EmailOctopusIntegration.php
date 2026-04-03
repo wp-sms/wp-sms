@@ -121,7 +121,7 @@ class EmailOctopusIntegration implements
     {
         $state = get_option(ImportSyncManager::STATE_KEY, []);
         unset($state[$this->getId()]);
-        update_option(ImportSyncManager::STATE_KEY, $state);
+        update_option(ImportSyncManager::STATE_KEY, $state, false);
 
         as_unschedule_all_actions('wsms_suppression_poll', ['integration_id' => $this->getId()], 'wsms');
     }

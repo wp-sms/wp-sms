@@ -18,7 +18,7 @@ class MigrationBackupService
 {
     private const PHONE_BACKUP_META = 'wsms_pre_migration_phone';
     private const MFA_ENABLED_BACKUP_META = 'wsms_pre_migration_mfa_enabled';
-    private const SETTINGS_BACKUP_OPTION = 'wsms_settings_pre_migration';
+    public const SETTINGS_BACKUP_OPTION = 'wsms_settings_pre_migration';
     private const MIGRATION_TAG = 'digits';
 
     public function __construct(

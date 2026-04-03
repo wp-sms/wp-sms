@@ -116,6 +116,10 @@ class MigrationStateManager
         }
 
         update_option(self::OPTION_KEY, $state, false);
+
+        if ($newStatus === MigrationStatus::Completed) {
+            delete_option(MigrationBackupService::SETTINGS_BACKUP_OPTION);
+        }
     }
 
     public function updateStepProgress(string $stepId, array $update): void
@@ -129,6 +133,10 @@ class MigrationStateManager
         foreach ($update as $key => $value) {
             if ($key === 'errors' && is_array($value)) {
                 $step['errors'] = array_merge($step['errors'] ?? [], $value);
+                $step['total_error_count'] = ($step['total_error_count'] ?? 0) + count($value);
+                if (count($step['errors']) > 100) {
+                    $step['errors'] = array_slice($step['errors'], -100);
+                }
             } else {
                 $step[$key] = $value;
             }

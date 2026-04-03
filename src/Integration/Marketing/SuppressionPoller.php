@@ -69,7 +69,7 @@ class SuppressionPoller
         $stats['poll_cursor'] = $newCursor;
 
         $state[$integrationId]['stats'] = $stats;
-        update_option(ImportSyncManager::STATE_KEY, $state);
+        update_option(ImportSyncManager::STATE_KEY, $state, false);
 
         return count($events);
     }

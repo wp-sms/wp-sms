@@ -235,7 +235,7 @@ class IntegrationServiceProvider implements ServiceProvider
                     }
                 }
                 $state[$integrationId]['stats'] = $stats;
-                update_option(ImportSyncManager::STATE_KEY, $state);
+                update_option(ImportSyncManager::STATE_KEY, $state, false);
             },
         );
     }

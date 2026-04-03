@@ -128,7 +128,7 @@ class MailtrapIntegration implements
 
         $configs = get_option(MailtrapApiClient::GATEWAY_CONFIG_OPTION, []);
         $configs[MailtrapApiClient::GATEWAY_ID]['shared']['account_id'] = $accountId;
-        update_option(MailtrapApiClient::GATEWAY_CONFIG_OPTION, $configs);
+        update_option(MailtrapApiClient::GATEWAY_CONFIG_OPTION, $configs, false);
 
         return ['account_id' => $accountId];
     }
@@ -137,11 +137,11 @@ class MailtrapIntegration implements
     {
         $state = get_option(ImportSyncManager::STATE_KEY, []);
         unset($state[$this->getId()]);
-        update_option(ImportSyncManager::STATE_KEY, $state);
+        update_option(ImportSyncManager::STATE_KEY, $state, false);
 
         $configs = get_option(MailtrapApiClient::GATEWAY_CONFIG_OPTION, []);
         unset($configs[MailtrapApiClient::GATEWAY_ID]['shared']['account_id']);
-        update_option(MailtrapApiClient::GATEWAY_CONFIG_OPTION, $configs);
+        update_option(MailtrapApiClient::GATEWAY_CONFIG_OPTION, $configs, false);
 
         as_unschedule_all_actions('wsms_suppression_poll', ['integration_id' => $this->getId()], 'wsms');
     }

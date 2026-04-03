@@ -48,7 +48,7 @@ class OptionStorage implements TemplateStorageInterface
             $all[$templateId][$channel] = $content->toArray();
         }
 
-        update_option(self::OPTION_KEY, $all);
+        update_option(self::OPTION_KEY, $all, false);
         $this->cache = $all;
     }
 
@@ -85,7 +85,7 @@ class OptionStorage implements TemplateStorageInterface
         $all = $this->load();
         $all[$templateId][self::ENABLED_KEY] = $enabled;
 
-        update_option(self::OPTION_KEY, $all);
+        update_option(self::OPTION_KEY, $all, false);
         $this->cache = $all;
     }
 

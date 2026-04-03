@@ -144,7 +144,7 @@ class MessagingButtonSettings
 
         $this->cached = null;
 
-        return update_option(self::OPTION_KEY, $current);
+        return update_option(self::OPTION_KEY, $current, false);
     }
 
     public function isEnabled(): bool

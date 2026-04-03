@@ -139,7 +139,7 @@ class ImportSyncManager
             $state[$integrationId]['import_settings'] = $settings;
         }
 
-        update_option(self::STATE_KEY, $state);
+        update_option(self::STATE_KEY, $state, false);
     }
 
     public function getContactCount(string $integrationId): int
@@ -174,7 +174,7 @@ class ImportSyncManager
             $state[$integrationId]['import_stats'] ?? [],
             $stats,
         );
-        update_option(self::STATE_KEY, $state);
+        update_option(self::STATE_KEY, $state, false);
     }
 
     private function resolveImportIntegration(string $integrationId): ?SupportsContactImport

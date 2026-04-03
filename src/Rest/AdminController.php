@@ -203,7 +203,7 @@ class AdminController extends Controller
                 throw new ValidationException($errors);
             }
 
-            update_option(SettingsRepository::OPTION_KEY, $updated);
+            update_option(SettingsRepository::OPTION_KEY, $updated, false);
             $this->settingsRepo->invalidateCache();
 
             $baseUrlChanged = ($current['auth_base_url'] ?? '/account') !== ($updated['auth_base_url'] ?? '/account');

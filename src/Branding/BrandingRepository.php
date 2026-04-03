@@ -81,7 +81,7 @@ class BrandingRepository
 
         $this->cached = null;
 
-        return update_option(self::OPTION_KEY, $current);
+        return update_option(self::OPTION_KEY, $current, false);
     }
 
     public function getPublicConfig(): array

@@ -250,7 +250,7 @@ class IntegrationController extends Controller
                 'enabled'     => true,
                 'credentials' => $credentials,
             ];
-            update_option(self::CONFIG_OPTION, $configs);
+            update_option(self::CONFIG_OPTION, $configs, false);
 
             return $this->ok();
         });
@@ -266,7 +266,7 @@ class IntegrationController extends Controller
             $id = $integration->getId();
             $configs = get_option(self::CONFIG_OPTION, []);
             unset($configs[$id]);
-            update_option(self::CONFIG_OPTION, $configs);
+            update_option(self::CONFIG_OPTION, $configs, false);
 
             return $this->ok();
         });
@@ -429,7 +429,7 @@ class IntegrationController extends Controller
                 'default_list_id'  => sanitize_text_field($body['default_list_id'] ?? ''),
                 'remove_on_delete' => !empty($body['remove_on_delete']),
             ];
-            update_option(ImportSyncManager::STATE_KEY, $state);
+            update_option(ImportSyncManager::STATE_KEY, $state, false);
 
             if ($integration instanceof SupportsSuppressionSync) {
                 as_unschedule_all_actions('wsms_suppression_poll', ['integration_id' => $id], 'wsms');

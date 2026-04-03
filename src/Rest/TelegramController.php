@@ -168,7 +168,7 @@ class TelegramController extends Controller
                 'bot_username'   => $me['username'] ?? '',
                 'webhook_secret' => $webhookSecret,
             ]);
-            update_option(SettingsRepository::OPTION_KEY, $settings);
+            update_option(SettingsRepository::OPTION_KEY, $settings, false);
 
             return new WP_REST_Response([
                 'success'      => true,

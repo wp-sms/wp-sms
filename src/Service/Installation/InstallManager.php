@@ -90,9 +90,9 @@ class InstallManager
             as_schedule_recurring_action(time(), DAY_IN_SECONDS, CleanupScheduler::HOOK_NAME, [], CleanupScheduler::AS_GROUP);
         }
 
-        add_option(BrandingRepository::OPTION_KEY, BrandingRepository::DEFAULTS);
+        add_option(BrandingRepository::OPTION_KEY, BrandingRepository::DEFAULTS, '', false);
 
-        add_option(SettingsRepository::OPTION_KEY, SettingsRepository::DEFAULTS);
+        add_option(SettingsRepository::OPTION_KEY, SettingsRepository::DEFAULTS, '', false);
     }
 
     /**

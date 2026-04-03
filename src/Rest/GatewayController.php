@@ -146,7 +146,7 @@ class GatewayController extends Controller
         return $this->handle(function () use ($request) {
             $config = $request->get_json_params();
 
-            update_option('wsms_gateway_configs', $config);
+            update_option('wsms_gateway_configs', $config, false);
 
             return $this->ok();
         });
