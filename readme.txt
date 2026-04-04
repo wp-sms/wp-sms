@@ -138,9 +138,10 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
-= v7.2.2 - 2026-03-23 =
+= v7.2.2 - 2026-03-** =
 - **Enhancement:** Added phone number normalization wizard to standardize numbers with country code for reliable delivery.
 - **Fix:** Improved validation error messages in settings to show which field caused the failure.
+- **Fix:** Fixed missing countries data in release package causing empty country dropdowns and phone validation failures.
 
 = v7.2.1 - 2026-03-17 =
 - **New:** Added Contact column to the Two-Way inbox, showing subscriber name or WordPress user display name for each sender.
