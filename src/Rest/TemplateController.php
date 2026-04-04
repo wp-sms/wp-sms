@@ -30,19 +30,19 @@ class TemplateController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/templates', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleList'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canViewSection('identity'),
         ]);
 
         register_rest_route(self::NAMESPACE, '/auth/admin/templates/(?P<id>[a-z_]+)', [
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'handleGet'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('identity'),
             ],
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'handleSave'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('identity'),
                 'args'                => [
                     'channel'  => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'body'     => ['required' => true, 'type' => 'string'],
@@ -57,7 +57,7 @@ class TemplateController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/templates/(?P<id>[a-z_]+)/reset', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleReset'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('identity'),
             'args'                => [
                 'channel' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
             ],
@@ -66,7 +66,7 @@ class TemplateController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/templates/(?P<id>[a-z_]+)/toggle', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleToggle'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('identity'),
             'args'                => [
                 'enabled' => ['required' => true, 'type' => 'boolean'],
             ],
@@ -75,7 +75,7 @@ class TemplateController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/templates/preview', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handlePreview'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('identity'),
             'args'                => [
                 'template_id' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 'channel'     => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],

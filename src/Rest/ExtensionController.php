@@ -19,7 +19,7 @@ class ExtensionController extends Controller
         register_rest_route(self::NAMESPACE, '/extensions', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleList'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('settings'),
         ]);
     }
 

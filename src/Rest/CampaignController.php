@@ -35,7 +35,7 @@ class CampaignController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'index'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('campaigns'),
                 'args'                => [
                     'status'   => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'channel'  => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -46,7 +46,7 @@ class CampaignController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'store'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('campaigns'),
                 'args'                => [
                     'name'        => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'channel'     => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -66,7 +66,7 @@ class CampaignController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'uploadMedia'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('campaigns'),
             ],
         ]);
 
@@ -74,7 +74,7 @@ class CampaignController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'audienceCount'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('campaigns'),
                 'args'                => [
                     'audience' => ['required' => true, 'type' => 'object'],
                     'channel'  => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -86,12 +86,12 @@ class CampaignController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'show'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('campaigns'),
             ],
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'update'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('campaigns'),
                 'args'                => [
                     'name'        => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'channel'     => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -108,7 +108,7 @@ class CampaignController extends Controller
             [
                 'methods'             => 'DELETE',
                 'callback'            => [$this, 'destroy'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('campaigns'),
             ],
         ]);
 
@@ -116,7 +116,7 @@ class CampaignController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'send'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('campaigns'),
             ],
         ]);
 
@@ -124,7 +124,7 @@ class CampaignController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'schedule'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('campaigns'),
                 'args'                => [
                     'send_at'  => ['required' => true, 'type' => 'string'],
                     'timezone' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -136,7 +136,7 @@ class CampaignController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'cancel'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('campaigns'),
             ],
         ]);
 
@@ -144,7 +144,7 @@ class CampaignController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'pause'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('campaigns'),
             ],
         ]);
 
@@ -152,7 +152,7 @@ class CampaignController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'resume'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('campaigns'),
             ],
         ]);
 
@@ -160,7 +160,7 @@ class CampaignController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'duplicate'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('campaigns'),
             ],
         ]);
 
@@ -168,7 +168,7 @@ class CampaignController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'stats'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('campaigns'),
             ],
         ]);
 
@@ -176,7 +176,7 @@ class CampaignController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'test'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('campaigns'),
                 'args'                => [
                     'recipient' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 ],
@@ -187,7 +187,7 @@ class CampaignController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'recipients'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('campaigns'),
                 'args'                => [
                     'per_page'  => ['type' => 'integer', 'default' => 50],
                     'page'      => ['type' => 'integer', 'default' => 1],

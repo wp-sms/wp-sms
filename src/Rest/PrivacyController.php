@@ -20,7 +20,7 @@ class PrivacyController extends Controller
         register_rest_route(self::NAMESPACE, '/privacy/lookup', [
             'methods'             => 'POST',
             'callback'            => [$this, 'lookup'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('settings'),
             'args'                => [
                 'identifier' => ['type' => 'string', 'required' => true, 'sanitize_callback' => 'sanitize_text_field'],
             ],
@@ -29,7 +29,7 @@ class PrivacyController extends Controller
         register_rest_route(self::NAMESPACE, '/privacy/export', [
             'methods'             => 'POST',
             'callback'            => [$this, 'export'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('settings'),
             'args'                => [
                 'identifier' => ['type' => 'string', 'required' => true, 'sanitize_callback' => 'sanitize_text_field'],
             ],
@@ -38,7 +38,7 @@ class PrivacyController extends Controller
         register_rest_route(self::NAMESPACE, '/privacy/erase', [
             'methods'             => 'POST',
             'callback'            => [$this, 'erase'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('settings'),
             'args'                => [
                 'identifier' => ['type' => 'string', 'required' => true, 'sanitize_callback' => 'sanitize_text_field'],
             ],

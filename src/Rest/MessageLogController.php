@@ -19,7 +19,7 @@ class MessageLogController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'index'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('monitoring'),
                 'args'                => [
                     'channel'    => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'status'     => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],

@@ -15,6 +15,8 @@ declare global {
       };
       currentUserHasMfa: boolean;
       currentUserRoles: string[];
+      capabilities: WsmsCapabilities;
+      hasExtensions: boolean;
       pluginUrl: string;
       isRtl: boolean;
       onboarding: OnboardingState | null;
@@ -23,6 +25,26 @@ declare global {
       detectedMigrations: DetectedMigration[];
     };
   }
+}
+
+// --- Access / Capabilities ---
+
+export interface WsmsCapabilities {
+  is_admin: boolean;
+  wsms_view_dashboard: boolean;
+  wsms_view_audience: boolean;
+  wsms_manage_audience: boolean;
+  wsms_view_campaigns: boolean;
+  wsms_manage_campaigns: boolean;
+  wsms_view_automation: boolean;
+  wsms_manage_automation: boolean;
+  wsms_view_channels: boolean;
+  wsms_manage_channels: boolean;
+  wsms_view_identity: boolean;
+  wsms_manage_identity: boolean;
+  wsms_view_monitoring: boolean;
+  wsms_manage_monitoring: boolean;
+  wsms_manage_settings: boolean;
 }
 
 // --- Onboarding Types ---
@@ -420,6 +442,24 @@ const FALLBACK_CONFIG: Window['wpSmsSettings'] = {
   phoneInput: { displayMode: 'international' },
   currentUserHasMfa: false,
   currentUserRoles: [],
+  capabilities: {
+    is_admin: true,
+    wsms_view_dashboard: true,
+    wsms_view_audience: true,
+    wsms_manage_audience: true,
+    wsms_view_campaigns: true,
+    wsms_manage_campaigns: true,
+    wsms_view_automation: true,
+    wsms_manage_automation: true,
+    wsms_view_channels: true,
+    wsms_manage_channels: true,
+    wsms_view_identity: true,
+    wsms_manage_identity: true,
+    wsms_view_monitoring: true,
+    wsms_manage_monitoring: true,
+    wsms_manage_settings: true,
+  },
+  hasExtensions: false,
   pluginUrl: '',
   isRtl: false,
   onboarding: null,

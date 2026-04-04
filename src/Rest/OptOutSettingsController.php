@@ -15,12 +15,12 @@ class OptOutSettingsController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'index'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('settings'),
             ],
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'update'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('settings'),
             ],
         ]);
     }

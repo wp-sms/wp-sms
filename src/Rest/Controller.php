@@ -8,6 +8,8 @@ use WSms\Exception\ConflictException;
 use WSms\Exception\NotFoundException;
 use WSms\Exception\PersistenceException;
 use WSms\Exception\ValidationException;
+use WSms\Access\AccessManager;
+use WSms\Bootstrap;
 use WSms\Log\WpLogger;
 
 defined('ABSPATH') || exit;
@@ -21,6 +23,21 @@ abstract class Controller
     public function canManage(): bool
     {
         return current_user_can('manage_options');
+    }
+
+    protected function access(): AccessManager
+    {
+        return Bootstrap::get('access.manager');
+    }
+
+    protected function canViewSection(string $section): \Closure
+    {
+        return fn() => $this->access()->canViewSection($section);
+    }
+
+    protected function canManageSection(string $section): \Closure
+    {
+        return fn() => $this->access()->canManageSection($section);
     }
 
     /**

@@ -44,7 +44,7 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'index'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
             ],
         ]);
 
@@ -52,7 +52,7 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'show'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
             ],
         ]);
 
@@ -60,12 +60,12 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'saveConfig'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
             [
                 'methods'             => 'DELETE',
                 'callback'            => [$this, 'deleteConfig'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
 
@@ -73,7 +73,7 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'triggers'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
             ],
         ]);
 
@@ -81,7 +81,7 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'triggerFilterOptions'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
             ],
         ]);
 
@@ -89,7 +89,7 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'actions'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
             ],
         ]);
 
@@ -97,7 +97,7 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'actionConfigOptions'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
             ],
         ]);
 
@@ -105,7 +105,7 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'saveSyncSettings'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
 
@@ -113,7 +113,7 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'triggerSync'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
 
@@ -121,7 +121,7 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'triggerPoll'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
 
@@ -129,7 +129,7 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'integrationLists'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
             ],
         ]);
 
@@ -137,7 +137,7 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'importFields'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
             ],
         ]);
 
@@ -145,7 +145,7 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'saveImportSettings'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
 
@@ -153,7 +153,7 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'startImport'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
 
@@ -161,7 +161,7 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'importStatus'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
             ],
         ]);
 
@@ -169,12 +169,12 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'listWebhookEndpoints'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
             ],
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'createWebhookEndpoint'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
 
@@ -182,7 +182,7 @@ class IntegrationController extends Controller
             [
                 'methods'             => 'DELETE',
                 'callback'            => [$this, 'deleteWebhookEndpoint'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
     }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { __ } from '@wordpress/i18n';
 import { LayoutDashboard, LogIn, ChevronRight, BarChart3, Megaphone, Workflow, Users, Radio, Settings2, Bell, Sparkles, type LucideIcon } from 'lucide-react';
 import { Logo } from '@/components/logo';
@@ -22,6 +22,8 @@ import {
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { useIsRtl } from '@/hooks/use-is-rtl';
+import { useCapabilities } from '@/hooks/use-capabilities';
+import { getConfig } from '@/lib/api';
 import {
   Collapsible,
   CollapsibleContent,
@@ -103,14 +105,18 @@ export const NAV_ITEMS: readonly NavItem[] = [
       { id: 'privacy', label: __('Privacy', 'wp-sms') },
       { id: 'compliance', label: __('Compliance', 'wp-sms') },
       { id: 'branding', label: __('Branding', 'wp-sms') },
+      { id: 'access-control', label: __('Access Control', 'wp-sms') },
       { id: 'extensions', label: __('Extensions', 'wp-sms') },
       { id: 'migration', label: __('Migration', 'wp-sms') },
     ],
   },
 ];
 
+/** Ordered top-level section IDs. */
+export const SECTION_IDS: readonly string[] = NAV_ITEMS.map(item => item.id);
+
 /** All valid top-level section IDs. */
-export const VALID_SECTIONS: Set<string> = new Set(NAV_ITEMS.map(item => item.id));
+export const VALID_SECTIONS: Set<string> = new Set(SECTION_IDS);
 
 // --- Sidebar components ---
 
@@ -265,6 +271,23 @@ function NavMenu({ activeSection, activeSubTab, onNavigate, items }: {
 }
 
 export function AppShell({ activeSection, activeSubTab, onNavigate, version, children }: AppShellProps) {
+  const { caps, canViewSection } = useCapabilities();
+  const { hasExtensions } = getConfig();
+
+  const filteredNavItems = useMemo(() => {
+    return NAV_ITEMS.filter((item) => canViewSection(item.id)).map((item) => {
+      if (!item.children || item.id !== 'settings') return item;
+
+      const filtered = item.children.filter((child) => {
+        if (child.id === 'access-control' && !caps.is_admin) return false;
+        if (child.id === 'extensions' && !hasExtensions) return false;
+        return true;
+      });
+
+      return { ...item, children: filtered };
+    });
+  }, [caps, canViewSection, hasExtensions]);
+
   return (
     <SidebarProvider defaultOpen={SIDEBAR_DEFAULT_OPEN}>
       <Sidebar collapsible="icon">
@@ -281,7 +304,7 @@ export function AppShell({ activeSection, activeSubTab, onNavigate, version, chi
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupContent>
-              <NavMenu activeSection={activeSection} activeSubTab={activeSubTab} onNavigate={onNavigate} items={NAV_ITEMS} />
+              <NavMenu activeSection={activeSection} activeSubTab={activeSubTab} onNavigate={onNavigate} items={filteredNavItems} />
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>

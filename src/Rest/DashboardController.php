@@ -19,7 +19,7 @@ class DashboardController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'summary'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('dashboard'),
                 'args'                => [
                     'range' => [
                         'type'              => 'integer',

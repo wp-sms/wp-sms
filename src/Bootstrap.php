@@ -4,6 +4,7 @@ namespace WSms;
 
 use WSms\Container\ServiceContainer;
 use WSms\Container\CoreServiceProvider;
+use WSms\Container\AccessServiceProvider;
 use WSms\Container\AdminServiceProvider;
 use WSms\Container\AuthServiceProvider;
 use WSms\Container\MfaServiceProvider;
@@ -55,6 +56,7 @@ class Bootstrap
     /** @var array<class-string<\WSms\Container\ServiceProvider>> Service providers to register. */
     private static array $providers = [
         CoreServiceProvider::class,
+        AccessServiceProvider::class,
         AdminServiceProvider::class,
         MigrationServiceProvider::class, // Must come before Auth — sets transition mode
         AuthServiceProvider::class,

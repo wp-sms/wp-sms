@@ -24,12 +24,12 @@ class BrandingController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'handleGetSettings'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('settings'),
             ],
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'handleUpdateSettings'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('settings'),
             ],
         ]);
     }

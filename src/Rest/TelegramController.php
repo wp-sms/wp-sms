@@ -32,9 +32,7 @@ class TelegramController extends Controller
         register_rest_route(self::NAMESPACE, '/telegram/setup', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleSetup'],
-            'permission_callback' => function () {
-                return current_user_can('manage_options');
-            },
+            'permission_callback' => $this->canManageSection('channels'),
         ]);
     }
 

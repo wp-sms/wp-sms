@@ -23,7 +23,7 @@ class ListController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'index'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('audience'),
                 'args'                => [
                     'type' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 ],
@@ -31,7 +31,7 @@ class ListController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'store'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
                 'args'                => [
                     'name'        => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'type'        => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -48,12 +48,12 @@ class ListController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'show'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('audience'),
             ],
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'update'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
                 'args'                => [
                     'name'        => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'type'        => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -67,7 +67,7 @@ class ListController extends Controller
             [
                 'methods'             => 'DELETE',
                 'callback'            => [$this, 'destroy'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
             ],
         ]);
 
@@ -75,7 +75,7 @@ class ListController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'contacts'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('audience'),
                 'args'                => [
                     'per_page' => ['type' => 'integer', 'default' => 50],
                     'offset'   => ['type' => 'integer', 'default' => 0],

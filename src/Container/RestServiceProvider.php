@@ -2,6 +2,7 @@
 
 namespace WSms\Container;
 
+use WSms\Rest\AccessController;
 use WSms\Rest\AccountController;
 use WSms\Audit\ReportAggregator;
 use WSms\Database\Connection;
@@ -290,6 +291,9 @@ class RestServiceProvider implements ServiceProvider
         $container->register('rest.onboarding', fn($c) => new OnboardingController(
             $c->get('onboarding'),
         ));
+        $container->register('rest.access', fn($c) => new AccessController(
+            $c->get('access.manager'),
+        ));
     }
 
     /** {@inheritDoc} */
@@ -340,6 +344,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.dashboard')->registerRoutes();
             $container->get('rest.extensions')->registerRoutes();
             $container->get('rest.onboarding')->registerRoutes();
+            $container->get('rest.access')->registerRoutes();
         });
     }
 }

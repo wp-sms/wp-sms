@@ -460,7 +460,23 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
 
     if (!function_exists('current_user_can')) {
         function current_user_can(string $capability, ...$args): bool {
+            // Per-capability map takes precedence when set.
+            if (isset($GLOBALS['_test_current_user_caps']) && is_array($GLOBALS['_test_current_user_caps'])) {
+                return !empty($GLOBALS['_test_current_user_caps'][$capability]);
+            }
             return $GLOBALS['_test_current_user_can'] ?? false;
+        }
+    }
+
+    if (!function_exists('get_role')) {
+        function get_role(string $role): ?\WP_Role {
+            return $GLOBALS['_test_roles'][$role] ?? null;
+        }
+    }
+
+    if (!function_exists('get_editable_roles')) {
+        function get_editable_roles(): array {
+            return $GLOBALS['_test_editable_roles'] ?? [];
         }
     }
 
@@ -972,6 +988,31 @@ if (!class_exists('WPCF7_ContactForm')) {
 
         public function suggest_mail_tags(string $name = ''): string {
             return '';
+        }
+    }
+}
+
+// WP_Role stub.
+if (!class_exists('WP_Role')) {
+    class WP_Role {
+        public string $name;
+        public array $capabilities = [];
+
+        public function __construct(string $role, array $capabilities = []) {
+            $this->name = $role;
+            $this->capabilities = $capabilities;
+        }
+
+        public function add_cap(string $cap, bool $grant = true): void {
+            $this->capabilities[$cap] = $grant;
+        }
+
+        public function remove_cap(string $cap): void {
+            unset($this->capabilities[$cap]);
+        }
+
+        public function has_cap(string $cap): bool {
+            return !empty($this->capabilities[$cap]);
         }
     }
 }

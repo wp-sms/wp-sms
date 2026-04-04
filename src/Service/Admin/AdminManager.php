@@ -33,7 +33,7 @@ class AdminManager
         add_menu_page(
             __('WSMS', 'wp-sms'),
             __('WSMS', 'wp-sms'),
-            'manage_options',
+            'wsms_access',
             self::MENU_SLUG,
             [$this, 'renderArea'],
             $icon
@@ -43,7 +43,7 @@ class AdminManager
             self::MENU_SLUG,
             __('Dashboard', 'wp-sms'),
             __('Dashboard', 'wp-sms'),
-            'manage_options',
+            'wsms_access',
             self::MENU_SLUG,
             [$this, 'renderArea'],
         );

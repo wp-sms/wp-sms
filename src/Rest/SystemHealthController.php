@@ -19,7 +19,7 @@ class SystemHealthController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'index'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('monitoring'),
             ],
         ]);
 
@@ -27,7 +27,7 @@ class SystemHealthController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'gatewayCredits'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('monitoring'),
             ],
         ]);
 
@@ -35,7 +35,7 @@ class SystemHealthController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'tableSizes'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('monitoring'),
             ],
         ]);
 
@@ -43,7 +43,7 @@ class SystemHealthController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'retry'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('monitoring'),
                 'args'                => [
                     'id' => ['type' => 'integer', 'required' => true],
                 ],
@@ -54,7 +54,7 @@ class SystemHealthController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'dismiss'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('monitoring'),
                 'args'                => [
                     'id' => ['type' => 'integer', 'required' => true],
                 ],

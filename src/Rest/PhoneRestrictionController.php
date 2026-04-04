@@ -28,12 +28,12 @@ class PhoneRestrictionController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'getSettings'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('settings'),
             ],
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'updateSettings'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('settings'),
             ],
         ]);
 
@@ -41,7 +41,7 @@ class PhoneRestrictionController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'downloadDb'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('settings'),
             ],
         ]);
 
@@ -49,7 +49,7 @@ class PhoneRestrictionController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'dbStatus'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('settings'),
             ],
         ]);
 
@@ -57,7 +57,7 @@ class PhoneRestrictionController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'checkPhone'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('settings'),
             ],
         ]);
 
@@ -65,7 +65,7 @@ class PhoneRestrictionController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'countries'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('settings'),
             ],
         ]);
     }

@@ -54,12 +54,12 @@ class MessagingButtonController extends Controller
             [
                 'methods' => 'GET',
                 'callback' => [$this, 'handleGetSettings'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
             ],
             [
                 'methods' => 'PUT',
                 'callback' => [$this, 'handleUpdateSettings'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
     }

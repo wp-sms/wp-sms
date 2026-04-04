@@ -81,12 +81,12 @@ class AdminController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'handleGetSettings'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('identity'),
             ],
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'handleUpdateSettings'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('identity'),
             ],
         ]);
 
@@ -94,7 +94,7 @@ class AdminController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'handleGetLogs'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('monitoring'),
                 'args'                => [
                     'page'      => ['required' => false, 'type' => 'integer', 'default' => 1],
                     'per_page'  => ['required' => false, 'type' => 'integer', 'default' => 50],
@@ -108,7 +108,7 @@ class AdminController extends Controller
             [
                 'methods'             => 'DELETE',
                 'callback'            => [$this, 'handleDeleteLogs'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('monitoring'),
                 'args'                => [
                     'event'     => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'status'    => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -121,7 +121,7 @@ class AdminController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/mfa', [
             'methods'             => 'DELETE',
             'callback'            => [$this, 'handleDisableUserMfa'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('identity'),
             'args'                => [
                 'id' => ['required' => true, 'type' => 'integer'],
             ],
@@ -130,7 +130,7 @@ class AdminController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/reports', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleGetReports'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canViewSection('monitoring'),
             'args'                => [
                 'range' => [
                     'required'          => false,
@@ -146,7 +146,7 @@ class AdminController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/meta-keys', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleGetMetaKeys'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canViewSection('identity'),
         ]);
     }
 

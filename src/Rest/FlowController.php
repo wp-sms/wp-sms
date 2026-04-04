@@ -30,7 +30,7 @@ class FlowController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'index'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('automation'),
                 'args'                => [
                     'status' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 ],
@@ -38,7 +38,7 @@ class FlowController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'store'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('automation'),
                 'args'                => [
                     'name'           => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'trigger_type'   => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -54,7 +54,7 @@ class FlowController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'templates'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('automation'),
             ],
         ]);
 
@@ -62,12 +62,12 @@ class FlowController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'show'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('automation'),
             ],
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'update'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('automation'),
                 'args'                => [
                     'name'           => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'trigger_type'   => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -81,7 +81,7 @@ class FlowController extends Controller
             [
                 'methods'             => 'DELETE',
                 'callback'            => [$this, 'destroy'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('automation'),
             ],
         ]);
 
@@ -89,7 +89,7 @@ class FlowController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'publish'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('automation'),
             ],
         ]);
 
@@ -97,7 +97,7 @@ class FlowController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'testTrigger'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('automation'),
             ],
         ]);
 
@@ -105,7 +105,7 @@ class FlowController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'run'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('automation'),
             ],
         ]);
 
@@ -113,7 +113,7 @@ class FlowController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'executions'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('automation'),
                 'args'                => [
                     'per_page' => ['type' => 'integer', 'default' => 50],
                     'offset'   => ['type' => 'integer', 'default' => 0],
@@ -125,7 +125,7 @@ class FlowController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'executionDetail'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('automation'),
             ],
         ]);
     }

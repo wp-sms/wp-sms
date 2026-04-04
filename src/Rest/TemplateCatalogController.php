@@ -26,20 +26,20 @@ class TemplateCatalogController extends Controller
         register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/templates', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleFetchTemplates'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canViewSection('channels'),
         ]);
 
         register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/templates/refresh', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleRefreshTemplates'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('channels'),
         ]);
 
         register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/templates/manual', [
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'handleCreateManualTemplate'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
                 'args'                => [
                     'template_id' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'name'        => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -55,7 +55,7 @@ class TemplateCatalogController extends Controller
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'handleUpdateManualTemplate'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
                 'args'                => [
                     'name'      => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'body_text' => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_textarea_field'],
@@ -67,27 +67,27 @@ class TemplateCatalogController extends Controller
             [
                 'methods'             => 'DELETE',
                 'callback'            => [$this, 'handleDeleteManualTemplate'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
 
         register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/template-capabilities', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleGetCapabilities'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canViewSection('channels'),
         ]);
 
         register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/template-mappings', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleGetMappings'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canViewSection('channels'),
         ]);
 
         register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/template-mappings/(?P<type>[a-z_]+)', [
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'handleSaveMapping'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
                 'args'                => [
                     'provider_template_id' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'language'             => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -99,14 +99,14 @@ class TemplateCatalogController extends Controller
             [
                 'methods'             => 'DELETE',
                 'callback'            => [$this, 'handleRemoveMapping'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
 
         register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/template-mappings/verify', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleVerifyMappings'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('channels'),
         ]);
     }
 

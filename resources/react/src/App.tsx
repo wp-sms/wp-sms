@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useIsRtl } from '@/hooks/use-is-rtl';
-import { AppShell, VALID_SECTIONS } from '@/components/layout/app-shell';
+import { AppShell, SECTION_IDS, VALID_SECTIONS } from '@/components/layout/app-shell';
 import { SaveBarProvider } from '@/contexts/save-bar-context';
 import { useSettings } from '@/hooks/use-settings';
 import { useHashSection } from '@/hooks/use-hash-section';
+import { useCapabilities } from '@/hooks/use-capabilities';
 import { getConfig } from '@/lib/api';
 import { shouldShowOnboarding } from '@/hooks/use-onboarding';
 import { DashboardPage } from '@/pages/dashboard';
@@ -30,6 +31,7 @@ import { BrandingAreaPage } from '@/pages/branding/branding-area-page';
 import { MigrationPage } from '@/pages/migration';
 import { ExtensionsPage } from '@/pages/extensions';
 import { OnboardingWizard } from '@/pages/onboarding';
+import { AccessControlPage } from '@/pages/settings/access-control';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Toaster } from '@/components/ui/sonner';
@@ -44,20 +46,34 @@ const { roles, version } = getConfig();
 /** Extend valid sections with onboarding (not in sidebar nav). */
 const ALL_SECTIONS = new Set([...VALID_SECTIONS, 'onboarding']);
 
+
 export default function App() {
   const [section, setSection, subTab] = useHashSection(DEFAULT_SECTION, ALL_SECTIONS);
   const { settings, updateSetting, isDirty, saveStatus, save, loading, error, socialProviders, mfaChannels } = useSettings();
   const isRtl = useIsRtl();
+  const { caps, canViewSection } = useCapabilities();
 
-  // Auto-redirect to onboarding when status is pending (once per session).
+  // Auto-redirect to onboarding when status is pending (once per session) — admin only.
   useEffect(() => {
     if (section === 'onboarding') return;
+    if (!caps.is_admin) return;
     if (sessionStorage.getItem('wsms_onboarding_redirected')) return;
     if (shouldShowOnboarding()) {
       sessionStorage.setItem('wsms_onboarding_redirected', '1');
       setSection('onboarding');
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Redirect to first accessible section if current section is not accessible.
+  useEffect(() => {
+    if (section === 'onboarding') return;
+    if (canViewSection(section)) return;
+
+    const fallback = SECTION_IDS.find((s) => canViewSection(s));
+    if (fallback) {
+      setSection(fallback);
+    }
+  }, [section, canViewSection, setSection]);
   const handleSave = useCallback(() => { void save(); }, [save]);
   const defaultSaveBarState = useMemo(
     () => ({ isDirty, saveStatus, onSave: handleSave }),
@@ -147,6 +163,8 @@ export default function App() {
             return <ExtensionsPage />;
           case 'migration':
             return <MigrationPage />;
+          case 'access-control':
+            return caps.is_admin ? <AccessControlPage /> : null;
           default:
             return <GeneralPage settings={settings} onUpdate={updateSetting} />;
         }

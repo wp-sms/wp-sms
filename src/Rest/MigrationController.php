@@ -33,67 +33,67 @@ class MigrationController extends Controller
         register_rest_route(self::NAMESPACE, '/migration/available', [
             'methods'             => 'GET',
             'callback'            => fn(WP_REST_Request $r) => $this->handle(fn() => $this->getAvailable($r)),
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('settings'),
         ]);
 
         register_rest_route(self::NAMESPACE, '/migration/(?P<id>[a-z_]+)/preview', [
             'methods'             => 'GET',
             'callback'            => fn(WP_REST_Request $r) => $this->handle(fn() => $this->getPreview($r)),
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('settings'),
         ]);
 
         register_rest_route(self::NAMESPACE, '/migration/(?P<id>[a-z_]+)/preflight', [
             'methods'             => 'GET',
             'callback'            => fn(WP_REST_Request $r) => $this->handle(fn() => $this->getPreflight($r)),
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('settings'),
         ]);
 
         register_rest_route(self::NAMESPACE, '/migration/(?P<id>[a-z_]+)/start', [
             'methods'             => 'POST',
             'callback'            => fn(WP_REST_Request $r) => $this->handle(fn() => $this->startMigration($r)),
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('settings'),
         ]);
 
         register_rest_route(self::NAMESPACE, '/migration/status', [
             'methods'             => 'GET',
             'callback'            => fn(WP_REST_Request $r) => $this->handle(fn() => $this->getStatus($r)),
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('settings'),
         ]);
 
         register_rest_route(self::NAMESPACE, '/migration/pause', [
             'methods'             => 'POST',
             'callback'            => fn(WP_REST_Request $r) => $this->handle(fn() => $this->pause($r)),
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('settings'),
         ]);
 
         register_rest_route(self::NAMESPACE, '/migration/resume', [
             'methods'             => 'POST',
             'callback'            => fn(WP_REST_Request $r) => $this->handle(fn() => $this->resume($r)),
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('settings'),
         ]);
 
         register_rest_route(self::NAMESPACE, '/migration/rollback', [
             'methods'             => 'POST',
             'callback'            => fn(WP_REST_Request $r) => $this->handle(fn() => $this->rollback($r)),
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('settings'),
         ]);
 
         register_rest_route(self::NAMESPACE, '/migration/errors', [
             'methods'             => 'GET',
             'callback'            => fn(WP_REST_Request $r) => $this->handle(fn() => $this->getErrors($r)),
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('settings'),
         ]);
 
         register_rest_route(self::NAMESPACE, '/migration/(?P<id>[a-z_]+)/switchover', [
             'methods'             => 'POST',
             'callback'            => fn(WP_REST_Request $r) => $this->handle(fn() => $this->switchover($r)),
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('settings'),
         ]);
 
         register_rest_route(self::NAMESPACE, '/migration/transition-status', [
             'methods'             => 'GET',
             'callback'            => fn(WP_REST_Request $r) => $this->handle(fn() => $this->getTransitionStatus($r)),
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('settings'),
         ]);
     }
 

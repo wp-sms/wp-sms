@@ -36,12 +36,12 @@ class RegistrationFormController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'index'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('identity'),
             ],
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'store'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('identity'),
                 'args'                => array_merge($formArgs, [
                     'name' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 ]),
@@ -52,18 +52,18 @@ class RegistrationFormController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'show'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('identity'),
             ],
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'update'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('identity'),
                 'args'                => $formArgs,
             ],
             [
                 'methods'             => 'DELETE',
                 'callback'            => [$this, 'destroy'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('identity'),
             ],
         ]);
 
@@ -71,7 +71,7 @@ class RegistrationFormController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'duplicate'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('identity'),
             ],
         ]);
     }

@@ -32,7 +32,7 @@ class ContactController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'index'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('audience'),
                 'args'                => [
                     'status'   => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'search'   => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -43,7 +43,7 @@ class ContactController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'store'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
                 'args'                => [
                     'email'         => ['type' => 'string', 'sanitize_callback' => 'sanitize_email'],
                     'phone'         => PhoneValidator::restArg(),
@@ -64,7 +64,7 @@ class ContactController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'bulk'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
                 'args'                => [
                     'action' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'ids'    => ['required' => true, 'type' => 'array'],
@@ -76,7 +76,7 @@ class ContactController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'importPreview'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
             ],
         ]);
 
@@ -84,7 +84,7 @@ class ContactController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'import'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
             ],
         ]);
 
@@ -92,7 +92,7 @@ class ContactController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'export'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
                 'args'                => [
                     'status' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 ],
@@ -103,12 +103,12 @@ class ContactController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'show'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('audience'),
             ],
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'update'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
                 'args'                => [
                     'email'           => ['type' => 'string', 'sanitize_callback' => 'sanitize_email'],
                     'phone'           => [
@@ -131,7 +131,7 @@ class ContactController extends Controller
             [
                 'methods'             => 'DELETE',
                 'callback'            => [$this, 'destroy'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
             ],
         ]);
 
@@ -139,7 +139,7 @@ class ContactController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'addTag'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
                 'args'                => [
                     'tag_id' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 ],
@@ -147,7 +147,7 @@ class ContactController extends Controller
             [
                 'methods'             => 'DELETE',
                 'callback'            => [$this, 'removeTag'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
                 'args'                => [
                     'tag_id' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 ],
@@ -158,7 +158,7 @@ class ContactController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'activity'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('audience'),
                 'args'                => [
                     'per_page' => ['type' => 'integer', 'default' => 20],
                     'offset'   => ['type' => 'integer', 'default' => 0],
@@ -170,7 +170,7 @@ class ContactController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'segmentPreview'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
                 'args'                => [
                     'conditions' => ['type' => 'array', 'default' => []],
                 ],

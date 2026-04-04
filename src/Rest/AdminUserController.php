@@ -48,7 +48,7 @@ class AdminUserController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/auth-summary', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleGetAuthSummary'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canViewSection('identity'),
             'args'                => [
                 'id' => ['required' => true, 'type' => 'integer'],
             ],
@@ -57,7 +57,7 @@ class AdminUserController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/mfa/(?P<channel>[a-z_]+)', [
             'methods'             => 'DELETE',
             'callback'            => [$this, 'handleResetMfaChannel'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('identity'),
             'args'                => [
                 'id'      => ['required' => true, 'type' => 'integer'],
                 'channel' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -67,7 +67,7 @@ class AdminUserController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/verification', [
             'methods'             => 'PUT',
             'callback'            => [$this, 'handleSetVerification'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('identity'),
             'args'                => [
                 'id'       => ['required' => true, 'type' => 'integer'],
                 'channel'  => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -78,7 +78,7 @@ class AdminUserController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/social/(?P<provider>[a-z]+)', [
             'methods'             => 'DELETE',
             'callback'            => [$this, 'handleDisconnectSocial'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('identity'),
             'args'                => [
                 'id'       => ['required' => true, 'type' => 'integer'],
                 'provider' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -88,7 +88,7 @@ class AdminUserController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/lockout', [
             'methods'             => 'DELETE',
             'callback'            => [$this, 'handleUnlockAccount'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('identity'),
             'args'                => [
                 'id' => ['required' => true, 'type' => 'integer'],
             ],
@@ -97,7 +97,7 @@ class AdminUserController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/phone', [
             'methods'             => 'PUT',
             'callback'            => [$this, 'handleSetPhone'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('identity'),
             'args'                => [
                 'id'    => ['required' => true, 'type' => 'integer'],
                 'phone' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -107,7 +107,7 @@ class AdminUserController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/password-reset', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handlePasswordReset'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('identity'),
             'args'                => [
                 'id' => ['required' => true, 'type' => 'integer'],
             ],
@@ -116,7 +116,7 @@ class AdminUserController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/activate', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleActivateUser'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('identity'),
             'args'                => [
                 'id' => ['required' => true, 'type' => 'integer'],
             ],
@@ -125,7 +125,7 @@ class AdminUserController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/send-verification', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleSendVerification'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('identity'),
             'args'                => [
                 'id'      => ['required' => true, 'type' => 'integer'],
                 'channel' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -135,7 +135,7 @@ class AdminUserController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/suspend', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleSuspendUser'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('identity'),
             'args'                => [
                 'id' => ['required' => true, 'type' => 'integer'],
             ],
@@ -144,7 +144,7 @@ class AdminUserController extends Controller
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/suspension', [
             'methods'             => 'DELETE',
             'callback'            => [$this, 'handleUnsuspendUser'],
-            'permission_callback' => [$this, 'canManage'],
+            'permission_callback' => $this->canManageSection('identity'),
             'args'                => [
                 'id' => ['required' => true, 'type' => 'integer'],
             ],

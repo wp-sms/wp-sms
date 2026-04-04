@@ -2,6 +2,7 @@
 
 namespace WSms\Service\Installation;
 
+use WSms\Access\AccessManager;
 use WSms\Auth\SettingsRepository;
 use WSms\Branding\BrandingRepository;
 use WSms\Database\CleanupScheduler;
@@ -96,6 +97,17 @@ class InstallManager
         add_option(SettingsRepository::OPTION_KEY, SettingsRepository::DEFAULTS, '', false);
 
         add_option(OnboardingManager::OPTION_KEY, OnboardingManager::DEFAULTS, '', false);
+
+        // Grant all WSMS capabilities to the administrator role.
+        $adminRole = \get_role('administrator');
+        if ($adminRole) {
+            foreach (AccessManager::ALL_CAPS as $cap) {
+                $adminRole->add_cap($cap);
+            }
+        }
+
+        // Initialize access profiles option (all non-admin roles default to no access).
+        add_option(AccessManager::OPTION_KEY, [], '', false);
 
         // Schedule redirect to onboarding wizard on first activation.
         set_transient('wsms_onboarding_redirect', true, 30);

@@ -39,12 +39,12 @@ class SubscriptionFormController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'index'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('audience'),
             ],
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'store'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
                 'args'                => array_merge($formArgs, [
                     'name' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 ]),
@@ -55,18 +55,18 @@ class SubscriptionFormController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'show'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('audience'),
             ],
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'update'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
                 'args'                => $formArgs,
             ],
             [
                 'methods'             => 'DELETE',
                 'callback'            => [$this, 'destroy'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
             ],
         ]);
 
@@ -74,7 +74,7 @@ class SubscriptionFormController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'duplicate'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('audience'),
             ],
         ]);
     }

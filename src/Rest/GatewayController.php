@@ -27,7 +27,7 @@ class GatewayController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'index'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
                 'args'                => [
                     'channel' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'region'  => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -40,12 +40,12 @@ class GatewayController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'getConfig'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
             ],
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'updateConfig'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
 
@@ -53,7 +53,7 @@ class GatewayController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'testSend'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
                 'args'                => [
                     'channel' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'to'      => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -66,7 +66,7 @@ class GatewayController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'testConnection'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
 
@@ -74,7 +74,7 @@ class GatewayController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'getCredit'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
             ],
         ]);
 
@@ -82,7 +82,7 @@ class GatewayController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'configOptions'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
     }

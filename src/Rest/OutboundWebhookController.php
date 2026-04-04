@@ -23,12 +23,12 @@ class OutboundWebhookController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'index'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
             ],
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'store'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
 
@@ -36,7 +36,7 @@ class OutboundWebhookController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'events'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
             ],
         ]);
 
@@ -44,17 +44,17 @@ class OutboundWebhookController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'show'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canViewSection('channels'),
             ],
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'update'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
             [
                 'methods'             => 'DELETE',
                 'callback'            => [$this, 'destroy'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
 
@@ -62,7 +62,7 @@ class OutboundWebhookController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'toggle'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
 
@@ -70,7 +70,7 @@ class OutboundWebhookController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'testConnection'],
-                'permission_callback' => [$this, 'canManage'],
+                'permission_callback' => $this->canManageSection('channels'),
             ],
         ]);
     }
