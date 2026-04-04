@@ -32,9 +32,27 @@ function openBrandingPreview(url: string, branding: BrandingSettings) {
 interface BrandingPreviewProps {
   branding: BrandingSettings;
   baseUrl: string;
+  authPagesActive?: boolean;
 }
 
-export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
+export function BrandingPreview({ branding, baseUrl, authPagesActive }: BrandingPreviewProps) {
+  if (authPagesActive === false) {
+    return (
+      <div className="flex h-[300px] items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/20 p-8 text-center">
+        <p className="text-sm font-medium text-muted-foreground">
+          {__('Auth pages are not active', 'wp-sms')}
+          <span className="mt-1 block text-xs text-muted-foreground/70">
+            {__('Enable authentication in Identity → Channels to see a live preview.', 'wp-sms')}
+          </span>
+        </p>
+      </div>
+    );
+  }
+
+  return <BrandingPreviewLive branding={branding} baseUrl={baseUrl} />;
+}
+
+function BrandingPreviewLive({ branding, baseUrl }: { branding: BrandingSettings; baseUrl: string }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
@@ -48,7 +66,6 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
   const scale = Math.min(containerWidth / iframeWidth, 1);
   const iframeHeight = Math.round(CONTAINER_HEIGHT / scale);
 
-  // Measure container width
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -60,7 +77,6 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
     return () => observer.disconnect();
   }, []);
 
-  // Listen for iframe ready signal
   useEffect(() => {
     function handleMessage(e: MessageEvent) {
       if (e.data?.type === 'wsms-branding-preview-ready') {
@@ -71,7 +87,6 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
-  // Detect iframe load errors
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!ready) setError(true);
@@ -79,7 +94,6 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
     return () => clearTimeout(timer);
   }, [ready]);
 
-  // Send branding updates to iframe via postMessage
   useEffect(() => {
     if (!ready || !iframeRef.current?.contentWindow) return;
     iframeRef.current.contentWindow.postMessage(
@@ -88,7 +102,6 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
     );
   }, [branding, ready]);
 
-  // Navigate iframe when page changes
   const handlePageChange = useCallback(
     (route: PageRoute) => {
       setPage(route);
@@ -106,8 +119,8 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
 
   if (error && !ready) {
     return (
-      <div className="flex h-full items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/20 p-8">
-        <div className="text-center">
+      <div className="flex h-full items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/20 p-8 text-center">
+        <div>
           <p className="text-sm font-medium text-muted-foreground">{__('Preview unavailable', 'wp-sms')}</p>
           <p className="mt-1 text-xs text-muted-foreground/70">
             {__('Your security settings may block iframe loading.', 'wp-sms')}
@@ -126,9 +139,7 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Toolbar */}
       <div className="flex items-center gap-3">
-        {/* Page switcher */}
         <select
           value={page}
           onChange={(e) => handlePageChange(e.target.value as PageRoute)}
@@ -142,7 +153,6 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
           ))}
         </select>
 
-        {/* Device presets */}
         <SegmentedGroup
           value={device}
           onChange={setDevice}
@@ -152,7 +162,6 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
 
         <div className="flex-1" />
 
-        {/* Fullscreen button */}
         <button
           type="button"
           title={__('Open in new tab', 'wp-sms')}
@@ -163,7 +172,6 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
         </button>
       </div>
 
-      {/* Preview */}
       <div className="relative overflow-hidden rounded-lg border bg-muted/30" ref={containerRef}>
         {!ready && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-muted/80">

@@ -205,6 +205,15 @@ class SettingsRepository
     }
 
     /**
+     * Whether auth pages are active (enabled and not in transition mode).
+     */
+    public function isAuthActive(): bool
+    {
+        return (bool) $this->get('auth_enabled', false)
+            && !get_option('wsms_transition_mode');
+    }
+
+    /**
      * Resolve the effective privacy policy URL.
      *
      * Falls back to the WordPress Privacy Policy page when the setting is empty.

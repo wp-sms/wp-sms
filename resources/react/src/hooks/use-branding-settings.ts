@@ -46,5 +46,6 @@ export function useBrandingSettings() {
     loading: result.loading,
     error: result.error,
     authBaseUrl: result.rawResponse?.auth_base_url ?? '/account',
+    authPagesActive: result.rawResponse?.auth_pages_active ?? false,
   };
 }

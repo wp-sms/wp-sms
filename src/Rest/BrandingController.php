@@ -38,9 +38,10 @@ class BrandingController extends Controller
     {
         return $this->handle(function () {
             return new WP_REST_Response([
-                'success'      => true,
-                'settings'     => $this->brandingRepo->all(),
-                'auth_base_url' => $this->settingsRepo->get('auth_base_url', '/account'),
+                'success'           => true,
+                'settings'          => $this->brandingRepo->all(),
+                'auth_base_url'     => $this->settingsRepo->get('auth_base_url', '/account'),
+                'auth_pages_active' => $this->settingsRepo->isAuthActive(),
             ]);
         });
     }
@@ -59,10 +60,11 @@ class BrandingController extends Controller
             $this->brandingRepo->update($body);
 
             return new WP_REST_Response([
-                'success'      => true,
-                'message'      => __('Branding settings updated.', 'wp-sms'),
-                'settings'     => $this->brandingRepo->all(),
-                'auth_base_url' => $this->settingsRepo->get('auth_base_url', '/account'),
+                'success'           => true,
+                'message'           => __('Branding settings updated.', 'wp-sms'),
+                'settings'          => $this->brandingRepo->all(),
+                'auth_base_url'     => $this->settingsRepo->get('auth_base_url', '/account'),
+                'auth_pages_active' => $this->settingsRepo->isAuthActive(),
             ]);
         });
     }

@@ -39,6 +39,7 @@ export function BrandingAreaPage() {
         }
       }}
       authBaseUrl={branding.authBaseUrl}
+      authPagesActive={branding.authPagesActive}
     />
   );
 }

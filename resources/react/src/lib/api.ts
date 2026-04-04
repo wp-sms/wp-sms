@@ -347,6 +347,7 @@ export interface BrandingResponse {
   success: boolean;
   settings: BrandingSettings;
   auth_base_url: string;
+  auth_pages_active: boolean;
 }
 
 export interface ReportsResponse {

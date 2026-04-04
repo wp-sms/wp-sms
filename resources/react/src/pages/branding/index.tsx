@@ -18,10 +18,11 @@ interface BrandingPageProps {
   branding: BrandingSettings;
   onChange: (patch: Partial<BrandingSettings>) => void;
   authBaseUrl: string;
+  authPagesActive?: boolean;
   embedded?: boolean;
 }
 
-export function BrandingPage({ branding, onChange, authBaseUrl, embedded }: BrandingPageProps) {
+export function BrandingPage({ branding, onChange, authBaseUrl, authPagesActive, embedded }: BrandingPageProps) {
   type BrandingTab = 'colors' | 'logo' | 'layout';
   const [activeTab, setActiveTab] = useState<BrandingTab>('colors');
   const [previewVisible, setPreviewVisible] = useState(true);
@@ -117,7 +118,7 @@ export function BrandingPage({ branding, onChange, authBaseUrl, embedded }: Bran
 
         {previewVisible && (
           <div className="hidden xl:block sticky top-4 h-fit w-[400px] shrink-0">
-            <BrandingPreview branding={branding} baseUrl={baseUrl} />
+            <BrandingPreview branding={branding} baseUrl={baseUrl} authPagesActive={authPagesActive} />
           </div>
         )}
       </div>
@@ -128,7 +129,7 @@ export function BrandingPage({ branding, onChange, authBaseUrl, embedded }: Bran
             <DrawerTitle>{__('Preview', 'wp-sms')}</DrawerTitle>
           </DrawerHeader>
           <div className="overflow-y-auto p-4">
-            <BrandingPreview branding={branding} baseUrl={baseUrl} />
+            <BrandingPreview branding={branding} baseUrl={baseUrl} authPagesActive={authPagesActive} />
           </div>
         </DrawerContent>
       </Drawer>
