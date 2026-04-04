@@ -123,7 +123,7 @@ export function PrivacyPage({ embedded }: { embedded?: boolean } = {}) {
     <>
       {!embedded && <PageHeader icon={Shield} title={__('Privacy', 'wp-sms')} />}
 
-      <div className="space-y-6 max-w-2xl">
+      <div className="space-y-6">
         <p className="text-sm text-muted-foreground">
           {__('Look up, export, or erase personal data stored by WSMS. Unlike WordPress\'s built-in privacy tools which only support email, this page also supports phone number lookups — essential for phone-only contacts.', 'wp-sms')}
         </p>

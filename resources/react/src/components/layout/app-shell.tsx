@@ -21,6 +21,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { useIsRtl } from '@/hooks/use-is-rtl';
 import { useCapabilities } from '@/hooks/use-capabilities';
 import { getConfig } from '@/lib/api';
@@ -35,6 +36,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+
+const FULL_WIDTH_SECTIONS = new Set(['dashboard', 'campaigns', 'automation', 'audience', 'monitoring']);
+const FULL_WIDTH_SUB_TABS = new Set(['channels/gateways', 'settings/branding']);
+
+function isFullWidth(section: string, subTab?: string): boolean {
+  return FULL_WIDTH_SECTIONS.has(section) ||
+    (!!subTab && FULL_WIDTH_SUB_TABS.has(`${section}/${subTab}`));
+}
 
 const SIDEBAR_DEFAULT_OPEN = (() => {
   const match = document.cookie.match(/(?:^|;\s*)sidebar_state=([^;]*)/);
@@ -324,7 +333,7 @@ export function AppShell({ activeSection, activeSubTab, onNavigate, version, chi
             <span className="sr-only">{__('Notifications', 'wp-sms')}</span>
           </Button>
         </header>
-        <div key={`${activeSection}/${activeSubTab ?? ''}`} className="animate-fade-up p-7">
+        <div key={`${activeSection}/${activeSubTab ?? ''}`} className={cn("animate-fade-up p-7", !isFullWidth(activeSection, activeSubTab) && "max-w-5xl")}>
           {children}
         </div>
         <SaveBar />
