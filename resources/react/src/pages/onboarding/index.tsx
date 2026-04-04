@@ -7,7 +7,7 @@ import { ConfigStep } from './config-step';
 import { CompleteStep } from './complete-step';
 import { useOnboarding } from '@/hooks/use-onboarding';
 import { useGateways } from '@/hooks/use-gateways';
-import { api, type OnboardingGoal } from '@/lib/api';
+import { api, type OnboardingGoal, type ChannelToggles } from '@/lib/api';
 
 interface OnboardingWizardProps {
   onComplete: () => void;
@@ -25,6 +25,7 @@ export function OnboardingWizard({ onComplete, onNavigate }: OnboardingWizardPro
   const [step, setStep] = useState(initialStep);
   const [goals, setGoals] = useState<OnboardingGoal[]>(state?.goals ?? []);
   const [authEnabled, setAuthEnabled] = useState(false);
+  const [channels, setChannels] = useState<ChannelToggles>({ email: true, phone: false, password: true });
   const [sitePhone, setSitePhone] = useState('');
 
   const goToStep = useCallback((nextStep: number) => {
@@ -49,7 +50,14 @@ export function OnboardingWizard({ onComplete, onNavigate }: OnboardingWizardPro
   const handleConfigContinue = useCallback(async () => {
     try {
       const settings: Record<string, unknown> = {};
-      if (goals.includes('auth')) settings.auth_enabled = authEnabled;
+      if (goals.includes('auth')) {
+        settings.auth_enabled = authEnabled;
+        if (authEnabled) {
+          settings.email = { enabled: channels.email };
+          settings.phone = { enabled: channels.phone };
+          settings.password = { enabled: channels.password };
+        }
+      }
       if (sitePhone.trim()) settings.site_phone = sitePhone.trim();
       if (Object.keys(settings).length > 0) {
         await api.put('auth/admin/settings', settings);
@@ -58,7 +66,7 @@ export function OnboardingWizard({ onComplete, onNavigate }: OnboardingWizardPro
       // Non-blocking — user can fix settings later.
     }
     goToStep(3);
-  }, [goals, authEnabled, sitePhone, goToStep]);
+  }, [goals, authEnabled, channels, sitePhone, goToStep]);
 
   const handleFinish = useCallback(() => {
     void updateState({ status: 'completed', current_step: 3 });
@@ -112,6 +120,9 @@ export function OnboardingWizard({ onComplete, onNavigate }: OnboardingWizardPro
           goals={goals}
           authEnabled={authEnabled}
           onAuthEnabledChange={setAuthEnabled}
+          channels={channels}
+          onChannelsChange={setChannels}
+          gateways={gatewaysHook.gateways}
           sitePhone={sitePhone}
           onSitePhoneChange={setSitePhone}
         />

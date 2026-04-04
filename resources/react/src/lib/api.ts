@@ -30,6 +30,12 @@ declare global {
 export type OnboardingStatus = 'pending' | 'in_progress' | 'completed' | 'skipped';
 export type OnboardingGoal = 'auth' | 'notifications' | 'campaigns';
 
+export interface ChannelToggles {
+  email: boolean;
+  phone: boolean;
+  password: boolean;
+}
+
 export interface OnboardingState {
   status: OnboardingStatus;
   goals: OnboardingGoal[];

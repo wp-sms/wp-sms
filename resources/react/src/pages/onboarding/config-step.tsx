@@ -1,21 +1,39 @@
 import { __ } from '@wordpress/i18n';
-import { Shield, Phone, Workflow, Info } from 'lucide-react';
+import { Shield, Phone, Workflow, Info, AlertTriangle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { getConfig, type OnboardingGoal } from '@/lib/api';
+import { getConfig, type OnboardingGoal, type Gateway, type ChannelToggles } from '@/lib/api';
+
+export type { ChannelToggles };
+
+const CHANNEL_OPTIONS = [
+  { key: 'email' as const, labelKey: 'Email', descKey: 'OTP or magic link' },
+  { key: 'phone' as const, labelKey: 'Phone', descKey: 'SMS-based OTP' },
+  { key: 'password' as const, labelKey: 'Password', descKey: 'Traditional password' },
+];
 
 interface ConfigStepProps {
   goals: OnboardingGoal[];
   authEnabled: boolean;
   onAuthEnabledChange: (v: boolean) => void;
+  channels: ChannelToggles;
+  onChannelsChange: (channels: ChannelToggles) => void;
+  gateways: Gateway[];
   sitePhone: string;
   onSitePhoneChange: (v: string) => void;
 }
 
-export function ConfigStep({ goals, authEnabled, onAuthEnabledChange, sitePhone, onSitePhoneChange }: ConfigStepProps) {
+export function ConfigStep({ goals, authEnabled, onAuthEnabledChange, channels, onChannelsChange, gateways, sitePhone, onSitePhoneChange }: ConfigStepProps) {
   const { detectedIntegrations } = getConfig();
   const hasAuth = goals.includes('auth');
   const hasCampaigns = goals.includes('campaigns') || goals.includes('notifications');
+  const hasSmsGateway = gateways.some(g => g.is_configured && g.supported_channels.includes('sms'));
+  const enabledCount = Object.values(channels).filter(Boolean).length;
+
+  const handleChannelToggle = (key: keyof ChannelToggles, value: boolean) => {
+    if (!value && enabledCount <= 1) return;
+    onChannelsChange({ ...channels, [key]: value });
+  };
 
   return (
     <div className="space-y-4">
@@ -48,6 +66,39 @@ export function ConfigStep({ goals, authEnabled, onAuthEnabledChange, sitePhone,
               </div>
               <Switch checked={authEnabled} onCheckedChange={onAuthEnabledChange} />
             </div>
+
+            {authEnabled && (
+              <div className="mt-4 space-y-1">
+                <div className="text-sm font-medium mb-2">{__('Sign-in channels', 'wp-sms')}</div>
+                {CHANNEL_OPTIONS.map(({ key, labelKey, descKey }) => {
+                  const isLastEnabled = channels[key] && enabledCount <= 1;
+                  return (
+                    <div key={key} className="border-t py-2">
+                      <div className="flex items-center justify-between gap-4">
+                        <div>
+                          <div className="text-sm font-medium">{__(labelKey, 'wp-sms')}</div>
+                          <div className="text-sm text-muted-foreground">{__(descKey, 'wp-sms')}</div>
+                        </div>
+                        <Switch
+                          checked={channels[key]}
+                          onCheckedChange={(v) => handleChannelToggle(key, v)}
+                          disabled={isLastEnabled}
+                        />
+                      </div>
+                      {key === 'phone' && channels.phone && !hasSmsGateway && (
+                        <div className="flex items-center gap-1.5 mt-1.5 text-amber-600">
+                          <AlertTriangle className="size-3.5 shrink-0" />
+                          <span className="text-xs">{__('Requires an SMS gateway. Configure one in Channels after setup.', 'wp-sms')}</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+                <a href="#identity" className="inline-block text-sm text-primary hover:underline mt-2">
+                  {__('Learn about auth channels', 'wp-sms')}
+                </a>
+              </div>
+            )}
           </div>
         </div>
       )}
