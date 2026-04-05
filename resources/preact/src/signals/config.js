@@ -19,6 +19,7 @@ export const legalLinks = computed(() => authConfig.value?.legal_links ?? null);
 export const trustedDevicesConfig = computed(() => authConfig.value?.trusted_devices ?? null);
 export const formRedirectUrl = computed(() => authConfig.value?.form_redirect_url ?? null);
 export const formName = computed(() => authConfig.value?.form_name ?? null);
+export const registrationEnabled = computed(() => authConfig.value?.registration_enabled ?? true);
 
 let configLoadId = 0;
 

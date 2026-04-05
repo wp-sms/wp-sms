@@ -315,6 +315,7 @@ class AuthController extends Controller
             'enabled_channels'          => $this->policy->getVerificationChannelKeys(),
             'base_url'                  => $this->policy->getSetting('auth_base_url', '/account'),
             'profile_field_definitions' => $this->policy->getProfileFieldDefinitions(),
+            'registration_enabled'      => (bool) $this->policy->getSetting('enable_registration', true),
         ];
 
         $captchaConfig = $this->captchaGuard->getPublicConfig();

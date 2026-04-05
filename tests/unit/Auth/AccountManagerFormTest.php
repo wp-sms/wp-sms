@@ -47,7 +47,7 @@ class AccountManagerFormTest extends TestCase
         $this->authSession->method('create')->willReturn('reg-session-token');
 
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
-            'auto_create_users' => true,
+            'enable_registration' => true,
             'password' => ['enabled' => true, 'required_at_signup' => true],
             'email'    => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => false],
             'phone'    => ['enabled' => true, 'required_at_signup' => false, 'verify_at_signup' => false],

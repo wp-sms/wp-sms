@@ -179,6 +179,7 @@ export const DEFAULTS: Required<AuthSettings> = {
   grace_period_days: 7,
   auth_base_url: '/account',
   redirect_login: false,
+  enable_registration: true,
   auto_create_users: false,
   log_verbosity: 'standard',
   log_retention_days: 30,

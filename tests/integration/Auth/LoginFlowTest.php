@@ -270,7 +270,8 @@ class LoginFlowTest extends IntegrationTestCase
     public function testIdentifyUnknownUserReturnsRegistrationInfo(): void
     {
         $this->setSettings(AuthScenarios::withOverrides(AuthScenarios::passwordOnly(), [
-            'auto_create_users' => true,
+            'enable_registration' => true,
+            'auto_create_users'   => true,
         ]));
         $GLOBALS['_test_get_user_by_result'] = false;
 

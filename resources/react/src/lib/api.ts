@@ -346,6 +346,7 @@ export interface AuthSettings {
   grace_period_days?: number;
   auth_base_url?: string;
   redirect_login?: boolean;
+  enable_registration?: boolean;
   auto_create_users?: boolean;
   log_verbosity?: LogVerbosity;
   log_retention_days?: number;

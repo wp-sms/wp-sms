@@ -2,7 +2,7 @@ import { useState, useEffect } from 'preact/hooks';
 import { __ } from '@wordpress/i18n';
 import { useAutoFocus } from '../hooks/useAutoFocus';
 import { api } from '../api/client';
-import { registrationFields, registrationFieldDefs, legalLinks, formSlug, formRedirectUrl, formName } from '../signals/config';
+import { registrationFields, registrationFieldDefs, legalLinks, formSlug, formRedirectUrl, formName, registrationEnabled, configLoading } from '../signals/config';
 import { authError, authLoading, stopLoading, registrationToken, pendingVerifications } from '../signals/auth';
 import { extractError, friendlySocialError, redirectTo } from '../utils/auth';
 import { authUrl, getQueryParam } from '../utils/urls';
@@ -70,6 +70,17 @@ export function Register() {
 
     const guard = alreadySignedIn();
     if (guard) return guard;
+
+    if (!registrationEnabled.value && !configLoading.value) {
+        return (
+            <AuthLayout
+                title={__('Registration Unavailable', 'wp-sms')}
+                footer={<AuthLink href={authUrl('/login')}>{__('Back to login', 'wp-sms')}</AuthLink>}
+            >
+                <Alert variant="destructive" message={__('Registration is currently closed.', 'wp-sms')} />
+            </AuthLayout>
+        );
+    }
 
     function updateField(name, value) {
         setForm((prev) => ({ ...prev, [name]: value }));

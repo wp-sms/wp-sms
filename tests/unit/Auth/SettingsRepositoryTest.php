@@ -146,6 +146,7 @@ class SettingsRepositoryTest extends TestCase
         $this->assertEquals(7, $settings['grace_period_days']);
         $this->assertEquals('/account', $settings['auth_base_url']);
         $this->assertFalse($settings['redirect_login']);
+        $this->assertTrue($settings['enable_registration']);
         $this->assertFalse($settings['auto_create_users']);
         $this->assertEquals('standard', $settings['log_verbosity']);
         $this->assertEquals(30, $settings['log_retention_days']);

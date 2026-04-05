@@ -203,7 +203,7 @@ class SocialAuthOrchestratorTest extends TestCase
         $this->assertSame('email_exists_untrusted', $result['result']->toArray()['error']);
     }
 
-    public function testHandleCallbackRegistrationDisabled(): void
+    public function testHandleCallbackRegistrationDisabledViaAutoCreate(): void
     {
         $provider = $this->makeProvider();
         $provider->method('exchangeCode')->willReturn(['access_token' => 'token']);
@@ -218,7 +218,35 @@ class SocialAuthOrchestratorTest extends TestCase
         $GLOBALS['_test_get_user_by_result'] = false;
 
         $this->policyEngine->method('getSetting')
-            ->willReturnMap([['auto_create_users', false, false]]);
+            ->willReturnMap([
+                ['enable_registration', true, true],
+                ['auto_create_users', false, false],
+            ]);
+
+        $result = $this->orchestrator->handleCallback('google', 'code', 'state');
+
+        $this->assertSame('registration_disabled', $result['result']->toArray()['error']);
+    }
+
+    public function testHandleCallbackRegistrationDisabledViaMasterGate(): void
+    {
+        $provider = $this->makeProvider();
+        $provider->method('exchangeCode')->willReturn(['access_token' => 'token']);
+        $provider->method('getUserInfo')->willReturn([
+            'id' => '22222', 'email' => 'new@gmail.com', 'name' => 'New User',
+            'email_verified' => true,
+        ]);
+
+        $this->socialManager->method('getProvider')->willReturn($provider);
+        $this->stateManager->method('consume')->willReturn(['code_verifier' => 'v']);
+        $this->repository->method('findByProviderAccount')->willReturn(null);
+        $GLOBALS['_test_get_user_by_result'] = false;
+
+        $this->policyEngine->method('getSetting')
+            ->willReturnMap([
+                ['enable_registration', true, false],
+                ['auto_create_users', false, true],
+            ]);
 
         $result = $this->orchestrator->handleCallback('google', 'code', 'state');
 
@@ -240,7 +268,10 @@ class SocialAuthOrchestratorTest extends TestCase
         $GLOBALS['_test_get_user_by_result'] = false;
 
         $this->policyEngine->method('getSetting')
-            ->willReturnMap([['auto_create_users', false, true]]);
+            ->willReturnMap([
+                ['enable_registration', true, true],
+                ['auto_create_users', false, true],
+            ]);
 
         $this->accountManager->method('registerUser')->willReturn(
             new OperationResult(success: true, message: 'Registration successful.', userId: 99)
@@ -375,7 +406,10 @@ class SocialAuthOrchestratorTest extends TestCase
         $GLOBALS['_test_get_users_result'] = []; // No phone match.
 
         $this->policyEngine->method('getSetting')
-            ->willReturnMap([['auto_create_users', false, true]]);
+            ->willReturnMap([
+                ['enable_registration', true, true],
+                ['auto_create_users', false, true],
+            ]);
 
         $this->accountManager->method('registerUser')->willReturn(
             new OperationResult(success: true, message: 'Registration successful.', userId: 77)
@@ -415,7 +449,10 @@ class SocialAuthOrchestratorTest extends TestCase
         $GLOBALS['_test_get_users_result'] = [];
 
         $this->policyEngine->method('getSetting')
-            ->willReturnMap([['auto_create_users', false, true]]);
+            ->willReturnMap([
+                ['enable_registration', true, true],
+                ['auto_create_users', false, true],
+            ]);
 
         // Verify registerUser is called with socialLogin: true and phone included.
         $this->accountManager->expects($this->once())
@@ -473,7 +510,10 @@ class SocialAuthOrchestratorTest extends TestCase
         $GLOBALS['_test_get_user_by_result'] = false;
 
         $this->policyEngine->method('getSetting')
-            ->willReturnMap([['auto_create_users', false, false]]);
+            ->willReturnMap([
+                ['enable_registration', true, true],
+                ['auto_create_users', false, false],
+            ]);
 
         $this->accountManager->method('registerUser')->willReturn(
             new OperationResult(success: true, message: 'Registration successful.', userId: 101)
@@ -504,7 +544,10 @@ class SocialAuthOrchestratorTest extends TestCase
         $GLOBALS['_test_get_user_by_result'] = false;
 
         $this->policyEngine->method('getSetting')
-            ->willReturnMap([['auto_create_users', false, false]]);
+            ->willReturnMap([
+                ['enable_registration', true, true],
+                ['auto_create_users', false, false],
+            ]);
 
         $result = $this->orchestrator->handleCallback('google', 'code', 'state');
 
@@ -563,7 +606,10 @@ class SocialAuthOrchestratorTest extends TestCase
         $GLOBALS['_test_get_users_result'] = [];
 
         $this->policyEngine->method('getSetting')
-            ->willReturnMap([['auto_create_users', false, true]]);
+            ->willReturnMap([
+                ['enable_registration', true, true],
+                ['auto_create_users', false, true],
+            ]);
 
         $this->accountManager->expects($this->once())
             ->method('registerUser')
@@ -605,7 +651,10 @@ class SocialAuthOrchestratorTest extends TestCase
         $GLOBALS['_test_get_user_by_result'] = false;
 
         $this->policyEngine->method('getSetting')
-            ->willReturnMap([['auto_create_users', false, true]]);
+            ->willReturnMap([
+                ['enable_registration', true, true],
+                ['auto_create_users', false, true],
+            ]);
 
         $this->accountManager->expects($this->once())
             ->method('registerUser')
@@ -651,7 +700,10 @@ class SocialAuthOrchestratorTest extends TestCase
         $GLOBALS['_test_get_users_result'] = [];
 
         $this->policyEngine->method('getSetting')
-            ->willReturnMap([['auto_create_users', false, true]]);
+            ->willReturnMap([
+                ['enable_registration', true, true],
+                ['auto_create_users', false, true],
+            ]);
 
         $this->accountManager->expects($this->once())
             ->method('registerUser')

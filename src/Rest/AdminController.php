@@ -28,6 +28,7 @@ class AdminController extends Controller
         'mfa_required_roles',
         'enrollment_timing',
         'grace_period_days',
+        'enable_registration',
         'auto_create_users',
         'auth_base_url',
         'log_verbosity',

@@ -103,7 +103,7 @@ class AccountManager
     {
         $settings = $this->settingsRepo->all();
 
-        if (!$socialLogin && !$form && empty($settings['auto_create_users'])) {
+        if (empty($settings['enable_registration'])) {
             return OperationResult::fail(
                 AuthErrorCode::RegistrationDisabled,
                 __('Registration is not available.', 'wp-sms'),

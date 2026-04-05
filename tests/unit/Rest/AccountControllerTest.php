@@ -30,9 +30,9 @@ class AccountControllerTest extends TestCase
         $captchaGuard = $this->createMock(CaptchaGuard::class);
         $captchaGuard->method('verify')->willReturn(null);
 
-        // Default: auto_create_users enabled so existing tests pass.
+        // Default: enable_registration enabled so existing tests pass.
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
-            'auto_create_users' => true,
+            'enable_registration' => true,
         ];
 
         $this->controller = new AccountController(
@@ -195,9 +195,9 @@ class AccountControllerTest extends TestCase
         $this->assertTrue($response->get_data()['success']);
     }
 
-    public function testRegisterRejectsFormlessWhenAutoCreateDisabled(): void
+    public function testRegisterRejectsWhenRegistrationDisabled(): void
     {
-        $controller = $this->buildControllerWithAutoCreateDisabled();
+        $controller = $this->buildControllerWithRegistrationDisabled();
 
         $request = new \WP_REST_Request('POST', '/auth/register');
         $request->set_param('email', 'test@example.com');
@@ -209,12 +209,8 @@ class AccountControllerTest extends TestCase
         $this->assertSame('registration_disabled', $response->get_data()['error']);
     }
 
-    public function testRegisterAllowsFormBasedWhenAutoCreateDisabled(): void
+    public function testRegisterRejectsFormBasedWhenRegistrationDisabled(): void
     {
-        $this->accountManager->method('registerUser')->willReturn(
-            new OperationResult(success: true, message: 'Registration successful.', userId: 1)
-        );
-
         $form = new RegistrationForm(
             id: 'form-1',
             name: 'Test Form',
@@ -226,7 +222,7 @@ class AccountControllerTest extends TestCase
         $formRepo = $this->createMock(RegistrationFormRepository::class);
         $formRepo->method('findBySlug')->willReturn($form);
 
-        $controller = $this->buildControllerWithAutoCreateDisabled($formRepo);
+        $controller = $this->buildControllerWithRegistrationDisabled($formRepo);
 
         $request = new \WP_REST_Request('POST', '/auth/register');
         $request->set_param('email', 'test@example.com');
@@ -235,14 +231,14 @@ class AccountControllerTest extends TestCase
 
         $response = $controller->handleRegister($request);
 
-        $this->assertSame(201, $response->get_status());
-        $this->assertTrue($response->get_data()['success']);
+        $this->assertSame(403, $response->get_status());
+        $this->assertSame('registration_disabled', $response->get_data()['error']);
     }
 
-    private function buildControllerWithAutoCreateDisabled(?RegistrationFormRepository $formRepo = null): AccountController
+    private function buildControllerWithRegistrationDisabled(?RegistrationFormRepository $formRepo = null): AccountController
     {
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
-            'auto_create_users' => false,
+            'enable_registration' => false,
         ];
 
         $captchaGuard = $this->createMock(CaptchaGuard::class);

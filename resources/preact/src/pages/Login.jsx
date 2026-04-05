@@ -1,7 +1,7 @@
 import { useEffect } from 'preact/hooks';
 import { __ } from '@wordpress/i18n';
 import { authStep, authError, challengeToken, pendingVerifications, resetIdentifyFlow, stepDirection } from '../signals/auth';
-import { primaryMethods, legalLinks } from '../signals/config';
+import { primaryMethods, legalLinks, registrationEnabled } from '../signals/config';
 import { authUrl, getQueryParam } from '../utils/urls';
 import { friendlySocialError, handleAuthResponse } from '../utils/auth';
 import { api } from '../api/client';
@@ -80,7 +80,7 @@ export function Login() {
         <>
             <div className="wsms-auth-flex-gap">
                 {hasPassword && <AuthLink href={authUrl('/forgot-password')}>{__('Forgot password?', 'wp-sms')}</AuthLink>}
-                <AuthLink href={authUrl('/register')}>{__('Create account', 'wp-sms')}</AuthLink>
+                {registrationEnabled.value && <AuthLink href={authUrl('/register')}>{__('Create account', 'wp-sms')}</AuthLink>}
             </div>
             {legalFooter}
         </>

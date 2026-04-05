@@ -197,9 +197,7 @@ class AccountController extends Controller
                 }
             }
 
-            // Formless registration requires auto_create_users to be enabled.
-            // Form-based registration is always allowed — the admin created the form intentionally.
-            if (!$form && !$this->settingsRepo->get('auto_create_users')) {
+            if (!$this->settingsRepo->get('enable_registration')) {
                 return new WP_REST_Response(
                     OperationResult::fail(AuthErrorCode::RegistrationDisabled, __('Registration is not available.', 'wp-sms'))->toArray(),
                     403,

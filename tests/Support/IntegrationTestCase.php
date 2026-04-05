@@ -169,7 +169,7 @@ abstract class IntegrationTestCase extends TestCase
      */
     protected function setSettings(array $settings): void
     {
-        $settings += ['auto_create_users' => true];
+        $settings += ['enable_registration' => true];
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = $settings;
     }
 

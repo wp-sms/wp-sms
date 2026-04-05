@@ -282,7 +282,8 @@ class SocialAuthOrchestrator
         }
 
         // Case 4 & 5: No match — create new user or reject.
-        if (!$allowAutoCreate && !$this->policyEngine?->getSetting('auto_create_users', false)) {
+        $registrationEnabled = $this->policyEngine?->getSetting('enable_registration', true);
+        if (!$registrationEnabled || (!$allowAutoCreate && !$this->policyEngine?->getSetting('auto_create_users', false))) {
             return ['result' => AuthResult::failed(
                 AuthErrorCode::RegistrationDisabled,
                 __('Automatic account creation is disabled. Please contact an administrator.', 'wp-sms'),

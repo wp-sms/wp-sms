@@ -58,8 +58,8 @@ class AuthOrchestrator
         }
 
         // User not found — check if registration is available.
-        $autoCreate = !empty($this->settingsRepo->get('auto_create_users'));
-        $effectiveFields = $this->policy->getEffectiveRegistrationFields();
+        $registrationEnabled = !empty($this->settingsRepo->get('enable_registration'));
+        $autoCreate = $registrationEnabled && !empty($this->settingsRepo->get('auto_create_users'));
 
         return new IdentifyResult(
             identifierType: $identifierType,
@@ -67,7 +67,7 @@ class AuthOrchestrator
             availableMethods: [],
             defaultMethod: null,
             registrationAvailable: $autoCreate,
-            registrationFields: $autoCreate ? $effectiveFields : [],
+            registrationFields: $autoCreate ? $this->policy->getEffectiveRegistrationFields() : [],
             meta: [],
         );
     }

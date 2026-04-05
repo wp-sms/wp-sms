@@ -225,16 +225,26 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
 
       <PageSection
         icon={UserPlus}
-        title={__('Auto-Create Accounts', 'wp-sms')}
-        description={__('Account creation behavior when unrecognized users attempt to log in', 'wp-sms')}
+        title={__('Account Creation', 'wp-sms')}
+        description={__('Control who can create new accounts on your site', 'wp-sms')}
       >
-          <SwitchField
-            id="auto_create_users"
-            label={__('Auto-Create Accounts on Login', 'wp-sms')}
-            description={__('When someone logs in with a phone or email that doesn\'t have an account yet, automatically create one instead of rejecting them', 'wp-sms')}
-            checked={settings.auto_create_users}
-            onCheckedChange={(checked) => onUpdate('auto_create_users', checked)}
-          />
+          <div className="space-y-4">
+            <SwitchField
+              id="enable_registration"
+              label={__('Enable Registration', 'wp-sms')}
+              description={__('Allow new accounts to be created through the registration page, forms, and social login', 'wp-sms')}
+              checked={settings.enable_registration}
+              onCheckedChange={(checked) => onUpdate('enable_registration', checked)}
+            />
+            <SwitchField
+              id="auto_create_users"
+              label={__('Auto-Create Accounts on Login', 'wp-sms')}
+              description={__('When someone logs in with a phone or email that doesn\'t have an account yet, automatically create one instead of rejecting them', 'wp-sms')}
+              checked={settings.auto_create_users}
+              onCheckedChange={(checked) => onUpdate('auto_create_users', checked)}
+              disabled={!settings.enable_registration}
+            />
+          </div>
       </PageSection>
 
       <PageSection

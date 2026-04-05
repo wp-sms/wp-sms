@@ -451,6 +451,7 @@ class AuthOrchestratorTest extends TestCase
     public function testIdentifyNotFoundAutoCreateOn(): void
     {
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'enable_registration'  => true,
             'auto_create_users'    => true,
             'registration_fields'  => ['email', 'phone', 'password'],
         ];
@@ -468,7 +469,22 @@ class AuthOrchestratorTest extends TestCase
     public function testIdentifyNotFoundAutoCreateOff(): void
     {
         $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
-            'auto_create_users' => false,
+            'enable_registration' => true,
+            'auto_create_users'   => false,
+        ];
+
+        $result = $this->orchestrator->identify('nobody@example.com');
+
+        $this->assertFalse($result->userFound);
+        $this->assertFalse($result->registrationAvailable);
+        $this->assertSame([], $result->registrationFields);
+    }
+
+    public function testIdentifyNotFoundRegistrationDisabledOverridesAutoCreate(): void
+    {
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'enable_registration' => false,
+            'auto_create_users'   => true,
         ];
 
         $result = $this->orchestrator->identify('nobody@example.com');
