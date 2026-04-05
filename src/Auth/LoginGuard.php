@@ -103,6 +103,12 @@ class LoginGuard
         }
 
         if (!$this->policy->isMfaRequired($user->ID)) {
+            // Grace period: prompt enrollment (skippable) if user has no factors.
+            $graceInfo = $this->policy->getGracePeriodInfo($user->ID);
+            if ($graceInfo && empty($this->mfaManager->getActiveMfaFactors($user->ID))) {
+                $authBaseUrl = $this->settingsRepo->get('auth_base_url', '/account');
+                $this->redirect(home_url($authBaseUrl . '/security/enroll?mode=grace'));
+            }
             return;
         }
 

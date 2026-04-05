@@ -352,6 +352,14 @@ class AuthController extends Controller
             $userId = get_current_user_id();
             $config['enrollment_required'] = $this->policy->isMfaRequired($userId)
                 && empty($this->mfaManager->getActiveMfaFactors($userId));
+
+            $graceInfo = $this->policy->getGracePeriodInfo($userId);
+            if ($graceInfo && empty($this->mfaManager->getActiveMfaFactors($userId))) {
+                $config['grace_period'] = [
+                    'remaining_days' => $graceInfo['grace_period_remaining_days'],
+                    'expires_at'     => $graceInfo['grace_period_expires_at'],
+                ];
+            }
         }
 
         return $config;

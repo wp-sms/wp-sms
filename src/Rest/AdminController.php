@@ -193,8 +193,17 @@ class AdminController extends Controller
                 $updated['phone']['verification_methods'] = $methods ?: ['otp'];
             }
 
-            // Reset grace baseline whenever new roles are added to the MFA policy.
-            if ($this->hasNewMfaRoles($current, $updated)) {
+            $updatedTiming = EnrollmentTiming::tryFrom($updated['enrollment_timing'] ?? '');
+            $currentTiming = EnrollmentTiming::tryFrom($current['enrollment_timing'] ?? '');
+
+            $timingChangedToGrace = $updatedTiming === EnrollmentTiming::GracePeriod
+                && $currentTiming !== EnrollmentTiming::GracePeriod;
+
+            $graceNeedsTimestamp = $updatedTiming === EnrollmentTiming::GracePeriod
+                && !empty($updated['mfa_required_roles'])
+                && empty($updated['mfa_policy_activated_at']);
+
+            if ($this->hasNewMfaRoles($current, $updated) || $timingChangedToGrace || $graceNeedsTimestamp) {
                 $updated['mfa_policy_activated_at'] = time();
             }
 

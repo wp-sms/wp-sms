@@ -6,12 +6,13 @@ export function redirectTo(url) {
     window.location.href = url;
 }
 import { formRedirectUrl } from '../signals/config';
-import { getBaseUrl } from './urls';
+import { authUrl, getBaseUrl } from './urls';
 
 export function handleAuthResponse(res, _route) {
     if (res.status === 'authenticated') {
         if (res.meta?.grace_period) {
-            sessionStorage.setItem('wsms_grace_period', JSON.stringify(res.meta.grace_period));
+            redirectTo(authUrl('/security/enroll?mode=grace'));
+            return;
         }
         redirectTo(formRedirectUrl.value || res.redirect || getBaseUrl());
         return;
