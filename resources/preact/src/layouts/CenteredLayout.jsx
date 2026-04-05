@@ -15,7 +15,7 @@ const ALIGN_MAP = {
     right: 'wsms-auth-layout-centered__logo-row--end',
 };
 
-export function CenteredLayout({ title, subtitle, children, footer }) {
+export function CenteredLayout({ title, subtitle, children, footer, bare }) {
     const logoPosition = brandingConfig.value?.logo_position ?? 'center';
     const alignClass = ALIGN_MAP[logoPosition] ?? 'wsms-auth-layout-centered__logo-row--center';
     const isCompact = renderMode.value === 'popup' || renderMode.value === 'embed';
@@ -42,6 +42,22 @@ export function CenteredLayout({ title, subtitle, children, footer }) {
                     </>
                 )}
                 <SecuredByFooter className="wsms-auth-mt-4" />
+            </div>
+        );
+    }
+
+    if (bare) {
+        return (
+            <div className="wsms-auth-layout-centered">
+                {logoPosition !== 'hidden' && (
+                    <div className={`wsms-auth-layout-centered__logo-row ${alignClass}`}>
+                        <BrandLogo />
+                    </div>
+                )}
+                <div className="wsms-auth-layout-bare">
+                    {children}
+                </div>
+                <SecuredByFooter className="wsms-auth-mt-6" />
             </div>
         );
     }

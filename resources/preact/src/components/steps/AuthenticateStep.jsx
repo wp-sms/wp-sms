@@ -58,8 +58,10 @@ export function AuthenticateStep() {
     // Compute alternative methods for "use a different method" link.
     const alternativeMethods = methods.filter((m) => m.method !== activeMethod);
     const hasPasswordAlt = methods.some((m) => m.method === 'password') && activeMethod !== 'password';
-    const hasOtpAlt = methods.some((m) => m.type === 'otp') && activeMethod === 'password';
-    const altOtpMethod = methods.find((m) => m.type === 'otp' && m.method !== activeMethod);
+    const hasNonPasswordAlt = methods.some((m) => m.method !== 'password') && activeMethod === 'password';
+    // Prefer OTP over magic link when both exist (OTP is more interactive).
+    const altMethod = methods.find((m) => m.method !== 'password' && m.type === 'otp' && m.method !== activeMethod)
+        || methods.find((m) => m.method !== 'password' && m.method !== activeMethod);
 
     async function handlePasswordSubmit(e) {
         e.preventDefault();
@@ -207,10 +209,10 @@ export function AuthenticateStep() {
                         {authLoading.value ? __('Signing in...', 'wp-sms') : __('Continue', 'wp-sms')}
                     </Button>
 
-                    {hasOtpAlt && altOtpMethod && (
+                    {hasNonPasswordAlt && altMethod && (
                         <div className="wsms-auth-center">
-                            <Button variant="link" type="button" onClick={() => switchMethod(altOtpMethod.method)}>
-                                {altOtpMethod.channel === 'email' ? __('Email me a code instead', 'wp-sms') : __('Text me a code instead', 'wp-sms')}
+                            <Button variant="link" type="button" onClick={() => switchMethod(altMethod.method)}>
+                                {getAltSwitchLabel(altMethod)}
                             </Button>
                         </div>
                     )}
@@ -306,4 +308,11 @@ const METHOD_LABELS = {
 
 function getMethodLabel(method) {
     return METHOD_LABELS[method] || method;
+}
+
+function getAltSwitchLabel(m) {
+    if (m.type === 'otp') {
+        return m.channel === 'email' ? __('Email me a code instead', 'wp-sms') : __('Text me a code instead', 'wp-sms');
+    }
+    return m.channel === 'email' ? __('Email me a login link instead', 'wp-sms') : __('Text me a login link instead', 'wp-sms');
 }

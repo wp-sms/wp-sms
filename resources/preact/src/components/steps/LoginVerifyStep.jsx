@@ -27,6 +27,8 @@ export function LoginVerifyStep() {
     const [phoneVerified, setPhoneVerified] = useState(false);
     const [emailVerified, setEmailVerified] = useState(false);
 
+    const phoneDone = !hasPhone || phoneVerified;
+
     async function tryCompleteLogin() {
         authError.value = null;
         try {
@@ -37,9 +39,18 @@ export function LoginVerifyStep() {
         }
     }
 
-    // Poll for email verification status only in magic-link mode.
+    // Complete login when all verifications are done.
     useEffect(() => {
-        if (!hasEmail || emailIsOtp) return;
+        const emailDone = !hasEmail || emailVerified;
+        if (phoneDone && emailDone && (phoneVerified || emailVerified)) {
+            tryCompleteLogin();
+        }
+    }, [phoneVerified, emailVerified]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Poll for email verification status only in magic-link mode.
+    // Only starts when email section is visible (phone done first).
+    useEffect(() => {
+        if (!phoneDone || !hasEmail || emailIsOtp) return;
         let stopped = false;
         const interval = setInterval(async () => {
             if (stopped) return;
@@ -50,19 +61,13 @@ export function LoginVerifyStep() {
                     stopped = true;
                     clearInterval(interval);
                     setEmailVerified(true);
-                    tryCompleteLogin();
                 }
             } catch {
                 // Polling failure is non-critical.
             }
         }, 5000);
         return () => { stopped = true; clearInterval(interval); };
-    }, [hasEmail, emailIsOtp]);
-
-    function handleEmailVerified() {
-        setEmailVerified(true);
-        tryCompleteLogin();
-    }
+    }, [phoneDone, hasEmail, emailIsOtp]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <div className="wsms-auth-stack-6 wsms-auth-fade-in">
@@ -76,7 +81,7 @@ export function LoginVerifyStep() {
             {hasPhone && !phoneVerified && (
                 <PhoneVerifySection
                     headers={verifyHeaders()}
-                    onVerified={() => { setPhoneVerified(true); tryCompleteLogin(); }}
+                    onVerified={() => setPhoneVerified(true)}
                 />
             )}
 
@@ -84,11 +89,11 @@ export function LoginVerifyStep() {
                 <Alert variant="success" message={__('Phone verified!', 'wp-sms')} />
             )}
 
-            {hasEmail && !emailVerified && (
+            {phoneDone && hasEmail && !emailVerified && (
                 <EmailVerifySection
                     headers={verifyHeaders()}
                     className={hasPhone ? 'wsms-auth-border-t' : ''}
-                    onVerified={handleEmailVerified}
+                    onVerified={() => setEmailVerified(true)}
                 />
             )}
 

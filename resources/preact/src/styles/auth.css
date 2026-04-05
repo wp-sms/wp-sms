@@ -1434,6 +1434,11 @@
 .wsms-auth-layout-centered__logo-row--center { justify-content: center; }
 .wsms-auth-layout-centered__logo-row--end { justify-content: flex-end; }
 
+.wsms-auth-layout-bare {
+    max-width: 28rem;
+    width: 100%;
+}
+
 /* === Layout: Split === */
 
 .wsms-auth-layout-split {

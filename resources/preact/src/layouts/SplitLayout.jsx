@@ -8,9 +8,52 @@ import { brandingConfig } from '@/signals/branding';
 import { isRedirecting } from '@/signals/auth';
 import { isLightColor } from '@/utils/color';
 
-export function SplitLayout({ title, subtitle, children, footer }) {
+export function SplitLayout({ title, subtitle, children, footer, bare }) {
     const config = brandingConfig.value || {};
     const position = config.split_panel_position || 'left';
+
+    const formPanel = (
+        <div className="wsms-auth-layout-split__form">
+            <div className="wsms-auth-layout-split__form-inner">
+                <div className="wsms-auth-layout-split__mobile-logo">
+                    <BrandLogo />
+                </div>
+
+                {bare ? (
+                    <div className="wsms-auth-layout-bare">
+                        {children}
+                    </div>
+                ) : (
+                    <FormCard title={title} subtitle={subtitle} footer={footer}>
+                        {children}
+                    </FormCard>
+                )}
+
+                <SecuredByFooter />
+            </div>
+        </div>
+    );
+
+    const brandPanel = bare ? null : <BrandPanel config={config} />;
+
+    return (
+        <div className="wsms-auth-layout-split">
+            {position === 'left' ? (
+                <>
+                    {brandPanel}
+                    {formPanel}
+                </>
+            ) : (
+                <>
+                    {formPanel}
+                    {brandPanel}
+                </>
+            )}
+        </div>
+    );
+}
+
+function BrandPanel({ config }) {
     const panelBg = config.split_panel_bg_color || '#1e293b';
     const panelImage = config.split_panel_bg_image_url;
     const heading = config.split_welcome_heading || 'Welcome back';
@@ -29,7 +72,7 @@ export function SplitLayout({ title, subtitle, children, footer }) {
     const headingClass = textLight ? 'wsms-auth-layout-split__heading--light' : 'wsms-auth-layout-split__heading--dark';
     const subtitleClass = textLight ? 'wsms-auth-layout-split__subtitle--light' : 'wsms-auth-layout-split__subtitle--dark';
 
-    const brandPanel = (
+    return (
         <div className="wsms-auth-layout-split__panel" style={panelStyle}>
             {panelImage && <div className="wsms-auth-layout-split__panel-overlay" />}
             <div className="wsms-auth-layout-split__panel-content">
@@ -38,52 +81,28 @@ export function SplitLayout({ title, subtitle, children, footer }) {
             </div>
         </div>
     );
+}
 
+function FormCard({ title, subtitle, footer, children }) {
     const redirecting = isRedirecting.value;
 
-    const formPanel = (
-        <div className="wsms-auth-layout-split__form">
-            <div className="wsms-auth-layout-split__form-inner">
-                <div className="wsms-auth-layout-split__mobile-logo">
-                    <BrandLogo />
-                </div>
-
-                <Card className="wsms-auth-full wsms-auth-fade-in">
-                    <CardHeader className="wsms-auth-center">
-                        <CardTitle className="wsms-auth-text-xl">{title}</CardTitle>
-                        {subtitle && <CardDescription>{subtitle}</CardDescription>}
-                    </CardHeader>
-                    <CardContent>
-                        {redirecting ? <RedirectingOverlay /> : children}
-                    </CardContent>
-                    {!redirecting && footer && (
-                        <>
-                            <Separator />
-                            <CardFooter className="wsms-auth-card__footer--center">
-                                <div className="wsms-auth-text-sm wsms-auth-text-muted">{footer}</div>
-                            </CardFooter>
-                        </>
-                    )}
-                </Card>
-
-                <SecuredByFooter />
-            </div>
-        </div>
-    );
-
     return (
-        <div className="wsms-auth-layout-split">
-            {position === 'left' ? (
+        <Card className="wsms-auth-full wsms-auth-fade-in">
+            <CardHeader className="wsms-auth-center">
+                <CardTitle className="wsms-auth-text-xl">{title}</CardTitle>
+                {subtitle && <CardDescription>{subtitle}</CardDescription>}
+            </CardHeader>
+            <CardContent>
+                {redirecting ? <RedirectingOverlay /> : children}
+            </CardContent>
+            {!redirecting && footer && (
                 <>
-                    {brandPanel}
-                    {formPanel}
-                </>
-            ) : (
-                <>
-                    {formPanel}
-                    {brandPanel}
+                    <Separator />
+                    <CardFooter className="wsms-auth-card__footer--center">
+                        <div className="wsms-auth-text-sm wsms-auth-text-muted">{footer}</div>
+                    </CardFooter>
                 </>
             )}
-        </div>
+        </Card>
     );
 }

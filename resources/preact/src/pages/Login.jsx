@@ -1,13 +1,14 @@
 import { useEffect } from 'preact/hooks';
 import { __ } from '@wordpress/i18n';
 import { authStep, authError, challengeToken, pendingVerifications, resetIdentifyFlow, stepDirection } from '../signals/auth';
-import { primaryMethods, legalLinks, registrationEnabled } from '../signals/config';
+import { primaryMethods, registrationEnabled } from '../signals/config';
 import { authUrl, getQueryParam } from '../utils/urls';
 import { friendlySocialError, handleAuthResponse } from '../utils/auth';
 import { api } from '../api/client';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { AuthLink } from '../components/AuthLink';
 import { alreadySignedIn } from '../components/AlreadySignedIn';
+import { LegalLinks } from '../components/LegalLinks';
 import { IdentifierStep } from '../components/steps/IdentifierStep';
 import { AuthenticateStep } from '../components/steps/AuthenticateStep';
 import { MfaStep } from '../components/steps/MfaStep';
@@ -52,21 +53,6 @@ export function Login() {
     const guard = alreadySignedIn();
     if (guard) return guard;
 
-    const legal = legalLinks.value;
-    const hasLegal = legal && (legal.terms_url || legal.privacy_url);
-
-    const legalFooter = hasLegal && (
-        <p className="wsms-auth-center wsms-auth-text-xs wsms-auth-text-muted wsms-auth-mt-1">
-            {legal.terms_url && (
-                <a href={legal.terms_url} target="_blank" rel="noopener noreferrer" className="wsms-auth-legal-link">{__('Terms of Service', 'wp-sms')}</a>
-            )}
-            {legal.terms_url && legal.privacy_url && ` ${__('and', 'wp-sms')} `}
-            {legal.privacy_url && (
-                <a href={legal.privacy_url} target="_blank" rel="noopener noreferrer" className="wsms-auth-legal-link">{__('Privacy Policy', 'wp-sms')}</a>
-            )}
-        </p>
-    );
-
     const TITLES = getTitles();
     const footer = step === 'register' ? (
         <AuthLink href={authUrl('/login')} onClick={() => resetIdentifyFlow()}>
@@ -82,12 +68,12 @@ export function Login() {
                 {hasPassword && <AuthLink href={authUrl('/forgot-password')}>{__('Forgot password?', 'wp-sms')}</AuthLink>}
                 {registrationEnabled.value && <AuthLink href={authUrl('/register')}>{__('Create account', 'wp-sms')}</AuthLink>}
             </div>
-            {legalFooter}
+            <LegalLinks variant="footer" />
         </>
     ) : (
         <>
             {hasPassword ? <AuthLink href={authUrl('/forgot-password')}>{__('Forgot password?', 'wp-sms')}</AuthLink> : null}
-            {legalFooter}
+            <LegalLinks variant="footer" />
         </>
     );
 

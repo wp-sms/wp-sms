@@ -10,6 +10,7 @@ import { loadCurrentUser, enrolledFactors } from '../signals/user';
 import { currentUser } from '../signals/auth';
 import { Spinner } from '../components/ui/Spinner';
 import { Alert } from '../components/ui/Alert';
+import { AuthLayout } from '../layouts/AuthLayout';
 
 import {
     wizardStep, wizardMode, selectedChannel, availableMethods,
@@ -127,85 +128,83 @@ export function MfaEnrollment() {
 
     if (!authed) return null;
 
-    if (initializing) {
-        return (
-            <div className="wsms-auth-page wsms-auth-flex-center" style={{ minHeight: '20rem' }}>
-                <Spinner />
-            </div>
-        );
-    }
-
-    if (initError) {
-        return (
-            <div className="wsms-auth-page wsms-auth-stack-4" style={{ maxWidth: '28rem', margin: '2rem auto' }}>
-                <Alert variant="destructive">{initError}</Alert>
-            </div>
-        );
-    }
-
     const step = wizardStep.value;
-    const showStepper = !['resume', 'denied', 'unsupported', 'no_methods'].includes(step);
-    const backupFactor = enrolledFactors.value.find((f) => f.channel_id === 'backup_codes');
+    const showStepper = !initializing && !initError && !['resume', 'denied', 'unsupported', 'no_methods'].includes(step);
+    const backupFactor = !initializing && !initError ? enrolledFactors.value.find((f) => f.channel_id === 'backup_codes') : null;
 
     return (
-        <div className="wsms-auth-page" style={{ maxWidth: '28rem', margin: '2rem auto', padding: '0 1rem' }}>
-            <WizardLayout showStepper={showStepper}>
-                {step === 'welcome' && (
-                    <WelcomeStep
-                        onStartSetup={wizard.handleStartSetup}
-                        onSkip={wizard.handleSkip}
-                        onDismissPrompt={wizard.handleDismissPrompt}
-                        onSignOut={wizard.handleSignOut}
-                        backupCodeInfo={backupFactor}
-                    />
-                )}
+        <AuthLayout bare>
+            {initializing && (
+                <div className="wsms-auth-flex-center" style={{ minHeight: '20rem' }}>
+                    <Spinner />
+                </div>
+            )}
 
-                {step === 'select' && (
-                    <SelectMethodStep
-                        onSelectMethod={wizard.handleSelectMethod}
-                        onConfirm={wizard.handleConfirmMethod}
-                        onBack={wizard.goBack}
-                    />
-                )}
+            {initError && (
+                <div className="wsms-auth-stack-4">
+                    <Alert variant="destructive">{initError}</Alert>
+                </div>
+            )}
 
-                {step === 'enroll' && (
-                    <EnrollStep
-                        onEnroll={wizard.handleEnroll}
-                        onVerify={wizard.handleVerify}
-                        onPasskeyEnroll={wizard.handlePasskeyEnroll}
-                        onBack={wizard.goBack}
-                        goToStep={wizard.goToStep}
-                    />
-                )}
+            {!initializing && !initError && (
+                <WizardLayout showStepper={showStepper}>
+                    {step === 'welcome' && (
+                        <WelcomeStep
+                            onStartSetup={wizard.handleStartSetup}
+                            onSkip={wizard.handleSkip}
+                            onDismissPrompt={wizard.handleDismissPrompt}
+                            onSignOut={wizard.handleSignOut}
+                            backupCodeInfo={backupFactor}
+                        />
+                    )}
 
-                {step === 'backup' && (
-                    <BackupCodesStep onContinue={wizard.handleBackupContinue} />
-                )}
+                    {step === 'select' && (
+                        <SelectMethodStep
+                            onSelectMethod={wizard.handleSelectMethod}
+                            onConfirm={wizard.handleConfirmMethod}
+                            onBack={wizard.goBack}
+                        />
+                    )}
 
-                {step === 'success' && (
-                    <SuccessStep onFinish={wizard.handleFinish} />
-                )}
+                    {step === 'enroll' && (
+                        <EnrollStep
+                            onEnroll={wizard.handleEnroll}
+                            onVerify={wizard.handleVerify}
+                            onPasskeyEnroll={wizard.handlePasskeyEnroll}
+                            onBack={wizard.goBack}
+                            goToStep={wizard.goToStep}
+                        />
+                    )}
 
-                {step === 'resume' && (
-                    <SessionResumeStep
-                        resumeChannel={resumeState?.channel}
-                        onContinue={() => wizard.handleResumeContinue(resumeState?.step, resumeState?.channel)}
-                        onStartOver={wizard.handleResumeStartOver}
-                    />
-                )}
+                    {step === 'backup' && (
+                        <BackupCodesStep onContinue={wizard.handleBackupContinue} />
+                    )}
 
-                {step === 'denied' && (
-                    <AccessDeniedStep onSignOut={wizard.handleSignOut} />
-                )}
+                    {step === 'success' && (
+                        <SuccessStep onFinish={wizard.handleFinish} />
+                    )}
 
-                {step === 'unsupported' && (
-                    <UnsupportedStep onSignOut={wizard.handleSignOut} />
-                )}
+                    {step === 'resume' && (
+                        <SessionResumeStep
+                            resumeChannel={resumeState?.channel}
+                            onContinue={() => wizard.handleResumeContinue(resumeState?.step, resumeState?.channel)}
+                            onStartOver={wizard.handleResumeStartOver}
+                        />
+                    )}
 
-                {step === 'no_methods' && (
-                    <NoMethodsStep onSignOut={wizard.handleSignOut} />
-                )}
-            </WizardLayout>
-        </div>
+                    {step === 'denied' && (
+                        <AccessDeniedStep onSignOut={wizard.handleSignOut} />
+                    )}
+
+                    {step === 'unsupported' && (
+                        <UnsupportedStep onSignOut={wizard.handleSignOut} />
+                    )}
+
+                    {step === 'no_methods' && (
+                        <NoMethodsStep onSignOut={wizard.handleSignOut} />
+                    )}
+                </WizardLayout>
+            )}
+        </AuthLayout>
     );
 }
