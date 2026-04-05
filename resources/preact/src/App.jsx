@@ -17,6 +17,7 @@ import { Account } from './pages/Account';
 import { Profile } from './pages/Profile';
 import { ChangePassword } from './pages/ChangePassword';
 import { Security } from './pages/Security';
+import { MfaEnrollment } from './pages/MfaEnrollment';
 
 // Popup state signals
 export const popupOpen = signal(false);
@@ -34,6 +35,7 @@ const VIEW_COMPONENTS = {
     profile: Profile,
     'change-password': ChangePassword,
     security: Security,
+    'security-enroll': MfaEnrollment,
 };
 
 export function App({ mode = 'fullpage' }) {
@@ -70,6 +72,7 @@ function FullPageApp() {
                     <Route path={authUrl('/verify-email')} component={VerifyEmailPage} />
                     <Route path={authUrl('/profile')} component={Profile} />
                     <Route path={authUrl('/change-password')} component={ChangePassword} />
+                    <Route path={authUrl('/security/enroll')} component={MfaEnrollment} />
                     <Route path={authUrl('/security')} component={Security} />
                     <Route path={authUrl('/')} component={AccountOrLogin} />
                     <Route default component={AccountOrLogin} />

@@ -5,7 +5,9 @@ import { socialProviders } from '../signals/config';
 import { currentUser } from '../signals/auth';
 import { loadCurrentUser, refreshUser, enrolledFactors } from '../signals/user';
 import { useAuthGuard } from '../hooks/useAuthGuard';
-import { extractError } from '../utils/auth';
+import { extractError, redirectTo } from '../utils/auth';
+import { getBaseUrl } from '../utils/urls';
+import { enrollChannel, loadMfaMethods } from '../utils/mfa-enrollment';
 import { AccountLayout } from '../layouts/AccountLayout';
 import { Alert } from '../components/ui/Alert';
 import { Button } from '../components/ui/Button';
@@ -27,6 +29,13 @@ export function Security() {
 
     useEffect(() => {
         if (!authed) return;
+
+        // Redirect enrollment-gated users to the wizard
+        if (isEnrollmentGated) {
+            redirectTo(getBaseUrl() + '/security/enroll?mode=forced');
+            return;
+        }
+
         init();
         const raw = sessionStorage.getItem('wsms_grace_period');
         if (raw) {
@@ -43,19 +52,13 @@ export function Security() {
     async function init() {
         setLoading(true);
         try {
-            const [, methodsRes, accountsRes, configRes] = await Promise.all([
+            const [, methods, accountsRes] = await Promise.all([
                 currentUser.value ? Promise.resolve() : loadCurrentUser(),
-                api.get('/auth/methods'),
+                loadMfaMethods(),
                 api.get('/auth/social/accounts').catch(() => ({ accounts: [] })),
-                isEnrollmentGated ? api.get('/auth/config').catch(() => null) : Promise.resolve(null),
             ]);
 
-            if (isEnrollmentGated && configRes && !configRes.enrollment_required) {
-                window.location.reload();
-                return;
-            }
-
-            setAvailableMethods(methodsRes.methods.filter((m) => m.supports_mfa));
+            setAvailableMethods(methods);
             setLinkedAccounts(accountsRes.accounts || []);
         } catch (err) {
             setError(extractError(err).message);
@@ -105,7 +108,7 @@ export function Security() {
         setSuccess('');
 
         try {
-            const res = await api.post('/auth/mfa/enroll', { channel_id: channelId, data });
+            const res = await enrollChannel(channelId, data);
 
             if (res.success) {
                 setSuccess(res.message || `${channelId} enrolled.`);

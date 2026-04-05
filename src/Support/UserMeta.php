@@ -24,6 +24,7 @@ final class UserMeta
     public const SUSPENDED = 'wsms_suspended';
     public const MFA_ENABLED = 'wsms_mfa_enabled';
     public const MFA_ENROLLMENT_PENDING = 'wsms_mfa_enrollment_pending';
+    public const MFA_PROMPT_DISMISSED = 'wsms_mfa_prompt_dismissed';
     public const TRUSTED_DEVICES = 'wsms_trusted_devices';
     public const FAILED_ATTEMPTS = 'wsms_failed_attempts';
     public const LOCKOUT_UNTIL = 'wsms_lockout_until';

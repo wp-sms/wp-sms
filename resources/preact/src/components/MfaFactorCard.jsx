@@ -1,31 +1,17 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { __, sprintf } from '@wordpress/i18n';
-import { Smartphone, Mail, ClipboardList, Lock, Send, KeyRound, Fingerprint, X } from 'lucide-react';
+import { Fingerprint, Send, X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { Button } from './ui/Button';
 import { Label } from './ui/Label';
 import { PhoneInput } from './PhoneInput';
 import { OtpInput } from './OtpInput';
 import { api } from '../api/client';
-import { extractError, formatWebAuthnError } from '../utils/auth';
-
-const CHANNEL_META = {
-    phone:        { label: __('Phone', 'wp-sms'),        icon: Smartphone,     description: __('Receive a code via text message', 'wp-sms') },
-    email:        { label: __('Email', 'wp-sms'),        icon: Mail,           description: __('Receive a code via email', 'wp-sms') },
-    telegram:     { label: __('Telegram', 'wp-sms'),     icon: Send,           description: __('Receive a code via Telegram bot', 'wp-sms') },
-    totp:         { label: __('Authenticator App', 'wp-sms'), icon: KeyRound, description: __('Use an app like Google Authenticator or Authy', 'wp-sms') },
-    passkey:      { label: __('Passkey', 'wp-sms'),      icon: Fingerprint,    description: __('Use fingerprint, face, or security key', 'wp-sms') },
-    backup_codes: { label: __('Backup Codes', 'wp-sms'), icon: ClipboardList,  description: __('One-time use recovery codes', 'wp-sms') },
-};
+import { getChannelMeta } from '../utils/channel-meta';
+import { verifyEnrollment, startPasskeyRegistration, checkPasskeySupport, extractError, formatWebAuthnError } from '../utils/mfa-enrollment';
 
 export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, onRefresh, onBackupCodes }) {
-    const hardcoded = CHANNEL_META[method.id];
-    const meta = {
-        label: hardcoded?.label ?? method.name,
-        icon: hardcoded?.icon ?? (method.icon_svg ? null : Lock),
-        iconSvg: hardcoded ? null : (method.icon_svg ?? null),
-        description: hardcoded?.description ?? method.description ?? '',
-    };
+    const meta = getChannelMeta(method.id, method);
     const [expanding, setExpanding] = useState(false);
     const [phone, setPhone] = useState('');
     const [verifying, setVerifying] = useState(false);
@@ -59,14 +45,12 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
             return;
         }
 
-            if (method.id === 'passkey') {
-            if (!window.isSecureContext) {
-                setError(__('Passkeys require a secure connection (HTTPS).', 'wp-sms'));
-                setExpanding(true);
-                return;
-            }
-            if (!window.PublicKeyCredential) {
-                setError(__('Your browser does not support passkeys.', 'wp-sms'));
+        if (method.id === 'passkey') {
+            const support = checkPasskeySupport();
+            if (!support.supported) {
+                setError(support.reason === 'no_https'
+                    ? __('Passkeys require a secure connection (HTTPS).', 'wp-sms')
+                    : __('Your browser does not support passkeys.', 'wp-sms'));
                 setExpanding(true);
                 return;
             }
@@ -100,9 +84,8 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
             setExpanding(true);
             setPasskeyPrompting(true);
             try {
-                const { startRegistration } = await import('@simplewebauthn/browser');
-                const attestation = await startRegistration({ optionsJSON: res.data.creation_options });
-                await handleVerifyEnrollment('passkey', JSON.stringify(attestation));
+                const attestation = await startPasskeyRegistration(res.data.creation_options);
+                await handleVerifyEnrollment('passkey', attestation);
             } catch (err) {
                 setError(formatWebAuthnError(err));
             } finally {
@@ -118,10 +101,7 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
         setLoading(true);
 
         try {
-            const res = await api.post('/auth/mfa/enroll/verify', {
-                channel_id: channelId,
-                code,
-            });
+            const res = await verifyEnrollment(channelId, code);
             if (res.success) {
                 setExpanding(false);
                 setVerifying(false);

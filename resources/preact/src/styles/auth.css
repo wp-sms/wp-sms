@@ -1880,3 +1880,260 @@
     display: inline;
     vertical-align: text-bottom;
 }
+
+/* === Enrollment Wizard === */
+
+/* Color tokens for wizard */
+:root {
+    --warning: oklch(0.75 0.18 85);
+    --warning-text: oklch(0.55 0.16 75);
+    --telegram: #0088CC;
+    --line: #00B900;
+}
+
+/* Stepper */
+.wsms-auth-stepper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 0.5rem;
+}
+
+.wsms-auth-stepper__step {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--muted-foreground);
+}
+
+.wsms-auth-stepper__step--active { color: var(--primary); }
+.wsms-auth-stepper__step--done { color: var(--success); }
+
+.wsms-auth-stepper__dot {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.625rem;
+    font-weight: 700;
+    background: var(--card);
+    flex-shrink: 0;
+}
+
+.wsms-auth-stepper__step--active .wsms-auth-stepper__dot {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: var(--primary-foreground);
+}
+
+.wsms-auth-stepper__step--done .wsms-auth-stepper__dot {
+    border-color: var(--success);
+    background: var(--success);
+    color: var(--success-foreground);
+}
+
+.wsms-auth-stepper__dot svg {
+    width: 0.75rem;
+    height: 0.75rem;
+    stroke-width: 3;
+    fill: none;
+    stroke: currentColor;
+}
+
+.wsms-auth-stepper__label {
+    white-space: nowrap;
+}
+
+.wsms-auth-stepper__line {
+    flex: 1;
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+}
+
+.wsms-auth-stepper__line--done { background: var(--success); }
+
+/* Radio dot (method selection) */
+.wsms-auth-radio {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 9999px;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    transition: border-color 150ms, background-color 150ms;
+}
+
+.wsms-auth-radio--checked {
+    border-color: var(--primary);
+    background: var(--primary);
+    box-shadow: inset 0 0 0 2px var(--card);
+}
+
+/* MFA card additions for wizard */
+.wsms-auth-mfa-card--selected {
+    border-color: var(--primary);
+    background-color: color-mix(in srgb, var(--primary) 5%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
+}
+
+.wsms-auth-mfa-card--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    background: var(--muted);
+}
+
+button.wsms-auth-mfa-card {
+    cursor: pointer;
+    text-align: start;
+    width: 100%;
+    background: var(--card);
+    font: inherit;
+}
+
+button.wsms-auth-mfa-card:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+}
+
+.wsms-auth-mfa-card__radio {
+    flex-shrink: 0;
+}
+
+.wsms-auth-mfa-card__name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Badge: primary variant for "Recommended" */
+.wsms-auth-badge--primary {
+    background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+    color: var(--primary);
+    border-color: color-mix(in srgb, var(--primary) 30%, transparent);
+}
+
+/* Wizard icon (centered icon box) */
+.wsms-auth-wizard-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: calc(var(--radius) + 2px);
+    background: color-mix(in srgb, var(--primary) 10%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+}
+
+.wsms-auth-wizard-icon svg { width: 1.25rem; height: 1.25rem; }
+
+.wsms-auth-wizard-icon--destructive {
+    background: color-mix(in srgb, var(--destructive) 10%, transparent);
+    color: var(--destructive);
+}
+
+.wsms-auth-wizard-icon--warning {
+    background: color-mix(in srgb, var(--warning) 10%, transparent);
+    color: var(--warning-text);
+}
+
+.wsms-auth-wizard-icon--success {
+    background: color-mix(in srgb, var(--success) 10%, transparent);
+    color: var(--success);
+}
+
+/* Success text color utility */
+.wsms-auth-text-success { color: var(--success); }
+
+/* Wizard waiting box (dashed border for telegram/passkey) */
+.wsms-auth-wizard-waiting-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    text-align: center;
+}
+
+.wsms-auth-wizard-waiting-box--active {
+    border-color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 3%, transparent);
+}
+
+/* Wizard cooldown timer */
+.wsms-auth-wizard-cooldown {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Wizard checkbox (backup codes confirmation) */
+.wsms-auth-wizard-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 150ms, background-color 150ms;
+}
+
+.wsms-auth-wizard-checkbox:hover {
+    background: color-mix(in srgb, var(--primary) 3%, transparent);
+}
+
+.wsms-auth-wizard-check {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+    accent-color: var(--primary);
+}
+
+/* Wizard summary row (success screen) */
+.wsms-auth-wizard-summary-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius);
+    background: var(--muted);
+}
+
+/* Wizard backup codes (re-styled for wizard context) */
+.wsms-auth-wizard-backup-codes {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+}
+
+/* Print styles */
+@media print {
+    .wsms-auth-stepper,
+    .wsms-auth-card__footer,
+    .wsms-auth-wizard-checkbox,
+    .wsms-auth-btn {
+        display: none !important;
+    }
+
+    .wsms-auth-wizard-backup-codes {
+        border: 2px solid #000;
+        padding: 1.5rem;
+    }
+
+    .wsms-auth-backup-code {
+        font-size: 1rem;
+        border: 1px solid #ccc;
+    }
+
+    .wsms-auth-card {
+        box-shadow: none;
+        border: none;
+    }
+}

@@ -89,6 +89,12 @@ class EnrollmentController extends Controller
             ],
         ]);
 
+        register_rest_route(self::NAMESPACE, '/auth/mfa/dismiss-prompt', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'handleDismissPrompt'],
+            'permission_callback' => 'is_user_logged_in',
+        ]);
+
         register_rest_route(self::NAMESPACE, '/auth/me', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleMe'],
@@ -311,6 +317,19 @@ class EnrollmentController extends Controller
         });
     }
 
+    public function handleDismissPrompt(WP_REST_Request $request): WP_REST_Response
+    {
+        return $this->handle(function () {
+            $userId = get_current_user_id();
+            update_user_meta($userId, UserMeta::MFA_PROMPT_DISMISSED, '1');
+
+            return new WP_REST_Response([
+                'success' => true,
+                'message' => __('MFA prompt dismissed.', 'wp-sms'),
+            ]);
+        });
+    }
+
     public function handleMe(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () {
@@ -366,6 +385,7 @@ class EnrollmentController extends Controller
                     'roles'                 => $user->roles,
                     'mfa_enabled'           => !empty($enrolledFactors),
                     'enrolled_factors'      => $enrolledFactors,
+                    'mfa_prompt_dismissed'  => (bool) get_user_meta($userId, UserMeta::MFA_PROMPT_DISMISSED, true),
                     'custom_fields'         => $this->readCustomFields($userId),
                 ],
             ]);

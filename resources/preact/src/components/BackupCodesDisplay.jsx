@@ -1,24 +1,10 @@
 import { __ } from '@wordpress/i18n';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './ui/Card';
 import { Button } from './ui/Button';
+import { downloadCodes, copyCodes } from '../utils/backup-codes';
 
 export function BackupCodesDisplay({ codes, onDismiss }) {
     if (!codes || codes.length === 0) return null;
-
-    function handleDownload() {
-        const text = codes.join('\n');
-        const blob = new Blob([text], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'wsms-backup-codes.txt';
-        a.click();
-        URL.revokeObjectURL(url);
-    }
-
-    function handleCopy() {
-        navigator.clipboard.writeText(codes.join('\n'));
-    }
 
     return (
         <Card className="wsms-auth-mb-4 wsms-auth-backup-codes">
@@ -36,8 +22,8 @@ export function BackupCodesDisplay({ codes, onDismiss }) {
                 </div>
             </CardContent>
             <CardFooter>
-                <Button variant="outline" size="sm" onClick={handleDownload}>{__('Download', 'wp-sms')}</Button>
-                <Button variant="outline" size="sm" onClick={handleCopy}>{__('Copy All', 'wp-sms')}</Button>
+                <Button variant="outline" size="sm" onClick={() => downloadCodes(codes)}>{__('Download', 'wp-sms')}</Button>
+                <Button variant="outline" size="sm" onClick={() => copyCodes(codes)}>{__('Copy All', 'wp-sms')}</Button>
                 <Button variant="link" size="sm" onClick={onDismiss}>{__('I\'ve saved them', 'wp-sms')}</Button>
             </CardFooter>
         </Card>

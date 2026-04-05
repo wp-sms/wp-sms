@@ -18,7 +18,8 @@ export function handleAuthResponse(res, _route) {
     }
 
     if (res.status === 'mfa_enrollment_required') {
-        redirectTo(getBaseUrl() + '/security?mfa_enroll=required');
+        const mode = res.meta?.backup_code_login ? 're-enroll' : 'forced';
+        redirectTo(getBaseUrl() + '/security/enroll?mode=' + mode);
         return 'mfa_enrollment_required';
     }
 
