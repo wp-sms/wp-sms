@@ -53,6 +53,10 @@
                     <?php } ?>
                 <?php } ?>
 
+                <?php if (!empty($attributes['shortcode_group_ids'])) : ?>
+                    <input type="hidden" class="js-wpSmsShortcodeGroupIds" value="<?php echo esc_attr($attributes['shortcode_group_ids']); ?>"/>
+                <?php endif; ?>
+
                 <?php if (isset($attributes['fields'])) : ?><?php foreach ($attributes['fields'] as $key => $field) : ?>
                     <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberCustomFields" data-field-name=<?php echo esc_html(ucfirst($field['label'])); ?>>
                         <label for="wpsms-<?php echo esc_attr($key); ?>"><?php echo esc_html(ucfirst($field['label'])); ?></label>
