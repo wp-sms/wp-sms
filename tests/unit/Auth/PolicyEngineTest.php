@@ -688,10 +688,10 @@ class PolicyEngineTest extends TestCase
         $info = $engine->getGracePeriodInfo(1);
 
         $this->assertNotNull($info);
-        $this->assertArrayHasKey('grace_period_remaining_days', $info);
-        $this->assertArrayHasKey('grace_period_expires_at', $info);
-        $this->assertGreaterThan(0, $info['grace_period_remaining_days']);
-        $this->assertLessThanOrEqual(30, $info['grace_period_remaining_days']);
+        $this->assertArrayHasKey('remaining_days', $info);
+        $this->assertArrayHasKey('expires_at', $info);
+        $this->assertGreaterThan(0, $info['remaining_days']);
+        $this->assertLessThanOrEqual(30, $info['remaining_days']);
     }
 
     public function testGetGracePeriodInfoExpired(): void
@@ -754,8 +754,8 @@ class PolicyEngineTest extends TestCase
         // Grace info should show remaining days.
         $info = $engine->getGracePeriodInfo(1);
         $this->assertNotNull($info);
-        $this->assertGreaterThanOrEqual(4, $info['grace_period_remaining_days']);
-        $this->assertLessThanOrEqual(5, $info['grace_period_remaining_days']);
+        $this->assertGreaterThanOrEqual(4, $info['remaining_days']);
+        $this->assertLessThanOrEqual(5, $info['remaining_days']);
     }
 
     public function testGracePeriodUsesUserRegisteredWhenNewerThanActivation(): void

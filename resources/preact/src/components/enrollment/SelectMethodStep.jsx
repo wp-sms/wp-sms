@@ -4,7 +4,7 @@ import { MethodRadioCard } from './MethodRadioCard';
 import { availableMethods, selectedChannel } from '../../signals/enrollment';
 import { checkPasskeySupport } from '../../utils/mfa-enrollment';
 
-const RECOMMENDED_ORDER = ['totp', 'phone', 'email', 'passkey', 'telegram', 'line'];
+const RECOMMENDED_ORDER = ['passkey', 'totp', 'phone', 'email', 'telegram', 'line'];
 
 export function SelectMethodStep({ onSelectMethod, onConfirm, onBack }) {
     const methods = availableMethods.value;
@@ -17,7 +17,10 @@ export function SelectMethodStep({ onSelectMethod, onConfirm, onBack }) {
         return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
     });
 
-    const firstId = sorted[0]?.id;
+    const firstId = sorted.find((m) => {
+        if (m.id === 'passkey') return passkeySupport.supported;
+        return true;
+    })?.id;
 
     return (
         <div className="wsms-auth-stack-4">

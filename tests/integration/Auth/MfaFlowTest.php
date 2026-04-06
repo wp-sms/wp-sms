@@ -310,7 +310,7 @@ class MfaFlowTest extends IntegrationTestCase
         $this->assertTrue($result->success);
         $this->assertSame('authenticated', $result->status);
         $this->assertArrayHasKey('grace_period', $result->meta);
-        $this->assertGreaterThan(0, $result->meta['grace_period']['grace_period_remaining_days']);
+        $this->assertGreaterThan(0, $result->meta['grace_period']['remaining_days']);
     }
 
     public function testFullEnrollmentGateFlow(): void

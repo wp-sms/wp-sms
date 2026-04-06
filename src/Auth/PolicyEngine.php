@@ -77,8 +77,8 @@ class PolicyEngine
         }
 
         return [
-            'grace_period_remaining_days' => (int) ceil($remaining / DAY_IN_SECONDS),
-            'grace_period_expires_at'     => gmdate('c', $context['grace_expiry']),
+            'remaining_days' => (int) ceil($remaining / DAY_IN_SECONDS),
+            'expires_at'     => gmdate('c', $context['grace_expiry']),
         ];
     }
 

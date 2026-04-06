@@ -191,6 +191,7 @@ class AuthServiceProvider implements ServiceProvider
         }
 
         $container->get('auth.router')->setCaptchaGuard($container->get('auth.captcha_guard'));
+        $container->get('auth.router')->setPolicyEngine($container->get('auth.policy'));
         $container->get('auth.router')->registerHooks();
         $container->get('auth.shortcode')->registerHooks();
         $container->get('auth.block')->registerHooks();

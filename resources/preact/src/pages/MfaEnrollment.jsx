@@ -57,23 +57,43 @@ export function MfaEnrollment() {
             const mode = getQueryParam('mode') || 'forced';
             wizardMode.value = mode;
 
-            if (mode === 'forced' && configRes && !configRes.enrollment_required) {
-                redirectTo(getBaseUrl());
-                return;
+            // Forced mode: verify enrollment is actually required.
+            // Use API response if available, fall back to page-render flag.
+            if (mode === 'forced') {
+                const required = configRes?.enrollment_required ?? window.wsmsAuth?.enrollmentGated;
+                if (required === false) {
+                    redirectTo(getBaseUrl());
+                    return;
+                }
             }
 
-            if (configRes?.grace_period) {
-                const gp = configRes.grace_period;
-                const expiresAt = gp.expires_at ? new Date(gp.expires_at) : null;
+            // Grace period: use API data, fall back to page-render data.
+            const graceSource = configRes?.grace_period || window.wsmsAuth?.gracePeriod;
+            if (graceSource) {
+                const expiresAt = graceSource.expires_at ? new Date(graceSource.expires_at) : null;
                 const remainingMs = expiresAt ? expiresAt.getTime() - Date.now() : 0;
                 gracePeriodInfo.value = {
-                    remaining_days: gp.remaining_days ?? Math.ceil(remainingMs / 86400000),
+                    remaining_days: graceSource.remaining_days ?? Math.ceil(remainingMs / 86400000),
                     remaining_hours: Math.max(0, Math.floor(remainingMs / 3600000)),
-                    expires_at: gp.expires_at,
+                    expires_at: graceSource.expires_at,
                 };
-
                 if (mode !== 'grace' && mode !== 'forced') {
                     wizardMode.value = 'grace';
+                }
+            }
+
+            // Grace mode with no data from either source — genuine mismatch.
+            if (wizardMode.value === 'grace' && !gracePeriodInfo.value) {
+                if (!configRes && !window.wsmsAuth?.gracePeriod) {
+                    setInitError(__('Failed to load enrollment configuration. Please refresh the page.', 'wp-sms'));
+                    return;
+                }
+                const required = configRes?.enrollment_required ?? window.wsmsAuth?.enrollmentGated ?? false;
+                if (required) {
+                    wizardMode.value = 'forced';
+                } else {
+                    redirectTo(getBaseUrl());
+                    return;
                 }
             }
 

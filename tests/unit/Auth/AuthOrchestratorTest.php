@@ -752,15 +752,15 @@ class AuthOrchestratorTest extends TestCase
         $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
         $this->policy->method('isMfaRequired')->willReturn(false);
         $this->policy->method('getGracePeriodInfo')->willReturn([
-            'grace_period_remaining_days' => 5,
-            'grace_period_expires_at'     => '2026-04-01T00:00:00+00:00',
+            'remaining_days' => 5,
+            'expires_at'     => '2026-04-01T00:00:00+00:00',
         ]);
 
         $result = $this->orchestrator->loginWithPassword('admin', 'pass');
 
         $this->assertTrue($result->success);
         $this->assertSame('authenticated', $result->status);
-        $this->assertSame(5, $result->meta['grace_period']['grace_period_remaining_days']);
+        $this->assertSame(5, $result->meta['grace_period']['remaining_days']);
     }
 
     public function testLoginOmitsGracePeriodMetaWhenNotApplicable(): void

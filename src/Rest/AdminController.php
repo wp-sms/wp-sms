@@ -203,7 +203,10 @@ class AdminController extends Controller
                 && !empty($updated['mfa_required_roles'])
                 && empty($updated['mfa_policy_activated_at']);
 
-            if ($this->hasNewMfaRoles($current, $updated) || $timingChangedToGrace || $graceNeedsTimestamp) {
+            $graceDaysChanged = $updatedTiming === EnrollmentTiming::GracePeriod
+                && (int) ($updated['grace_period_days'] ?? 0) !== (int) ($current['grace_period_days'] ?? 0);
+
+            if ($this->hasNewMfaRoles($current, $updated) || $timingChangedToGrace || $graceNeedsTimestamp || $graceDaysChanged) {
                 $updated['mfa_policy_activated_at'] = time();
             }
 

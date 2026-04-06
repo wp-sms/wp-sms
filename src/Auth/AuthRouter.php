@@ -15,6 +15,7 @@ class AuthRouter
     use EnqueuesCaptchaScript;
 
     private ?CaptchaGuard $captchaGuard = null;
+    private ?PolicyEngine $policy = null;
 
     public function __construct(
         private SettingsRepository $settingsRepo,
@@ -40,6 +41,11 @@ class AuthRouter
     public function setCaptchaGuard(CaptchaGuard $captchaGuard): void
     {
         $this->captchaGuard = $captchaGuard;
+    }
+
+    public function setPolicyEngine(PolicyEngine $policy): void
+    {
+        $this->policy = $policy;
     }
 
     public function registerHooks(): void
@@ -144,6 +150,11 @@ class AuthRouter
 
         $formSlug = isset($_GET['form']) ? sanitize_text_field($_GET['form']) : '';
 
+        $gracePeriod = null;
+        if (is_user_logged_in() && $this->policy) {
+            $gracePeriod = $this->policy->getGracePeriodInfo(get_current_user_id());
+        }
+
         wp_localize_script('wsms-auth', 'wsmsAuth', [
             'restUrl'          => rest_url('wsms/v1/'),
             'nonce'            => wp_create_nonce('wp_rest'),
@@ -152,6 +163,7 @@ class AuthRouter
             'route'            => get_query_var('wsms_auth_route', ''),
             'enrollmentGated'  => is_user_logged_in()
                 && (bool) get_user_meta(get_current_user_id(), UserMeta::MFA_ENROLLMENT_PENDING, true),
+            'gracePeriod'      => $gracePeriod,
             'branding'         => $branding,
             'formSlug'         => $formSlug,
         ]);
