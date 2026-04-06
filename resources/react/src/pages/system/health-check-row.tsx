@@ -62,7 +62,7 @@ export function HealthCheckRow({ check, index, onLazyLoad, lazyLoading }: Health
       <span className={cn('h-2 w-2 shrink-0 rounded-full', STATUS_DOT[check.status])} />
       <div className="flex-1 min-w-0">
         <span className="text-sm font-medium">{check.label}</span>
-        <p className="text-xs text-muted-foreground truncate">{check.message}</p>
+        <p className="text-xs text-muted-foreground break-words">{check.message}</p>
       </div>
       <Badge variant={badge.variant} className="shrink-0">{__(badge.label, 'wp-sms')}</Badge>
       {hasDetails && (
