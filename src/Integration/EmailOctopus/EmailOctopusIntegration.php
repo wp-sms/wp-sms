@@ -51,7 +51,7 @@ class EmailOctopusIntegration implements
 
     public function getName(): string
     {
-        return 'EmailOctopus';
+        return __('EmailOctopus', 'wp-sms');
     }
 
     public function getDescription(): string

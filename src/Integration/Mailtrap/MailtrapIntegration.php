@@ -54,7 +54,7 @@ class MailtrapIntegration implements
 
     public function getName(): string
     {
-        return 'Mailtrap';
+        return __('Mailtrap', 'wp-sms');
     }
 
     public function getDescription(): string

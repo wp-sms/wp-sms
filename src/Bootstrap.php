@@ -119,6 +119,7 @@ class Bootstrap
      */
     public static function setup(): void
     {
+        self::registerTranslationFilters();
         add_action('init', [__CLASS__, 'loadTextdomain']);
 
         self::initializeServices();
@@ -159,24 +160,42 @@ class Bootstrap
     }
 
     /**
+     * Register translation filters early so bundled translations take
+     * precedence even if JIT loading fires before `init`.
+     *
+     * @return void
+     */
+    private static function registerTranslationFilters(): void
+    {
+        // Bundled translations take precedence over stale copies in WP_LANG_DIR/plugins/.
+        add_filter('load_textdomain_mofile', function (string $mofile, string $domain): string {
+            return self::resolveBundledTranslation($mofile, $domain, determine_locale());
+        }, 10, 2);
+
+        // WP 6.5+: uses the $locale parameter (always correct) instead of determine_locale().
+        add_filter('load_translation_file', function (string $file, string $domain, string $locale): string {
+            return self::resolveBundledTranslation($file, $domain, $locale);
+        }, 10, 3);
+    }
+
+    private static function resolveBundledTranslation(string $fallback, string $domain, string $locale): string
+    {
+        if ($domain !== 'wp-sms') {
+            return $fallback;
+        }
+
+        $bundled = dirname(WP_SMS_MAIN_FILE) . '/public/languages/wp-sms-' . $locale . '.mo';
+
+        return file_exists($bundled) ? $bundled : $fallback;
+    }
+
+    /**
      * Load the plugin text domain for i18n.
      *
      * @return void
      */
     public static function loadTextdomain(): void
     {
-        // Redirect MO file resolution so the plugin's bundled translations
-        // always take precedence over stale copies in WP_LANG_DIR/plugins/.
-        add_filter('load_textdomain_mofile', function (string $mofile, string $domain): string {
-            if ($domain !== 'wp-sms') {
-                return $mofile;
-            }
-
-            $bundled = dirname(WP_SMS_MAIN_FILE) . '/public/languages/wp-sms-' . determine_locale() . '.mo';
-
-            return file_exists($bundled) ? $bundled : $mofile;
-        }, 10, 2);
-
         load_plugin_textdomain(
             'wp-sms',
             false,

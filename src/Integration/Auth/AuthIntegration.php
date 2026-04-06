@@ -23,7 +23,7 @@ class AuthIntegration implements IntegrationInterface
 
     public function getName(): string
     {
-        return 'WSMS Auth';
+        return __('WSMS Auth', 'wp-sms');
     }
 
     public function getDescription(): string

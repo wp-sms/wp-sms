@@ -35,7 +35,7 @@ class WordPressIntegration implements IntegrationInterface, SupportsContactImpor
 
     public function getName(): string
     {
-        return 'WordPress';
+        return __('WordPress', 'wp-sms');
     }
 
     public function getDescription(): string

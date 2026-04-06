@@ -16,7 +16,7 @@ class ContactForm7Integration implements IntegrationInterface
 
     public function getName(): string
     {
-        return 'Contact Form 7';
+        return __('Contact Form 7', 'wp-sms');
     }
 
     public function getDescription(): string

@@ -40,7 +40,7 @@ class ContactIntegration implements IntegrationInterface
 
     public function getName(): string
     {
-        return 'WSMS Contacts';
+        return __('WSMS Contacts', 'wp-sms');
     }
 
     public function getDescription(): string

@@ -31,7 +31,7 @@ class ScheduleIntegration implements IntegrationInterface
 
     public function getName(): string
     {
-        return 'Schedule';
+        return __('Schedule', 'wp-sms');
     }
 
     public function getDescription(): string

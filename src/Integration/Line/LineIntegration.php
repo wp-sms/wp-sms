@@ -36,7 +36,7 @@ class LineIntegration implements IntegrationInterface
 
     public function getName(): string
     {
-        return 'LINE';
+        return __('LINE', 'wp-sms');
     }
 
     public function getDescription(): string

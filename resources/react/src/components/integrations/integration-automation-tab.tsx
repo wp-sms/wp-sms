@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { PageSection } from '@/components/ui/page-section';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Zap, Play } from 'lucide-react';
@@ -19,7 +19,7 @@ export function IntegrationAutomationTab({ triggers, actions }: AutomationTabPro
     <div className="space-y-6">
       <div className={hasBoth ? 'grid grid-cols-1 lg:grid-cols-2 gap-6' : ''}>
         {triggers.length > 0 && (
-          <PageSection icon={Zap} title={`Triggers (${triggers.length})`}>
+          <PageSection icon={Zap} title={sprintf(__('Triggers (%d)', 'wp-sms'), triggers.length)}>
             <div className="space-y-2">
               {triggers.map((item) => (
                 <div key={item.id} className="rounded-md border border-s-2 border-s-amber-400 p-3">
@@ -32,7 +32,7 @@ export function IntegrationAutomationTab({ triggers, actions }: AutomationTabPro
         )}
 
         {actions.length > 0 && (
-          <PageSection icon={Play} title={`Actions (${actions.length})`}>
+          <PageSection icon={Play} title={sprintf(__('Actions (%d)', 'wp-sms'), actions.length)}>
             <div className="space-y-2">
               {actions.map((item) => (
                 <div key={item.id} className="rounded-md border border-s-2 border-s-blue-400 p-3">

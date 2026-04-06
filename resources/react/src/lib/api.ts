@@ -473,6 +473,12 @@ export function getConfig() {
   return window.wpSmsSettings ?? FALLBACK_CONFIG;
 }
 
+function buildApiUrl(restUrl: string, endpoint: string): string {
+  const url = new URL(`${restUrl}${endpoint.replace(/^\//, '')}`);
+  url.searchParams.set('_locale', 'user');
+  return url.toString();
+}
+
 async function request<T>(method: string, endpoint: string, body?: unknown, signal?: AbortSignal): Promise<T> {
   const { restUrl, nonce } = getConfig();
 
@@ -480,6 +486,7 @@ async function request<T>(method: string, endpoint: string, body?: unknown, sign
     method,
     headers: {
       'Content-Type': 'application/json',
+      'Accept': 'application/json',
       'X-WP-Nonce': nonce,
     },
     credentials: 'same-origin',
@@ -490,7 +497,7 @@ async function request<T>(method: string, endpoint: string, body?: unknown, sign
     opts.body = JSON.stringify(body);
   }
 
-  const res = await fetch(`${restUrl}${endpoint.replace(/^\//, '')}`, opts);
+  const res = await fetch(buildApiUrl(restUrl, endpoint), opts);
   const data = await res.json();
 
   if (!res.ok) {
@@ -514,9 +521,9 @@ export const api = {
 
 async function uploadFormData<T>(endpoint: string, formData: FormData, signal?: AbortSignal): Promise<T> {
   const { restUrl, nonce } = getConfig();
-  const res = await fetch(`${restUrl}${endpoint.replace(/^\//, '')}`, {
+  const res = await fetch(buildApiUrl(restUrl, endpoint), {
     method: 'POST',
-    headers: { 'X-WP-Nonce': nonce },
+    headers: { 'Accept': 'application/json', 'X-WP-Nonce': nonce },
     credentials: 'same-origin',
     body: formData,
     signal,

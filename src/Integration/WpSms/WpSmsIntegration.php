@@ -40,7 +40,7 @@ class WpSmsIntegration implements IntegrationInterface
 
     public function getName(): string
     {
-        return 'WSMS';
+        return __('WSMS', 'wp-sms');
     }
 
     public function getDescription(): string

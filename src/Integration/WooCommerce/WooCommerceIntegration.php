@@ -23,7 +23,7 @@ class WooCommerceIntegration implements IntegrationInterface
 
     public function getName(): string
     {
-        return 'WooCommerce';
+        return __('WooCommerce', 'wp-sms');
     }
 
     public function getDescription(): string

@@ -30,7 +30,7 @@ class TelegramIntegration implements IntegrationInterface
 
     public function getName(): string
     {
-        return 'Telegram';
+        return __('Telegram', 'wp-sms');
     }
 
     public function getDescription(): string

@@ -17,7 +17,7 @@ class WebhookIntegration implements IntegrationInterface
 
     public function getName(): string
     {
-        return 'Webhook';
+        return __('Webhook', 'wp-sms');
     }
 
     public function getDescription(): string
