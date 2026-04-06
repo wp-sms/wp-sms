@@ -128,13 +128,13 @@ export function PlatformStatusCard({ data, onNavigate }: PlatformStatusCardProps
         {hasGateways && (
           <Button variant="ghost" size="sm" onClick={() => onNavigate('channels/gateways')}>
             {__('Manage Gateways', 'wp-sms')}
-            <ArrowRight className="size-3.5" />
+            <ArrowRight className="size-3.5 rtl:scale-x-[-1]" />
           </Button>
         )}
         {hasFlows && (
           <Button variant="ghost" size="sm" className={cn(!hasGateways && 'ms-auto')} onClick={() => onNavigate('automation')}>
             {__('View Flows', 'wp-sms')}
-            <ArrowRight className="size-3.5" />
+            <ArrowRight className="size-3.5 rtl:scale-x-[-1]" />
           </Button>
         )}
       </CardFooter>

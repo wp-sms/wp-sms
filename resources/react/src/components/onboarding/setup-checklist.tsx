@@ -100,7 +100,7 @@ export function SetupChecklist({ onNavigate }: SetupChecklistProps) {
                   {item.label}
                 </span>
                 {!item.completed && (
-                  <ArrowRight className="size-3.5 text-muted-foreground" />
+                  <ArrowRight className="size-3.5 text-muted-foreground rtl:scale-x-[-1]" />
                 )}
               </button>
             ))}

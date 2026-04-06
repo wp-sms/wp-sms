@@ -152,7 +152,7 @@ export function CampaignsCard({ data, onNavigate, fullWidth }: CampaignsCardProp
           </Button>
           <Button variant="ghost" size="sm" onClick={() => onNavigate('campaigns')}>
             {__('View All', 'wp-sms')}
-            <ArrowRight className="size-3.5" />
+            <ArrowRight className="size-3.5 rtl:scale-x-[-1]" />
           </Button>
         </CardFooter>
       )}
