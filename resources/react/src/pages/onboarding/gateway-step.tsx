@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
-import { Search, CheckCircle2, XCircle, Loader2, ChevronDown, ExternalLink, Info } from 'lucide-react';
+import { Search, CheckCircle2, XCircle, Loader2, ChevronDown, ExternalLink, Info, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { GatewayConfigForm } from '@/components/gateway-config-form';
@@ -231,7 +231,7 @@ export function GatewayStep({ goals, gatewaysHook }: GatewayStepProps) {
             onClick={() => selectGateway(null)}
             className="text-[14px] font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
-            {'←'} {__('Choose a different gateway', 'wp-sms')}
+            <ArrowLeft className="me-1 size-3.5 rtl:scale-x-[-1]" /> {__('Choose a different gateway', 'wp-sms')}
           </button>
 
           <div className="border-2 rounded-[var(--radius-lg)] bg-card overflow-hidden animate-fade-up">

@@ -41,7 +41,7 @@ export function ErrorHandlingSettings({ value, onChange }: ErrorHandlingSettings
         className="flex w-full items-center gap-2 px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         onClick={() => setOpen(!open)}
       >
-        {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+        {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4 rtl:scale-x-[-1]" />}
         {__('Error Handling', 'wp-sms')}
         {config.behavior !== 'stop' && (
           <span className="ms-auto text-xs font-normal text-muted-foreground/70">

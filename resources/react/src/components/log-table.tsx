@@ -105,7 +105,7 @@ export function LogTable({ logs, total, page, perPage, onPageChange, loading }: 
                         {isExpanded ? (
                           <ChevronDown className="h-4 w-4" />
                         ) : (
-                          <ChevronRight className="h-4 w-4" />
+                          <ChevronRight className="h-4 w-4 rtl:scale-x-[-1]" />
                         )}
                       </button>
                     )}

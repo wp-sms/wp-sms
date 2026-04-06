@@ -141,7 +141,7 @@ export function CompleteStep({ goals, authEnabled, sitePhone, onFinish, gateways
       <div className="flex justify-center pt-2">
         <Button onClick={onFinish}>
           {__('Go to Dashboard', 'wp-sms')}
-          <ArrowRight className="ms-1 size-4" />
+          <ArrowRight className="ms-1 size-4 rtl:scale-x-[-1]" />
         </Button>
       </div>
     </div>

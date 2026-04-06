@@ -97,7 +97,7 @@ export function WizardLayout({
         {/* Skip */}
         {!isLastStep && onSkip ? (
           <button onClick={onSkip} className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors">
-            {__('Skip setup', 'wp-sms')} {'→'}
+            {__('Skip setup', 'wp-sms')} <ArrowRight className="ms-1 size-3.5 rtl:scale-x-[-1]" />
           </button>
         ) : (
           <div className="w-20" />
@@ -116,7 +116,7 @@ export function WizardLayout({
         <footer className="flex h-[60px] items-center justify-between border-t-2 bg-card px-8">
           {onBack && !isFirstStep ? (
             <Button variant="ghost" onClick={onBack}>
-              <ArrowLeft className="me-1 size-4" />
+              <ArrowLeft className="me-1 size-4 rtl:scale-x-[-1]" />
               {__('Back', 'wp-sms')}
             </Button>
           ) : onSkip ? (
@@ -136,7 +136,7 @@ export function WizardLayout({
             {onContinue && (
               <Button onClick={onContinue} disabled={continueDisabled}>
                 {continueLabel ?? __('Continue', 'wp-sms')}
-                <ArrowRight className="ms-1 size-4" />
+                <ArrowRight className="ms-1 size-4 rtl:scale-x-[-1]" />
               </Button>
             )}
           </div>

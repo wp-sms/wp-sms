@@ -305,7 +305,7 @@ export function ActionSentence({ step, onChange, payloadSchema, triggerType, sam
             className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
             onClick={() => setShowAdvanced(!showAdvanced)}
           >
-            {showAdvanced ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+            {showAdvanced ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3 rtl:scale-x-[-1]" />}
             {__('Settings', 'wp-sms')}
           </button>
           {showAdvanced && (

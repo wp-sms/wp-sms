@@ -70,7 +70,7 @@ export function SampleDataPreview({ sampleData }: SampleDataPreviewProps) {
         className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
         onClick={() => setShow(!show)}
       >
-        {show ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+        {show ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3 rtl:scale-x-[-1]" />}
         {__('Sample data', 'wp-sms')}
       </button>
       {show && (

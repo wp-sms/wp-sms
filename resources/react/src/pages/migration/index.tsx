@@ -282,7 +282,7 @@ function DetectionStep({ available, onSelect, status, onViewResults, onViewProgr
               </div>
               <Button variant="default" size="sm">
                 {__('Preview Import', 'wp-sms')}
-                <ArrowRight className="size-4 ms-1" />
+                <ArrowRight className="size-4 ms-1 rtl:scale-x-[-1]" />
               </Button>
             </div>
           </CardHeader>
@@ -321,7 +321,7 @@ function PreviewStep({ preview, preflight, loading, onBack, onContinue }: {
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="sm" onClick={onBack}>
-          <ArrowLeft className="size-4 me-1" />
+          <ArrowLeft className="size-4 me-1 rtl:scale-x-[-1]" />
           {__('Back', 'wp-sms')}
         </Button>
         <h3 className="text-lg font-semibold">{__('Import preview', 'wp-sms')}</h3>
@@ -413,7 +413,7 @@ function PreviewStep({ preview, preflight, loading, onBack, onContinue }: {
         <Button variant="outline" onClick={onBack}>{__('Back', 'wp-sms')}</Button>
         <Button onClick={onContinue} disabled={!!hasBlockingChecks}>
           {__('Configure Import', 'wp-sms')}
-          <ArrowRight className="size-4 ms-1" />
+          <ArrowRight className="size-4 ms-1 rtl:scale-x-[-1]" />
         </Button>
       </div>
     </div>
@@ -441,7 +441,7 @@ function ConfigureStep({ preview, conflictResolution, onConflictResolutionChange
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="sm" onClick={onBack}>
-          <ArrowLeft className="size-4 me-1" />
+          <ArrowLeft className="size-4 me-1 rtl:scale-x-[-1]" />
           {__('Back', 'wp-sms')}
         </Button>
         <h3 className="text-lg font-semibold">{__('Configure import', 'wp-sms')}</h3>
@@ -625,7 +625,7 @@ function ProgressStep({ status, onPause, onResume, onViewResults, actionLoading 
         {(isCompleted || isFailed) && (
           <Button onClick={onViewResults}>
             {__('View Results', 'wp-sms')}
-            <ArrowRight className="size-4 ms-1" />
+            <ArrowRight className="size-4 ms-1 rtl:scale-x-[-1]" />
           </Button>
         )}
       </div>
@@ -765,7 +765,7 @@ function OnboardingContinueCard() {
         </div>
         <Button variant="outline" size="sm" onClick={() => { window.location.hash = 'onboarding'; }}>
           {__('Continue Setup', 'wp-sms')}
-          <ArrowRight className="size-3.5 ms-1" />
+          <ArrowRight className="size-3.5 ms-1 rtl:scale-x-[-1]" />
         </Button>
       </CardContent>
     </Card>

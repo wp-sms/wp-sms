@@ -24,7 +24,7 @@ export function JsonViewer({ data, label, defaultExpanded = false }: JsonViewerP
         aria-label={label || __('Toggle JSON details', 'wp-sms')}
         className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
       >
-        {expanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+        {expanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3 rtl:scale-x-[-1]" />}
         {label && <span className="font-medium">{label}</span>}
         {!expanded && <span className="text-[10px] text-muted-foreground/70">{sprintf(__('%d keys', 'wp-sms'), keyCount)}</span>}
       </button>
