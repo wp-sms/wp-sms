@@ -48,8 +48,8 @@ fi
 
 cd "$PLUGIN_DIR"
 
-# ---- Step 0: Clean stale build artifacts ----
-rm -rf public/js/app/
+# ---- Step 0: Clean stale subdirs in public/js/ (root-level .js/.css files are kept) ----
+find public/js -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} + 2>/dev/null || true
 
 # ---- Step 1: Install PHP dependencies ----
 echo "Step 1: Installing PHP dependencies..."

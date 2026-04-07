@@ -20,15 +20,8 @@ vitest.config.ts
 # Frontend Build Configuration
 vite.config.js
 vite.config.ts
-vite.config.entries.mjs
-vite.config.auth-base.mjs
-vite.config.auth.mjs
-vite.config.verify-widget.mjs
-vite.config.messaging-button.mjs
-vite.config.subscription-form.mjs
-vite.config.cf7-phone.mjs
+vite.config.*.mjs
 webpack.config.cjs
-postcss-important-plugin.js
 eslint.config.js
 
 # PHP Build Configuration
@@ -53,6 +46,7 @@ CHANGELOG.md
 .DS_Store
 .env
 .npmrc
+.pa11yci.cjs
 pnpm-lock.yaml
 phpstan-baseline.neon
 phpstan.neon.dist
@@ -75,3 +69,11 @@ SPEC.md
 .mcp.json
 CLAUDE.md
 AGENTS.md
+
+# Stray directories
+/mockups
+/Sites
+
+# Editor & misc artifacts
+*.po~
+.gitkeep

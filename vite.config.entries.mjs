@@ -7,6 +7,7 @@ const entryFile = entry === 'mounter'
     : `${entry}-entry.js`;
 
 export default defineConfig({
+    publicDir: false,
     build: {
         lib: {
             entry: resolve(__dirname, `resources/entries/${entryFile}`),
