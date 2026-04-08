@@ -47,7 +47,10 @@ class OnboardingController extends Controller
     public function updateState(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
-            $this->onboarding->updateState($request->get_json_params());
+            // get_json_params() returns null for empty / malformed bodies —
+            // guard so updateState() doesn't TypeError on its array hint.
+            $data = $request->get_json_params();
+            $this->onboarding->updateState(is_array($data) ? $data : []);
 
             return $this->ok($this->onboarding->getState());
         });

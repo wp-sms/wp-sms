@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
+import { toast } from 'sonner';
 import { WizardLayout } from '@/components/onboarding/wizard-layout';
 import { WelcomeStep } from './welcome-step';
 import { GatewayStep } from './gateway-step';
@@ -7,7 +8,8 @@ import { ConfigStep } from './config-step';
 import { CompleteStep } from './complete-step';
 import { useOnboarding } from '@/hooks/use-onboarding';
 import { useGateways } from '@/hooks/use-gateways';
-import { api, type OnboardingGoal, type ChannelToggles } from '@/lib/api';
+import { api, type OnboardingGoal, type ChannelToggles, type OnboardingState } from '@/lib/api';
+import { getApiErrorMessage } from '@/lib/error-utils';
 
 interface OnboardingWizardProps {
   onComplete: () => void;
@@ -27,6 +29,7 @@ export function OnboardingWizard({ onComplete, onNavigate }: OnboardingWizardPro
   const [authEnabled, setAuthEnabled] = useState(false);
   const [channels, setChannels] = useState<ChannelToggles>({ email: true, phone: false, password: true });
   const [sitePhone, setSitePhone] = useState('');
+  const [completing, setCompleting] = useState(false);
 
   // Claim in_progress on first wizard mount so the App-level auto-redirect
   // stops firing on subsequent loads. Idempotent — no-op once status moves
@@ -44,14 +47,30 @@ export function OnboardingWizard({ onComplete, onNavigate }: OnboardingWizardPro
     void updateState({ current_step: nextStep, status: 'in_progress' });
   }, [updateState]);
 
-  // Await the PUT before navigating away — otherwise the dashboard's
-  // ContinueSetupCard mounts and races a fresh GET against our in-flight
-  // PUT, often reading the stale 'in_progress' status and showing the
-  // resume notice until the next page reload.
-  const handleSkip = useCallback(async () => {
-    await updateState({ status: 'skipped' });
-    onComplete();
-  }, [updateState, onComplete]);
+  // Awaits the status PUT, then navigates. The await is load-bearing: a
+  // fire-and-forget PUT raced the dashboard's ContinueSetupCard GET on
+  // unmount and left the resume notice stuck on stale 'in_progress'.
+  // On failure we surface the server message and reset the gate so the
+  // user can retry — silent rejection would strand them on the wizard.
+  const completeWizard = useCallback(async (
+    payload: Partial<OnboardingState>,
+    fallbackError: string,
+  ) => {
+    if (completing) return;
+    setCompleting(true);
+    try {
+      await updateState(payload);
+      onComplete();
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, fallbackError));
+      setCompleting(false);
+    }
+  }, [completing, updateState, onComplete]);
+
+  const handleSkip = useCallback(
+    () => completeWizard({ status: 'skipped' }, __('Failed to skip setup. Please try again.', 'wp-sms')),
+    [completeWizard],
+  );
 
   const handleGoalsContinue = useCallback(() => {
     void updateState({ goals });
@@ -83,13 +102,13 @@ export function OnboardingWizard({ onComplete, onNavigate }: OnboardingWizardPro
     goToStep(3);
   }, [goals, authEnabled, channels, sitePhone, goToStep]);
 
-  // Same race-avoidance as handleSkip — must await before navigating
-  // back to the dashboard so the ContinueSetupCard reads the new
-  // 'completed' status on its first GET and stays hidden.
-  const handleFinish = useCallback(async () => {
-    await updateState({ status: 'completed', current_step: 3 });
-    onComplete();
-  }, [updateState, onComplete]);
+  const handleFinish = useCallback(
+    () => completeWizard(
+      { status: 'completed', current_step: 3 },
+      __('Failed to complete setup. Please try again.', 'wp-sms'),
+    ),
+    [completeWizard],
+  );
 
   const getFooterProps = () => {
     switch (step) {
@@ -121,6 +140,7 @@ export function OnboardingWizard({ onComplete, onNavigate }: OnboardingWizardPro
     <WizardLayout
       currentStep={step}
       onSkip={step < 3 ? handleSkip : undefined}
+      skipDisabled={completing}
       {...footerProps}
     >
       {step === 0 && (
@@ -151,6 +171,7 @@ export function OnboardingWizard({ onComplete, onNavigate }: OnboardingWizardPro
           authEnabled={authEnabled}
           sitePhone={sitePhone}
           onFinish={handleFinish}
+          finishing={completing}
           gatewaysHook={gatewaysHook}
         />
       )}

@@ -16,6 +16,10 @@ class OnboardingManager
 {
     public const OPTION_KEY = 'wsms_onboarding';
 
+    public const VALID_STATUSES = ['pending', 'in_progress', 'completed', 'skipped'];
+
+    public const TERMINAL_STATUSES = ['completed', 'skipped'];
+
     public const DEFAULTS = [
         'status'             => 'pending',
         'goals'              => [],
@@ -76,10 +80,24 @@ class OnboardingManager
 
     /**
      * Update onboarding state fields.
+     *
+     * Status writes are gated: invalid enum values are dropped, and any write
+     * to a terminal state is dropped (multi-tab safety — a stale snapshot
+     * from a tab that hasn't seen the completion must not downgrade it).
+     * Other fields in the same payload still apply. Terminal states are only
+     * resettable via {@see resetWizard()}.
      */
     public function updateState(array $data): void
     {
         $current = $this->getRawState();
+
+        if (isset($data['status'])) {
+            $isValid = in_array($data['status'], self::VALID_STATUSES, true);
+            $isLocked = in_array($current['status'], self::TERMINAL_STATUSES, true);
+            if (!$isValid || $isLocked) {
+                unset($data['status']);
+            }
+        }
 
         $allowedKeys = ['status', 'goals', 'current_step', 'skipped_steps', 'checklist_dismissed', 'migration_deferred'];
 

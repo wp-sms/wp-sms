@@ -5,6 +5,7 @@ import { http, HttpResponse } from 'msw';
 import { server } from '../mocks/server';
 import { OnboardingWizard } from '@/pages/onboarding';
 import type { OnboardingState, OnboardingStatus } from '@/lib/api';
+import { toast } from 'sonner';
 
 // useGateways hits /gateways on mount and isn't relevant to the mount-effect
 // behavior under test — stub it so we don't need to wire MSW handlers for it.
@@ -18,6 +19,12 @@ vi.mock('@/hooks/use-gateways', () => ({
     getCredit: vi.fn(),
     refetch: vi.fn(),
   }),
+}));
+
+// Spy on sonner toasts so the error-path tests can assert that users get
+// feedback when the completion PUT fails.
+vi.mock('sonner', () => ({
+  toast: { error: vi.fn(), success: vi.fn(), info: vi.fn() },
 }));
 
 const BASE_URL = 'https://example.com/wp-json/wsms/v1';
@@ -234,6 +241,148 @@ describe('OnboardingWizard — completion handlers await PUT before navigating',
     await waitFor(() => {
       expect(onComplete).toHaveBeenCalledTimes(1);
     });
+  });
+});
+
+/**
+ * Error-path coverage for handleFinish / handleSkip.
+ *
+ * The await-before-navigate fix (see previous describe block) closed a stale
+ * dashboard-notice race but opened a new failure mode: if the PUT rejects
+ * (server 500, network error, lost auth), the handler's promise rejects
+ * silently and `onComplete()` never fires — the user sits on the wizard with
+ * zero feedback. The hardened handlers catch the rejection, surface a toast,
+ * and re-enable the button so the user can retry.
+ *
+ * These tests also cover the double-click guard: without a `finishing` gate,
+ * an impatient user could double-click Finish and fire two PUTs back-to-back.
+ */
+describe('OnboardingWizard — completion handlers error path', () => {
+  beforeEach(() => {
+    vi.mocked(toast.error).mockClear();
+    setInitialOnboarding(buildState('in_progress', 3));
+  });
+
+  afterEach(() => {
+    setInitialOnboarding(null);
+  });
+
+  /** MSW handlers that return 500 for every PUT /onboarding. */
+  function installFailingHandlers(initial: OnboardingState) {
+    const store = { ...initial };
+    const putSpy = vi.fn<[Partial<OnboardingState>], void>();
+
+    server.use(
+      http.get(`${BASE_URL}/onboarding`, () =>
+        HttpResponse.json({ success: true, data: { state: store, checklist: [] } }),
+      ),
+      http.put(`${BASE_URL}/onboarding`, async ({ request }) => {
+        const body = (await request.json()) as Partial<OnboardingState>;
+        putSpy(body);
+        return HttpResponse.json(
+          { success: false, error: { message: 'Server exploded' } },
+          { status: 500 },
+        );
+      }),
+    );
+
+    return { putSpy };
+  }
+
+  it('handleFinish: shows toast and does NOT navigate when the PUT fails', async () => {
+    const user = userEvent.setup();
+    const onComplete = vi.fn();
+    installFailingHandlers(buildState('in_progress', 3));
+
+    render(<OnboardingWizard onComplete={onComplete} onNavigate={() => undefined} />);
+
+    const finishBtn = await screen.findByRole('button', { name: /go to dashboard/i });
+    await user.click(finishBtn);
+
+    // Toast must fire so the user knows something went wrong.
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledTimes(1);
+    });
+
+    // Navigation must NOT happen — the user is still parked on the wizard.
+    expect(onComplete).not.toHaveBeenCalled();
+
+    // Button must be re-enabled for a retry (the `finishing` flag reset).
+    await waitFor(() => {
+      expect(finishBtn).not.toBeDisabled();
+    });
+  });
+
+  it('handleSkip: shows toast and does NOT navigate when the PUT fails', async () => {
+    const user = userEvent.setup();
+    const onComplete = vi.fn();
+    setInitialOnboarding(buildState('in_progress', 1));
+    installFailingHandlers(buildState('in_progress', 1));
+
+    render(<OnboardingWizard onComplete={onComplete} onNavigate={() => undefined} />);
+
+    const skipBtn = await screen.findByRole('button', { name: /skip/i });
+    await user.click(skipBtn);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledTimes(1);
+    });
+
+    expect(onComplete).not.toHaveBeenCalled();
+
+    // Skip button re-enabled after the error so retry is possible.
+    await waitFor(() => {
+      expect(skipBtn).not.toBeDisabled();
+    });
+  });
+
+  it('handleFinish: button disables during PUT to prevent double-submit', async () => {
+    const user = userEvent.setup();
+    const onComplete = vi.fn();
+
+    // Gate the PUT so we can observe the disabled window — the button must
+    // be disabled from the moment of the first click until the PUT resolves,
+    // so an impatient second click has no target to fire against.
+    let releasePut: () => void = () => undefined;
+    const putGate = new Promise<void>((resolve) => {
+      releasePut = resolve;
+    });
+    const putSpy = vi.fn<[Partial<OnboardingState>], void>();
+    let store = buildState('in_progress', 3);
+
+    server.use(
+      http.get(`${BASE_URL}/onboarding`, () =>
+        HttpResponse.json({ success: true, data: { state: store, checklist: [] } }),
+      ),
+      http.put(`${BASE_URL}/onboarding`, async ({ request }) => {
+        const body = (await request.json()) as Partial<OnboardingState>;
+        putSpy(body);
+        store = { ...store, ...body };
+        await putGate;
+        return HttpResponse.json({ success: true, data: { state: store, checklist: [] } });
+      }),
+    );
+
+    render(<OnboardingWizard onComplete={onComplete} onNavigate={() => undefined} />);
+
+    const finishBtn = await screen.findByRole('button', { name: /go to dashboard/i });
+    await user.click(finishBtn);
+
+    // Assert the first click reached the server AND the button is now
+    // disabled (finishing gate engaged) — that combination is what
+    // prevents a double-submit from a rapid second click.
+    await waitFor(() => {
+      expect(putSpy).toHaveBeenCalledTimes(1);
+    });
+    expect(finishBtn).toBeDisabled();
+
+    releasePut();
+    await waitFor(() => {
+      expect(onComplete).toHaveBeenCalledTimes(1);
+    });
+
+    // Still exactly one PUT — nothing else got through the gate.
+    expect(putSpy).toHaveBeenCalledTimes(1);
   });
 });
 

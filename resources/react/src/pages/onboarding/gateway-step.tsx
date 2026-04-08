@@ -82,10 +82,15 @@ export function GatewayStep({ goals, gatewaysHook }: GatewayStepProps) {
     return PRIMARY_CHANNELS.filter((ch) => all.has(ch));
   }, [gateways]);
 
-  // Synchronously send any pending debounced save to the server. Called
-  // before operations that must see the latest typed values: Test Connection,
-  // switching gateways, or wizard unmount.
-  const flushPendingSave = useCallback(() => {
+  // Flush any pending debounced save to the server. Returns a promise that
+  // resolves once the PUT completes so callers like Test Connection can
+  // await it and guarantee the server has the latest typed values before
+  // running their own request.
+  //
+  // Note: unlike the inline debounced path in handleFormChange, this flush
+  // intentionally does not reset test status — callers handle that (e.g.
+  // selectGateway sets idle itself, handleTestConnection keeps 'testing').
+  const flushPendingSave = useCallback(async (): Promise<void> => {
     if (!saveTimerRef.current) return;
     clearTimeout(saveTimerRef.current);
     saveTimerRef.current = undefined;
@@ -93,16 +98,15 @@ export function GatewayStep({ goals, gatewaysHook }: GatewayStepProps) {
     const id = savingIdRef.current;
     savingIdRef.current = null;
     if (pending && id) {
-      void updateConfig({ [id]: pending as unknown as Record<string, unknown> });
-      setTestStatus('idle');
-      setTestError(null);
+      await updateConfig({ [id]: pending as unknown as Record<string, unknown> });
     }
   }, [updateConfig]);
 
   const selectGateway = (id: string | null) => {
     // Flush any pending edit on the previous gateway before switching so we
-    // don't lose the user's in-flight typing.
-    flushPendingSave();
+    // don't lose the user's in-flight typing. Fire-and-forget: switching
+    // UI state should not block on the network.
+    void flushPendingSave();
     setSelectedId(id);
     setTestStatus('idle');
     setTestError(null);
@@ -127,7 +131,7 @@ export function GatewayStep({ goals, gatewaysHook }: GatewayStepProps) {
   // lost when the user clicks Continue. Fire-and-forget: the promise chain
   // in updateConfig runs to completion regardless of mount state.
   useEffect(() => {
-    return () => { flushPendingSave(); };
+    return () => { void flushPendingSave(); };
   }, [flushPendingSave]);
 
   const handleFormChange = (config: GatewayConfig) => {
@@ -151,12 +155,16 @@ export function GatewayStep({ goals, gatewaysHook }: GatewayStepProps) {
 
   const handleTestConnection = async () => {
     if (!selectedId) return;
-    // Flush any pending debounced save so the test runs against the values
-    // the user just typed, not the previously-saved server state.
-    flushPendingSave();
+    // Mark the button disabled up-front so it stays disabled during the
+    // flush window too — otherwise a second click could fire a duplicate
+    // test against the half-saved credentials.
     setTestStatus('testing');
     setTestError(null);
     try {
+      // Await the flush so the test runs against the values the user just
+      // typed, not the previously-saved server state. Without the await the
+      // POST races the PUT and can hit stale credentials.
+      await flushPendingSave();
       const result = await testConnection(selectedId);
       setTestStatus(result.success ? 'success' : 'error');
       if (!result.success) setTestError(result.message);

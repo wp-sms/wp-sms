@@ -12,10 +12,14 @@ const STEP_LABELS = [
   __('Done', 'wp-sms'),
 ];
 
+const SKIP_BUTTON_BASE =
+  'text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:pointer-events-none';
+
 interface WizardLayoutProps {
   currentStep: number;
   totalSteps?: number;
   onSkip?: () => void;
+  skipDisabled?: boolean;
   onBack?: () => void;
   onContinue?: () => void;
   onSkipStep?: () => void;
@@ -30,6 +34,7 @@ export function WizardLayout({
   currentStep,
   totalSteps = 4,
   onSkip,
+  skipDisabled,
   onBack,
   onContinue,
   onSkipStep,
@@ -96,7 +101,11 @@ export function WizardLayout({
 
         {/* Skip */}
         {!isLastStep && onSkip ? (
-          <button onClick={onSkip} className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors">
+          <button
+            onClick={onSkip}
+            disabled={skipDisabled}
+            className={cn('text-xs font-semibold', SKIP_BUTTON_BASE)}
+          >
             {__('Skip setup', 'wp-sms')} <ArrowRight className="ms-1 size-3.5 rtl:scale-x-[-1]" />
           </button>
         ) : (
@@ -120,7 +129,11 @@ export function WizardLayout({
               {__('Back', 'wp-sms')}
             </Button>
           ) : onSkip ? (
-            <button onClick={onSkip} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <button
+              onClick={onSkip}
+              disabled={skipDisabled}
+              className={cn('text-sm font-medium', SKIP_BUTTON_BASE)}
+            >
               {__('Skip setup', 'wp-sms')}
             </button>
           ) : (

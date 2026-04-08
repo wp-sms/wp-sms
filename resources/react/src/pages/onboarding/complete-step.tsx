@@ -19,10 +19,11 @@ interface CompleteStepProps {
   authEnabled: boolean;
   sitePhone: string;
   onFinish: () => void;
+  finishing: boolean;
   gatewaysHook: UseGatewaysReturn;
 }
 
-export function CompleteStep({ goals, authEnabled, sitePhone, onFinish, gatewaysHook }: CompleteStepProps) {
+export function CompleteStep({ goals, authEnabled, sitePhone, onFinish, finishing, gatewaysHook }: CompleteStepProps) {
   const { gateways, testGateway } = gatewaysHook;
   const configured = gateways.filter((g) => g.is_configured);
   const hasGateway = configured.length > 0;
@@ -139,7 +140,8 @@ export function CompleteStep({ goals, authEnabled, sitePhone, onFinish, gateways
 
       {/* Finish */}
       <div className="flex justify-center pt-2">
-        <Button onClick={onFinish}>
+        <Button onClick={onFinish} disabled={finishing}>
+          {finishing && <Loader2 className="size-3.5 me-1 animate-spin" />}
           {__('Go to Dashboard', 'wp-sms')}
           <ArrowRight className="ms-1 size-4 rtl:scale-x-[-1]" />
         </Button>
