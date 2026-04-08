@@ -1,9 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
 import { Search, CheckCircle2, XCircle, Loader2, ChevronDown, ExternalLink, Info, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { GatewayConfigForm } from '@/components/gateway-config-form';
+import { GatewayConfigForm, type GatewayConfigFormHandle } from '@/components/gateway-config-form';
 import type { UseGatewaysReturn } from '@/hooks/use-gateways';
 import { cn } from '@/lib/utils';
 import { getConfig, type Gateway, type OnboardingGoal } from '@/lib/api';
@@ -55,6 +55,7 @@ export function GatewayStep({ goals, gatewaysHook }: GatewayStepProps) {
   const [channelFilter, setChannelFilter] = useState<string>('all');
   const [testStatus, setTestStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
   const [testError, setTestError] = useState<string | null>(null);
+  const formRef = useRef<GatewayConfigFormHandle>(null);
 
   const recommended = useMemo(() => getRecommended(gateways, goals), [gateways, goals]);
   const selectedGateway = gateways.find((g) => g.id === selectedId);
@@ -76,6 +77,9 @@ export function GatewayStep({ goals, gatewaysHook }: GatewayStepProps) {
 
   const handleTestConnection = async () => {
     if (!selectedId) return;
+    // Flush any pending debounced save so the test runs against the values
+    // the user just typed, not the previously-saved server state.
+    formRef.current?.flush();
     setTestStatus('testing');
     setTestError(null);
     try {
@@ -257,6 +261,7 @@ export function GatewayStep({ goals, gatewaysHook }: GatewayStepProps) {
             </div>
             <div className="p-5 space-y-4">
               <GatewayConfigForm
+                ref={formRef}
                 gatewayId={selectedGateway.id}
                 schema={selectedGateway.config_schema}
                 values={selectedGateway.config}

@@ -17,12 +17,16 @@ export function useGateways(): UseGatewaysReturn {
   const [loading, setLoading] = useState(true);
   const abortRef = useRef<AbortController>();
 
-  const fetchGateways = useCallback(async () => {
+  // `background` skips toggling the loading flag, so the UI (e.g. the
+  // onboarding gateway step's skeleton) does not unmount the current view
+  // while a refetch triggered by a save is in flight. Initial fetches stay
+  // foreground so the first-load skeleton still shows.
+  const fetchGateways = useCallback(async (background = false) => {
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
 
-    setLoading(true);
+    if (!background) setLoading(true);
     try {
       const res = await api.get<ListResponse<Gateway>>('gateways', { signal: controller.signal });
       if (!controller.signal.aborted) {
@@ -30,9 +34,9 @@ export function useGateways(): UseGatewaysReturn {
       }
     } catch (e) {
       if (isAbortError(e)) return;
-      setGateways([]);
+      if (!background) setGateways([]);
     } finally {
-      if (!controller.signal.aborted) {
+      if (!controller.signal.aborted && !background) {
         setLoading(false);
       }
     }
@@ -40,7 +44,7 @@ export function useGateways(): UseGatewaysReturn {
 
   const updateConfig = useCallback(async (config: Record<string, Record<string, unknown>>): Promise<void> => {
     await api.put('gateways/config', config);
-    void fetchGateways();
+    void fetchGateways(true);
   }, [fetchGateways]);
 
   const testGateway = useCallback(async (id: string, data: { channel?: string; to: string; body?: string }): Promise<GatewayTestResult> => {
