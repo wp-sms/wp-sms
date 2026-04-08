@@ -145,8 +145,25 @@ class GatewayController extends Controller
     {
         return $this->handle(function () use ($request) {
             $config = $request->get_json_params();
+            if (!is_array($config)) {
+                return $this->ok();
+            }
 
-            update_option('wsms_gateway_configs', $config, false);
+            // Shallow merge by gateway id. PUT bodies are partial — they
+            // only include the gateways being updated (e.g. the auto-assign
+            // defaults effect on the gateways page sends just the one or
+            // two gateways that need an `is_default` flag set). Without
+            // this merge, a partial PUT replaces the entire option and
+            // wipes every other gateway's stored credentials, which used
+            // to send the React side into a runaway PUT/GET loop as
+            // configurations kept disappearing and re-needing assignment.
+            $existing = get_option('wsms_gateway_configs', []);
+            if (!is_array($existing)) {
+                $existing = [];
+            }
+            $merged = array_replace($existing, $config);
+
+            update_option('wsms_gateway_configs', $merged, false);
 
             return $this->ok();
         });
