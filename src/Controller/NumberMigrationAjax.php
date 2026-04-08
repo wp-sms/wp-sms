@@ -15,6 +15,8 @@ class NumberMigrationAjax extends AjaxControllerAbstract
 
     const BACKUP_OPTION_KEY = 'wpsms_number_migration_backup';
     const STATUS_OPTION_KEY = 'wpsms_number_migration_status';
+    const LOCK_TRANSIENT    = 'wpsms_migration_lock';
+    const LOCK_TTL_SECONDS  = 300; // 5 minutes
     const BATCH_SIZE        = 500;
 
     protected function run()
@@ -329,11 +331,23 @@ class NumberMigrationAjax extends AjaxControllerAbstract
             wp_send_json_error(['code' => $countryCode->get_error_code(), 'message' => $countryCode->get_error_message()], 400);
         }
 
+        // Concurrency guard: backups now span tables, options, and post_meta. A double-execute
+        // would interleave writes against the same backup option and could corrupt revert state.
+        if (get_transient(self::LOCK_TRANSIENT)) {
+            wp_send_json_error([
+                'code'    => 'migration_in_progress',
+                'message' => __('Another migration is already running. Please wait for it to finish before retrying.', 'wp-sms'),
+            ], 409);
+        }
+        set_transient(self::LOCK_TRANSIENT, time(), self::LOCK_TTL_SECONDS);
+
         $sources = $this->getPhoneSources();
         $backup  = [
             'timestamp'    => current_time('mysql'),
             'country_code' => $countryCode,
             'tables'       => [],
+            'options'      => [],
+            'postmeta'     => [],
         ];
 
         $totalMigrated = 0;
@@ -436,6 +450,28 @@ class NumberMigrationAjax extends AjaxControllerAbstract
             $totalMigrated += $count;
         }
 
+        // Sweep storage locations real users hit that aren't in $sources: the admin's own
+        // notification number (single value in wpsms_settings) and the per-post scheduled
+        // recipient lists (CSV string + serialized array post_meta).
+        $optionsResult = $this->migrateAdminMobileNumberOption($countryCode);
+        if ($optionsResult['changed']) {
+            $backup['options'][$optionsResult['backup_key']] = $optionsResult['backup_entry'];
+            $migrationCounts['admin_mobile_number'] = 1;
+            $totalMigrated++;
+        } else {
+            $migrationCounts['admin_mobile_number'] = 0;
+        }
+
+        $postMetaResult = $this->migrateScheduledPostMeta($countryCode, $errors);
+        $migrationCounts['scheduled_send_to']    = $postMetaResult['scheduled_send_to_count'];
+        $migrationCounts['scheduled_receivers']  = $postMetaResult['scheduled_receivers_count'];
+        $totalMigrated                          += $postMetaResult['scheduled_send_to_count'];
+        $totalMigrated                          += $postMetaResult['scheduled_receivers_count'];
+
+        foreach ($postMetaResult['backup_entries'] as $backupKey => $backupEntry) {
+            $backup['postmeta'][$backupKey] = $backupEntry;
+        }
+
         // Save backup and invalidate notice cache
         update_option(self::BACKUP_OPTION_KEY, $backup, false);
         delete_transient('wpsms_local_number_count');
@@ -453,12 +489,173 @@ class NumberMigrationAjax extends AjaxControllerAbstract
             'errors'          => $errors,
         ], false);
 
+        delete_transient(self::LOCK_TRANSIENT);
+
         wp_send_json_success([
             'counts'         => $migrationCounts,
             'total_migrated' => $totalMigrated,
             'errors'         => $errors,
             'backup_created' => true,
         ]);
+    }
+
+    /**
+     * Migrate the admin's notification mobile number stored in wpsms_settings.
+     *
+     * Backup key namespace: option:wpsms_settings:admin_mobile_number
+     *
+     * @param string $countryCode
+     * @return array{changed: bool, backup_key?: string, backup_entry?: array}
+     */
+    private function migrateAdminMobileNumberOption($countryCode)
+    {
+        $current = Option::getOption('admin_mobile_number');
+
+        if (empty($current) || strpos((string) $current, '+') === 0) {
+            return ['changed' => false];
+        }
+
+        $migrated = $this->migrateNumber((string) $current, $countryCode);
+
+        if ($migrated === $current) {
+            return ['changed' => false];
+        }
+
+        Option::updateOption('admin_mobile_number', $migrated);
+
+        return [
+            'changed'      => true,
+            'backup_key'   => 'option:wpsms_settings:admin_mobile_number',
+            'backup_entry' => [
+                'option'    => 'wpsms_settings',
+                'json_path' => 'admin_mobile_number',
+                'original'  => $current,
+                'migrated'  => $migrated,
+            ],
+        ];
+    }
+
+    /**
+     * Migrate scheduled post meta — wpsms_scheduled_send_to (CSV) and wpsms_scheduled_receivers
+     * (serialized array). Skips orphaned post_meta rows whose parent post no longer exists.
+     *
+     * Backup key namespaces:
+     *   postmeta:<post_id>:wpsms_scheduled_send_to
+     *   postmeta:<post_id>:wpsms_scheduled_receivers
+     *
+     * @param string $countryCode
+     * @param array  $errors  Errors collected during the sweep (passed by reference)
+     * @return array{scheduled_send_to_count: int, scheduled_receivers_count: int, backup_entries: array}
+     */
+    private function migrateScheduledPostMeta($countryCode, array &$errors)
+    {
+        global $wpdb;
+
+        $sendToCount    = 0;
+        $receiversCount = 0;
+        $backupEntries  = [];
+
+        // wpsms_scheduled_send_to — CSV string of recipients. INNER JOIN against wp_posts
+        // both filters out orphans (deleted parent posts) and avoids an N+1 get_post() call.
+        $sendToRows = $wpdb->get_results($wpdb->prepare(
+            "SELECT pm.post_id, pm.meta_value
+             FROM {$wpdb->postmeta} pm
+             INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+             WHERE pm.meta_key = %s AND pm.meta_value != ''",
+            'wpsms_scheduled_send_to'
+        ));
+
+        foreach ($sendToRows as $row) {
+            $numbers  = array_map('trim', explode(',', (string) $row->meta_value));
+            $migrated = array_map(function ($n) use ($countryCode) {
+                if ($n === '') {
+                    return $n;
+                }
+                if (strpos($n, '+') === 0) {
+                    return $n;
+                }
+                return $this->migrateNumber($n, $countryCode);
+            }, $numbers);
+
+            $migratedStr = implode(',', $migrated);
+            if ($migratedStr === $row->meta_value) {
+                continue;
+            }
+
+            $updateResult = update_post_meta($row->post_id, 'wpsms_scheduled_send_to', $migratedStr, $row->meta_value);
+            if ($updateResult === false) {
+                $errors[] = sprintf('post_meta wpsms_scheduled_send_to for post #%d: update failed', $row->post_id);
+                continue;
+            }
+
+            $key                 = 'postmeta:' . $row->post_id . ':wpsms_scheduled_send_to';
+            $backupEntries[$key] = [
+                'post_id'  => (int) $row->post_id,
+                'meta_key' => 'wpsms_scheduled_send_to',
+                'original' => $row->meta_value,
+                'migrated' => $migratedStr,
+            ];
+            $sendToCount++;
+        }
+
+        // wpsms_scheduled_receivers — serialized array of recipients. Same INNER JOIN trick.
+        $receiversRows = $wpdb->get_results($wpdb->prepare(
+            "SELECT pm.post_id, pm.meta_value
+             FROM {$wpdb->postmeta} pm
+             INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+             WHERE pm.meta_key = %s AND pm.meta_value != ''",
+            'wpsms_scheduled_receivers'
+        ));
+
+        foreach ($receiversRows as $row) {
+            // Guarded unserialize: skip corrupted/non-array values rather than crashing.
+            $original = $row->meta_value;
+            $decoded  = @unserialize($original);
+            if ($decoded === false && $original !== 'b:0;') {
+                continue;
+            }
+            if (!is_array($decoded)) {
+                continue;
+            }
+
+            $migrated = [];
+            foreach ($decoded as $k => $v) {
+                if (!is_string($v) || $v === '') {
+                    $migrated[$k] = $v;
+                    continue;
+                }
+                if (strpos($v, '+') === 0) {
+                    $migrated[$k] = $v;
+                    continue;
+                }
+                $migrated[$k] = $this->migrateNumber($v, $countryCode);
+            }
+
+            if ($migrated === $decoded) {
+                continue;
+            }
+
+            $updateResult = update_post_meta($row->post_id, 'wpsms_scheduled_receivers', $migrated, $decoded);
+            if ($updateResult === false) {
+                $errors[] = sprintf('post_meta wpsms_scheduled_receivers for post #%d: update failed', $row->post_id);
+                continue;
+            }
+
+            $key                 = 'postmeta:' . $row->post_id . ':wpsms_scheduled_receivers';
+            $backupEntries[$key] = [
+                'post_id'  => (int) $row->post_id,
+                'meta_key' => 'wpsms_scheduled_receivers',
+                'original' => $original,
+                'migrated' => $migrated,
+            ];
+            $receiversCount++;
+        }
+
+        return [
+            'scheduled_send_to_count'   => $sendToCount,
+            'scheduled_receivers_count' => $receiversCount,
+            'backup_entries'            => $backupEntries,
+        ];
     }
 
     /**
@@ -508,6 +705,56 @@ class NumberMigrationAjax extends AjaxControllerAbstract
                     } else {
                         $errors[] = sprintf('%s #%d: %s', $sourceKey, $item['pk'], $wpdb->last_error);
                     }
+                }
+            }
+        }
+
+        // Backup key namespace: option:<option_name>:<json_path>. json_path is currently
+        // always a top-level key inside wpsms_settings.
+        if (!empty($backup['options'])) {
+            foreach ($backup['options'] as $backupKey => $entry) {
+                $optionName = isset($entry['option']) ? $entry['option'] : '';
+                $jsonPath   = isset($entry['json_path']) ? $entry['json_path'] : '';
+
+                if ($optionName === 'wpsms_settings' && $jsonPath !== '') {
+                    Option::updateOption($jsonPath, $entry['original']);
+                    $totalReverted++;
+                } elseif ($optionName !== '') {
+                    update_option($optionName, $entry['original']);
+                    $totalReverted++;
+                } else {
+                    $errors[] = sprintf('option backup entry %s: malformed', $backupKey);
+                }
+            }
+        }
+
+        // Backup key namespace: postmeta:<post_id>:<meta_key>.
+        if (!empty($backup['postmeta'])) {
+            foreach ($backup['postmeta'] as $backupKey => $entry) {
+                $postId  = isset($entry['post_id']) ? (int) $entry['post_id'] : 0;
+                $metaKey = isset($entry['meta_key']) ? $entry['meta_key'] : '';
+
+                if ($postId === 0 || $metaKey === '') {
+                    $errors[] = sprintf('postmeta backup entry %s: malformed', $backupKey);
+                    continue;
+                }
+
+                // For wpsms_scheduled_receivers we stored the original as a serialized string.
+                // update_post_meta will re-serialize an array, so unserialize first to round-trip
+                // back to the exact pre-migration form.
+                $value = $entry['original'];
+                if ($metaKey === 'wpsms_scheduled_receivers' && is_string($value)) {
+                    $unserialized = @unserialize($value);
+                    if (is_array($unserialized)) {
+                        $value = $unserialized;
+                    }
+                }
+
+                $result = update_post_meta($postId, $metaKey, $value);
+                if ($result !== false) {
+                    $totalReverted++;
+                } else {
+                    $errors[] = sprintf('postmeta %s for post #%d: revert failed', $metaKey, $postId);
                 }
             }
         }

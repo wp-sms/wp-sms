@@ -4,6 +4,7 @@ namespace WP_SMS\Components;
 
 if (!defined('ABSPATH')) exit;
 
+use WP_SMS\Helper;
 use WP_SMS\Option;
 
 class Logger
@@ -32,6 +33,11 @@ class Logger
         if (!is_array($to)) {
             $to = [$to];
         }
+
+        // Defense in depth: even though Notification::send and Sms::send normalize at the
+        // dispatch chokepoint, this is the absolute last write into wp_sms_send so re-normalize
+        // here to guarantee the outbox always stores canonical values.
+        $to = array_map([Helper::class, 'normalizeToE164'], $to);
 
         $result = null;
         $store  = Option::getOption('store_outbox_messages');

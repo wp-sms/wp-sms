@@ -324,13 +324,14 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
                         </td>
                         <td className="wsms-px-3 wsms-py-2 wsms-text-muted-foreground">{item.name || '—'}</td>
                         <td className="wsms-px-3 wsms-py-2">
-                          <code className="wsms-font-mono wsms-text-orange-600 wsms-text-[12px] wsms-break-all">{item.original}</code>
+                          {/* <bdi> keeps the leading + on the left of the digits in RTL admin layouts */}
+                          <code className="wsms-font-mono wsms-text-orange-600 wsms-text-[12px] wsms-break-all"><bdi>{item.original}</bdi></code>
                         </td>
                         <td className="wsms-px-1 wsms-py-2 wsms-text-center">
                           <ArrowRight className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground wsms-inline" />
                         </td>
                         <td className="wsms-px-3 wsms-py-2">
-                          <code className="wsms-font-mono wsms-text-green-600 wsms-text-[12px] wsms-break-all">{item.migrated}</code>
+                          <code className="wsms-font-mono wsms-text-green-600 wsms-text-[12px] wsms-break-all"><bdi>{item.migrated}</bdi></code>
                         </td>
                       </tr>
                     ))}

@@ -4,6 +4,7 @@ namespace WP_SMS\Notification;
 
 use WP_Error;
 use WP_SMS\Components\Logger;
+use WP_SMS\Helper;
 
 if (!defined('ABSPATH')) exit;
 
@@ -45,6 +46,26 @@ class Notification
         if (!is_array($to)) {
             $to = explode(',', $to);
         }
+
+        // Chokepoint normalization: this catches every form-plugin integration (CF7, Forminator,
+        // Formidable, etc.) and any future caller that forgets to normalize. Short codes are
+        // passed through unchanged. Note: third-party code listening on the wp_sms_to filter
+        // and downstream hooks will receive canonical (E.164) values rather than raw input.
+        // Failures are recorded so the dashboard "Recent normalization failures" panel can
+        // surface silent integration failures to the admin.
+        $source = apply_filters('wp_sms_normalization_source', 'unknown', $to, $message);
+        $normalized = [];
+        foreach ($to as $value) {
+            if ($value === null || $value === '') {
+                continue;
+            }
+            $result = Helper::tryNormalizeToE164($value);
+            if (!$result['success']) {
+                Helper::recordNormalizationFailure($value, $source, $result['reason']);
+            }
+            $normalized[] = $result['value'];
+        }
+        $to = $normalized;
 
         if (!$this->optIn) {
             $optOutError = new WP_Error('opt-out', __('This number has opted out of receiving SMS notifications.', 'wp-sms'));

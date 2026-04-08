@@ -147,6 +147,12 @@ class AdminNoticesApi extends RestApi
             return self::response(__('Invalid parameters', 'wp-sms'), 400);
         }
 
+        // Dismissing the recent normalization failures notice also clears the underlying log
+        // — the message tells the admin "review and dismiss to clear" so this is the contract.
+        if ($id === 'recent_phone_failures') {
+            \WP_SMS\Helper::clearRecentNormalizationFailures();
+        }
+
         if ($store === 'static') {
             // Static notices use wpsms_notices option (boolean flags keyed by ID)
             $notices      = get_option('wpsms_notices', []);

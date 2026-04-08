@@ -2,6 +2,7 @@
 
 namespace WP_SMS\SmsOtp;
 
+use WP_SMS\Helper;
 use WP_SMS\Install;
 use DateTime;
 use DateInterval;
@@ -41,7 +42,10 @@ final class Generator
      */
     public function __construct($phoneNumber, $agent)
     {
-        $this->phoneNumber = $phoneNumber;
+        // Normalize once at the boundary so the row inserted by saveIntoDatabase() and the
+        // row looked up by Verifier::verify() share an identical canonical representation,
+        // regardless of whether the user submits +98912..., 0912..., or 912... .
+        $this->phoneNumber = Helper::normalizeToE164($phoneNumber);
         $this->agent       = $agent;
     }
 
@@ -146,14 +150,19 @@ final class Generator
 
         $tableName = $wpdb->prefix . Install::TABLE_OTP;
 
-        $result = (int)$wpdb->get_var(
+        // Fuzzy match across surface forms so legacy non-canonical rows still count toward
+        // the rate limit. Without this, an attacker who accumulated failed attempts pre-deploy
+        // could effectively reset their counter at deploy time.
+        $clause = Helper::buildMobileInClause($this->phoneNumber);
+        $params = array_merge(
+            $clause['params'],
+            [$this->agent, $this->getRateLimitTimeThreshold()->getTimestamp()]
+        );
+
+        $result = (int) $wpdb->get_var(
             $wpdb->prepare(
-                "SELECT COUNT(*) FROM {$tableName} WHERE `phone_number` = %s AND `agent` = %s AND `created_at` > %d",
-                [
-                    $this->phoneNumber,
-                    $this->agent,
-                    $this->getRateLimitTimeThreshold()->getTimestamp()
-                ]
+                "SELECT COUNT(*) FROM {$tableName} WHERE `phone_number` IN ({$clause['placeholders']}) AND `agent` = %s AND `created_at` > %d",
+                $params
             )
         );
 

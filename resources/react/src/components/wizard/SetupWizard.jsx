@@ -140,6 +140,13 @@ export default function SetupWizard() {
         case 'getting-started':
           settingsToSave.admin_mobile_number = phoneNumber
           settingsToSave.admin_mobile_number_country_prefix = countryCode
+          // Also persist the picked country as the default Country Code for server-side
+          // normalization. Without this, locally-formatted phone numbers submitted via
+          // form integrations (CF7, Forminator, etc.) cannot be normalized and SMS delivery
+          // can silently fail. The dial code already starts with `+` so it can be stored as-is.
+          if (countryCode && !settings.mobile_county_code) {
+            settingsToSave.mobile_county_code = countryCode.startsWith('+') ? countryCode : `+${countryCode}`
+          }
           break
         case 'sms-gateway':
           settingsToSave.gateway_name = selectedGateway

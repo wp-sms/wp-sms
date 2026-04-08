@@ -294,6 +294,24 @@ class Settings
             }
         }
 
+        // Validate that Default Country Code is set whenever international input is disabled.
+        // Without it, server-side normalization for local-format input cannot succeed and the
+        // migration wizard will refuse to run. Block the save instead of letting the admin
+        // discover the misconfiguration later via cryptic SMS delivery failures.
+        $internationalInput = !empty($output['international_mobile']);
+        $defaultCountryCode = isset($output['mobile_county_code']) ? $output['mobile_county_code'] : '';
+
+        if (!$internationalInput && (empty($defaultCountryCode) || $defaultCountryCode === '0')) {
+            add_settings_error(
+                'wpsms-notices',
+                'missing_default_country_code',
+                esc_html__('Default Country Code is required when International Number Input is disabled. Please set it on the General tab so phone numbers can be interpreted correctly.', 'wp-sms'),
+                'error wpsms-admin-notice'
+            );
+            // Do NOT save the partial state — return the existing settings unchanged.
+            return $this->options;
+        }
+
         add_settings_error(
             'wpsms-notices',
             '',

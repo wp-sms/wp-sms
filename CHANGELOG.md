@@ -1,9 +1,24 @@
 v7.2.2 - 2026-03-**
 - **Enhancement:** Added phone number normalization wizard to standardize numbers with country code for reliable delivery.
 - **Enhancement:** Tested up to WordPress v7.0
+- **Enhancement:** Normalized phone numbers to canonical E.164 format at every write path (newsletter subscribers, OTP generator/verifier, outbox logger) and at the dispatch chokepoints (`Notification::send`, `Sms::send`) so form-plugin integrations (CF7, Forminator, Formidable, etc.) and any custom caller automatically store and dispatch canonical numbers.
+- **Enhancement:** Added short-code passthrough (4–6 digit marketing codes like `80800`) at the dispatch chokepoints so SMS campaigns to short codes still reach their gateways.
+- **Enhancement:** Added a static request-scoped cache to `Helper::normalizeToE164()` so bulk campaigns no longer pay the parser cost per recipient.
+- **Enhancement:** Migration wizard now sweeps the admin notification number (`wpsms_settings.admin_mobile_number`) and scheduled-post recipients (`wpsms_scheduled_send_to`, `wpsms_scheduled_receivers` post_meta), with namespaced backup keys and a transient lock guarding against double-execution.
 - **Fix:** Improved validation error messages in settings to show which field caused the failure.
 - **Fix:** Fixed missing countries data in release package causing empty country dropdowns and phone validation failures.
 - **Fix:** Fixed subscriber form shortcode `groups` parameter not assigning subscribers to the specified group when the global group visibility setting is disabled.
+- **Fix:** OTP verification no longer fails when generation and verification submit different surface forms of the same number (e.g. `0912…` vs `+98912…`). The Generator and Verifier now normalize at the constructor boundary so both look up the same canonical row.
+- **Fix:** OTP rate limits (generation and verification attempts) now match against legacy non-canonical rows via fuzzy lookup, preventing the rate-limit window from resetting at deploy time for users with pre-fix data.
+- **Fix:** Subscriber duplicate detection (`isDuplicateInSubscribers`, `isDuplicateInUsermeta`) now matches across surface forms so legacy non-canonical rows still register as duplicates after the migration.
+- **Developer:** Behavioral change — the `wp_sms_to`, `wp_sms_add_subscriber`, and `wp_sms_mobile_number_validity` filter/action hooks now receive canonical (E.164) phone values rather than raw user input. Most third-party code is unaffected, but adapter code that re-normalized values should be reviewed.
+- **Note:** After updating, run the phone number normalization wizard from the dashboard notice to clean up legacy data. New writes are protected by fuzzy-lookup tolerance in the meantime.
+- **Enhancement:** Default Country Code is now surfaced as a persistent admin notice when international input is disabled and the field is empty, and the settings save handler now blocks half-configured states with a clear error.
+- **Enhancement:** Setup Wizard now persists the picked country as the Default Country Code so server-side normalization works out-of-the-box on fresh installs.
+- **Enhancement:** Validation error messages on phone numbers now include the offending value and a locale-specific example (e.g. "+98 912 345 6789") so users can self-correct.
+- **Enhancement:** New "Recent phone number normalization failures" admin panel surfaces silent integration failures with the source form, original value, and reason — admins can now see why their SMS isn't being delivered. Includes per-source dedup and a FIFO cap so the option store stays bounded.
+- **Enhancement:** Subscriber search now matches across phone number surface forms — typing `09123456789` finds rows stored as `+989123456789` and vice versa.
+- **Enhancement:** Phone numbers in the migration preview, subscriber list, and other admin tables now wrap in `<bdi>` so the leading `+` lands on the left of the digits in RTL admin layouts (Arabic, Hebrew, Persian).
 
 v7.2.1 - 2026-03-17
 - **New:** Added Contact column to the Two-Way inbox, showing subscriber name or WordPress user display name for each sender.
