@@ -173,6 +173,13 @@ class AdminNoticesApi extends RestApi
                 $dismissed[] = $id;
                 update_option('wp_sms_dismissed_notices', $dismissed);
             }
+
+            // The number-migration notice uses a time-bounded dismissal: after 7 days
+            // it comes back if there's still local-format data. Capture the dismissal
+            // timestamp so Dashboard::getAdminNotices can compare.
+            if ($id === 'number_migration') {
+                update_option('wpsms_number_migration_notice_dismissed_at', time());
+            }
         }
 
         return self::response(__('Notice dismissed', 'wp-sms'), 200, [

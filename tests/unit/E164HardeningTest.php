@@ -592,4 +592,136 @@ class E164HardeningTest extends WP_UnitTestCase
             // wp_send_json_success dies — expected.
         }
     }
+
+    /**
+     * Invoke a private NumberMigrationAjax method and capture the JSON payload.
+     * wp_send_json_success / _error echo their payload before calling wp_die, so we
+     * use an output buffer to capture it for response-shape assertions.
+     *
+     * @param string $methodName e.g. 'scan', 'execute', 'getStatus'
+     * @return array The decoded response (top-level: success, data)
+     */
+    private function captureJsonResponse($methodName)
+    {
+        $controller = new \WP_SMS\Controller\NumberMigrationAjax();
+        $reflection = new \ReflectionClass($controller);
+        $method     = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+
+        ob_start();
+        try {
+            $method->invoke($controller);
+        } catch (\WPDieException $e) {
+            // expected — wp_send_json_success/error dies after echoing
+        }
+        $output = ob_get_clean();
+
+        $decoded = json_decode($output, true);
+        $this->assertIsArray($decoded, sprintf('%s() should have produced JSON output', $methodName));
+        return $decoded;
+    }
+
+    // ---------------------------------------------------------------------
+    // Backend response shapes — extends the surface for the redesigned wizard UI
+    // ---------------------------------------------------------------------
+
+    public function testScanResponseExposesTotalRecordsAndSamples()
+    {
+        global $wpdb;
+
+        // Seed two local-format subscribers so the scan reports need_fix > 0 and
+        // can pull example values into the samples array.
+        $wpdb->insert(
+            $wpdb->prefix . 'sms_subscribes',
+            ['name' => 'A', 'mobile' => '09123456789', 'status' => '1', 'date' => current_time('mysql')]
+        );
+        $wpdb->insert(
+            $wpdb->prefix . 'sms_subscribes',
+            ['name' => 'B', 'mobile' => '+989123456788', 'status' => '1', 'date' => current_time('mysql')]
+        );
+
+        $response = $this->captureJsonResponse('scan');
+        $this->assertTrue($response['success'] ?? false);
+
+        $data = $response['data'];
+        $this->assertArrayHasKey('total_records', $data);
+        $this->assertArrayHasKey('samples', $data);
+        $this->assertArrayHasKey('previous_run_sources', $data);
+        $this->assertArrayHasKey('cc_changed_since_last_run', $data);
+        $this->assertArrayHasKey('last_run_had_errors', $data);
+        $this->assertArrayHasKey('backup_timestamp', $data);
+        $this->assertArrayHasKey('backup_timestamp_iso', $data);
+
+        $this->assertEquals(
+            ($data['total_need_fix'] + $data['total_already_intl']),
+            $data['total_records'],
+            'total_records should equal need_fix + already_intl'
+        );
+        $this->assertGreaterThanOrEqual(1, count($data['samples']));
+        $this->assertContains('09123456789', $data['samples']);
+    }
+
+    public function testScanErrorResponseIncludesModeFlag()
+    {
+        // Force a missing-CC condition by clearing both options
+        Option::updateOption('mobile_county_code', '');
+        Option::updateOption('international_mobile', true);
+
+        $response = $this->captureJsonResponse('scan');
+        $this->assertFalse($response['success'] ?? true);
+        $this->assertEquals('missing_country_code', $response['data']['code']);
+        // International input mode should be flagged so the UI can show different copy.
+        $this->assertEquals('international_input', $response['data']['mode']);
+    }
+
+    public function testExecuteResponseIncludesFormattedTimestamp()
+    {
+        Option::updateOption('admin_mobile_number', '09123456789');
+
+        $response = $this->captureJsonResponse('execute');
+        $this->assertTrue($response['success'] ?? false);
+
+        $data = $response['data'];
+        $this->assertArrayHasKey('timestamp', $data);
+        $this->assertArrayHasKey('backup_timestamp', $data);
+        $this->assertArrayHasKey('backup_timestamp_iso', $data);
+        $this->assertArrayHasKey('sources_touched', $data);
+        $this->assertNotEmpty($data['timestamp'], 'timestamp should be a formatted string');
+        // ISO timestamps look like 2026-04-08T12:34:56+00:00
+        $this->assertMatchesRegularExpression(
+            '/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/',
+            $data['backup_timestamp_iso']
+        );
+    }
+
+    public function testStatusResponseIncludesRunningAndBackupTimestamp()
+    {
+        // First run a migration so a backup + status exist
+        Option::updateOption('admin_mobile_number', '09123456789');
+        $this->callExecuteAndAssertSuccess();
+
+        $response = $this->captureJsonResponse('getStatus');
+        $this->assertTrue($response['success'] ?? false);
+
+        $data = $response['data'];
+        $this->assertArrayHasKey('running', $data);
+        $this->assertArrayHasKey('backup_timestamp', $data);
+        $this->assertArrayHasKey('backup_timestamp_iso', $data);
+        $this->assertArrayHasKey('last_run_had_errors', $data);
+        $this->assertFalse($data['running'], 'lock should be released after execute completes');
+        $this->assertTrue($data['backup_exists']);
+    }
+
+    public function testClearBackupSubActionDeletesBackupOption()
+    {
+        // Run a migration so a backup exists
+        Option::updateOption('admin_mobile_number', '09123456789');
+        $this->callExecuteAndAssertSuccess();
+        $this->assertNotEmpty(get_option(\WP_SMS\Controller\NumberMigrationAjax::BACKUP_OPTION_KEY));
+
+        $response = $this->captureJsonResponse('clearBackup');
+        $this->assertTrue($response['success'] ?? false);
+        $this->assertTrue($response['data']['cleared']);
+        $this->assertEmpty(get_option(\WP_SMS\Controller\NumberMigrationAjax::BACKUP_OPTION_KEY));
+    }
 }

@@ -5,6 +5,7 @@ namespace WP_SMS\Controller;
 use WP_SMS\Helper;
 use WP_SMS\Option;
 use WP_SMS\Components\NumberParser;
+use WP_SMS\Components\DateTime;
 
 if (!defined('ABSPATH')) exit;
 
@@ -42,6 +43,9 @@ class NumberMigrationAjax extends AjaxControllerAbstract
                 break;
             case 'revert':
                 $this->revert();
+                break;
+            case 'clear_backup':
+                $this->clearBackup();
                 break;
             default:
                 wp_send_json_error(__('Invalid sub-action.', 'wp-sms'), 400);
@@ -168,9 +172,14 @@ class NumberMigrationAjax extends AjaxControllerAbstract
 
         $countryCode = $this->getConfiguredCountryCode();
         if (is_wp_error($countryCode)) {
+            // Tell the frontend which copy variant to show for the country step. When
+            // international_mobile is enabled we still need a CC for legacy local-format
+            // data, but we must not imply the user has to change their input mode.
+            $mode = Option::getOption('international_mobile') ? 'international_input' : 'default';
             wp_send_json_error([
                 'code'    => $countryCode->get_error_code(),
                 'message' => $countryCode->get_error_message(),
+                'mode'    => $mode,
             ], 400);
             return;
         }
@@ -179,6 +188,7 @@ class NumberMigrationAjax extends AjaxControllerAbstract
         $scanResults = [];
         $totalNeedFix    = 0;
         $totalAlreadyOk  = 0;
+        $samples         = [];
 
         foreach ($sources as $source) {
             $whereBase = isset($source['where_extra']) ? $source['where_extra'] : "`{$source['column']}` != ''";
@@ -208,16 +218,63 @@ class NumberMigrationAjax extends AjaxControllerAbstract
 
             $totalNeedFix   += $needFix;
             $totalAlreadyOk += $alreadyOk;
+
+            // Pull up to 3 example "before" values from the first source with need_fix > 0
+            // so the UI can show concrete patterns ("What kind of numbers need fixing?")
+            // without an extra round-trip.
+            if (empty($samples) && $needFix > 0 && $source['type'] === 'single') {
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                $sampleRows = $wpdb->get_col("SELECT `{$source['column']}` FROM `{$source['table']}` WHERE {$whereBase} AND `{$source['column']}` NOT LIKE '+%' LIMIT 3");
+                if (!empty($sampleRows)) {
+                    $samples = array_values(array_filter(array_map('strval', $sampleRows)));
+                }
+            }
         }
 
-        $backupExists = !empty(get_option(self::BACKUP_OPTION_KEY));
+        $backup             = get_option(self::BACKUP_OPTION_KEY);
+        $backupExists       = !empty($backup);
+        $backupTimestamp    = null;
+        $backupTimestampIso = null;
+        if ($backupExists && !empty($backup['timestamp'])) {
+            $backupTimestamp    = $this->formatLocalizedTimestamp($backup['timestamp']);
+            $backupTimestampIso = $this->formatIsoTimestamp($backup['timestamp']);
+        }
+
+        // Detect whether the admin added/removed data sources since the last run.
+        // Drives a "we're checking N new sources" banner on the Review step.
+        $previousStatus      = get_option(self::STATUS_OPTION_KEY, []);
+        $previousCounts      = isset($previousStatus['counts']) && is_array($previousStatus['counts'])
+            ? $previousStatus['counts']
+            : [];
+        $currentSourceKeys   = array_keys($scanResults);
+        $previousSourceKeys  = array_keys($previousCounts);
+        $newSourcesSinceLast = $previousCounts
+            ? array_values(array_diff($currentSourceKeys, $previousSourceKeys))
+            : [];
+
+        // Detect whether the plugin default country code changed since the last run.
+        // If it did, we force the user to re-scan before applying changes.
+        $ccChanged = false;
+        if (!empty($previousStatus['country_code']) && $previousStatus['country_code'] !== $countryCode) {
+            $ccChanged = true;
+        }
+
+        $lastRunHadErrors = !empty($previousStatus['errors']);
 
         wp_send_json_success([
-            'country_code'       => $countryCode,
-            'sources'            => $scanResults,
-            'total_need_fix'     => $totalNeedFix,
-            'total_already_intl' => $totalAlreadyOk,
-            'backup_exists'      => $backupExists,
+            'country_code'              => $countryCode,
+            'sources'                   => $scanResults,
+            'total_need_fix'            => $totalNeedFix,
+            'total_already_intl'        => $totalAlreadyOk,
+            'total_records'             => $totalNeedFix + $totalAlreadyOk,
+            'samples'                   => $samples,
+            'backup_exists'             => $backupExists,
+            'backup_timestamp'          => $backupTimestamp,
+            'backup_timestamp_iso'      => $backupTimestampIso,
+            'previous_run_sources'      => $previousSourceKeys,
+            'new_sources_since_last'    => $newSourcesSinceLast,
+            'cc_changed_since_last_run' => $ccChanged,
+            'last_run_had_errors'       => $lastRunHadErrors,
         ]);
     }
 
@@ -361,6 +418,10 @@ class NumberMigrationAjax extends AjaxControllerAbstract
             $offset     = 0;
 
             while (true) {
+                // Refresh the lock TTL per batch so a legitimately long-running migration
+                // on a huge dataset can't let another admin acquire the lock mid-flight.
+                set_transient(self::LOCK_TRANSIENT, time(), self::LOCK_TTL_SECONDS);
+
                 if ($source['type'] === 'single') {
                     $rows = $wpdb->get_results($wpdb->prepare(
                         "SELECT {$source['pk']} AS pk_val, {$source['column']} AS phone
@@ -480,9 +541,10 @@ class NumberMigrationAjax extends AjaxControllerAbstract
         Option::updateOption('mobile_county_code', $countryCode);
 
         // Save migration status
+        $completedAt = current_time('mysql');
         update_option(self::STATUS_OPTION_KEY, [
             'status'          => 'completed',
-            'timestamp'       => current_time('mysql'),
+            'timestamp'       => $completedAt,
             'country_code'    => $countryCode,
             'counts'          => $migrationCounts,
             'total_migrated'  => $totalMigrated,
@@ -491,11 +553,24 @@ class NumberMigrationAjax extends AjaxControllerAbstract
 
         delete_transient(self::LOCK_TRANSIENT);
 
+        // Count the number of sources that actually migrated rows — surfaced on the
+        // Done step ("We updated X numbers across Y sources").
+        $sourcesTouched = 0;
+        foreach ($migrationCounts as $count) {
+            if ($count > 0) {
+                $sourcesTouched++;
+            }
+        }
+
         wp_send_json_success([
-            'counts'         => $migrationCounts,
-            'total_migrated' => $totalMigrated,
-            'errors'         => $errors,
-            'backup_created' => true,
+            'counts'               => $migrationCounts,
+            'total_migrated'       => $totalMigrated,
+            'sources_touched'      => $sourcesTouched,
+            'errors'               => $errors,
+            'backup_created'       => true,
+            'timestamp'            => $this->formatLocalizedTimestamp($completedAt),
+            'backup_timestamp'     => $this->formatLocalizedTimestamp($completedAt),
+            'backup_timestamp_iso' => $this->formatIsoTimestamp($completedAt),
         ]);
     }
 
@@ -667,10 +742,86 @@ class NumberMigrationAjax extends AjaxControllerAbstract
             'status' => 'not_started',
         ]);
 
-        $backupExists = !empty(get_option(self::BACKUP_OPTION_KEY));
-        $status['backup_exists'] = $backupExists;
+        $backup             = get_option(self::BACKUP_OPTION_KEY);
+        $backupTimestamp    = null;
+        $backupTimestampIso = null;
+        if (!empty($backup) && !empty($backup['timestamp'])) {
+            $backupTimestamp    = $this->formatLocalizedTimestamp($backup['timestamp']);
+            $backupTimestampIso = $this->formatIsoTimestamp($backup['timestamp']);
+        }
+        $status['backup_exists']        = !empty($backup);
+        $status['backup_timestamp']     = $backupTimestamp;
+        $status['backup_timestamp_iso'] = $backupTimestampIso;
+
+        // `running` flag lets the frontend collide-detect another admin running execute
+        // right now, so it can auto-poll until the lock clears and jump to Done.
+        $status['running'] = (bool) get_transient(self::LOCK_TRANSIENT);
+
+        $status['last_run_had_errors'] = !empty($status['errors']);
 
         wp_send_json_success($status);
+    }
+
+    /**
+     * Clear the migration backup without running revert.
+     *
+     * Used by the "Clear old backup" affordance when an admin wants to drop a stale
+     * backup before running a fresh migration.
+     */
+    private function clearBackup()
+    {
+        if (get_transient(self::LOCK_TRANSIENT)) {
+            wp_send_json_error([
+                'code'    => 'migration_in_progress',
+                'message' => __('Another migration is already running. Please wait for it to finish before retrying.', 'wp-sms'),
+            ], 409);
+        }
+
+        delete_option(self::BACKUP_OPTION_KEY);
+
+        wp_send_json_success([
+            'cleared' => true,
+        ]);
+    }
+
+    /**
+     * Format a mysql timestamp (site time) into a human-readable string with the
+     * site's timezone abbreviation appended — surfaced on the wizard's Done step
+     * so admins can confirm the backup time without needing to compute it.
+     *
+     * @param string $mysqlTimestamp
+     * @return string
+     */
+    private function formatLocalizedTimestamp($mysqlTimestamp)
+    {
+        if (empty($mysqlTimestamp)) {
+            return '';
+        }
+        try {
+            return sprintf(
+                '%s (%s)',
+                DateTime::format($mysqlTimestamp, ['include_time' => true]),
+                wp_timezone_string()
+            );
+        } catch (\Exception $e) {
+            return (string) $mysqlTimestamp;
+        }
+    }
+
+    /**
+     * Format a mysql timestamp as ISO 8601 — used by the revert dialog so the JS
+     * side can pass it to Date constructors without parsing site-format strings.
+     *
+     * @param string $mysqlTimestamp
+     * @return string
+     */
+    private function formatIsoTimestamp($mysqlTimestamp)
+    {
+        if (empty($mysqlTimestamp)) {
+            return '';
+        }
+        $unix = strtotime($mysqlTimestamp);
+        return $unix === false ? (string) $mysqlTimestamp : gmdate('c', $unix);
     }
 
     /**
