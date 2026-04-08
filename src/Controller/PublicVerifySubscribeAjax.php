@@ -10,6 +10,12 @@ if (!defined('ABSPATH')) exit;
 class PublicVerifySubscribeAjax extends AjaxControllerAbstract
 {
     protected $action = 'wp_sms_verify_subscribe';
+    /**
+     * Public endpoint: visitors confirm their subscription via activation code.
+     *
+     * @var string|null
+     */
+    protected $capability = null;
     public $requiredFields = [
         'name',
         'mobile',

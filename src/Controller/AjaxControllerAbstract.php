@@ -7,6 +7,16 @@ if (!defined('ABSPATH')) exit;
 abstract class AjaxControllerAbstract
 {
     protected $action;
+    /**
+     * Capability required to invoke the AJAX endpoint.
+     *
+     * Defaults to 'manage_options' so any controller that forgets to declare
+     * an explicit capability is locked down by default. Public controllers
+     * (open to unauthenticated visitors) MUST set this to null to opt out.
+     *
+     * @var string|null
+     */
+    protected $capability = 'manage_options';
     public $request;
     public $wp;
     public $user;
@@ -39,6 +49,10 @@ abstract class AjaxControllerAbstract
             // Check CSRF
             if (!wp_verify_nonce($action->get('_nonce'), $action->action)) {
                 throw new \Exception(esc_html__('Access denied.', 'wp-sms'));
+            }
+
+            if ($action->capability !== null && !current_user_can($action->capability)) {
+                throw new \Exception(esc_html__('You do not have permission to perform this action.', 'wp-sms'));
             }
 
             // Check required parameters
