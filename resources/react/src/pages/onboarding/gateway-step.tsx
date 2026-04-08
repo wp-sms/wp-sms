@@ -1,15 +1,16 @@
-import { useRef, useState, useMemo } from 'react';
+import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
 import { Search, CheckCircle2, XCircle, Loader2, ChevronDown, ExternalLink, Info, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { GatewayConfigForm, type GatewayConfigFormHandle } from '@/components/gateway-config-form';
+import { GatewayConfigForm } from '@/components/gateway-config-form';
 import type { UseGatewaysReturn } from '@/hooks/use-gateways';
 import { cn } from '@/lib/utils';
-import { getConfig, type Gateway, type OnboardingGoal } from '@/lib/api';
+import { getConfig, type Gateway, type GatewayConfig, type OnboardingGoal } from '@/lib/api';
 import { channelLabel } from '@/lib/channel';
 
 const PRIMARY_CHANNELS = ['sms', 'email'];
+const SAVE_DEBOUNCE_MS = 600;
 
 function getLocaleRegions(): string[] {
   const locale = getConfig().locale ?? 'en_US';
@@ -55,7 +56,15 @@ export function GatewayStep({ goals, gatewaysHook }: GatewayStepProps) {
   const [channelFilter, setChannelFilter] = useState<string>('all');
   const [testStatus, setTestStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
   const [testError, setTestError] = useState<string | null>(null);
-  const formRef = useRef<GatewayConfigFormHandle>(null);
+
+  // Local draft of the selected gateway's config. The form reads from this
+  // so typing is instant; saves are debounced (SAVE_DEBOUNCE_MS) to avoid
+  // one API PUT per keystroke. draftRef mirrors draftConfig so the unmount
+  // cleanup can read the latest value without stale-closure issues.
+  const [draftConfig, setDraftConfig] = useState<GatewayConfig | null>(null);
+  const draftRef = useRef<GatewayConfig | null>(null);
+  const savingIdRef = useRef<string | null>(null);
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const recommended = useMemo(() => getRecommended(gateways, goals), [gateways, goals]);
   const selectedGateway = gateways.find((g) => g.id === selectedId);
@@ -73,13 +82,78 @@ export function GatewayStep({ goals, gatewaysHook }: GatewayStepProps) {
     return PRIMARY_CHANNELS.filter((ch) => all.has(ch));
   }, [gateways]);
 
-  const selectGateway = (id: string | null) => { setSelectedId(id); setTestStatus('idle'); setTestError(null); };
+  // Synchronously send any pending debounced save to the server. Called
+  // before operations that must see the latest typed values: Test Connection,
+  // switching gateways, or wizard unmount.
+  const flushPendingSave = useCallback(() => {
+    if (!saveTimerRef.current) return;
+    clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = undefined;
+    const pending = draftRef.current;
+    const id = savingIdRef.current;
+    savingIdRef.current = null;
+    if (pending && id) {
+      void updateConfig({ [id]: pending as unknown as Record<string, unknown> });
+      setTestStatus('idle');
+      setTestError(null);
+    }
+  }, [updateConfig]);
+
+  const selectGateway = (id: string | null) => {
+    // Flush any pending edit on the previous gateway before switching so we
+    // don't lose the user's in-flight typing.
+    flushPendingSave();
+    setSelectedId(id);
+    setTestStatus('idle');
+    setTestError(null);
+  };
+
+  // Initialize the draft when the selected gateway changes (including the
+  // first time one is selected). Intentionally keyed on selectedId, not on
+  // selectedGateway.config, so a background refetch that returns the same
+  // gateway does not overwrite in-progress edits.
+  useEffect(() => {
+    if (selectedGateway) {
+      setDraftConfig(selectedGateway.config);
+      draftRef.current = selectedGateway.config;
+    } else {
+      setDraftConfig(null);
+      draftRef.current = null;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedId]);
+
+  // Flush any pending save on wizard navigation / unmount so edits are not
+  // lost when the user clicks Continue. Fire-and-forget: the promise chain
+  // in updateConfig runs to completion regardless of mount state.
+  useEffect(() => {
+    return () => { flushPendingSave(); };
+  }, [flushPendingSave]);
+
+  const handleFormChange = (config: GatewayConfig) => {
+    if (!selectedId) return;
+    setDraftConfig(config);
+    draftRef.current = config;
+    savingIdRef.current = selectedId;
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => {
+      saveTimerRef.current = undefined;
+      const pending = draftRef.current;
+      const id = savingIdRef.current;
+      savingIdRef.current = null;
+      if (pending && id) {
+        void updateConfig({ [id]: pending as unknown as Record<string, unknown> });
+        setTestStatus('idle');
+        setTestError(null);
+      }
+    }, SAVE_DEBOUNCE_MS);
+  };
 
   const handleTestConnection = async () => {
     if (!selectedId) return;
     // Flush any pending debounced save so the test runs against the values
     // the user just typed, not the previously-saved server state.
-    formRef.current?.flush();
+    flushPendingSave();
     setTestStatus('testing');
     setTestError(null);
     try {
@@ -90,12 +164,6 @@ export function GatewayStep({ goals, gatewaysHook }: GatewayStepProps) {
       setTestStatus('error');
       setTestError(__('Connection test failed.', 'wp-sms'));
     }
-  };
-
-  const handleConfigSave = async (config: Record<string, Record<string, unknown>>) => {
-    if (!selectedId) return;
-    await updateConfig({ [selectedId]: config } as Record<string, Record<string, unknown>>);
-    setTestStatus('idle');
   };
 
   if (gatewaysLoading) {
@@ -261,14 +329,11 @@ export function GatewayStep({ goals, gatewaysHook }: GatewayStepProps) {
             </div>
             <div className="p-5 space-y-4">
               <GatewayConfigForm
-                ref={formRef}
                 gatewayId={selectedGateway.id}
                 schema={selectedGateway.config_schema}
-                values={selectedGateway.config}
+                values={draftConfig ?? selectedGateway.config}
                 supportedChannels={selectedGateway.supported_channels}
-                onChange={(config) => {
-                  void handleConfigSave(config as unknown as Record<string, Record<string, unknown>>);
-                }}
+                onChange={handleFormChange}
               />
 
               <div className="flex items-center gap-3">
