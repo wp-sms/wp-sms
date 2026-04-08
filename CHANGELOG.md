@@ -1,5 +1,5 @@
 v7.2.2 - 2026-03-**
-- **Security:** Added a capability check to admin AJAX controllers so low-privileged users can no longer reach endpoints that export subscribers, outbox, and two-way inbox data, render admin templates, upload/import CSV files, or trigger gateway test actions.
+- **Security:** Hardened access control on admin AJAX endpoints.
 - **Enhancement:** Added phone number normalization wizard to standardize numbers with country code for reliable delivery.
 - **Enhancement:** Tested up to WordPress v7.0
 - **Fix:** Improved validation error messages in settings to show which field caused the failure.
