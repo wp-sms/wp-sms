@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
 import { WizardLayout } from '@/components/onboarding/wizard-layout';
 import { WelcomeStep } from './welcome-step';
@@ -27,6 +27,17 @@ export function OnboardingWizard({ onComplete, onNavigate }: OnboardingWizardPro
   const [authEnabled, setAuthEnabled] = useState(false);
   const [channels, setChannels] = useState<ChannelToggles>({ email: true, phone: false, password: true });
   const [sitePhone, setSitePhone] = useState('');
+
+  // Claim in_progress on first wizard mount so the App-level auto-redirect
+  // stops firing on subsequent loads. Idempotent — no-op once status moves
+  // off 'pending'. This is the single source of truth for "user has seen
+  // the wizard" — replaces an earlier sessionStorage flag that drifted
+  // from server state.
+  useEffect(() => {
+    if (state?.status === 'pending') {
+      void updateState({ status: 'in_progress' });
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const goToStep = useCallback((nextStep: number) => {
     setStep(nextStep);

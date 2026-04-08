@@ -53,13 +53,13 @@ export default function App() {
   const isRtl = useIsRtl();
   const { caps, canViewSection } = useCapabilities();
 
-  // Auto-redirect to onboarding when status is pending (once per session) — admin only.
+  // Auto-redirect to onboarding when status is pending — admin only.
+  // The wizard transitions status to in_progress on mount, so this naturally
+  // fires only once per pending lifecycle. Re-runs after resetWizard().
   useEffect(() => {
     if (section === 'onboarding') return;
     if (!caps.is_admin) return;
-    if (sessionStorage.getItem('wsms_onboarding_redirected')) return;
     if (shouldShowOnboarding()) {
-      sessionStorage.setItem('wsms_onboarding_redirected', '1');
       setSection('onboarding');
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
