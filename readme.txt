@@ -140,6 +140,7 @@ All premium features + all add-ons in one package.
 == Changelog ==
 v7.2.2 - 2026-03-**
 - **Enhancement:** Redesigned the phone number migration wizard with a 5-step flow, step indicator, in-flight progress bar, and explicit safety messaging shown before the user commits. Revert is now wired through a confirmation dialog, the dashboard notice is dynamic ("Improve delivery reliability for N phone numbers"), and the wizard can no longer be dismissed mid-execute.
+- **Security:** Hardened access control on admin AJAX endpoints.
 - **Enhancement:** Added phone number normalization wizard to standardize numbers with country code for reliable delivery.
 - **Enhancement:** Tested up to WordPress v7.0
 - **Enhancement:** Normalized phone numbers to canonical E.164 format at every write path and at the dispatch chokepoints, so form-plugin integrations (CF7, Forminator, Formidable, etc.) and any custom caller automatically store and dispatch canonical numbers.
