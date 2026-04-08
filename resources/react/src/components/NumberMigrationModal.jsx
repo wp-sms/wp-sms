@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -6,25 +6,49 @@ import {
   DialogTitle,
   DialogDescription,
   DialogBody,
-  DialogFooter,
 } from '@/components/ui/dialog'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import {
-  Loader2,
-  Search,
-  Eye,
-  Play,
-  Undo2,
-  CheckCircle2,
-  AlertTriangle,
-  ArrowRight,
-  Info,
-} from 'lucide-react'
-import { getWpSettings, __ } from '@/lib/utils'
+import WizardStepper from '@/components/wizard/WizardStepper'
+import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog'
+import { Phone, Flag, ClipboardCheck, Eye, Play, CheckCircle2 } from 'lucide-react'
+import { __, sprintf, getWpSettings } from '@/lib/utils'
 import { adminNoticesApi } from '@/api/adminNoticesApi'
+import { useToast } from '@/components/ui/toaster'
+
+import IntroStep from './migration/IntroStep'
+import CountryStep from './migration/CountryStep'
+import ReviewStep from './migration/ReviewStep'
+import PreviewStep from './migration/PreviewStep'
+import ExecuteStep from './migration/ExecuteStep'
+import DoneStep from './migration/DoneStep'
 
 /**
- * AJAX helper for the number migration controller
+ * Number Migration Wizard. 5 steps with WizardStepper at the top; the Country step
+ * is filtered out when the backend already has a country code configured.
+ */
+
+const STEP = {
+  INTRO: 'intro',
+  COUNTRY: 'country',
+  REVIEW: 'review',
+  PREVIEW: 'preview',
+  EXECUTE: 'execute',
+  DONE: 'done',
+}
+
+const ALL_STEPS_META = [
+  { id: STEP.INTRO, label: __('Intro'), icon: Phone },
+  { id: STEP.COUNTRY, label: __('Country'), icon: Flag, conditional: true },
+  { id: STEP.REVIEW, label: __('Review'), icon: ClipboardCheck },
+  { id: STEP.PREVIEW, label: __('Preview'), icon: Eye },
+  { id: STEP.EXECUTE, label: __('Apply'), icon: Play },
+  { id: STEP.DONE, label: __('Done'), icon: CheckCircle2 },
+]
+
+/**
+ * Returns the `data` payload from wp_send_json_success, or throws an Error with
+ * a `.code` property mirroring the wp_send_json_error code.
  */
 async function migrationAjax(subAction, extraParams = {}) {
   const settings = getWpSettings()
@@ -44,51 +68,38 @@ async function migrationAjax(subAction, extraParams = {}) {
 
   const response = await fetch(ajaxUrl, { method: 'POST', body: formData })
 
-  const contentType = response.headers.get('content-type')
-  if (!contentType || !contentType.includes('application/json')) {
-    throw new Error(__('Server returned an invalid response.'))
+  // Special-case 403 (nonce expired) — we want a distinct error code so the UI
+  // can show a reload-page affordance instead of a generic error.
+  if (response.status === 403) {
+    const err = new Error(__('Your session has expired. Please reload the page to continue.'))
+    err.code = 'nonce_expired'
+    throw err
+  }
+
+  const contentType = response.headers.get('content-type') || ''
+  if (!contentType.includes('application/json')) {
+    const err = new Error(__('Server returned an invalid response.'))
+    err.code = 'invalid_response'
+    err.status = response.status
+    throw err
   }
 
   const data = await response.json()
   if (!data.success) {
     const err = new Error(data.data?.message || data.data || __('An error occurred.'))
     err.code = data.data?.code || 'unknown'
+    err.status = response.status
+    err.payload = data.data
     throw err
   }
 
   return data.data
 }
 
-const STEP_SCAN = 'scan'
-const STEP_PREVIEW = 'preview'
-const STEP_EXECUTE = 'execute'
-const STEP_DONE = 'done'
-
-/**
- * Stat card used in the scan results grid
- */
-function StatCard({ value, label, variant = 'default' }) {
-  const variants = {
-    default: 'wsms-bg-muted/50',
-    warning: 'wsms-bg-orange-50',
-    success: 'wsms-bg-green-50',
-  }
-  const textVariants = {
-    default: 'wsms-text-muted-foreground',
-    warning: 'wsms-text-orange-600',
-    success: 'wsms-text-green-600',
-  }
-  return (
-    <div className={`wsms-text-center wsms-p-2 wsms-rounded ${variants[variant]}`}>
-      <div className={`wsms-text-[18px] wsms-font-semibold ${textVariants[variant]}`}>{value}</div>
-      <div className={`wsms-text-[12px] ${textVariants[variant]}`}>{label}</div>
-    </div>
-  )
-}
-
 export default function NumberMigrationModal({ open, onOpenChange }) {
-  const { countriesByDialCode = {} } = getWpSettings()
-  const [step, setStep] = useState(STEP_SCAN)
+  const { toast } = useToast()
+
+  const [step, setStep] = useState(STEP.INTRO)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [scanData, setScanData] = useState(null)
@@ -96,26 +107,57 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
   const [previewPage, setPreviewPage] = useState(1)
   const [executeData, setExecuteData] = useState(null)
   const [needsCC, setNeedsCC] = useState(false)
+  const [ccMode, setCcMode] = useState('default')
   const [overrideCC, setOverrideCC] = useState('')
+  const [polling, setPolling] = useState(false)
+  const [revertOpen, setRevertOpen] = useState(false)
+  const [revertBusy, setRevertBusy] = useState(false)
 
-  const handleOpenChange = useCallback((isOpen) => {
-    if (!isOpen) {
-      setStep(STEP_SCAN)
-      setError(null)
-      setScanData(null)
-      setPreviewData(null)
-      setExecuteData(null)
-      setPreviewPage(1)
-      setNeedsCC(false)
-      setOverrideCC('')
-    }
-    onOpenChange(isOpen)
-  }, [onOpenChange])
+  // Rough per-row cost driving the simulated progress bar — see ProgressBar.jsx.
+  const estimatedMs = useMemo(() => {
+    const needFix = scanData?.total_need_fix || 0
+    return Math.max(2000, needFix * 6)
+  }, [scanData])
 
-  // Build extra params for AJAX calls — pass country_code if user selected one in the modal
-  const getExtraParams = useCallback(() => {
-    return overrideCC ? { country_code: overrideCC } : {}
-  }, [overrideCC])
+  const headlineRef = useRef(null)
+
+  const resetState = useCallback(() => {
+    setStep(STEP.INTRO)
+    setLoading(false)
+    setError(null)
+    setScanData(null)
+    setPreviewData(null)
+    setPreviewPage(1)
+    setExecuteData(null)
+    setNeedsCC(false)
+    setCcMode('default')
+    setOverrideCC('')
+    setPolling(false)
+    setRevertOpen(false)
+    setRevertBusy(false)
+  }, [])
+
+  // Dismiss is locked during execute: walking away from an in-flight write would
+  // leave no recovery path.
+  const handleOpenChange = useCallback(
+    (isOpen) => {
+      if (!isOpen && step === STEP.EXECUTE) {
+        return
+      }
+      if (!isOpen) {
+        resetState()
+      }
+      onOpenChange(isOpen)
+    },
+    [onOpenChange, resetState, step]
+  )
+
+  // overrideCC is non-empty only when the user picked a CC in the wizard's Country
+  // step (i.e. when the backend didn't have one configured).
+  const getExtraParams = useCallback(
+    () => (overrideCC ? { country_code: overrideCC } : {}),
+    [overrideCC]
+  )
 
   const handleScan = useCallback(async () => {
     setLoading(true)
@@ -124,9 +166,12 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
       const data = await migrationAjax('scan', getExtraParams())
       setScanData(data)
       setNeedsCC(false)
+      setStep(STEP.REVIEW)
     } catch (err) {
       if (err.code === 'missing_country_code') {
         setNeedsCC(true)
+        setCcMode(err.payload?.mode || 'default')
+        setStep(STEP.COUNTRY)
       } else {
         setError(err.message)
       }
@@ -135,348 +180,376 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
     }
   }, [getExtraParams])
 
-  const handlePreview = useCallback(async (page = 1) => {
-    setLoading(true)
-    setError(null)
-    try {
-      const data = await migrationAjax('preview', { page, per_page: 20, ...getExtraParams() })
-      setPreviewData(data)
-      setPreviewPage(page)
-      setStep(STEP_PREVIEW)
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }, [getExtraParams])
+  const handlePreviewLoad = useCallback(
+    async (page = 1, advance = true) => {
+      setLoading(true)
+      setError(null)
+      try {
+        const data = await migrationAjax('preview', {
+          page,
+          per_page: 20,
+          ...getExtraParams(),
+        })
+        setPreviewData(data)
+        setPreviewPage(page)
+        if (advance) {
+          setStep(STEP.PREVIEW)
+        }
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    },
+    [getExtraParams]
+  )
 
   const handleExecute = useCallback(async () => {
     setLoading(true)
     setError(null)
+    setStep(STEP.EXECUTE)
     try {
       const data = await migrationAjax('execute', getExtraParams())
       setExecuteData(data)
-      setStep(STEP_DONE)
-      // Dismiss the admin notice banner after successful migration
-      try { await adminNoticesApi.dismiss('number_migration', 'handler') } catch (_) { /* ignore */ }
+      setStep(STEP.DONE)
+      try {
+        await adminNoticesApi.dismiss('number_migration', 'handler')
+      } catch (_) {
+        /* non-fatal — the notice will re-show on next page load if anything */
+      }
       window.dispatchEvent(new CustomEvent('wpsms:number-migration-done'))
     } catch (err) {
-      setError(err.message)
+      if (err.code === 'migration_in_progress') {
+        setPolling(true)
+      } else if (err.code === 'nonce_expired') {
+        setError(err.message)
+        setStep(STEP.REVIEW)
+      } else {
+        // Don't know whether the write landed — surface a recovery state with
+        // explicit Refresh / Re-scan affordances.
+        setError(
+          __(
+            "We couldn't confirm the update finished. The change may or may not have been applied."
+          )
+        )
+      }
     } finally {
       setLoading(false)
     }
   }, [getExtraParams])
 
+  // Auto-poll status when another admin already grabbed the lock. Track the
+  // latest setTimeout id explicitly so cleanup cancels the next scheduled tick.
+  useEffect(() => {
+    if (!polling) return
+    const startedAt = Date.now()
+    const POLL_INTERVAL = 3_000
+    const POLL_TIMEOUT = 30_000
+    let cancelled = false
+    let timerId = null
+
+    const tick = async () => {
+      if (cancelled) return
+      try {
+        const status = await migrationAjax('status')
+        if (cancelled) return
+        if (status.status === 'completed' && !status.running) {
+          const counts = status.counts || {}
+          setExecuteData({
+            total_migrated: status.total_migrated || 0,
+            sources_touched: Object.values(counts).filter((c) => c > 0).length,
+            counts,
+            errors: status.errors || [],
+            backup_timestamp: status.backup_timestamp || '',
+          })
+          setPolling(false)
+          setStep(STEP.DONE)
+          return
+        }
+      } catch (_) {
+        /* swallow transient errors — we'll retry on the next tick */
+      }
+      if (Date.now() - startedAt > POLL_TIMEOUT) {
+        setPolling(false)
+        setError(
+          __(
+            "We couldn't confirm the update finished. Please refresh this page and run the check again."
+          )
+        )
+        setStep(STEP.REVIEW)
+        return
+      }
+      timerId = setTimeout(tick, POLL_INTERVAL)
+    }
+
+    timerId = setTimeout(tick, POLL_INTERVAL)
+    return () => {
+      cancelled = true
+      if (timerId) clearTimeout(timerId)
+    }
+  }, [polling])
+
+  const handleForceRefresh = useCallback(async () => {
+    if (polling) return
+    try {
+      const status = await migrationAjax('status')
+      if (status.status === 'completed' && !status.running) {
+        const counts = status.counts || {}
+        setExecuteData({
+          total_migrated: status.total_migrated || 0,
+          sources_touched: Object.values(counts).filter((c) => c > 0).length,
+          counts,
+          errors: status.errors || [],
+          backup_timestamp: status.backup_timestamp || '',
+        })
+        setStep(STEP.DONE)
+      }
+    } catch (err) {
+      setError(err.message)
+    }
+  }, [polling])
+
+  const openRevert = useCallback(() => {
+    setError(null)
+    setRevertOpen(true)
+  }, [])
+
   const handleRevert = useCallback(async () => {
+    setRevertBusy(true)
+    try {
+      const data = await migrationAjax('revert')
+      setRevertOpen(false)
+      resetState()
+      handleOpenChange(false)
+      toast({
+        variant: 'success',
+        title: __('Restored'),
+        description: sprintf(
+          __('%d numbers restored to their original format.'),
+          data.total_reverted || 0
+        ),
+      })
+      window.dispatchEvent(new CustomEvent('wpsms:number-migration-done'))
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setRevertBusy(false)
+    }
+  }, [resetState, handleOpenChange, toast])
+
+  const handleClearBackup = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
-      const data = await migrationAjax('revert')
-      setExecuteData(null)
-      setScanData(null)
-      setStep(STEP_SCAN)
-      setError(null)
-      alert(__('Successfully reverted') + `: ${data.total_reverted} ` + __('numbers restored.'))
+      await migrationAjax('clear_backup')
+      setScanData((prev) =>
+        prev
+          ? { ...prev, backup_exists: false, backup_timestamp: null, last_run_had_errors: false }
+          : prev
+      )
+      toast({
+        variant: 'success',
+        title: __('Cleared'),
+        description: __('The old backup was cleared.'),
+      })
     } catch (err) {
       setError(err.message)
     } finally {
       setLoading(false)
     }
+  }, [toast])
+
+  const handleWrongCountry = useCallback(() => {
+    setNeedsCC(true)
+    setCcMode('default')
+    setStep(STEP.COUNTRY)
   }, [])
 
+  const handleRescan = useCallback(async () => {
+    setExecuteData(null)
+    setPreviewData(null)
+    setPreviewPage(1)
+    await handleScan()
+  }, [handleScan])
+
+  const handleNavigate = useCallback(
+    (dest) => {
+      window.dispatchEvent(new CustomEvent('wpsms:navigate', { detail: { dest } }))
+      handleOpenChange(false)
+    },
+    [handleOpenChange]
+  )
+
+  const visibleSteps = useMemo(
+    () => ALL_STEPS_META.filter((s) => (s.conditional ? needsCC : true)),
+    [needsCC]
+  )
+
+  const currentStepIndex = useMemo(() => {
+    const idx = visibleSteps.findIndex((s) => s.id === step)
+    return idx === -1 ? 0 : idx
+  }, [visibleSteps, step])
+
+  const completedSteps = useMemo(
+    () => Array.from({ length: currentStepIndex }, (_, i) => i),
+    [currentStepIndex]
+  )
+
+  // Move focus to the active step's headline on every step change so screen
+  // reader users don't lose their place between steps.
+  useEffect(() => {
+    if (!open) return
+    const t = setTimeout(() => {
+      headlineRef.current?.focus?.()
+    }, 50)
+    return () => clearTimeout(t)
+  }, [step, open])
+
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent size="xl">
-        <DialogHeader>
-          <DialogTitle>{__('Phone Number Improvement')}</DialogTitle>
-          <DialogDescription>
-            {__('Standardize your phone numbers by adding the country code for more reliable delivery.')}
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent
+          size="xl"
+          showClose={step !== STEP.EXECUTE}
+          onInteractOutside={(e) => {
+            if (step === STEP.EXECUTE) e.preventDefault()
+          }}
+          onEscapeKeyDown={(e) => {
+            if (step === STEP.EXECUTE) e.preventDefault()
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle>{__('Phone number check')}</DialogTitle>
+            <DialogDescription>
+              {__('Get your numbers ready for reliable SMS delivery.')}
+            </DialogDescription>
+          </DialogHeader>
 
-        <DialogBody>
-          {error && (
-            <div className="wsms-flex wsms-items-start wsms-gap-2 wsms-p-3 wsms-rounded-lg wsms-bg-destructive/10 wsms-text-destructive wsms-text-[13px] wsms-mb-4">
-              <AlertTriangle className="wsms-h-4 wsms-w-4 wsms-mt-0.5 wsms-shrink-0" />
-              <span>{error}</span>
-            </div>
-          )}
+          <DialogBody>
+            <WizardStepper
+              steps={visibleSteps}
+              currentStep={currentStepIndex}
+              completedSteps={completedSteps}
+            />
 
-          {/* ========== STEP: SCAN ========== */}
-          {step === STEP_SCAN && (
-            <div className="wsms-space-y-4">
-              {!scanData || needsCC ? (
-                <div className="wsms-text-center wsms-py-8">
-                  <Search className="wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mx-auto wsms-mb-3" />
-                  <p className="wsms-text-[14px] wsms-text-foreground wsms-font-medium wsms-mb-1">
-                    {__('Check your phone numbers')}
-                  </p>
-                  <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-4">
-                    {__('We\'ll review your stored phone numbers and find any that need a country code added.')}
-                  </p>
-
-                  {/* Country code selector — shown when CC is not configured */}
-                  {needsCC && (
-                    <div className="wsms-mb-4 wsms-mx-auto wsms-max-w-xs wsms-text-start">
-                      <label className="wsms-block wsms-text-[13px] wsms-font-medium wsms-mb-1">
-                        {__('Select your default country code')}
-                      </label>
-                      <select
-                        className="wsms-w-full wsms-border wsms-rounded-md wsms-px-3 wsms-py-2 wsms-text-[13px]"
-                        value={overrideCC}
-                        onChange={(e) => setOverrideCC(e.target.value)}
+            {error && (
+              <Alert variant="destructive" className="wsms-mb-4" aria-live="assertive">
+                <AlertDescription>
+                  <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-2">
+                    <span>{error}</span>
+                    <div className="wsms-flex wsms-gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setError(null)
+                          if (step === STEP.EXECUTE) setStep(STEP.REVIEW)
+                        }}
                       >
-                        <option value="">{__('Select country code...')}</option>
-                        {Object.entries(countriesByDialCode).map(([dialCode, label]) => (
-                          <option key={dialCode} value={dialCode}>{label}</option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-
-                  <Button onClick={handleScan} disabled={loading || (needsCC && !overrideCC)}>
-                    {loading ? (
-                      <>
-                        <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1.5 wsms-animate-spin" />
-                        {__('Scanning...')}
-                      </>
-                    ) : (
-                      <>
-                        <Search className="wsms-h-4 wsms-w-4 wsms-me-1.5" />
-                        {needsCC ? __('Set & Start Scan') : __('Start Scan')}
-                      </>
-                    )}
-                  </Button>
-                </div>
-              ) : (
-                <div className="wsms-space-y-4">
-                  <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/50 wsms-text-[13px]">
-                    <span className="wsms-font-medium">{__('Country Code')}:</span>{' '}
-                    <code className="wsms-bg-background wsms-px-1.5 wsms-py-0.5 wsms-rounded wsms-font-mono">{scanData.country_code}</code>
-                  </div>
-
-                  {/* Dynamic source cards */}
-                  {scanData.sources && Object.entries(scanData.sources).map(([key, source]) => (
-                    source.total > 0 && (
-                      <div key={key} className="wsms-border wsms-rounded-lg wsms-p-4">
-                        <h4 className="wsms-text-[14px] wsms-font-medium wsms-mb-2">{source.label}</h4>
-                        <div className="wsms-grid wsms-grid-cols-3 wsms-gap-3 wsms-text-[13px]">
-                          <StatCard value={source.total} label={__('Total')} />
-                          <StatCard value={source.need_fix} label={__('Need Fix')} variant="warning" />
-                          <StatCard value={source.already_intl} label={__('Already OK')} variant="success" />
-                        </div>
-                      </div>
-                    )
-                  ))}
-
-                  {scanData.total_need_fix === 0 ? (
-                    <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-3 wsms-rounded-lg wsms-bg-green-50 wsms-text-green-700 wsms-text-[13px]">
-                      <CheckCircle2 className="wsms-h-4 wsms-w-4" />
-                      {__('All your phone numbers already include a country code. No update needed!')}
-                    </div>
-                  ) : (
-                    <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-3 wsms-rounded-lg wsms-bg-blue-50 wsms-text-blue-700 wsms-text-[13px]">
-                      <Info className="wsms-h-4 wsms-w-4" />
-                      {scanData.total_need_fix} {__('numbers can be improved.')}
-                    </div>
-                  )}
-
-                  {scanData.backup_exists && (
-                    <div className="wsms-flex wsms-items-center wsms-justify-between wsms-p-3 wsms-rounded-lg wsms-bg-blue-50 wsms-text-blue-700 wsms-text-[13px]">
-                      <span>{__('A previous backup exists.')}</span>
-                      <Button variant="outline" size="sm" onClick={handleRevert} disabled={loading}>
-                        <Undo2 className="wsms-h-3.5 wsms-w-3.5 wsms-me-1" />
-                        {__('Revert')}
+                        {__('Dismiss')}
                       </Button>
                     </div>
+                  </div>
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {polling && (
+              <Alert variant="info" className="wsms-mb-4">
+                <AlertDescription>
+                  {__(
+                    "Another administrator started this update a few seconds ago. We'll check on it."
                   )}
-                </div>
-              )}
-            </div>
-          )}
+                </AlertDescription>
+              </Alert>
+            )}
 
-          {/* ========== STEP: PREVIEW ========== */}
-          {step === STEP_PREVIEW && previewData && (
-            <div className="wsms-space-y-4">
-              <p className="wsms-text-[13px] wsms-text-muted-foreground">
-                {__('Here\'s a preview of how your numbers will look. Country code:')}{' '}
-                <code className="wsms-bg-muted wsms-px-1 wsms-rounded wsms-font-mono">{previewData.country_code}</code>
-              </p>
+            {step === STEP.INTRO && (
+              <IntroStep
+                headlineRef={headlineRef}
+                loading={loading}
+                onStart={handleScan}
+                onCancel={() => handleOpenChange(false)}
+              />
+            )}
 
-              <div className="wsms-border wsms-rounded-lg wsms-overflow-hidden">
-                <table className="wsms-w-full wsms-text-[13px]">
-                  <thead>
-                    <tr className="wsms-bg-muted/50">
-                      <th className="wsms-text-start wsms-px-3 wsms-py-2 wsms-font-medium">{__('Source')}</th>
-                      <th className="wsms-text-start wsms-px-3 wsms-py-2 wsms-font-medium">{__('Name')}</th>
-                      <th className="wsms-text-start wsms-px-3 wsms-py-2 wsms-font-medium">{__('Current')}</th>
-                      <th className="wsms-text-center wsms-px-1 wsms-py-2"></th>
-                      <th className="wsms-text-start wsms-px-3 wsms-py-2 wsms-font-medium">{__('Updated')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {previewData.preview.map((item, index) => (
-                      <tr key={`${item.source}-${item.id}-${index}`} className="wsms-border-t">
-                        <td className="wsms-px-3 wsms-py-2">
-                          <span className="wsms-inline-flex wsms-px-1.5 wsms-py-0.5 wsms-rounded wsms-text-[11px] wsms-font-medium wsms-bg-blue-100 wsms-text-blue-700">
-                            {item.label}
-                          </span>
-                        </td>
-                        <td className="wsms-px-3 wsms-py-2 wsms-text-muted-foreground">{item.name || '—'}</td>
-                        <td className="wsms-px-3 wsms-py-2">
-                          <code className="wsms-font-mono wsms-text-orange-600 wsms-text-[12px] wsms-break-all">{item.original}</code>
-                        </td>
-                        <td className="wsms-px-1 wsms-py-2 wsms-text-center">
-                          <ArrowRight className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground wsms-inline" />
-                        </td>
-                        <td className="wsms-px-3 wsms-py-2">
-                          <code className="wsms-font-mono wsms-text-green-600 wsms-text-[12px] wsms-break-all">{item.migrated}</code>
-                        </td>
-                      </tr>
-                    ))}
-                    {previewData.preview.length === 0 && (
-                      <tr>
-                        <td colSpan={5} className="wsms-px-3 wsms-py-6 wsms-text-center wsms-text-muted-foreground">
-                          {__('No numbers to preview on this page.')}
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+            {step === STEP.COUNTRY && (
+              <CountryStep
+                headlineRef={headlineRef}
+                mode={ccMode}
+                value={overrideCC}
+                onChange={setOverrideCC}
+                loading={loading}
+                onContinue={handleScan}
+                onBack={() => setStep(STEP.INTRO)}
+              />
+            )}
 
-              <div className="wsms-flex wsms-items-center wsms-justify-between wsms-text-[13px]">
-                <span className="wsms-text-muted-foreground">
-                  {__('Page')} {previewPage}
-                </span>
-                <div className="wsms-flex wsms-gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={previewPage <= 1 || loading}
-                    onClick={() => handlePreview(previewPage - 1)}
-                  >
-                    {__('Previous')}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={previewPage * (previewData.per_page || 20) >= (previewData.total || 0) || loading}
-                    onClick={() => handlePreview(previewPage + 1)}
-                  >
-                    {__('Next')}
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
+            {step === STEP.REVIEW && scanData && (
+              <ReviewStep
+                headlineRef={headlineRef}
+                scanData={scanData}
+                loading={loading}
+                onNext={() => handlePreviewLoad(1)}
+                onBack={() => setStep(STEP.INTRO)}
+                onRevertOldBackup={openRevert}
+                onClearOldBackup={handleClearBackup}
+                onWrongCountry={handleWrongCountry}
+              />
+            )}
 
-          {/* ========== STEP: DONE ========== */}
-          {step === STEP_DONE && executeData && (
-            <div className="wsms-space-y-4">
-              <div className="wsms-text-center wsms-py-4">
-                <CheckCircle2 className="wsms-h-12 wsms-w-12 wsms-text-green-500 wsms-mx-auto wsms-mb-3" />
-                <h3 className="wsms-text-[16px] wsms-font-semibold wsms-mb-1">{__('Update Complete!')}</h3>
-                <p className="wsms-text-[13px] wsms-text-muted-foreground">
-                  {__('Successfully updated')} {executeData.total_migrated} {__('phone numbers.')}
-                </p>
-              </div>
+            {step === STEP.PREVIEW && previewData && (
+              <PreviewStep
+                headlineRef={headlineRef}
+                previewData={previewData}
+                previewPage={previewPage}
+                loading={loading}
+                onApply={handleExecute}
+                onBack={() => setStep(STEP.REVIEW)}
+                onPageChange={(page) => handlePreviewLoad(page, false)}
+                onWrongCountry={handleWrongCountry}
+              />
+            )}
 
-              {/* Per-source counts */}
-              {executeData.counts && (
-                <div className="wsms-grid wsms-grid-cols-2 sm:wsms-grid-cols-3 wsms-gap-2 wsms-text-[13px]">
-                  {Object.entries(executeData.counts).map(([key, count]) => (
-                    count > 0 && (
-                      <StatCard key={key} value={count} label={key.replace(/_/g, ' ')} variant="success" />
-                    )
-                  ))}
-                </div>
-              )}
+            {step === STEP.EXECUTE && (
+              <ExecuteStep
+                headlineRef={headlineRef}
+                estimatedMs={estimatedMs}
+                isDone={false}
+                onForceRefresh={handleForceRefresh}
+              />
+            )}
 
-              {executeData.errors && executeData.errors.length > 0 && (
-                <div className="wsms-p-3 wsms-rounded-lg wsms-bg-orange-50 wsms-text-orange-700 wsms-text-[13px]">
-                  <p className="wsms-font-medium wsms-mb-1">{executeData.errors.length} {__('errors occurred')}:</p>
-                  <ul className="wsms-list-disc wsms-ps-4 wsms-space-y-0.5">
-                    {executeData.errors.slice(0, 5).map((err, i) => (
-                      <li key={i}>{err}</li>
-                    ))}
-                    {executeData.errors.length > 5 && (
-                      <li>{__('and')} {executeData.errors.length - 5} {__('more...')}</li>
-                    )}
-                  </ul>
-                </div>
-              )}
+            {step === STEP.DONE && executeData && (
+              <DoneStep
+                headlineRef={headlineRef}
+                executeData={executeData}
+                onClose={() => handleOpenChange(false)}
+                onRequestRevert={openRevert}
+                onNavigate={handleNavigate}
+                onRescan={handleRescan}
+              />
+            )}
+          </DialogBody>
+        </DialogContent>
+      </Dialog>
 
-              <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-3 wsms-rounded-lg wsms-bg-blue-50 wsms-text-blue-700 wsms-text-[13px]">
-                <span>{__('A backup was created automatically. You can undo this update anytime if needed.')}</span>
-              </div>
-            </div>
-          )}
-        </DialogBody>
-
-        <DialogFooter>
-          {/* Scan step footer */}
-          {step === STEP_SCAN && scanData && scanData.total_need_fix > 0 && (
-            <>
-              <Button variant="outline" onClick={() => handleOpenChange(false)}>
-                {__('Cancel')}
-              </Button>
-              <Button onClick={() => handlePreview(1)} disabled={loading}>
-                {loading ? (
-                  <>
-                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1.5 wsms-animate-spin" />
-                    {__('Loading...')}
-                  </>
-                ) : (
-                  <>
-                    <Eye className="wsms-h-4 wsms-w-4 wsms-me-1.5" />
-                    {__('Preview Changes')}
-                  </>
-                )}
-              </Button>
-            </>
-          )}
-
-          {/* Preview step footer */}
-          {step === STEP_PREVIEW && (
-            <>
-              <Button variant="outline" onClick={() => setStep(STEP_SCAN)}>
-                {__('Back')}
-              </Button>
-              <Button onClick={handleExecute} disabled={loading}>
-                {loading ? (
-                  <>
-                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1.5 wsms-animate-spin" />
-                    {__('Updating...')}
-                  </>
-                ) : (
-                  <>
-                    <Play className="wsms-h-4 wsms-w-4 wsms-me-1.5" />
-                    {__('Apply Changes')}
-                  </>
-                )}
-              </Button>
-            </>
-          )}
-
-          {/* Done step footer */}
-          {step === STEP_DONE && (
-            <>
-              <Button variant="outline" onClick={handleRevert} disabled={loading}>
-                {loading ? (
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1.5 wsms-animate-spin" />
-                ) : (
-                  <Undo2 className="wsms-h-4 wsms-w-4 wsms-me-1.5" />
-                )}
-                {__('Revert All Changes')}
-              </Button>
-              <Button onClick={() => handleOpenChange(false)}>
-                {__('Done')}
-              </Button>
-            </>
-          )}
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      <DeleteConfirmDialog
+        isOpen={revertOpen}
+        onClose={() => setRevertOpen(false)}
+        onConfirm={handleRevert}
+        isSaving={revertBusy}
+        title={__('Undo this update?')}
+        description={sprintf(
+          __(
+            "We'll restore all %1$d numbers to their original format using the backup from %2$s. This replaces the current values — any changes made to those numbers since the update will be overwritten."
+          ),
+          executeData?.total_migrated || scanData?.total_need_fix || 0,
+          executeData?.backup_timestamp || scanData?.backup_timestamp || __('the previous run')
+        )}
+        confirmLabel={__('Yes, undo')}
+      />
+    </>
   )
 }
+

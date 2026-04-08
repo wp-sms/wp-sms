@@ -5,6 +5,7 @@ namespace WP_SMS\Controller;
 use WP_SMS\Helper;
 use WP_SMS\Option;
 use WP_SMS\Components\NumberParser;
+use WP_SMS\Components\DateTime;
 
 if (!defined('ABSPATH')) exit;
 
@@ -15,6 +16,8 @@ class NumberMigrationAjax extends AjaxControllerAbstract
 
     const BACKUP_OPTION_KEY = 'wpsms_number_migration_backup';
     const STATUS_OPTION_KEY = 'wpsms_number_migration_status';
+    const LOCK_TRANSIENT    = 'wpsms_migration_lock';
+    const LOCK_TTL_SECONDS  = 300; // 5 minutes
     const BATCH_SIZE        = 500;
 
     protected function run()
@@ -40,6 +43,9 @@ class NumberMigrationAjax extends AjaxControllerAbstract
                 break;
             case 'revert':
                 $this->revert();
+                break;
+            case 'clear_backup':
+                $this->clearBackup();
                 break;
             default:
                 wp_send_json_error(__('Invalid sub-action.', 'wp-sms'), 400);
@@ -166,9 +172,14 @@ class NumberMigrationAjax extends AjaxControllerAbstract
 
         $countryCode = $this->getConfiguredCountryCode();
         if (is_wp_error($countryCode)) {
+            // Tell the frontend which copy variant to show for the country step. When
+            // international_mobile is enabled we still need a CC for legacy local-format
+            // data, but we must not imply the user has to change their input mode.
+            $mode = Option::getOption('international_mobile') ? 'international_input' : 'default';
             wp_send_json_error([
                 'code'    => $countryCode->get_error_code(),
                 'message' => $countryCode->get_error_message(),
+                'mode'    => $mode,
             ], 400);
             return;
         }
@@ -177,6 +188,7 @@ class NumberMigrationAjax extends AjaxControllerAbstract
         $scanResults = [];
         $totalNeedFix    = 0;
         $totalAlreadyOk  = 0;
+        $samples         = [];
 
         foreach ($sources as $source) {
             $whereBase = isset($source['where_extra']) ? $source['where_extra'] : "`{$source['column']}` != ''";
@@ -206,16 +218,63 @@ class NumberMigrationAjax extends AjaxControllerAbstract
 
             $totalNeedFix   += $needFix;
             $totalAlreadyOk += $alreadyOk;
+
+            // Pull up to 3 example "before" values from the first source with need_fix > 0
+            // so the UI can show concrete patterns ("What kind of numbers need fixing?")
+            // without an extra round-trip.
+            if (empty($samples) && $needFix > 0 && $source['type'] === 'single') {
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                $sampleRows = $wpdb->get_col("SELECT `{$source['column']}` FROM `{$source['table']}` WHERE {$whereBase} AND `{$source['column']}` NOT LIKE '+%' LIMIT 3");
+                if (!empty($sampleRows)) {
+                    $samples = array_values(array_filter(array_map('strval', $sampleRows)));
+                }
+            }
         }
 
-        $backupExists = !empty(get_option(self::BACKUP_OPTION_KEY));
+        $backup             = get_option(self::BACKUP_OPTION_KEY);
+        $backupExists       = !empty($backup);
+        $backupTimestamp    = null;
+        $backupTimestampIso = null;
+        if ($backupExists && !empty($backup['timestamp'])) {
+            $backupTimestamp    = $this->formatLocalizedTimestamp($backup['timestamp']);
+            $backupTimestampIso = $this->formatIsoTimestamp($backup['timestamp']);
+        }
+
+        // Detect whether the admin added/removed data sources since the last run.
+        // Drives a "we're checking N new sources" banner on the Review step.
+        $previousStatus      = get_option(self::STATUS_OPTION_KEY, []);
+        $previousCounts      = isset($previousStatus['counts']) && is_array($previousStatus['counts'])
+            ? $previousStatus['counts']
+            : [];
+        $currentSourceKeys   = array_keys($scanResults);
+        $previousSourceKeys  = array_keys($previousCounts);
+        $newSourcesSinceLast = $previousCounts
+            ? array_values(array_diff($currentSourceKeys, $previousSourceKeys))
+            : [];
+
+        // Detect whether the plugin default country code changed since the last run.
+        // If it did, we force the user to re-scan before applying changes.
+        $ccChanged = false;
+        if (!empty($previousStatus['country_code']) && $previousStatus['country_code'] !== $countryCode) {
+            $ccChanged = true;
+        }
+
+        $lastRunHadErrors = !empty($previousStatus['errors']);
 
         wp_send_json_success([
-            'country_code'       => $countryCode,
-            'sources'            => $scanResults,
-            'total_need_fix'     => $totalNeedFix,
-            'total_already_intl' => $totalAlreadyOk,
-            'backup_exists'      => $backupExists,
+            'country_code'              => $countryCode,
+            'sources'                   => $scanResults,
+            'total_need_fix'            => $totalNeedFix,
+            'total_already_intl'        => $totalAlreadyOk,
+            'total_records'             => $totalNeedFix + $totalAlreadyOk,
+            'samples'                   => $samples,
+            'backup_exists'             => $backupExists,
+            'backup_timestamp'          => $backupTimestamp,
+            'backup_timestamp_iso'      => $backupTimestampIso,
+            'previous_run_sources'      => $previousSourceKeys,
+            'new_sources_since_last'    => $newSourcesSinceLast,
+            'cc_changed_since_last_run' => $ccChanged,
+            'last_run_had_errors'       => $lastRunHadErrors,
         ]);
     }
 
@@ -329,11 +388,23 @@ class NumberMigrationAjax extends AjaxControllerAbstract
             wp_send_json_error(['code' => $countryCode->get_error_code(), 'message' => $countryCode->get_error_message()], 400);
         }
 
+        // Concurrency guard: backups now span tables, options, and post_meta. A double-execute
+        // would interleave writes against the same backup option and could corrupt revert state.
+        if (get_transient(self::LOCK_TRANSIENT)) {
+            wp_send_json_error([
+                'code'    => 'migration_in_progress',
+                'message' => __('Another migration is already running. Please wait for it to finish before retrying.', 'wp-sms'),
+            ], 409);
+        }
+        set_transient(self::LOCK_TRANSIENT, time(), self::LOCK_TTL_SECONDS);
+
         $sources = $this->getPhoneSources();
         $backup  = [
             'timestamp'    => current_time('mysql'),
             'country_code' => $countryCode,
             'tables'       => [],
+            'options'      => [],
+            'postmeta'     => [],
         ];
 
         $totalMigrated = 0;
@@ -347,6 +418,10 @@ class NumberMigrationAjax extends AjaxControllerAbstract
             $offset     = 0;
 
             while (true) {
+                // Refresh the lock TTL per batch so a legitimately long-running migration
+                // on a huge dataset can't let another admin acquire the lock mid-flight.
+                set_transient(self::LOCK_TRANSIENT, time(), self::LOCK_TTL_SECONDS);
+
                 if ($source['type'] === 'single') {
                     $rows = $wpdb->get_results($wpdb->prepare(
                         "SELECT {$source['pk']} AS pk_val, {$source['column']} AS phone
@@ -436,6 +511,28 @@ class NumberMigrationAjax extends AjaxControllerAbstract
             $totalMigrated += $count;
         }
 
+        // Sweep storage locations real users hit that aren't in $sources: the admin's own
+        // notification number (single value in wpsms_settings) and the per-post scheduled
+        // recipient lists (CSV string + serialized array post_meta).
+        $optionsResult = $this->migrateAdminMobileNumberOption($countryCode);
+        if ($optionsResult['changed']) {
+            $backup['options'][$optionsResult['backup_key']] = $optionsResult['backup_entry'];
+            $migrationCounts['admin_mobile_number'] = 1;
+            $totalMigrated++;
+        } else {
+            $migrationCounts['admin_mobile_number'] = 0;
+        }
+
+        $postMetaResult = $this->migrateScheduledPostMeta($countryCode, $errors);
+        $migrationCounts['scheduled_send_to']    = $postMetaResult['scheduled_send_to_count'];
+        $migrationCounts['scheduled_receivers']  = $postMetaResult['scheduled_receivers_count'];
+        $totalMigrated                          += $postMetaResult['scheduled_send_to_count'];
+        $totalMigrated                          += $postMetaResult['scheduled_receivers_count'];
+
+        foreach ($postMetaResult['backup_entries'] as $backupKey => $backupEntry) {
+            $backup['postmeta'][$backupKey] = $backupEntry;
+        }
+
         // Save backup and invalidate notice cache
         update_option(self::BACKUP_OPTION_KEY, $backup, false);
         delete_transient('wpsms_local_number_count');
@@ -444,21 +541,196 @@ class NumberMigrationAjax extends AjaxControllerAbstract
         Option::updateOption('mobile_county_code', $countryCode);
 
         // Save migration status
+        $completedAt = current_time('mysql');
         update_option(self::STATUS_OPTION_KEY, [
             'status'          => 'completed',
-            'timestamp'       => current_time('mysql'),
+            'timestamp'       => $completedAt,
             'country_code'    => $countryCode,
             'counts'          => $migrationCounts,
             'total_migrated'  => $totalMigrated,
             'errors'          => $errors,
         ], false);
 
+        delete_transient(self::LOCK_TRANSIENT);
+
+        // Count the number of sources that actually migrated rows — surfaced on the
+        // Done step ("We updated X numbers across Y sources").
+        $sourcesTouched = 0;
+        foreach ($migrationCounts as $count) {
+            if ($count > 0) {
+                $sourcesTouched++;
+            }
+        }
+
         wp_send_json_success([
-            'counts'         => $migrationCounts,
-            'total_migrated' => $totalMigrated,
-            'errors'         => $errors,
-            'backup_created' => true,
+            'counts'               => $migrationCounts,
+            'total_migrated'       => $totalMigrated,
+            'sources_touched'      => $sourcesTouched,
+            'errors'               => $errors,
+            'backup_created'       => true,
+            'timestamp'            => $this->formatLocalizedTimestamp($completedAt),
+            'backup_timestamp'     => $this->formatLocalizedTimestamp($completedAt),
+            'backup_timestamp_iso' => $this->formatIsoTimestamp($completedAt),
         ]);
+    }
+
+    /**
+     * Migrate the admin's notification mobile number stored in wpsms_settings.
+     *
+     * Backup key namespace: option:wpsms_settings:admin_mobile_number
+     *
+     * @param string $countryCode
+     * @return array{changed: bool, backup_key?: string, backup_entry?: array}
+     */
+    private function migrateAdminMobileNumberOption($countryCode)
+    {
+        $current = Option::getOption('admin_mobile_number');
+
+        if (empty($current) || strpos((string) $current, '+') === 0) {
+            return ['changed' => false];
+        }
+
+        $migrated = $this->migrateNumber((string) $current, $countryCode);
+
+        if ($migrated === $current) {
+            return ['changed' => false];
+        }
+
+        Option::updateOption('admin_mobile_number', $migrated);
+
+        return [
+            'changed'      => true,
+            'backup_key'   => 'option:wpsms_settings:admin_mobile_number',
+            'backup_entry' => [
+                'option'    => 'wpsms_settings',
+                'json_path' => 'admin_mobile_number',
+                'original'  => $current,
+                'migrated'  => $migrated,
+            ],
+        ];
+    }
+
+    /**
+     * Migrate scheduled post meta — wpsms_scheduled_send_to (CSV) and wpsms_scheduled_receivers
+     * (serialized array). Skips orphaned post_meta rows whose parent post no longer exists.
+     *
+     * Backup key namespaces:
+     *   postmeta:<post_id>:wpsms_scheduled_send_to
+     *   postmeta:<post_id>:wpsms_scheduled_receivers
+     *
+     * @param string $countryCode
+     * @param array  $errors  Errors collected during the sweep (passed by reference)
+     * @return array{scheduled_send_to_count: int, scheduled_receivers_count: int, backup_entries: array}
+     */
+    private function migrateScheduledPostMeta($countryCode, array &$errors)
+    {
+        global $wpdb;
+
+        $sendToCount    = 0;
+        $receiversCount = 0;
+        $backupEntries  = [];
+
+        // wpsms_scheduled_send_to — CSV string of recipients. INNER JOIN against wp_posts
+        // both filters out orphans (deleted parent posts) and avoids an N+1 get_post() call.
+        $sendToRows = $wpdb->get_results($wpdb->prepare(
+            "SELECT pm.post_id, pm.meta_value
+             FROM {$wpdb->postmeta} pm
+             INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+             WHERE pm.meta_key = %s AND pm.meta_value != ''",
+            'wpsms_scheduled_send_to'
+        ));
+
+        foreach ($sendToRows as $row) {
+            $numbers  = array_map('trim', explode(',', (string) $row->meta_value));
+            $migrated = array_map(function ($n) use ($countryCode) {
+                if ($n === '') {
+                    return $n;
+                }
+                if (strpos($n, '+') === 0) {
+                    return $n;
+                }
+                return $this->migrateNumber($n, $countryCode);
+            }, $numbers);
+
+            $migratedStr = implode(',', $migrated);
+            if ($migratedStr === $row->meta_value) {
+                continue;
+            }
+
+            $updateResult = update_post_meta($row->post_id, 'wpsms_scheduled_send_to', $migratedStr, $row->meta_value);
+            if ($updateResult === false) {
+                $errors[] = sprintf('post_meta wpsms_scheduled_send_to for post #%d: update failed', $row->post_id);
+                continue;
+            }
+
+            $key                 = 'postmeta:' . $row->post_id . ':wpsms_scheduled_send_to';
+            $backupEntries[$key] = [
+                'post_id'  => (int) $row->post_id,
+                'meta_key' => 'wpsms_scheduled_send_to',
+                'original' => $row->meta_value,
+                'migrated' => $migratedStr,
+            ];
+            $sendToCount++;
+        }
+
+        // wpsms_scheduled_receivers — serialized array of recipients. Same INNER JOIN trick.
+        $receiversRows = $wpdb->get_results($wpdb->prepare(
+            "SELECT pm.post_id, pm.meta_value
+             FROM {$wpdb->postmeta} pm
+             INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+             WHERE pm.meta_key = %s AND pm.meta_value != ''",
+            'wpsms_scheduled_receivers'
+        ));
+
+        foreach ($receiversRows as $row) {
+            // Guarded unserialize: skip corrupted/non-array values rather than crashing.
+            $original = $row->meta_value;
+            $decoded  = @unserialize($original);
+            if ($decoded === false && $original !== 'b:0;') {
+                continue;
+            }
+            if (!is_array($decoded)) {
+                continue;
+            }
+
+            $migrated = [];
+            foreach ($decoded as $k => $v) {
+                if (!is_string($v) || $v === '') {
+                    $migrated[$k] = $v;
+                    continue;
+                }
+                if (strpos($v, '+') === 0) {
+                    $migrated[$k] = $v;
+                    continue;
+                }
+                $migrated[$k] = $this->migrateNumber($v, $countryCode);
+            }
+
+            if ($migrated === $decoded) {
+                continue;
+            }
+
+            $updateResult = update_post_meta($row->post_id, 'wpsms_scheduled_receivers', $migrated, $decoded);
+            if ($updateResult === false) {
+                $errors[] = sprintf('post_meta wpsms_scheduled_receivers for post #%d: update failed', $row->post_id);
+                continue;
+            }
+
+            $key                 = 'postmeta:' . $row->post_id . ':wpsms_scheduled_receivers';
+            $backupEntries[$key] = [
+                'post_id'  => (int) $row->post_id,
+                'meta_key' => 'wpsms_scheduled_receivers',
+                'original' => $original,
+                'migrated' => $migrated,
+            ];
+            $receiversCount++;
+        }
+
+        return [
+            'scheduled_send_to_count'   => $sendToCount,
+            'scheduled_receivers_count' => $receiversCount,
+            'backup_entries'            => $backupEntries,
+        ];
     }
 
     /**
@@ -470,10 +742,86 @@ class NumberMigrationAjax extends AjaxControllerAbstract
             'status' => 'not_started',
         ]);
 
-        $backupExists = !empty(get_option(self::BACKUP_OPTION_KEY));
-        $status['backup_exists'] = $backupExists;
+        $backup             = get_option(self::BACKUP_OPTION_KEY);
+        $backupTimestamp    = null;
+        $backupTimestampIso = null;
+        if (!empty($backup) && !empty($backup['timestamp'])) {
+            $backupTimestamp    = $this->formatLocalizedTimestamp($backup['timestamp']);
+            $backupTimestampIso = $this->formatIsoTimestamp($backup['timestamp']);
+        }
+        $status['backup_exists']        = !empty($backup);
+        $status['backup_timestamp']     = $backupTimestamp;
+        $status['backup_timestamp_iso'] = $backupTimestampIso;
+
+        // `running` flag lets the frontend collide-detect another admin running execute
+        // right now, so it can auto-poll until the lock clears and jump to Done.
+        $status['running'] = (bool) get_transient(self::LOCK_TRANSIENT);
+
+        $status['last_run_had_errors'] = !empty($status['errors']);
 
         wp_send_json_success($status);
+    }
+
+    /**
+     * Clear the migration backup without running revert.
+     *
+     * Used by the "Clear old backup" affordance when an admin wants to drop a stale
+     * backup before running a fresh migration.
+     */
+    private function clearBackup()
+    {
+        if (get_transient(self::LOCK_TRANSIENT)) {
+            wp_send_json_error([
+                'code'    => 'migration_in_progress',
+                'message' => __('Another migration is already running. Please wait for it to finish before retrying.', 'wp-sms'),
+            ], 409);
+        }
+
+        delete_option(self::BACKUP_OPTION_KEY);
+
+        wp_send_json_success([
+            'cleared' => true,
+        ]);
+    }
+
+    /**
+     * Format a mysql timestamp (site time) into a human-readable string with the
+     * site's timezone abbreviation appended — surfaced on the wizard's Done step
+     * so admins can confirm the backup time without needing to compute it.
+     *
+     * @param string $mysqlTimestamp
+     * @return string
+     */
+    private function formatLocalizedTimestamp($mysqlTimestamp)
+    {
+        if (empty($mysqlTimestamp)) {
+            return '';
+        }
+        try {
+            return sprintf(
+                '%s (%s)',
+                DateTime::format($mysqlTimestamp, ['include_time' => true]),
+                wp_timezone_string()
+            );
+        } catch (\Exception $e) {
+            return (string) $mysqlTimestamp;
+        }
+    }
+
+    /**
+     * Format a mysql timestamp as ISO 8601 — used by the revert dialog so the JS
+     * side can pass it to Date constructors without parsing site-format strings.
+     *
+     * @param string $mysqlTimestamp
+     * @return string
+     */
+    private function formatIsoTimestamp($mysqlTimestamp)
+    {
+        if (empty($mysqlTimestamp)) {
+            return '';
+        }
+        $unix = strtotime($mysqlTimestamp);
+        return $unix === false ? (string) $mysqlTimestamp : gmdate('c', $unix);
     }
 
     /**
@@ -508,6 +856,56 @@ class NumberMigrationAjax extends AjaxControllerAbstract
                     } else {
                         $errors[] = sprintf('%s #%d: %s', $sourceKey, $item['pk'], $wpdb->last_error);
                     }
+                }
+            }
+        }
+
+        // Backup key namespace: option:<option_name>:<json_path>. json_path is currently
+        // always a top-level key inside wpsms_settings.
+        if (!empty($backup['options'])) {
+            foreach ($backup['options'] as $backupKey => $entry) {
+                $optionName = isset($entry['option']) ? $entry['option'] : '';
+                $jsonPath   = isset($entry['json_path']) ? $entry['json_path'] : '';
+
+                if ($optionName === 'wpsms_settings' && $jsonPath !== '') {
+                    Option::updateOption($jsonPath, $entry['original']);
+                    $totalReverted++;
+                } elseif ($optionName !== '') {
+                    update_option($optionName, $entry['original']);
+                    $totalReverted++;
+                } else {
+                    $errors[] = sprintf('option backup entry %s: malformed', $backupKey);
+                }
+            }
+        }
+
+        // Backup key namespace: postmeta:<post_id>:<meta_key>.
+        if (!empty($backup['postmeta'])) {
+            foreach ($backup['postmeta'] as $backupKey => $entry) {
+                $postId  = isset($entry['post_id']) ? (int) $entry['post_id'] : 0;
+                $metaKey = isset($entry['meta_key']) ? $entry['meta_key'] : '';
+
+                if ($postId === 0 || $metaKey === '') {
+                    $errors[] = sprintf('postmeta backup entry %s: malformed', $backupKey);
+                    continue;
+                }
+
+                // For wpsms_scheduled_receivers we stored the original as a serialized string.
+                // update_post_meta will re-serialize an array, so unserialize first to round-trip
+                // back to the exact pre-migration form.
+                $value = $entry['original'];
+                if ($metaKey === 'wpsms_scheduled_receivers' && is_string($value)) {
+                    $unserialized = @unserialize($value);
+                    if (is_array($unserialized)) {
+                        $value = $unserialized;
+                    }
+                }
+
+                $result = update_post_meta($postId, $metaKey, $value);
+                if ($result !== false) {
+                    $totalReverted++;
+                } else {
+                    $errors[] = sprintf('postmeta %s for post #%d: revert failed', $metaKey, $postId);
                 }
             }
         }

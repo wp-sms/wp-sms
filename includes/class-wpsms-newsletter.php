@@ -119,6 +119,10 @@ class Newsletter
             return array('result' => 'error', 'message' => $validate->get_error_message());
         }
 
+        // Store the canonical E.164 form so all downstream lookups, dispatches, and exports
+        // see a single normalized representation regardless of the surface form submitted.
+        $mobile = Helper::normalizeToE164($mobile);
+
         $result = $wpdb->insert(
             $wpdb->prefix . "sms_subscribes",
             array(

@@ -182,6 +182,34 @@ export function __(key, fallback = key) {
 }
 
 /**
+ * printf-style placeholder substitution. Supports %s, %d, and positional %1$s / %2$d
+ * tokens — matches PHP's sprintf well enough for our translation strings.
+ *
+ * @param {string} template
+ * @param  {...any} args
+ * @returns {string}
+ */
+export function sprintf(template, ...args) {
+  let i = 0
+  return String(template).replace(/%(?:(\d+)\$)?[sd]/g, (_, pos) => {
+    const idx = pos ? parseInt(pos, 10) - 1 : i++
+    return args[idx] !== undefined ? args[idx] : ''
+  })
+}
+
+/**
+ * Pick singular or plural form based on count.
+ *
+ * @param {string} singular
+ * @param {string} plural
+ * @param {number} n
+ * @returns {string}
+ */
+export function _n(singular, plural, n) {
+  return n === 1 ? singular : plural
+}
+
+/**
  * Check if an add-on is active
  * @param {string} addon - Add-on key
  * @returns {boolean} Whether the add-on is active

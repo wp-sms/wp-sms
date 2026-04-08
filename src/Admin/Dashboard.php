@@ -353,39 +353,147 @@ class Dashboard extends Singleton
             ];
         }
 
-        // 3. Number migration notice — show if there are local numbers without country code
+        // 3a. Default Country Code missing — only when international input is OFF. Sites that
+        // exclusively use the flag-picker widget don't need a default CC and should not be
+        // pestered. Without it, server-side normalization for local-format input cannot succeed,
+        // and admins typically only discover the misconfiguration when the migration wizard
+        // refuses to run.
+        $internationalInput = (bool) OptionUtil::get('international_mobile');
+        $defaultCountryCode = OptionUtil::get('mobile_county_code');
+
         if (
             current_user_can('manage_options') &&
-            !in_array('number_migration', $dismissedHandler)
+            !$internationalInput &&
+            (empty($defaultCountryCode) || $defaultCountryCode === '0') &&
+            !in_array('default_country_code_missing', $dismissedHandler)
         ) {
-            // Quick check: any subscriber numbers without + prefix? (cached for 1 hour)
-            $localNumberCount = get_transient('wpsms_local_number_count');
-            if ($localNumberCount === false) {
-                global $wpdb;
-                $localNumberCount = (int) $wpdb->get_var(
-                    "SELECT COUNT(*) FROM {$wpdb->prefix}sms_subscribes WHERE mobile NOT LIKE '+%'"
-                );
-                set_transient('wpsms_local_number_count', $localNumberCount, HOUR_IN_SECONDS);
+            $result[] = [
+                'id'           => 'default_country_code_missing',
+                'type'         => 'action',
+                'variant'      => 'warning',
+                'message'      => __('Set your default country so we know how to interpret phone numbers without an international prefix. Without it, locally-formatted numbers cannot be normalized and SMS delivery may fail.', 'wp-sms'),
+                'title'        => __('Default Country Code is not configured', 'wp-sms'),
+                'dismissible'  => false,
+                'dismissStore' => 'handler',
+                'link'         => null,
+                'showOnTab'    => null,
+                'actions'      => [
+                    [
+                        'label'    => __('Configure now', 'wp-sms'),
+                        'navigate' => 'settings/general',
+                    ],
+                ],
+            ];
+        }
+
+        // 3b. Recent phone number normalization failures — converts silent integration
+        // failures into something admins can actually act on. Hidden when the failure log
+        // is empty so we don't add noise on healthy sites. The "dismiss" button (rendered
+        // automatically by the React notice component) clears the underlying log via a hook
+        // in the dismissNotice REST handler — see AdminNoticesApi::dismissNotice.
+        $recentFailures = \WP_SMS\Helper::getRecentNormalizationFailures();
+        if (
+            current_user_can('manage_options') &&
+            !empty($recentFailures)
+        ) {
+            $preview = implode('<br>', array_map(
+                function ($failure) {
+                    // renderPhoneHtml wraps in <bdi> so RTL admin layouts keep the leading
+                    // `+` on the left of the digits.
+                    return sprintf(
+                        '<code>%s</code> (%s)',
+                        \WP_SMS\Helper::renderPhoneHtml($failure['original_value']),
+                        esc_html($failure['source'])
+                    );
+                },
+                array_slice($recentFailures, 0, 5)
+            ));
+
+            $result[] = [
+                'id'           => 'recent_phone_failures',
+                'type'         => 'simple',
+                'variant'      => 'warning',
+                /* translators: 1: count, 2: HTML preview list */
+                'message'      => sprintf(
+                    _n(
+                        '%1$d phone number could not be normalized recently and may not have been delivered:<br>%2$s<br><em>Dismiss this notice to clear the log. Captured values are stored only in WordPress options on this site.</em>',
+                        '%1$d phone numbers could not be normalized recently and may not have been delivered:<br>%2$s<br><em>Dismiss this notice to clear the log. Captured values are stored only in WordPress options on this site.</em>',
+                        count($recentFailures),
+                        'wp-sms'
+                    ),
+                    count($recentFailures),
+                    $preview
+                ),
+                'title'        => __('Recent phone normalization failures', 'wp-sms'),
+                'dismissible'  => true,
+                'dismissStore' => 'handler',
+                'link'         => null,
+                'showOnTab'    => null,
+                'actions'      => [],
+            ];
+        }
+
+        // 3. Number migration notice — show if there are local numbers without country code.
+        //
+        // Dismissal is time-bounded: if the admin dismissed the notice more than 7 days ago
+        // AND there's still local-format data, the notice comes back. This catches the case
+        // where the admin imported a CSV with local numbers after dismissing, or was just
+        // never going to get around to it and needs a nudge.
+        if (current_user_can('manage_options')) {
+            $isDismissed      = in_array('number_migration', $dismissedHandler, true);
+            $dismissedAt      = (int) get_option('wpsms_number_migration_notice_dismissed_at', 0);
+            $sevenDaysSeconds = 7 * DAY_IN_SECONDS;
+
+            if ($isDismissed && $dismissedAt > 0 && (time() - $dismissedAt) > $sevenDaysSeconds) {
+                // Re-show: drop it from the dismissed list and clear the timestamp.
+                $dismissedHandler = array_values(array_diff($dismissedHandler, ['number_migration']));
+                update_option('wp_sms_dismissed_notices', $dismissedHandler);
+                delete_option('wpsms_number_migration_notice_dismissed_at');
+                $isDismissed = false;
             }
 
-            if ($localNumberCount > 0) {
-                $result[] = [
-                    'id'           => 'number_migration',
-                    'type'         => 'action',
-                    'variant'      => 'info',
-                    'message'      => __('We recently improved how phone numbers are processed. Some of your existing numbers need a quick update to include the country code. This only takes a moment.', 'wp-sms'),
-                    'title'        => __('Phone Number Improvement Available', 'wp-sms'),
-                    'dismissible'  => true,
-                    'dismissStore' => 'handler',
-                    'link'         => null,
-                    'showOnTab'    => null,
-                    'actions'      => [
-                        [
-                            'label'    => __('Update Numbers', 'wp-sms'),
-                            'navigate' => 'migration-wizard',
+            if (!$isDismissed) {
+                // Quick check: any subscriber numbers without + prefix? (cached for 1 hour)
+                $localNumberCount = get_transient('wpsms_local_number_count');
+                if ($localNumberCount === false) {
+                    global $wpdb;
+                    $localNumberCount = (int) $wpdb->get_var(
+                        "SELECT COUNT(*) FROM {$wpdb->prefix}sms_subscribes WHERE mobile NOT LIKE '+%'"
+                    );
+                    set_transient('wpsms_local_number_count', $localNumberCount, HOUR_IN_SECONDS);
+                }
+
+                if ($localNumberCount > 0) {
+                    $result[] = [
+                        'id'           => 'number_migration',
+                        'type'         => 'action',
+                        'variant'      => 'info',
+                        /* translators: %d: number of affected phone numbers */
+                        'title'        => sprintf(
+                            _n(
+                                'Improve delivery reliability for %d phone number',
+                                'Improve delivery reliability for %d phone numbers',
+                                $localNumberCount,
+                                'wp-sms'
+                            ),
+                            $localNumberCount
+                        ),
+                        'message'      => __(
+                            'Some of your stored numbers are in local format, which can cause delivery failures on modern SMS gateways. We can add the country code for you — it takes under a minute, includes a preview step, and everything is backed up and reversible.',
+                            'wp-sms'
+                        ),
+                        'dismissible'  => true,
+                        'dismissStore' => 'handler',
+                        'link'         => null,
+                        'showOnTab'    => null,
+                        'actions'      => [
+                            [
+                                'label'    => __('Review and fix', 'wp-sms'),
+                                'navigate' => 'migration-wizard',
+                            ],
                         ],
-                    ],
-                ];
+                    ];
+                }
             }
         }
 

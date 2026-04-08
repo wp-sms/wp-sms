@@ -40,26 +40,60 @@ class NumberParser
         }
 
         $phoneNumber = $this->getNormalizedNumber();
+        $example     = Helper::getPhoneFormatExample();
+        // translators: %s is an example phone number formatted in the admin's locale.
+        $exampleHint = sprintf(__('For example: %s', 'wp-sms'), $example);
 
         // Validate the phone number format
         if (!$this->isNumberFormatValid($phoneNumber)) {
-            return new WP_Error('invalid_number', __('Invalid Mobile Number.', 'wp-sms'));
+            return new WP_Error(
+                'invalid_number',
+                sprintf(
+                    /* translators: 1: the value the user submitted, 2: example formatted number */
+                    __('Could not understand "%1$s" as a phone number. Please enter a complete phone number. %2$s', 'wp-sms'),
+                    $this->rawPhoneNumber,
+                    $exampleHint
+                )
+            );
         }
 
         // Return an error if + doesn't exists and "International Number Input" is enabled
         if ($this->isInternationalInputEnabled && strpos($phoneNumber, '+') !== 0) {
-            return new WP_Error('invalid_number', __('The mobile number doesn\'t contain the country code.', 'wp-sms'));
+            return new WP_Error(
+                'invalid_number',
+                sprintf(
+                    /* translators: %s: example formatted number */
+                    __('The mobile number is missing a country code. Please include it (the leading +). %s', 'wp-sms'),
+                    $exampleHint
+                )
+            );
         }
 
         // Validate length
         if (!$this->isLengthValid($phoneNumber)) {
-            return new WP_Error('invalid_length', __('The mobile number length is invalid.', 'wp-sms'));
+            return new WP_Error(
+                'invalid_length',
+                sprintf(
+                    /* translators: 1: the value the user submitted, 2: example formatted number */
+                    __('"%1$s" does not look like a complete phone number. %2$s', 'wp-sms'),
+                    $this->rawPhoneNumber,
+                    $exampleHint
+                )
+            );
         }
 
         if ($this->isInternationalInputEnabled) {
             // Validate the country code
             if (!$this->isCountryCodeValid($phoneNumber)) {
-                return new WP_Error('invalid_country_code', __('The mobile number is not valid for your country.', 'wp-sms'));
+                return new WP_Error(
+                    'invalid_country_code',
+                    sprintf(
+                        /* translators: 1: the value the user submitted, 2: example formatted number */
+                        __('The country code on "%1$s" is not allowed. %2$s', 'wp-sms'),
+                        $this->rawPhoneNumber,
+                        $exampleHint
+                    )
+                );
             }
         } else {
             // Manually add the country code
@@ -259,10 +293,18 @@ class NumberParser
             return new WP_Error('invalid_mobile_field', __('This user mobile field is invalid.', 'wp-sms'));
         }
 
-        $query = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}usermeta` WHERE `meta_key` = %s AND `meta_value` = %s", $mobileField, $phoneNumber);
+        // Fuzzy match across all known surface forms so legacy non-canonical rows still
+        // register as duplicates after the E.164 migration.
+        $clause = Helper::buildMobileInClause($phoneNumber);
+        $params = array_merge([$mobileField], $clause['params']);
+        $sql    = "SELECT * FROM `{$wpdb->prefix}usermeta` WHERE `meta_key` = %s AND `meta_value` IN ({$clause['placeholders']})";
+
         if ($userId) {
-            $query .= $wpdb->prepare(' AND `user_id` != %d', $userId);
+            $sql     .= ' AND `user_id` != %d';
+            $params[] = $userId;
         }
+
+        $query = $wpdb->prepare($sql, $params);
 
         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query is built via $wpdb->prepare() above
         return !empty($wpdb->get_results($query));
@@ -281,13 +323,22 @@ class NumberParser
     {
         global $wpdb;
 
-        $query = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s", $phoneNumber);
+        // Fuzzy match across all known surface forms so legacy non-canonical rows still
+        // count as duplicates after the E.164 migration.
+        $clause = Helper::buildMobileInClause($phoneNumber);
+        $params = $clause['params'];
+        $sql    = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` IN ({$clause['placeholders']})";
+
         if ($groupID) {
-            $query .= $wpdb->prepare(' AND `group_ID` = %d', $groupID);
+            $sql     .= ' AND `group_ID` = %d';
+            $params[] = $groupID;
         }
         if ($subscribeId) {
-            $query .= $wpdb->prepare(' AND `id` != %d', $subscribeId);
+            $sql     .= ' AND `id` != %d';
+            $params[] = $subscribeId;
         }
+
+        $query = $wpdb->prepare($sql, $params);
 
         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query is built via $wpdb->prepare() above
         $result = $wpdb->get_row($query);

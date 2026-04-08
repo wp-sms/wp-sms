@@ -4,6 +4,7 @@ namespace WP_SMS\Api\V1;
 
 use WP_REST_Request;
 use WP_REST_Server;
+use WP_SMS\Helper;
 use WP_SMS\Newsletter;
 use WP_SMS\RestApi;
 use WP_SMS\Components\NumberParser;
@@ -272,9 +273,22 @@ class SubscribersApi extends RestApi
 
         if ($search) {
             $search_like = '%' . $this->db->esc_like($search) . '%';
-            $where[] = "(s.name LIKE %s OR s.mobile LIKE %s)";
-            $params[] = $search_like;
-            $params[] = $search_like;
+
+            // For phone-like search terms, also match against canonical surface forms so a user
+            // typing 09123456789 still finds the row stored as +989123456789 and vice versa.
+            $isPhoneLike = (bool) preg_match('/^[\+0-9\s\-\(\)]+$/', trim($search));
+
+            if ($isPhoneLike) {
+                $clause   = Helper::buildMobileInClause(trim($search));
+                $where[]  = "(s.name LIKE %s OR s.mobile LIKE %s OR s.mobile IN ({$clause['placeholders']}))";
+                $params[] = $search_like;
+                $params[] = $search_like;
+                $params   = array_merge($params, $clause['params']);
+            } else {
+                $where[]  = "(s.name LIKE %s OR s.mobile LIKE %s)";
+                $params[] = $search_like;
+                $params[] = $search_like;
+            }
         }
 
         if ($group_id) {
