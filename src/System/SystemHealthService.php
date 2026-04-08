@@ -1153,9 +1153,14 @@ class SystemHealthService
             ];
         }
 
-        // Detect dynamic flow hooks
+        // Detect dynamic flow hooks.
+        // last_run must only count completed runs — otherwise MAX() over
+        // pending-only rows returns Action Scheduler's zero-date
+        // ('0000-00-00 00:00:00'), which crashes downstream date formatters.
+        // Mirror the recurring-tasks query above.
         $flowHooks = $this->db->getResults(
-            "SELECT a.hook, MAX(a.last_attempt_gmt) AS last_run,
+            "SELECT a.hook,
+                    MAX(CASE WHEN a.status = '{$complete}' THEN a.last_attempt_gmt END) AS last_run,
                     MIN(CASE WHEN a.status = '{$pending}' THEN a.scheduled_date_gmt END) AS next_run
              FROM {$actionsTable} a
              INNER JOIN {$groupsTable} g ON a.group_id = g.group_id
