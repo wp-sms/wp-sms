@@ -58,7 +58,8 @@ export function ConditionGroupComponent({ group, tags, onChange, depth = 0 }: Co
       <div className="flex items-center gap-2">
         <span className="text-xs text-muted-foreground">{__('Match', 'wp-sms')}</span>
         <Select value={group.match} onValueChange={(v) => onChange({ ...group, match: v as 'all' | 'any' })}>
-          <SelectTrigger className="h-7 w-16 text-xs">
+          {/* w-20 — w-16 left only ~12px for the text after border/padding/chevron, clipping "Any" */}
+          <SelectTrigger className="h-7 w-20 text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
