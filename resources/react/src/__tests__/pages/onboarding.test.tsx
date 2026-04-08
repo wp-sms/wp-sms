@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { server } from '../mocks/server';
 import { OnboardingWizard } from '@/pages/onboarding';
@@ -130,3 +131,109 @@ describe('OnboardingWizard — mount-time status transition', () => {
     expect(putSpy).not.toHaveBeenCalled();
   });
 });
+
+/**
+ * Regression coverage for the dashboard "stale resume notice" race:
+ *
+ * handleFinish / handleSkip used to fire-and-forget the status PUT and
+ * immediately call onComplete(). The wizard then unmounted, the dashboard
+ * mounted, and ContinueSetupCard's GET /onboarding raced the still-in-flight
+ * PUT — frequently reading the old `in_progress` status and showing the
+ * resume notice until a manual page reload.
+ *
+ * The fix: await updateState() inside both handlers so the server is
+ * guaranteed to have the new status before navigation happens. These tests
+ * pin that ordering by stalling the PUT response and asserting onComplete()
+ * has NOT fired until the PUT resolves.
+ */
+describe('OnboardingWizard — completion handlers await PUT before navigating', () => {
+  beforeEach(() => {
+    setInitialOnboarding(buildState('in_progress', 3));
+  });
+
+  afterEach(() => {
+    setInitialOnboarding(null);
+  });
+
+  /**
+   * Wires MSW with a manually-resolved gate on PUT /onboarding so the test
+   * can observe the in-flight window between "user clicked finish" and
+   * "server has accepted the new status".
+   */
+  function installGatedHandlers(initial: OnboardingState) {
+    let store = { ...initial };
+    let releasePut: () => void = () => undefined;
+    const putGate = new Promise<void>((resolve) => {
+      releasePut = resolve;
+    });
+    const putSpy = vi.fn<[Partial<OnboardingState>], void>();
+
+    server.use(
+      http.get(`${BASE_URL}/onboarding`, () =>
+        HttpResponse.json({ success: true, data: { state: store, checklist: [] } }),
+      ),
+      http.put(`${BASE_URL}/onboarding`, async ({ request }) => {
+        const body = (await request.json()) as Partial<OnboardingState>;
+        putSpy(body);
+        store = { ...store, ...body };
+        await putGate;
+        return HttpResponse.json({ success: true, data: { state: store, checklist: [] } });
+      }),
+    );
+
+    return { putSpy, releasePut };
+  }
+
+  it('handleFinish: onComplete is NOT called until the completion PUT resolves', async () => {
+    const user = userEvent.setup();
+    const onComplete = vi.fn();
+    const { putSpy, releasePut } = installGatedHandlers(buildState('in_progress', 3));
+
+    render(<OnboardingWizard onComplete={onComplete} onNavigate={() => undefined} />);
+
+    // Wizard lands on CompleteStep (status=in_progress, current_step=3).
+    const finishBtn = await screen.findByRole('button', { name: /go to dashboard/i });
+    await user.click(finishBtn);
+
+    // The PUT body has been observed by MSW, but the response is gated.
+    await waitFor(() => {
+      expect(putSpy).toHaveBeenCalledWith({ status: 'completed', current_step: 3 });
+    });
+
+    // Critical assertion: onComplete must NOT have fired yet — the await
+    // inside handleFinish is keeping us parked on the PUT promise.
+    expect(onComplete).not.toHaveBeenCalled();
+
+    // Release the gate; now the await resolves and onComplete fires.
+    releasePut();
+    await waitFor(() => {
+      expect(onComplete).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('handleSkip: onComplete is NOT called until the skip PUT resolves', async () => {
+    const user = userEvent.setup();
+    const onComplete = vi.fn();
+    // Skip is exposed on steps 0–2; mount mid-wizard so the button is present
+    // and we don't have to navigate through the goal-selection flow.
+    setInitialOnboarding(buildState('in_progress', 1));
+    const { putSpy, releasePut } = installGatedHandlers(buildState('in_progress', 1));
+
+    render(<OnboardingWizard onComplete={onComplete} onNavigate={() => undefined} />);
+
+    const skipBtn = await screen.findByRole('button', { name: /skip/i });
+    await user.click(skipBtn);
+
+    await waitFor(() => {
+      expect(putSpy).toHaveBeenCalledWith({ status: 'skipped' });
+    });
+
+    expect(onComplete).not.toHaveBeenCalled();
+
+    releasePut();
+    await waitFor(() => {
+      expect(onComplete).toHaveBeenCalledTimes(1);
+    });
+  });
+});
+

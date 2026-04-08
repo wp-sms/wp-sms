@@ -44,8 +44,12 @@ export function OnboardingWizard({ onComplete, onNavigate }: OnboardingWizardPro
     void updateState({ current_step: nextStep, status: 'in_progress' });
   }, [updateState]);
 
-  const handleSkip = useCallback(() => {
-    void updateState({ status: 'skipped' });
+  // Await the PUT before navigating away — otherwise the dashboard's
+  // ContinueSetupCard mounts and races a fresh GET against our in-flight
+  // PUT, often reading the stale 'in_progress' status and showing the
+  // resume notice until the next page reload.
+  const handleSkip = useCallback(async () => {
+    await updateState({ status: 'skipped' });
     onComplete();
   }, [updateState, onComplete]);
 
@@ -79,8 +83,11 @@ export function OnboardingWizard({ onComplete, onNavigate }: OnboardingWizardPro
     goToStep(3);
   }, [goals, authEnabled, channels, sitePhone, goToStep]);
 
-  const handleFinish = useCallback(() => {
-    void updateState({ status: 'completed', current_step: 3 });
+  // Same race-avoidance as handleSkip — must await before navigating
+  // back to the dashboard so the ContinueSetupCard reads the new
+  // 'completed' status on its first GET and stays hidden.
+  const handleFinish = useCallback(async () => {
+    await updateState({ status: 'completed', current_step: 3 });
     onComplete();
   }, [updateState, onComplete]);
 
