@@ -9,6 +9,7 @@ import { CampaignsCard, CampaignsCardSkeleton } from './campaigns-card';
 import { ChannelsCard, ChannelsCardSkeleton } from './channels-card';
 import { PlatformStatusCard, PlatformStatusCardSkeleton } from './platform-status-card';
 import { SetupChecklist } from '@/components/onboarding/setup-checklist';
+import { ContinueSetupCard } from '@/components/onboarding/continue-setup-card';
 import { cn } from '@/lib/utils';
 
 interface DashboardPageProps {
@@ -39,7 +40,10 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
         </Button>
       </div>
 
-      {/* Setup Checklist */}
+      {/* Resume-wizard prompt (shows during pending / in_progress) */}
+      <ContinueSetupCard />
+
+      {/* Setup Checklist (shows after wizard is completed / skipped) */}
       <SetupChecklist onNavigate={onNavigate} />
 
       {/* Error */}
