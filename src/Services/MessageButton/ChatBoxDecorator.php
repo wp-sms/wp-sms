@@ -119,7 +119,8 @@ class ChatBoxDecorator
 
             // Process each team member
             $teamMember['contact_link']      = $this->generateContactLink($teamMember['member_contact_type'], $teamMember['member_contact_value']);
-            $teamMember['contact_link_icon'] = sprintf('%s/public/images/chatbox/icon-%s.svg', WP_SMS_URL, $teamMember['member_contact_type']);
+            $iconName                        = $teamMember['member_contact_type'] === 'call' ? 'phone' : $teamMember['member_contact_type'];
+            $teamMember['contact_link_icon'] = sprintf('%s/public/images/chatbox/icon-%s.svg', WP_SMS_URL, $iconName);
 
             $processedTeam[] = $teamMember;
         }
