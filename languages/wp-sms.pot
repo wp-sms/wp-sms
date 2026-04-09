@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-04-08T07:59:30+00:00\n"
+"POT-Creation-Date: 2026-04-09T06:32:37+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wp-sms\n"
@@ -923,7 +923,7 @@ msgstr ""
 #: includes/templates/meta-box.php:14
 #: src/Admin/Dashboard.php:1663
 #: src/Admin/Dashboard.php:1837
-#: src/Controller/NumberMigrationAjax.php:78
+#: src/Controller/NumberMigrationAjax.php:79
 msgid "Subscribers"
 msgstr ""
 
@@ -1314,7 +1314,7 @@ msgstr ""
 
 #: includes/api/v1/class-wpsms-api-newsletter.php:129
 #: includes/api/v1/class-wpsms-api-newsletter.php:186
-#: src/Controller/PublicSubscribeAjax.php:34
+#: src/Controller/PublicSubscribeAjax.php:40
 msgid "Please select a specific group."
 msgstr ""
 
@@ -1329,7 +1329,7 @@ msgid "Your mobile number has been successfully unsubscribed."
 msgstr ""
 
 #: includes/api/v1/class-wpsms-api-newsletter.php:229
-#: src/Controller/PublicVerifySubscribeAjax.php:40
+#: src/Controller/PublicVerifySubscribeAjax.php:46
 #: src/Services/Subscriber/SubscriberUtil.php:91
 msgid "Your mobile number has been successfully subscribed."
 msgstr ""
@@ -1848,7 +1848,7 @@ msgid "SMS Notifications"
 msgstr ""
 
 #: includes/class-wpsms-newsletter.php:67
-#: src/Controller/AjaxControllerAbstract.php:41
+#: src/Controller/AjaxControllerAbstract.php:51
 msgid "Access denied."
 msgstr ""
 
@@ -3637,7 +3637,7 @@ msgstr ""
 
 #: src/Admin/Dashboard.php:1662
 #: src/Admin/Dashboard.php:1830
-#: src/Controller/NumberMigrationAjax.php:142
+#: src/Controller/NumberMigrationAjax.php:143
 msgid "Outbox"
 msgstr ""
 
@@ -5607,16 +5607,21 @@ msgstr ""
 msgid "View file not found: %s"
 msgstr ""
 
+#: src/Controller/AjaxControllerAbstract.php:55
+#: src/Controller/NumberMigrationAjax.php:26
+msgid "You do not have permission to perform this action."
+msgstr ""
+
 #. translators: %s: Field name
 #. translators: %s: field name
-#: src/Controller/AjaxControllerAbstract.php:49
+#: src/Controller/AjaxControllerAbstract.php:63
 #: src/Controller/RecipientCountsAjax.php:47
 #, php-format
 msgid "Field %s is required."
 msgstr ""
 
 #. translators: %s: Class name
-#: src/Controller/AjaxControllerAbstract.php:97
+#: src/Controller/AjaxControllerAbstract.php:111
 #, php-format
 msgid "Public property %s not provided"
 msgstr ""
@@ -5638,48 +5643,44 @@ msgstr ""
 msgid "Invalid action."
 msgstr ""
 
-#: src/Controller/NumberMigrationAjax.php:25
-msgid "You do not have permission to perform this action."
-msgstr ""
-
-#: src/Controller/NumberMigrationAjax.php:50
+#: src/Controller/NumberMigrationAjax.php:51
 msgid "Invalid sub-action."
 msgstr ""
 
-#: src/Controller/NumberMigrationAjax.php:87
+#: src/Controller/NumberMigrationAjax.php:88
 msgid "User Mobile Numbers"
 msgstr ""
 
-#: src/Controller/NumberMigrationAjax.php:97
+#: src/Controller/NumberMigrationAjax.php:98
 msgid "OTP Records"
 msgstr ""
 
-#: src/Controller/NumberMigrationAjax.php:106
+#: src/Controller/NumberMigrationAjax.php:107
 msgid "OTP Attempts"
 msgstr ""
 
-#: src/Controller/NumberMigrationAjax.php:115
+#: src/Controller/NumberMigrationAjax.php:116
 msgid "Campaign Targets"
 msgstr ""
 
-#: src/Controller/NumberMigrationAjax.php:124
+#: src/Controller/NumberMigrationAjax.php:125
 msgid "Scheduled Messages"
 msgstr ""
 
-#: src/Controller/NumberMigrationAjax.php:133
+#: src/Controller/NumberMigrationAjax.php:134
 msgid "Repeating Messages"
 msgstr ""
 
-#: src/Controller/NumberMigrationAjax.php:397
-#: src/Controller/NumberMigrationAjax.php:781
+#: src/Controller/NumberMigrationAjax.php:396
+#: src/Controller/NumberMigrationAjax.php:776
 msgid "Another migration is already running. Please wait for it to finish before retrying."
 msgstr ""
 
-#: src/Controller/NumberMigrationAjax.php:839
+#: src/Controller/NumberMigrationAjax.php:837
 msgid "No backup found. Cannot revert."
 msgstr ""
 
-#: src/Controller/NumberMigrationAjax.php:998
+#: src/Controller/NumberMigrationAjax.php:996
 msgid "Please select a country code to continue."
 msgstr ""
 
@@ -5775,21 +5776,21 @@ msgstr ""
 msgid "The CSV file generated successfully!"
 msgstr ""
 
-#: src/Controller/PublicSubscribeAjax.php:23
-#: src/Controller/PublicUnsubscribeAjax.php:28
+#: src/Controller/PublicSubscribeAjax.php:29
+#: src/Controller/PublicUnsubscribeAjax.php:34
 #: src/Service/Assets/Handlers/FrontendHandler.php:69
 msgid "Please accept the privacy checkbox to continue."
 msgstr ""
 
-#: src/Controller/PublicUnsubscribeAjax.php:42
+#: src/Controller/PublicUnsubscribeAjax.php:48
 msgid "The provided mobile number is not subscribed."
 msgstr ""
 
-#: src/Controller/PublicUnsubscribeAjax.php:56
+#: src/Controller/PublicUnsubscribeAjax.php:62
 msgid "This mobile number is not subscribed to the selected group(s)."
 msgstr ""
 
-#: src/Controller/PublicUnsubscribeAjax.php:76
+#: src/Controller/PublicUnsubscribeAjax.php:82
 msgid "You have successfully unsubscribed from the newsletter."
 msgstr ""
 
