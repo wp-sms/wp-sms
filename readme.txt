@@ -141,7 +141,7 @@ All premium features + all add-ons in one package.
 v7.2.2 - 2026-03-09
 - **Enhancement:** Redesigned the phone number migration wizard with a simpler 5-step flow, progress tracking, and improved safety messaging.
 - **Enhancement:** Added a phone number normalization wizard to standardize numbers for improved delivery reliability.
-- **Enhancement:** Phone numbers are now automatically normalized into a consistent international format for better compatibility across integrations.
+- **Enhancement:** Phone numbers are now automatically normalized into a consistent international E.164 format for better compatibility across integrations.
 - **Enhancement:** Improved default country code setup and validation during onboarding and settings configuration.
 - **Enhancement:** Added admin tools to monitor recent phone number normalization failures.
 - **Enhancement:** Improved subscriber search and duplicate detection across phone number variations.
