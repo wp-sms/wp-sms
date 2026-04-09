@@ -215,6 +215,7 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
     {
         $mobileNumber = Helper::sanitizeMobileNumber($mobileNumber);
         $mobileNumber = str_replace(' ', '', $mobileNumber);
+        $mobileNumber = Helper::normalizeToE164($mobileNumber);
 
         $order = wc_get_order($orderId);
 

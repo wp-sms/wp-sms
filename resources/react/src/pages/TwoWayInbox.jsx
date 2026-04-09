@@ -279,6 +279,22 @@ export default function TwoWayInbox() {
     throw new Error(__('Failed to export messages'))
   }
 
+  // Bulk mark as read
+  const handleBulkMarkAsRead = useCallback(async () => {
+    setBulkActionLoading(__('Mark as Read'))
+    try {
+      await inboxApi.bulkMarkAsRead(table.selectedIds)
+      table.clearSelection()
+      table.refresh()
+      fetchStats()
+      toast({ title: __('Messages marked as read'), variant: 'success' })
+    } catch {
+      toast({ title: __('Failed to mark messages as read'), variant: 'destructive' })
+    } finally {
+      setBulkActionLoading(null)
+    }
+  }, [table, fetchStats, toast])
+
   // Bulk delete with confirmation
   const handleBulkDeleteConfirm = useCallback(async () => {
     setBulkActionLoading(__('Delete Selected'))
@@ -402,6 +418,12 @@ export default function TwoWayInbox() {
 
   // Bulk actions
   const bulkActions = [
+    {
+      label: __('Mark as Read'),
+      icon: MailOpen,
+      onClick: handleBulkMarkAsRead,
+      loading: bulkActionLoading === __('Mark as Read'),
+    },
     {
       label: __('Delete Selected'),
       icon: Trash2,

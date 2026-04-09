@@ -177,7 +177,8 @@ class OutboxApi extends RestApi
     public function getItems(WP_REST_Request $request)
     {
         $page      = $request->get_param('page');
-        $per_page  = min($request->get_param('per_page'), 100);
+        $max_per_page = apply_filters('wp_sms_max_per_page', 100);
+        $per_page  = min($request->get_param('per_page'), $max_per_page);
         $search    = $request->get_param('search');
         $status    = $request->get_param('status');
         $date_from = $request->get_param('date_from');

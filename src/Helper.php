@@ -155,8 +155,9 @@ class Helper
         }
 
         $users = get_users([
-            'meta_key'   => self::getUserMobileFieldName(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-            'meta_value' => self::prepareMobileNumberQuery($number) // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+            'meta_key'     => self::getUserMobileFieldName(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+            'meta_value'   => self::prepareMobileNumberQuery($number), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+            'meta_compare' => 'IN',
         ]);
 
         return !empty($users) ? array_values($users)[0] : null;
@@ -496,35 +497,56 @@ class Helper
         return $mobileNumber;
     }
 
+    /**
+     * Build an `IN (...)` placeholder fragment plus the matching parameter list for fuzzy
+     * mobile-number lookups. Centralizes the prepareMobileNumberQuery + array_fill +
+     * implode pattern that was previously copy-pasted across 7 call sites; an off-by-one in
+     * any one of those `array_merge` calls would silently mismatch `$wpdb->prepare` params.
+     *
+     * @param string $number
+     * @return array{placeholders: string, params: string[]}
+     */
+    public static function buildMobileInClause($number)
+    {
+        $variations   = self::prepareMobileNumberQuery($number);
+        $placeholders = implode(', ', array_fill(0, count($variations), '%s'));
+
+        return [
+            'placeholders' => $placeholders,
+            'params'       => array_values($variations),
+        ];
+    }
+
     public static function prepareMobileNumberQuery($number)
     {
-        $metaValue   = array();
+        $metaValue = array();
+
+        // Original number as provided
         $metaValue[] = $number;
 
-        // Use NumberParser for normalization and validation
+        // Normalize via NumberParser
         $numberParser     = new \WP_SMS\Components\NumberParser($number);
         $normalizedNumber = $numberParser->getNormalizedNumber();
 
-        // Add original number if it was different from normalized version
-        if ($number != $normalizedNumber) {
-            $metaValue[] = $number;
+        if ($number !== $normalizedNumber) {
+            $metaValue[] = $normalizedNumber;
         }
 
-        $metaValue[]    = $normalizedNumber;
-        $numberWithPlus = '+' . ltrim($normalizedNumber, '+');
+        // With and without + prefix
+        $withPlus    = '+' . ltrim($normalizedNumber, '+');
+        $withoutPlus = ltrim($normalizedNumber, '+');
 
-        // Check if number is international format or not and add country code to meta value
-        if (substr($normalizedNumber, 0, 1) != '+') {
-            $metaValue[]      = $numberWithPlus;
-            $normalizedNumber = $numberWithPlus;
-        } else {
-            $metaValue[] = ltrim($normalizedNumber, '+');
-        }
+        $metaValue[] = $withPlus;
+        $metaValue[] = $withoutPlus;
 
-        // Remove the country code from prefix of number +144444444 -> 44444444
-        foreach (wp_sms_countries()->getCountriesMerged() as $countryCode => $countryName) {
-            if (strpos($normalizedNumber, $countryCode) === 0) {
-                $metaValue[] = substr($normalizedNumber, strlen($countryCode));
+        // Also try stripping the configured country code for backward compatibility with local numbers
+        $countryCode = Option::getOption('mobile_county_code');
+        if (!empty($countryCode) && $countryCode !== '0') {
+            $ccDigits = ltrim($countryCode, '+');
+            if (strpos($withoutPlus, $ccDigits) === 0) {
+                $localNumber = substr($withoutPlus, strlen($ccDigits));
+                $metaValue[] = $localNumber;
+                $metaValue[] = '0' . $localNumber; // With trunk prefix
             }
         }
 
@@ -598,13 +620,292 @@ class Helper
         return $number;
     }
 
+    /**
+     * Normalize a phone number to E.164 format, falling back to the original value on failure.
+     *
+     * Results are statically cached per request — bulk campaigns can call this thousands of
+     * times for the same recipient list, and re-instantiating NumberParser is the bottleneck.
+     *
+     * @param string $mobile
+     * @return string
+     */
+    public static function normalizeToE164($mobile)
+    {
+        static $cache = [];
+
+        if (!is_string($mobile) || $mobile === '') {
+            return $mobile;
+        }
+
+        if (isset($cache[$mobile])) {
+            return $cache[$mobile];
+        }
+
+        $parser = new \WP_SMS\Components\NumberParser($mobile);
+        $valid  = $parser->getValidNumber();
+        $result = is_wp_error($valid) ? $mobile : $valid;
+
+        // Bound memory against unique-garbage inputs.
+        if (count($cache) > 5000) {
+            $cache = [];
+        }
+
+        $cache[$mobile] = $result;
+        return $result;
+    }
+
+    /**
+     * Detects 4-6 digit short codes (e.g. 80800, 40404) so chokepoints can pass them through
+     * unchanged. Short codes have no country code by design, so naively prepending the default
+     * CC would route the message to nowhere.
+     *
+     * @param string $value
+     * @return bool
+     */
+    public static function isShortCode($value)
+    {
+        if (!is_string($value) || $value === '') {
+            return false;
+        }
+
+        $trimmed = trim($value);
+        if ($trimmed === '' || $trimmed[0] === '+' || $trimmed[0] === '0') {
+            return false;
+        }
+
+        return (bool) preg_match('/^\d{4,6}$/', $trimmed);
+    }
+
+    /**
+     * Variant of normalizeToE164() used by dispatch chokepoints — passes short codes through
+     * unchanged so marketing/long codes still reach gateways that accept them.
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function normalizeToE164WithShortCodeGuard($value)
+    {
+        if (self::isShortCode($value)) {
+            return $value;
+        }
+
+        return self::normalizeToE164($value);
+    }
+
+    /**
+     * Attempts to normalize a phone number and returns a structured result so callers can
+     * tell whether normalization actually succeeded — `normalizeToE164()` returns the original
+     * value on failure with no signal, which makes silent failures invisible to admins.
+     *
+     * @param string $value
+     * @return array{value: string, success: bool, reason: string|null}
+     */
+    public static function tryNormalizeToE164($value)
+    {
+        if (!is_string($value) || $value === '') {
+            return ['value' => (string) $value, 'success' => false, 'reason' => 'empty'];
+        }
+
+        if (self::isShortCode($value)) {
+            return ['value' => $value, 'success' => true, 'reason' => null];
+        }
+
+        $parser = new \WP_SMS\Components\NumberParser($value);
+        $valid  = $parser->getValidNumber();
+
+        if (is_wp_error($valid)) {
+            return [
+                'value'   => $value,
+                'success' => false,
+                'reason'  => $valid->get_error_message(),
+            ];
+        }
+
+        return ['value' => $valid, 'success' => true, 'reason' => null];
+    }
+
+    const RECENT_FAILURES_OPTION = 'wpsms_recent_phone_failures';
+    const RECENT_FAILURES_LIMIT  = 50;
+    const RECENT_FAILURES_DEDUP_WINDOW = 60; // seconds
+
+    /**
+     * In-memory buffer for failures recorded during the current request. Flushed once on
+     * shutdown via flushNormalizationFailures() so a bulk campaign with thousands of bad
+     * recipients triggers a single update_option write rather than thousands.
+     *
+     * @var array|null  null = no buffer yet (so we know whether to register the shutdown hook)
+     */
+    private static $failureBuffer = null;
+
+    /**
+     * Record a normalization failure so admins can see why their SMS isn't being delivered.
+     * Buffered in memory and flushed once on shutdown — see flushNormalizationFailures().
+     *
+     * Captured value is PII — see GDPR notes in the admin panel UI. Per-source dedup window
+     * prevents a runaway integration from spamming the option store.
+     *
+     * @param string $originalValue
+     * @param string $source  e.g. 'cf7:42', 'forminator:7', 'unknown'
+     * @param string|null $reason
+     * @return void
+     */
+    public static function recordNormalizationFailure($originalValue, $source = 'unknown', $reason = null)
+    {
+        if (!is_string($originalValue) || $originalValue === '') {
+            return;
+        }
+
+        if (self::$failureBuffer === null) {
+            self::$failureBuffer = [];
+            if (function_exists('add_action')) {
+                add_action('shutdown', [self::class, 'flushNormalizationFailures']);
+            }
+        }
+
+        // Buffer-level dedup: same (source, value) pair within the same request collapses
+        // to one entry. Cheap O(n) check against an at-most ~50 entry buffer.
+        foreach (self::$failureBuffer as $buffered) {
+            if ($buffered['source'] === $source && $buffered['original_value'] === $originalValue) {
+                return;
+            }
+        }
+
+        self::$failureBuffer[] = [
+            'original_value' => $originalValue,
+            'source'         => $source,
+            'timestamp'      => time(),
+            'reason'         => $reason,
+        ];
+    }
+
+    /**
+     * Flush the in-memory failure buffer to the persistent option. Called automatically on
+     * shutdown; tests call it directly to assert state.
+     *
+     * @return void
+     */
+    public static function flushNormalizationFailures()
+    {
+        if (empty(self::$failureBuffer)) {
+            return;
+        }
+
+        $existing = get_option(self::RECENT_FAILURES_OPTION, []);
+        if (!is_array($existing)) {
+            $existing = [];
+        }
+
+        // Cross-request dedup: drop new entries whose (source, value) was already recorded
+        // within the dedup window. This protects against a runaway integration that fires
+        // the same failure across consecutive requests.
+        $cutoff = time() - self::RECENT_FAILURES_DEDUP_WINDOW;
+        foreach (self::$failureBuffer as $entry) {
+            $isDup = false;
+            foreach ($existing as $prior) {
+                if (
+                    isset($prior['source'], $prior['original_value'], $prior['timestamp']) &&
+                    $prior['source'] === $entry['source'] &&
+                    $prior['original_value'] === $entry['original_value'] &&
+                    (int) $prior['timestamp'] >= $cutoff
+                ) {
+                    $isDup = true;
+                    break;
+                }
+            }
+            if (!$isDup) {
+                $existing[] = $entry;
+            }
+        }
+
+        if (count($existing) > self::RECENT_FAILURES_LIMIT) {
+            $existing = array_slice($existing, -self::RECENT_FAILURES_LIMIT);
+        }
+
+        update_option(self::RECENT_FAILURES_OPTION, $existing, false);
+        self::$failureBuffer = [];
+    }
+
+    /**
+     * Get the recent normalization failures (most-recent-first), used to render the admin panel.
+     *
+     * @return array
+     */
+    public static function getRecentNormalizationFailures()
+    {
+        $failures = get_option(self::RECENT_FAILURES_OPTION, []);
+        if (!is_array($failures)) {
+            return [];
+        }
+
+        return array_reverse($failures);
+    }
+
+    /**
+     * Clear the recent normalization failures log (admin "dismiss all" action and the GDPR
+     * eraser also call this).
+     *
+     * @return void
+     */
+    public static function clearRecentNormalizationFailures()
+    {
+        delete_option(self::RECENT_FAILURES_OPTION);
+        self::$failureBuffer = [];
+    }
+
+    /**
+     * Returns an example phone number formatted in the admin's configured locale, used in
+     * validation error messages so the example matches what the user actually expects.
+     *
+     * @return string
+     */
+    public static function getPhoneFormatExample()
+    {
+        $countryCode = Option::getOption('mobile_county_code');
+        if (empty($countryCode) || $countryCode === '0') {
+            // Generic E.164 example used when no default CC is configured.
+            return '+12025550123';
+        }
+
+        // The plugin doesn't bundle a per-country example database, so use a stable national
+        // segment ('912 345 6789') and just prepend the configured CC. Good enough to make
+        // the format obvious in error messages.
+        $cc = ltrim($countryCode, '+');
+        return '+' . $cc . ' 912 345 6789';
+    }
+
+    /**
+     * Wraps an E.164 phone value so the leading `+` always lands on the left of the digits in
+     * RTL admin layouts (Arabic, Hebrew, Persian). Without this, browsers reorder the `+`
+     * to the right side of the number when the surrounding text is RTL.
+     *
+     * @param string $e164
+     * @return string Sanitized HTML
+     */
+    public static function renderPhoneHtml($e164)
+    {
+        if (!is_string($e164) || $e164 === '') {
+            return '';
+        }
+
+        return '<bdi>' . esc_html($e164) . '</bdi>';
+    }
+
     public static function removeDuplicateNumbers($numbers)
     {
         $numbers = array_map('trim', $numbers);
-        $numbers = array_map([__CLASS__, 'normalizeNumber'], $numbers);
-        $numbers = array_unique($numbers);
 
-        return $numbers;
+        // Use normalized form as dedup key but preserve original E.164 numbers
+        $seen   = [];
+        $unique = [];
+        foreach ($numbers as $number) {
+            $normalized = self::normalizeNumber($number);
+            if (!isset($seen[$normalized])) {
+                $seen[$normalized] = true;
+                $unique[]          = $number;
+            }
+        }
+
+        return $unique;
     }
 
     /**

@@ -26,7 +26,7 @@ export default function Gateway() {
   const gatewayHelp = gatewayCapabilities.help || ''
   const gatewayDocumentUrl = gatewayCapabilities.documentUrl || ''
 
-  const [gatewayName, setGatewayName] = useSetting('gateway_name', '')
+  const [gatewayName, setGatewayName, gatewayNameError] = useSetting('gateway_name', '')
 
   // Track the saved gateway (the one capabilities/fields are loaded for)
   const savedGatewayRef = useRef(gatewayName)
@@ -451,11 +451,13 @@ export default function Gateway() {
           )}
 
           {/* Selection Status Bar */}
-          <div className={cn(
+          <div data-setting-key="gateway_name" className={cn(
             "wsms-rounded-lg wsms-border wsms-transition-all wsms-duration-200",
-            gatewayName
-              ? "wsms-border-primary/30 wsms-bg-primary/5"
-              : "wsms-border-dashed wsms-border-border wsms-bg-muted/30"
+            gatewayNameError
+              ? "wsms-border-destructive"
+              : gatewayName
+                ? "wsms-border-primary/30 wsms-bg-primary/5"
+                : "wsms-border-dashed wsms-border-border wsms-bg-muted/30"
           )}>
             {gatewayName ? (
               <>
@@ -613,6 +615,9 @@ export default function Gateway() {
               </div>
             )}
           </div>
+          {gatewayNameError && (
+            <p role="alert" className="wsms-text-[12px] wsms-text-destructive">{gatewayNameError}</p>
+          )}
         </CardContent>
       </Card>
 
@@ -630,7 +635,7 @@ export default function Gateway() {
             <div className="wsms-space-y-3">
               {gatewayHelp && (
                 <div
-                  className="wsms-text-[13px] wsms-text-foreground [&_a]:wsms-text-primary [&_a]:wsms-underline [&_a]:hover:wsms-text-primary/80"
+                  className="wsms-text-[13px] wsms-text-foreground [&_a]:wsms-text-primary [&_a]:wsms-underline [&_a]:hover:wsms-text-primary/80 [&_ul]:wsms-list-disc [&_ul]:wsms-pl-5 [&_ul]:wsms-mt-1 [&_li]:wsms-py-0.5"
                   dangerouslySetInnerHTML={{ __html: gatewayHelp }}
                 />
               )}
@@ -663,7 +668,25 @@ export default function Gateway() {
           <CardContent className="wsms-space-y-4">
             <div className="wsms-grid wsms-grid-cols-1 wsms-gap-4 md:wsms-grid-cols-2">
               {Object.entries(gatewayFields).map(([key, field]) => {
-                const fieldValue = getSetting(field.id, '')
+                // Resolve effective value for a field, falling back to first option for selects
+                const getEffectiveValue = (fieldId) => {
+                  const val = getSetting(fieldId, '')
+                  if (val === '' && gatewayFields[fieldId]?.type === 'select' && gatewayFields[fieldId]?.options) {
+                    return Object.keys(gatewayFields[fieldId].options)[0] || ''
+                  }
+                  return val
+                }
+
+                // Conditional visibility: js-wpsms-show_if_{fieldId}_equal_{value}
+                if (field.className) {
+                  const matches = field.className.match(/js-wpsms-show_if_(\w+?)_equal_(\w+)/g)
+                  if (matches && !matches.some((match) => {
+                    const parts = match.replace('js-wpsms-show_if_', '').split('_equal_')
+                    return getEffectiveValue(parts[0]) === parts[1]
+                  })) return null
+                }
+
+                const fieldValue = getEffectiveValue(field.id)
                 const isPassword = key === 'password' || field.id.includes('password')
                 const isFullWidth = key === 'from' || field.id === 'gateway_sender_id'
 

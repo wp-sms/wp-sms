@@ -11,6 +11,12 @@ if (!defined('ABSPATH')) exit;
 class PublicSubscribeAjax extends AjaxControllerAbstract
 {
     protected $action = 'wp_sms_subscribe';
+    /**
+     * Public endpoint: visitors subscribe to the SMS newsletter without logging in.
+     *
+     * @var string|null
+     */
+    protected $capability = null;
     public $requiredFields = [
         'name',
         'mobile',

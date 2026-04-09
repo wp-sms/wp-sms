@@ -22,6 +22,13 @@ function updateUrlTab(page) {
   window.history.pushState({ tab: page }, '', url)
 }
 
+// Map validated field keys to their settings page slug
+const FIELD_PAGE_MAP = {
+  admin_mobile_number: 'phone',
+  gateway_name: 'gateway',
+  new_sms_webhook: 'advanced',
+}
+
 // Initial state
 const initialState = {
   settings: {},
@@ -34,6 +41,7 @@ const initialState = {
   isSaving: false,
   hasChanges: false,
   error: null,
+  fieldErrors: {},
   currentPage: getInitialPageFromUrl(),
   gateways: [],
   addons: {},
@@ -53,6 +61,7 @@ const ACTIONS = {
   RESET_CHANGES: 'RESET_CHANGES',
   SET_PAGE: 'SET_PAGE',
   SYNC_EXTERNAL_SETTING: 'SYNC_EXTERNAL_SETTING',
+  SET_FIELD_ERRORS: 'SET_FIELD_ERRORS',
 }
 
 // Reducer
@@ -62,7 +71,7 @@ function settingsReducer(state, action) {
       return { ...state, isLoading: action.payload }
 
     case ACTIONS.SET_SAVING:
-      return { ...state, isSaving: action.payload }
+      return { ...state, isSaving: action.payload, fieldErrors: {} }
 
     case ACTIONS.SET_ERROR:
       return { ...state, error: action.payload, isLoading: false, isSaving: false }
@@ -85,9 +94,14 @@ function settingsReducer(state, action) {
 
     case ACTIONS.UPDATE_SETTING: {
       const newSettings = { ...state.settings, [action.payload.key]: action.payload.value }
+      const hasFieldError = action.payload.key in state.fieldErrors
+      const newFieldErrors = hasFieldError
+        ? (({ [action.payload.key]: _, ...rest }) => rest)(state.fieldErrors)
+        : state.fieldErrors
       return {
         ...state,
         settings: newSettings,
+        fieldErrors: newFieldErrors,
         hasChanges: !isEqual(newSettings, state.originalSettings) ||
                     !isEqual(state.proSettings, state.originalProSettings) ||
                     !isEqual(state.addonValues, state.originalAddonValues),
@@ -167,6 +181,9 @@ function settingsReducer(state, action) {
         originalSettings: { ...state.originalSettings, [action.payload.key]: action.payload.value },
       }
 
+    case ACTIONS.SET_FIELD_ERRORS:
+      return { ...state, fieldErrors: action.payload }
+
     default:
       return state
   }
@@ -236,8 +253,12 @@ export function SettingsProvider({ children }) {
       dispatch({ type: ACTIONS.SAVE_SUCCESS })
       return { success: true }
     } catch (error) {
+      const fieldErrors = error.fieldErrors || null
+      if (fieldErrors) {
+        dispatch({ type: ACTIONS.SET_FIELD_ERRORS, payload: fieldErrors })
+      }
       dispatch({ type: ACTIONS.SET_ERROR, payload: error.message })
-      return { success: false, error: error.message }
+      return { success: false, error: error.message, fieldErrors }
     }
   }, [state.settings, state.proSettings, state.addonValues])
 
@@ -352,11 +373,14 @@ export function useSettings() {
 
 // Convenience hook for a specific setting
 export function useSetting(key, defaultValue = '') {
-  const { getSetting, updateSetting } = useSettings()
+  const { getSetting, updateSetting, fieldErrors } = useSettings()
   const value = getSetting(key, defaultValue)
   const setValue = useCallback((newValue) => updateSetting(key, newValue), [key, updateSetting])
-  return [value, setValue]
+  const error = fieldErrors?.[key] || null
+  return [value, setValue, error]
 }
+
+export { FIELD_PAGE_MAP }
 
 // Hook for getting the saved (original) value of a setting
 // Use this when you need to wait for save before reflecting changes (e.g., sidebar visibility)

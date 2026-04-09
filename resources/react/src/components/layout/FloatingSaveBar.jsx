@@ -1,12 +1,12 @@
 import React, { useEffect, useCallback, useRef } from 'react'
 import { Save, X, Loader2 } from 'lucide-react'
 import { Button } from '../ui/button'
-import { useSettings } from '@/context/SettingsContext'
+import { useSettings, FIELD_PAGE_MAP } from '@/context/SettingsContext'
 import { useToast } from '../ui/toaster'
 import { __ } from '@/lib/utils'
 
 export default function FloatingSaveBar() {
-  const { hasChanges, isSaving, saveSettings, resetChanges } = useSettings()
+  const { hasChanges, isSaving, saveSettings, resetChanges, setCurrentPage } = useSettings()
   const { toast } = useToast()
   const barRef = useRef(null)
   const rafIdRef = useRef(0)
@@ -25,8 +25,23 @@ export default function FloatingSaveBar() {
         description: result.error || __('Please try again.'),
         variant: 'destructive',
       })
+
+      // Navigate to the page of the first errored field and scroll to it
+      if (result.fieldErrors) {
+        const firstField = Object.keys(result.fieldErrors)[0]
+        const targetPage = firstField && FIELD_PAGE_MAP[firstField]
+        if (targetPage) {
+          setCurrentPage(targetPage)
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            const el = document.querySelector(`[data-setting-key="${firstField}"]`)
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            }
+          }))
+        }
+      }
     }
-  }, [saveSettings, toast])
+  }, [saveSettings, toast, setCurrentPage])
 
   // Keyboard shortcut: Cmd+S (Mac) or Ctrl+S (Windows/Linux) to save
   useEffect(() => {

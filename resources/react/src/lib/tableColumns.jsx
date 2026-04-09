@@ -278,7 +278,8 @@ export function getSubscriberColumns({ groups = [], countries = {} } = {}) {
       cell: ({ row }) => (
         <div className="wsms-space-y-0.5">
           <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground wsms-font-mono">
-            {row.mobile}
+            {/* <bdi> keeps the leading + on the left of the digits in RTL admin layouts */}
+            <bdi>{row.mobile}</bdi>
           </span>
           {row.name && (
             <p className="wsms-text-[11px] wsms-text-muted-foreground">{row.name}</p>

@@ -3,7 +3,7 @@ import * as Icons from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { SettingRow, SelectField } from '@/components/ui/form-field'
+import { SettingRow, SelectField, TextareaField } from '@/components/ui/form-field'
 import { useSetting } from '@/context/SettingsContext'
 import { useAddonSettings } from '@/hooks/useAddonSettings'
 import { DynamicField } from '@/components/ui/DynamicField'
@@ -22,7 +22,7 @@ export default function Advanced() {
   // Get add-on settings for this page
   const { sections: addonSections, fieldsBySection, standaloneFields } = useAddonSettings('advanced')
   // Webhooks
-  const [webhookOutgoing, setWebhookOutgoing] = useSetting('new_sms_webhook', '')
+  const [webhookOutgoing, setWebhookOutgoing, webhookOutgoingError] = useSetting('new_sms_webhook', '')
   const [webhookSubscriber, setWebhookSubscriber] = useSetting('new_subscriber_webhook', '')
   const [webhookIncoming, setWebhookIncoming] = useSetting('new_incoming_sms_webhook', '')
 
@@ -50,18 +50,16 @@ export default function Advanced() {
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <div className="wsms-space-y-2">
-            <Label htmlFor="webhookOutgoing">{__('Outgoing SMS Webhook')}</Label>
-            <Textarea
-              id="webhookOutgoing"
+          <div data-setting-key="new_sms_webhook">
+            <TextareaField
+              label={__('Outgoing SMS Webhook')}
+              error={webhookOutgoingError}
               value={webhookOutgoing}
               onChange={(e) => setWebhookOutgoing(e.target.value)}
               placeholder="https://your-app.com/webhooks/sms-sent"
               rows={2}
+              description={__('Called after each SMS is sent. Enter one URL per line.')}
             />
-            <p className="wsms-text-[12px] wsms-text-muted-foreground">
-              {__('Called after each SMS is sent. Enter one URL per line.')}
-            </p>
           </div>
 
           <div className="wsms-space-y-2">

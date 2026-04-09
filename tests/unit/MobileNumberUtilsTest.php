@@ -43,7 +43,7 @@ class MobileNumberUtilsTest extends WP_UnitTestCase
 
         $numbers = [
             $mobileNumber,
-            '1' . $mobileNumber,
+            ltrim($mobileNumber, '+'),
         ];
 
         foreach ($numbers as $number) {

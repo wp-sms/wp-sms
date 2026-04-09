@@ -22,11 +22,14 @@ class SubscriberShortcode
             'fields'      => '',
         ], $attributes);
 
-        if (isset($attrs['groups'])) {
-            $attrs['groups'] = $this->retrieveGroupsData($attributes);
+        // Store raw group IDs for the hidden form field before converting to group objects
+        $attrs['shortcode_group_ids'] = $attrs['groups'];
+
+        if (!empty($attrs['groups'])) {
+            $attrs['groups'] = $this->retrieveGroupsData($attrs);
         }
-        if (isset($attrs['fields'])) {
-            $attrs['fields'] = $this->retrieveFieldsData($attributes);
+        if (!empty($attrs['fields'])) {
+            $attrs['fields'] = $this->retrieveFieldsData($attrs);
         }
 
         return wp_sms_subscriber_form($attrs);

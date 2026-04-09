@@ -187,12 +187,26 @@ class ApiClient {
 
       if (!response.ok) {
         // Extract error message from various possible formats
-        const errorMessage =
+        let errorMessage =
           data?.error?.message ||
           data?.message ||
           data?.data?.message ||
           `HTTP error! status: ${response.status}`
-        throw new Error(errorMessage)
+
+        // Append field-level validation errors if present
+        const fieldErrors = data?.data?.errors
+        if (fieldErrors && typeof fieldErrors === 'object') {
+          const details = Object.entries(fieldErrors)
+            .map(([field, msg]) => `${field}: ${msg}`)
+            .join(', ')
+          if (details) {
+            errorMessage += ` (${details})`
+          }
+        }
+
+        const err = new Error(errorMessage)
+        err.fieldErrors = fieldErrors || null
+        throw err
       }
 
       if (!data) {
@@ -224,7 +238,9 @@ class ApiClient {
       }
 
       console.error('API Error:', error)
-      throw new Error(userMessage)
+      const rethrown = new Error(userMessage)
+      rethrown.fieldErrors = error.fieldErrors || null
+      throw rethrown
     }
   }
 

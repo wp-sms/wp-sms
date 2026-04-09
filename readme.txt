@@ -2,9 +2,9 @@
 Contributors: veronalabs, mostafa.s1990, kashani
 Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sms
 Requires at least: 4.1
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 7.2.1
+Stable tag: 7.2.2
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -138,6 +138,21 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
+v7.2.2 - 2026-03-09
+- **Enhancement:** Redesigned the phone number migration wizard with a simpler 5-step flow, progress tracking, and improved safety messaging.
+- **Enhancement:** Added a phone number normalization wizard to standardize numbers for improved delivery reliability.
+- **Enhancement:** Phone numbers are now automatically normalized into a consistent international format for better compatibility across integrations.
+- **Enhancement:** Improved default country code setup and validation during onboarding and settings configuration.
+- **Enhancement:** Added admin tools to monitor recent phone number normalization failures.
+- **Enhancement:** Improved subscriber search and duplicate detection across phone number variations.
+- **Enhancement:** Improved phone number display in RTL admin layouts.
+- **Enhancement:** Tested compatibility up to WordPress v7.0.
+- **Enhancement:** Improved security for admin AJAX endpoints.
+- **Fix:** Improved validation messages to better identify invalid phone number input.
+- **Fix:** Fixed missing country data issue causing empty dropdowns and validation problems.
+- **Fix:** Fixed subscriber form group assignment when global group visibility is disabled.
+- **Fix:** Improved OTP verification and rate limiting for normalized phone numbers.
+
 = v7.2.1 - 2026-03-17 =
 - **New:** Added Contact column to the Two-Way inbox, showing subscriber name or WordPress user display name for each sender.
 - **Fix:** Fixed gateway initialization issue for 4jawaly, 1s2u, 160au, 0098sms, and 18sms gateways.

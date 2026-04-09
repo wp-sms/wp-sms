@@ -1,15 +1,30 @@
-= v7.2.1 - 2026-03-17 =
+v7.2.2 - 2026-03-09
+- **Enhancement:** Redesigned the phone number migration wizard with a simpler 5-step flow, progress tracking, and improved safety messaging.
+- **Enhancement:** Added a phone number normalization wizard to standardize numbers for improved delivery reliability.
+- **Enhancement:** Phone numbers are now automatically normalized into a consistent international format for better compatibility across integrations.
+- **Enhancement:** Improved default country code setup and validation during onboarding and settings configuration.
+- **Enhancement:** Added admin tools to monitor recent phone number normalization failures.
+- **Enhancement:** Improved subscriber search and duplicate detection across phone number variations.
+- **Enhancement:** Improved phone number display in RTL admin layouts.
+- **Enhancement:** Tested compatibility up to WordPress v7.0.
+- **Enhancement:** Improved security for admin AJAX endpoints.
+- **Fix:** Improved validation messages to better identify invalid phone number input.
+- **Fix:** Fixed missing country data issue causing empty dropdowns and validation problems.
+- **Fix:** Fixed subscriber form group assignment when global group visibility is disabled.
+- **Fix:** Improved OTP verification and rate limiting for normalized phone numbers.
+
+v7.2.1 - 2026-03-17
 - **New:** Added Contact column to the Two-Way inbox, showing subscriber name or WordPress user display name for each sender.
 - **Fix:** Fixed gateway initialization issue for 4jawaly, 1s2u, 160au, 0098sms, and 18sms gateways.
 - **Fix:** Fixed sms.to gateway request config passed as params instead of query args.
 - **Fix:** Removed unused username/password fields from sms.to gateway.
 - **Fix:** Fixed Textplode gateway not stripping `+` prefix from phone numbers, causing send failures.
 
-= v7.2 - 2026-03-08 =
+v7.2 - 2026-03-08
 - **New:** Redesigned admin interface with improved user experience.
 - **Enhancement:** Updated PHP requirement to version 7.4.
 
-= v7.1 - 2025-12-16 =
+v7.1 - 2025-12-16
 - **New:** Introduced Notifications to receive important updates and promotions.
 - **New:** Added support for the Ghasedak.me gateway.
 - **New:** Added settings for message storage and retention in Outbox and Inbox under "Message Storage & Cleanup".
@@ -17,15 +32,15 @@
 - **Enhancement:** Tested up to v6.9
 - **Enhancement:** Improve error handling when PHP SoapClient is unavailable in gateways.
 
-= v7.0.10 - 2025-12-01 =
+v7.0.10 - 2025-12-01
 - **Enhancement:** Refactored plugin architecture for better add-on extensibility.
 - **Enhancement:** Added new filters and hooks for developers.
 - **Fix:** Minor bug fixes and improvements.
 
-= v7.0.9 - 2025-11-26 =
+v7.0.9 - 2025-11-26
 - **Enhancement:** Minor improvements.
 
-= v7.0.8 - 2025-11-23 =
+v7.0.8 - 2025-11-23
 - **Enhancement:** Repositioned the "All-in-One Required" label to the top of the PRO gateway onboarding table for better visibility.
 - **Enhancement:** Added more plugin details to the Site Health Info section for easier diagnostics.
 - **Enhancement:** Removed deprecated `utf8_decode()` usage in `nusoap.class.php`.
@@ -34,7 +49,7 @@
 - **Fix:** Fixed connection status display and moved the Connection Status section below the Gateway Guide for improved UI
 - **Fix:** Fixed SCSS Compilation Error in mail.css
 
-= v7.0.4 - 2025-11-02 =
+v7.0.4 - 2025-11-02
 - **New:** Added support for the SMS.es gateway.
 - **New:** Display an admin notice when the gateway version changes, required fields are missing, or the gateway is not configured.
 - **Enhancement:** Added support for Service-Line SMS.ir template-based messaging.
@@ -49,11 +64,11 @@
 - **Fix:** Fixed SMS Credit link in Dashboard "At a Glance" widget to correctly redirect to gateway settings tab.
 - **Fix:** Properly save SMS gateway version during onboarding to prevent false “setup requires attention” warnings.
 
-= v7.0.3 - 2025-09-17 =
+v7.0.3 - 2025-09-17
 - **Enhancement:** Improved Send SMS page performance by loading recipients via AJAX instead of on initial render.  
 - **Enhancement:** Prevented sending emails to users who registered with only a phone number.
 
-= v7.0.2 - 2025-08-18 =
+v7.0.2 - 2025-08-18
 - **New:** License keys can now be set via `wp-config.php` using constants like `WP_SMS_LICENSE` and are automatically validated on init.
 - **New:** Added plugin information to the Site Health Info section for easier diagnostics.
 - **New:** Added the Threema gateway to Pro gateways
@@ -67,7 +82,7 @@
 - **Enhancement:** Added user capability checks to AJAX actions in the license manager to restrict access to authorized roles only.
 - **Enhancement:** Removed deprecated SMS gateways: smss, bearsms, mobtexting, waapi, livesms, ozioma, smsgateway, zipwhip, whatsappapi, asr3sms, smsdone, micron, sms_s, tcisms, aradpayamak, dot4all.
 
-= v7.0 - 2025-07-09 =
+v7.0 - 2025-07-09
 - **New:** Introduced an Onboarding Process to simplify gateway integration.
 - **New:** Launched a new Add-on Manager for easier add-on installation and updates.
 - **New:** Introduced WP SMS All-in-One package.
@@ -83,7 +98,7 @@
 - **Fix:** Resolved fatal error when passing invalid meta in notification content.
 - **Fix:** Fixed message logging issues on multisite installations.
 
-= v6.9.12 - 2025-03-31 =
+v6.9.12 - 2025-03-31
 - **New**: Added WhatsApp support for the Tubelight gateway.
 - **Enhancement**: Upgraded to the latest version of the Tubelight API.
 - **Enhancement**: Updated integration with the MatinSMS gateway.
@@ -92,14 +107,14 @@
 - **Fix**: Fixed issue where the welcome message was not being sent to new subscribers.
 - **Fix**: Resolved issues with the unsubscribe functionality in the subscription form.
 
-= v6.9.11 - 2025-02-25 =
+v6.9.11 - 2025-02-25
 - **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications, and support for variable products in the `%order_item_meta_{key-name}%` placeholder for better order item details.
 - **Fix**: Resolved issue with rendering new lines in the Outbox.
 - **Fix**: Corrected display of order items in the `%order_items%` variable to show each item on a separate line.
 - **Fix**: Fixed 'Not found the number!' error during newsletter subscription confirmation.
 - **Enhancement**: Implemented PSR-4 autoloading, replacing manual includes for improved performance and maintainability.
 
-= v6.9.10 - 2025-01-22 =
+v6.9.10 - 2025-01-22
 - **New**: Add **Mobile Message Gateway** (Australia).
 - **New**: Add **HelloSMS Gateway** (Sweden).
 - **Fix**: Resolve issues with adding and updating subscriber groups.
@@ -108,7 +123,7 @@
 - **Enhancement**: Add capability test for displaying widgets.
 - **Enhancement**: Free gateways are now prioritized above pro gateways in the list.
 
-= v6.9.9 - 2024-12-23 =
+v6.9.9 - 2024-12-23
 - **Fix**: Resolved issue with SMS login functionality.
 - **Fix**: Corrected support for multiple meta variables and spaces in WooCommerce order variable notifications.
 - **Dev** Added new filters for developers:

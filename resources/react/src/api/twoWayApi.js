@@ -70,6 +70,13 @@ export const inboxApi = {
   },
 
   /**
+   * Bulk mark messages as read
+   */
+  async bulkMarkAsRead(ids) {
+    return twoWayClient.post('inbox/bulk-read', { ids })
+  },
+
+  /**
    * Get commands for filter dropdown
    */
   async getCommands() {

@@ -1,19 +1,20 @@
 import React from 'react'
-import { Phone, Smartphone, Globe, Shield } from 'lucide-react'
+import { Phone, Smartphone, Globe, Shield, DatabaseZap } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { InputField, MultiSelectField, SettingRow } from '@/components/ui/form-field'
 import { InternationalPhoneInput } from '@/components/ui/InternationalPhoneInput'
+import { Button } from '@/components/ui/button'
 import { useSetting, useSettings } from '@/context/SettingsContext'
-import { getWpSettings, __ } from '@/lib/utils'
+import { getWpSettings, cn, __ } from '@/lib/utils'
 
 export default function PhoneConfig() {
   const { countriesByCode = {}, countriesByDialCode = {}, mobileFieldSources = [] } = getWpSettings()
   const { getSetting, updateSetting } = useSettings()
 
   // Admin mobile
-  const [adminMobile, setAdminMobile] = useSetting('admin_mobile_number', '')
+  const [adminMobile, setAdminMobile, adminMobileError] = useSetting('admin_mobile_number', '')
 
   // Mobile field configuration
   const [addMobileField, setAddMobileField] = useSetting('add_mobile_field', 'add_mobile_field_in_profile')
@@ -59,17 +60,22 @@ export default function PhoneConfig() {
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <div className="wsms-space-y-2">
-            <Label htmlFor="adminPhone">{__('Admin Phone Number')}</Label>
+          <div className="wsms-space-y-2" data-setting-key="admin_mobile_number">
+            <Label htmlFor="adminPhone" className={cn(adminMobileError && 'wsms-text-destructive')}>{__('Admin Phone Number')}</Label>
             <InternationalPhoneInput
               id="adminPhone"
               value={adminMobile}
               onChange={setAdminMobile}
               placeholder="+1 555 123 4567"
+              className={cn(adminMobileError && 'wsms-border-destructive')}
             />
-            <p className="wsms-text-[12px] wsms-text-muted-foreground">
-              {__('Enter the full phone number including country code.')}
-            </p>
+            {adminMobileError ? (
+              <p role="alert" className="wsms-text-[12px] wsms-text-destructive">{adminMobileError}</p>
+            ) : (
+              <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                {__('Enter the full phone number including country code.')}
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -227,7 +233,6 @@ export default function PhoneConfig() {
                     <SelectValue placeholder={__('Select country code')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="0">{__("None — Don't add country code")}</SelectItem>
                     {countriesByDialCode && Object.entries(countriesByDialCode).map(([dialCode, label]) => (
                       <SelectItem key={dialCode} value={dialCode}>
                         {label}
@@ -236,8 +241,13 @@ export default function PhoneConfig() {
                   </SelectContent>
                 </Select>
                 <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                  {__('Automatically prepend this country code to all phone numbers.')}
+                  {__('Automatically prepend this country code to new phone numbers. Changing this will not update numbers already stored in the database.')}
                 </p>
+                {(!countryCode || countryCode === '0') && (
+                  <p className="wsms-text-[12px] wsms-text-destructive wsms-font-medium">
+                    {__('Please select a country code. This is required for proper phone number storage.')}
+                  </p>
+                )}
               </div>
 
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
@@ -261,6 +271,28 @@ export default function PhoneConfig() {
             </>
           )}
         </CardContent>
+      </Card>
+
+      {/* Number Migration Tool */}
+      <Card>
+        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4">
+          <div>
+            <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+              {__('Phone Number Improvement')}
+            </p>
+            <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-0.5">
+              {__('Review and update your phone numbers to include the country code for better delivery reliability.')}
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => window.dispatchEvent(new CustomEvent('wpsms:open-migration-wizard'))}
+          >
+            <DatabaseZap className="wsms-h-4 wsms-w-4 wsms-me-1" />
+            {__('Open Update Wizard')}
+          </Button>
+        </div>
       </Card>
 
       {/* GDPR Compliance */}

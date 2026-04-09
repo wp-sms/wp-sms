@@ -63,6 +63,7 @@ bundle-analysis.html
 /packages/
 
 # Claude Code
+.claude/
 .mcp.json
 CLAUDE.local.md
 CLAUDE.md

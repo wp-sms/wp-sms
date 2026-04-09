@@ -147,6 +147,12 @@ class AdminNoticesApi extends RestApi
             return self::response(__('Invalid parameters', 'wp-sms'), 400);
         }
 
+        // Dismissing the recent normalization failures notice also clears the underlying log
+        // — the message tells the admin "review and dismiss to clear" so this is the contract.
+        if ($id === 'recent_phone_failures') {
+            \WP_SMS\Helper::clearRecentNormalizationFailures();
+        }
+
         if ($store === 'static') {
             // Static notices use wpsms_notices option (boolean flags keyed by ID)
             $notices      = get_option('wpsms_notices', []);
@@ -166,6 +172,13 @@ class AdminNoticesApi extends RestApi
             if (!in_array($id, $dismissed)) {
                 $dismissed[] = $id;
                 update_option('wp_sms_dismissed_notices', $dismissed);
+            }
+
+            // The number-migration notice uses a time-bounded dismissal: after 7 days
+            // it comes back if there's still local-format data. Capture the dismissal
+            // timestamp so Dashboard::getAdminNotices can compare.
+            if ($id === 'number_migration') {
+                update_option('wpsms_number_migration_notice_dismissed_at', time());
             }
         }
 

@@ -29,6 +29,19 @@ let wpSmsSubscribeForm = {
             group_id.push(groupIdSelect.val());
         }
 
+        // Fallback to shortcode-specified group IDs when no interactive selection exists
+        if (group_id.length === 0) {
+            let shortcodeGroupIds = element.find('.js-wpSmsShortcodeGroupIds');
+            if (shortcodeGroupIds.length && shortcodeGroupIds.val()) {
+                shortcodeGroupIds.val().split(/[|,\-]+/).forEach(function (id) {
+                    id = id.trim();
+                    if (id) {
+                        group_id.push(id);
+                    }
+                });
+            }
+        }
+
         // Return an empty array instead of undefined
         return group_id.length ? group_id : [];
     },

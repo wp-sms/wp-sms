@@ -59,6 +59,11 @@ class Sms
             return new WP_Error('empty_message', __('Message content cannot be empty. Please provide a valid SMS message.', 'wp-sms'));
         }
 
+        // Last chokepoint before gateway dispatch — guarantees that everything written to the
+        // outbox by Logger::logOutbox is canonical, regardless of how the caller built $to.
+        // Short codes pass through unchanged so marketing campaigns still reach 4-6 digit codes.
+        $to = array_map([Helper::class, 'normalizeToE164WithShortCodeGuard'], $to);
+
         $sms->isflash          = isset($parameters['is_flash']) ? $parameters['is_flash'] : false;
         $sms->to               = Helper::removeDuplicateNumbers($to);
         $sms->msg              = $parameters['msg'];
