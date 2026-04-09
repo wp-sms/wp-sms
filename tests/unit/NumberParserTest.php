@@ -105,10 +105,10 @@ class NumberParserTest extends WP_UnitTestCase
      */
     public function testGetValidNumberWithPersianNumerals()
     {
-        $persianNumber = '+۹۸۹۱۲۳۴۵۶۷۸۹'; // Persian numerals for +989123456789
+        $persianNumber = '+۱۲۰۲۵۵۵۰۱۲۳'; // Persian numerals for +12025550123
         $numberParser = new NumberParser($persianNumber);
 
-        $expected = '+989123456789';
+        $expected = '+12025550123';
         $this->assertEquals($expected, $numberParser->getValidNumber());
     }
 
@@ -117,10 +117,10 @@ class NumberParserTest extends WP_UnitTestCase
      */
     public function testGetValidNumberWithArabicNumerals()
     {
-        $arabicNumber = '+٩٨٩١٢٣٤٥٦٧٨٩'; // Arabic numerals for +989123456789
+        $arabicNumber = '+١٢٠٢٥٥٥٠١٢٣'; // Arabic numerals for +12025550123
         $numberParser = new NumberParser($arabicNumber);
 
-        $expected = '+989123456789';
+        $expected = '+12025550123';
         $this->assertEquals($expected, $numberParser->getValidNumber());
     }
 
@@ -129,10 +129,10 @@ class NumberParserTest extends WP_UnitTestCase
      */
     public function testGetValidNumberWithMixedNumerals()
     {
-        $mixedNumber = '+۹۸9١٢3٤56۷89'; // Mixed Persian, Arabic and English numerals
+        $mixedNumber = '+۱20٢٥5٥0۱۲۳'; // Mixed Persian, Arabic and English numerals
         $numberParser = new NumberParser($mixedNumber);
 
-        $expected = '+989123456789';
+        $expected = '+12025550123';
         $this->assertEquals($expected, $numberParser->getValidNumber());
     }
 
@@ -141,10 +141,10 @@ class NumberParserTest extends WP_UnitTestCase
      */
     public function testGetValidNumberWithNonNumeralCharacters()
     {
-        $numberWithText = 'Phone: +۹۸(۹۱۲)۳۴۵-۶۷۸۹';
+        $numberWithText = 'Phone: +۱(۲۰۲)۵۵۵-۰۱۲۳';
         $numberParser = new NumberParser($numberWithText);
 
-        $expected = '+989123456789';
+        $expected = '+12025550123';
         $this->assertEquals($expected, $numberParser->getValidNumber());
     }
 
@@ -154,7 +154,7 @@ class NumberParserTest extends WP_UnitTestCase
     public function testGetValidNumberLengthAfterNumeralConversion()
     {
         // This Persian number would be too short after conversion
-        $shortNumber = '+۹۸۹۱۲'; // Converts to +98912 (5 digits)
+        $shortNumber = '+۱۲۰'; // Converts to +120 (3 digits)
         $numberParser = new NumberParser($shortNumber);
 
         $result = $numberParser->getValidNumber();
@@ -168,7 +168,7 @@ class NumberParserTest extends WP_UnitTestCase
     public function testGetValidNumberFormatAfterNumeralConversion()
     {
         // This contains non-numeric characters that should be removed
-        $invalidNumber = '+۹۸۹hello۱۲۳'; // After conversion: +989hello123
+        $invalidNumber = '+۱۲۰hello۱۲۳'; // After conversion: +120hello123
         $numberParser = new NumberParser($invalidNumber);
 
         $result = $numberParser->getValidNumber();

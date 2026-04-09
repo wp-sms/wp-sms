@@ -242,7 +242,7 @@ describe('Subscribers Backward Compatibility', () => {
     test('handles Persian/Arabic numerals in phone numbers', async () => {
       const subscriberWithPersianPhone = {
         id: 1,
-        mobile: '+۹۸۹۱۲۳۴۵۶۷۸۹',
+        mobile: '+۱۲۰۲۵۵۵۰۱۲۳',
         name: 'Persian Phone User',
         status: '1',
       }

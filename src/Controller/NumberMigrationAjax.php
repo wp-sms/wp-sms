@@ -934,7 +934,7 @@ class NumberMigrationAjax extends AjaxControllerAbstract
      * Apply migration rules to convert a local number to E.164.
      *
      * @param string $number     The original number
-     * @param string $countryCode The country code with + prefix (e.g., '+98')
+     * @param string $countryCode The country code with + prefix (e.g., '+1')
      * @return string The migrated number in E.164 format
      */
     private function migrateNumber($number, $countryCode)

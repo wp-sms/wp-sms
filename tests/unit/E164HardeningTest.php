@@ -28,7 +28,7 @@ class E164HardeningTest extends WP_UnitTestCase
 
         // The default country code is required for server-side normalization of local-format
         // input. Tests that need a different config override this in their own setup.
-        Option::updateOption('mobile_county_code', '+98');
+        Option::updateOption('mobile_county_code', '+1');
         Option::updateOption('international_mobile', false);
     }
 
@@ -48,37 +48,37 @@ class E164HardeningTest extends WP_UnitTestCase
 
     public function testNormalizeToE164AlreadyCanonical()
     {
-        $this->assertEquals('+989123456789', Helper::normalizeToE164('+989123456789'));
+        $this->assertEquals('+12025550123', Helper::normalizeToE164('+12025550123'));
     }
 
     public function testNormalizeToE164DoublezeroPrefix()
     {
-        $this->assertEquals('+989123456789', Helper::normalizeToE164('00989123456789'));
+        $this->assertEquals('+12025550123', Helper::normalizeToE164('0012025550123'));
     }
 
     public function testNormalizeToE164TrunkZero()
     {
-        $this->assertEquals('+989123456789', Helper::normalizeToE164('09123456789'));
+        $this->assertEquals('+12025550123', Helper::normalizeToE164('2025550123'));
     }
 
     public function testNormalizeToE164BareNational()
     {
-        $this->assertEquals('+989123456789', Helper::normalizeToE164('9123456789'));
+        $this->assertEquals('+12025550123', Helper::normalizeToE164('2025550123'));
     }
 
     public function testNormalizeToE164PersianNumerals()
     {
-        $this->assertEquals('+989123456789', Helper::normalizeToE164('۰۹۱۲۳۴۵۶۷۸۹'));
+        $this->assertEquals('+12025550123', Helper::normalizeToE164('۱۲۰۲۵۵۵۰۱۲۳'));
     }
 
     public function testNormalizeToE164ArabicNumerals()
     {
-        $this->assertEquals('+989123456789', Helper::normalizeToE164('٠٩١٢٣٤٥٦٧٨٩'));
+        $this->assertEquals('+12025550123', Helper::normalizeToE164('١٢٠٢٥٥٥٠١٢٣'));
     }
 
     public function testNormalizeToE164FormattingCharactersStripped()
     {
-        $this->assertEquals('+989123456789', Helper::normalizeToE164('0912-345 6789'));
+        $this->assertEquals('+12025550123', Helper::normalizeToE164('0202-555 0123'));
     }
 
     public function testNormalizeToE164EmptyInputReturnsAsIs()
@@ -96,7 +96,7 @@ class E164HardeningTest extends WP_UnitTestCase
     public function testNormalizeToE164WithInternationalInputEnabled()
     {
         Option::updateOption('international_mobile', true);
-        $this->assertEquals('+989123456789', Helper::normalizeToE164('+989123456789'));
+        $this->assertEquals('+12025550123', Helper::normalizeToE164('+12025550123'));
     }
 
     // ---------------------------------------------------------------------
@@ -120,12 +120,12 @@ class E164HardeningTest extends WP_UnitTestCase
 
     public function testIsShortCodeRejectsLeadingZero()
     {
-        $this->assertFalse(Helper::isShortCode('0912'));
+        $this->assertFalse(Helper::isShortCode('0202'));
     }
 
     public function testIsShortCodeRejectsLeadingPlus()
     {
-        $this->assertFalse(Helper::isShortCode('+98'));
+        $this->assertFalse(Helper::isShortCode('+1'));
     }
 
     public function testNormalizeToE164WithShortCodeGuardPassesThroughShortCodes()
@@ -136,8 +136,8 @@ class E164HardeningTest extends WP_UnitTestCase
     public function testNormalizeToE164WithShortCodeGuardNormalizesPhoneNumbers()
     {
         $this->assertEquals(
-            '+989123456789',
-            Helper::normalizeToE164WithShortCodeGuard('09123456789')
+            '+12025550123',
+            Helper::normalizeToE164WithShortCodeGuard('2025550123')
         );
     }
 
@@ -147,9 +147,9 @@ class E164HardeningTest extends WP_UnitTestCase
 
     public function testTryNormalizeToE164SuccessReportsCanonicalValue()
     {
-        $result = Helper::tryNormalizeToE164('09123456789');
+        $result = Helper::tryNormalizeToE164('2025550123');
         $this->assertTrue($result['success']);
-        $this->assertEquals('+989123456789', $result['value']);
+        $this->assertEquals('+12025550123', $result['value']);
         $this->assertNull($result['reason']);
     }
 
@@ -222,8 +222,8 @@ class E164HardeningTest extends WP_UnitTestCase
     public function testRenderPhoneHtmlWrapsInBdi()
     {
         $this->assertEquals(
-            '<bdi>+989123456789</bdi>',
-            Helper::renderPhoneHtml('+989123456789')
+            '<bdi>+12025550123</bdi>',
+            Helper::renderPhoneHtml('+12025550123')
         );
     }
 
@@ -240,13 +240,13 @@ class E164HardeningTest extends WP_UnitTestCase
     {
         // Repeat calls return the same value. Bulk campaigns can call normalize 10,000 times
         // for the same recipient list — this guards against re-instantiating NumberParser.
-        $first  = Helper::normalizeToE164('09123456789');
-        $second = Helper::normalizeToE164('09123456789');
-        $third  = Helper::normalizeToE164('09123456789');
+        $first  = Helper::normalizeToE164('2025550123');
+        $second = Helper::normalizeToE164('2025550123');
+        $third  = Helper::normalizeToE164('2025550123');
 
         $this->assertSame($first, $second);
         $this->assertSame($second, $third);
-        $this->assertEquals('+989123456789', $first);
+        $this->assertEquals('+12025550123', $first);
     }
 
     // ---------------------------------------------------------------------
@@ -263,7 +263,7 @@ class E164HardeningTest extends WP_UnitTestCase
 
         $addResult = Newsletter::addSubscriber(
             'Test User',
-            '09123456' . str_pad((string) random_int(0, 999), 3, '0', STR_PAD_LEFT),
+            '2025550' . str_pad((string) random_int(0, 999), 3, '0', STR_PAD_LEFT),
             json_encode([$groupId])
         );
         $this->assertEquals('success', $addResult['result'], $addResult['message'] ?? '');
@@ -274,7 +274,7 @@ class E164HardeningTest extends WP_UnitTestCase
         ));
 
         $this->assertNotNull($row);
-        $this->assertStringStartsWith('+98', $row->mobile, 'Stored mobile should be canonical E.164');
+        $this->assertStringStartsWith('+1', $row->mobile, 'Stored mobile should be canonical E.164');
 
         Newsletter::deleteSubscriberByNumber($row->mobile, json_encode([$groupId]));
         Newsletter::deleteGroup($groupId);
@@ -288,8 +288,8 @@ class E164HardeningTest extends WP_UnitTestCase
     {
         // Generation submits in local format, verification submits in international format —
         // both must normalize to the same canonical row.
-        $local         = '09123450' . str_pad((string) random_int(0, 999), 3, '0', STR_PAD_LEFT);
-        $international = '+98' . substr(Helper::normalizeToE164($local), 3);
+        $local         = '2025550' . str_pad((string) random_int(0, 999), 3, '0', STR_PAD_LEFT);
+        $international = '+1' . substr(Helper::normalizeToE164($local), 3);
 
         $generator = new Generator($local, 'test-agent');
         $generator->createCode(6);
@@ -340,7 +340,7 @@ class E164HardeningTest extends WP_UnitTestCase
      */
     private function makeLegacyCanonicalPair()
     {
-        $canonical = '+9891234' . str_pad((string) random_int(0, 99999), 5, '0', STR_PAD_LEFT);
+        $canonical = '+1202555' . str_pad((string) random_int(0, 99999), 5, '0', STR_PAD_LEFT);
         $legacy    = '0' . substr($canonical, 3);
         return [$canonical, $legacy];
     }
@@ -367,7 +367,7 @@ class E164HardeningTest extends WP_UnitTestCase
         global $wpdb;
 
         // Seed an OTP row in legacy non-canonical form (mimics a user mid-flight at deploy).
-        $canonical = '+9891234' . str_pad((string) random_int(0, 99999), 5, '0', STR_PAD_LEFT);
+        $canonical = '+1202555' . str_pad((string) random_int(0, 99999), 5, '0', STR_PAD_LEFT);
         $legacy    = '0' . substr($canonical, 3);
         $code      = '654321';
 
@@ -397,12 +397,12 @@ class E164HardeningTest extends WP_UnitTestCase
     public function testNotificationSendChokepointNormalizesRecipients()
     {
         $captured = $this->captureDispatchedRecipients(function () {
-            NotificationFactory::getCustom()->send('hello', ['09123456789', '09123456788']);
+            NotificationFactory::getCustom()->send('hello', ['2025550123', '2025550122']);
         });
 
         $this->assertNotNull($captured);
         foreach ((array) $captured as $value) {
-            $this->assertStringStartsWith('+98', $value, "Captured recipient '$value' should be canonical");
+            $this->assertStringStartsWith('+1', $value, "Captured recipient '$value' should be canonical");
         }
     }
 
@@ -410,7 +410,7 @@ class E164HardeningTest extends WP_UnitTestCase
     {
         $captured = (array) $this->captureDispatchedRecipients(function () {
             Sms::send([
-                'to'  => ['80800', '09123456789'],
+                'to'  => ['80800', '2025550123'],
                 'msg' => 'short code test',
             ]);
         });
@@ -419,7 +419,7 @@ class E164HardeningTest extends WP_UnitTestCase
 
         $hasCanonical = false;
         foreach ($captured as $value) {
-            if (strpos($value, '+98') === 0) {
+            if (strpos($value, '+1') === 0) {
                 $hasCanonical = true;
                 break;
             }
@@ -458,40 +458,40 @@ class E164HardeningTest extends WP_UnitTestCase
 
     public function testMigrationWizardSweepsAdminMobileNumberOption()
     {
-        Option::updateOption('admin_mobile_number', '09123456789');
+        Option::updateOption('admin_mobile_number', '2025550123');
 
         $this->callExecuteAndAssertSuccess();
 
-        $this->assertEquals('+989123456789', Option::getOption('admin_mobile_number'));
+        $this->assertEquals('+12025550123', Option::getOption('admin_mobile_number'));
 
         $backup = get_option(\WP_SMS\Controller\NumberMigrationAjax::BACKUP_OPTION_KEY);
         $this->assertNotEmpty($backup);
         $this->assertArrayHasKey('options', $backup);
         $this->assertArrayHasKey('option:wpsms_settings:admin_mobile_number', $backup['options']);
-        $this->assertEquals('09123456789', $backup['options']['option:wpsms_settings:admin_mobile_number']['original']);
+        $this->assertEquals('2025550123', $backup['options']['option:wpsms_settings:admin_mobile_number']['original']);
     }
 
     public function testMigrationWizardSweepsScheduledSendToPostMeta()
     {
         $postId = self::factory()->post->create();
-        update_post_meta($postId, 'wpsms_scheduled_send_to', '09123456789,09123456788');
+        update_post_meta($postId, 'wpsms_scheduled_send_to', '2025550123,2025550122');
 
         $this->callExecuteAndAssertSuccess();
 
         $migrated = get_post_meta($postId, 'wpsms_scheduled_send_to', true);
-        $this->assertStringStartsWith('+98', $migrated);
+        $this->assertStringStartsWith('+1', $migrated);
 
         $backup = get_option(\WP_SMS\Controller\NumberMigrationAjax::BACKUP_OPTION_KEY);
         $key    = 'postmeta:' . $postId . ':wpsms_scheduled_send_to';
         $this->assertArrayHasKey('postmeta', $backup);
         $this->assertArrayHasKey($key, $backup['postmeta']);
-        $this->assertEquals('09123456789,09123456788', $backup['postmeta'][$key]['original']);
+        $this->assertEquals('2025550123,2025550122', $backup['postmeta'][$key]['original']);
     }
 
     public function testMigrationWizardSweepsScheduledReceiversPostMeta()
     {
         $postId = self::factory()->post->create();
-        $original = ['09123456789', '09123456788'];
+        $original = ['2025550123', '2025550122'];
         update_post_meta($postId, 'wpsms_scheduled_receivers', $original);
 
         $this->callExecuteAndAssertSuccess();
@@ -499,7 +499,7 @@ class E164HardeningTest extends WP_UnitTestCase
         $migrated = get_post_meta($postId, 'wpsms_scheduled_receivers', true);
         $this->assertIsArray($migrated);
         foreach ($migrated as $value) {
-            $this->assertStringStartsWith('+98', $value);
+            $this->assertStringStartsWith('+1', $value);
         }
 
         $backup = get_option(\WP_SMS\Controller\NumberMigrationAjax::BACKUP_OPTION_KEY);
@@ -512,7 +512,7 @@ class E164HardeningTest extends WP_UnitTestCase
         // Manually set the lock to simulate a second concurrent invocation.
         set_transient(\WP_SMS\Controller\NumberMigrationAjax::LOCK_TRANSIENT, time(), 300);
 
-        Option::updateOption('admin_mobile_number', '09123456789');
+        Option::updateOption('admin_mobile_number', '2025550123');
 
         $exception = null;
         try {
@@ -523,31 +523,31 @@ class E164HardeningTest extends WP_UnitTestCase
 
         $this->assertNotNull($exception, 'Second execute call should bail with the lock error');
         // The original (legacy) value must remain — the second execute should NOT mutate it.
-        $this->assertEquals('09123456789', Option::getOption('admin_mobile_number'));
+        $this->assertEquals('2025550123', Option::getOption('admin_mobile_number'));
     }
 
     public function testMigrationWizardRevertsOptionEntries()
     {
-        Option::updateOption('admin_mobile_number', '09123456789');
+        Option::updateOption('admin_mobile_number', '2025550123');
         $this->callExecuteAndAssertSuccess();
-        $this->assertEquals('+989123456789', Option::getOption('admin_mobile_number'));
+        $this->assertEquals('+12025550123', Option::getOption('admin_mobile_number'));
 
         $this->callRevertAndAssertSuccess();
-        $this->assertEquals('09123456789', Option::getOption('admin_mobile_number'));
+        $this->assertEquals('2025550123', Option::getOption('admin_mobile_number'));
     }
 
     public function testMigrationWizardRevertsPostMetaEntries()
     {
         $postId = self::factory()->post->create();
-        update_post_meta($postId, 'wpsms_scheduled_send_to', '09123456789');
-        $original = ['09123456789', '09123456788'];
+        update_post_meta($postId, 'wpsms_scheduled_send_to', '2025550123');
+        $original = ['2025550123', '2025550122'];
         update_post_meta($postId, 'wpsms_scheduled_receivers', $original);
 
         $this->callExecuteAndAssertSuccess();
 
         $this->callRevertAndAssertSuccess();
 
-        $this->assertEquals('09123456789', get_post_meta($postId, 'wpsms_scheduled_send_to', true));
+        $this->assertEquals('2025550123', get_post_meta($postId, 'wpsms_scheduled_send_to', true));
         $this->assertEquals($original, get_post_meta($postId, 'wpsms_scheduled_receivers', true));
     }
 
@@ -633,11 +633,11 @@ class E164HardeningTest extends WP_UnitTestCase
         // can pull example values into the samples array.
         $wpdb->insert(
             $wpdb->prefix . 'sms_subscribes',
-            ['name' => 'A', 'mobile' => '09123456789', 'status' => '1', 'date' => current_time('mysql')]
+            ['name' => 'A', 'mobile' => '2025550123', 'status' => '1', 'date' => current_time('mysql')]
         );
         $wpdb->insert(
             $wpdb->prefix . 'sms_subscribes',
-            ['name' => 'B', 'mobile' => '+989123456788', 'status' => '1', 'date' => current_time('mysql')]
+            ['name' => 'B', 'mobile' => '+12025550122', 'status' => '1', 'date' => current_time('mysql')]
         );
 
         $response = $this->captureJsonResponse('scan');
@@ -658,7 +658,7 @@ class E164HardeningTest extends WP_UnitTestCase
             'total_records should equal need_fix + already_intl'
         );
         $this->assertGreaterThanOrEqual(1, count($data['samples']));
-        $this->assertContains('09123456789', $data['samples']);
+        $this->assertContains('2025550123', $data['samples']);
     }
 
     public function testScanErrorResponseIncludesModeFlag()
@@ -676,7 +676,7 @@ class E164HardeningTest extends WP_UnitTestCase
 
     public function testExecuteResponseIncludesFormattedTimestamp()
     {
-        Option::updateOption('admin_mobile_number', '09123456789');
+        Option::updateOption('admin_mobile_number', '2025550123');
 
         $response = $this->captureJsonResponse('execute');
         $this->assertTrue($response['success'] ?? false);
@@ -697,7 +697,7 @@ class E164HardeningTest extends WP_UnitTestCase
     public function testStatusResponseIncludesRunningAndBackupTimestamp()
     {
         // First run a migration so a backup + status exist
-        Option::updateOption('admin_mobile_number', '09123456789');
+        Option::updateOption('admin_mobile_number', '2025550123');
         $this->callExecuteAndAssertSuccess();
 
         $response = $this->captureJsonResponse('getStatus');
@@ -715,7 +715,7 @@ class E164HardeningTest extends WP_UnitTestCase
     public function testClearBackupSubActionDeletesBackupOption()
     {
         // Run a migration so a backup exists
-        Option::updateOption('admin_mobile_number', '09123456789');
+        Option::updateOption('admin_mobile_number', '2025550123');
         $this->callExecuteAndAssertSuccess();
         $this->assertNotEmpty(get_option(\WP_SMS\Controller\NumberMigrationAjax::BACKUP_OPTION_KEY));
 

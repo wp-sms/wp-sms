@@ -36,7 +36,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
     /** ✅ Test: simple SMS sending should succeed */
     public function test_send_simple_sms_success()
     {
-        $this->gateway->to  = ['09120000000', '09120000001'];
+        $this->gateway->to  = ['2025550100', '2025550101'];
         $this->gateway->msg = 'Test Message';
 
         $this->gateway->expects($this->once())
@@ -60,7 +60,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
     public function test_send_template_sms_success()
     {
         // Arrange
-        $this->gateway->to               = ['09120000001', '09120000002'];
+        $this->gateway->to               = ['2025550101', '2025550102'];
         $this->gateway->templateId       = 1234;
         $this->gateway->messageVariables = ['name' => 'fake', 'order' => '9988'];
 
@@ -80,7 +80,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
                     if ((int)$params['template'] !== 1234) {
                         return false;
                     }
-                    $allowed = ['09120000001', '09120000002'];
+                    $allowed = ['2025550101', '2025550102'];
                     return in_array($params['receptor'], $allowed, true);
                 })
             )

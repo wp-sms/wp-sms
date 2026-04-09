@@ -221,7 +221,7 @@ class SubscribersApiTest extends WPSMSTestCase
      */
     public function testCreateSubscriberWithPersianNumerals()
     {
-        $persianPhone = '+۹۸۹' . str_pad(mt_rand(1, 99999999), 8, '۰', STR_PAD_LEFT);
+        $persianPhone = '+۱۲۰' . str_pad(mt_rand(1, 99999999), 8, '۰', STR_PAD_LEFT);
 
         $request = new WP_REST_Request('POST', '/wpsms/v1/subscribers');
         $request->set_body_params([
