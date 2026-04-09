@@ -16,6 +16,7 @@ export default function ReviewStep({
   loading,
   onNext,
   onBack,
+  onClose,
   onRevertOldBackup,
   onClearOldBackup,
   onWrongCountry,
@@ -250,7 +251,9 @@ export default function ReviewStep({
             )}
           </Button>
         ) : (
-          <Button onClick={onBack}>{__('Close')}</Button>
+          <Button onClick={onClose} disabled={loading}>
+            {__('Close')}
+          </Button>
         )}
       </div>
     </div>
@@ -270,4 +273,3 @@ function StatTile({ value, label, tone = 'default' }) {
     </div>
   )
 }
-
