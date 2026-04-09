@@ -138,28 +138,20 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
-v7.2.2 - 2026-03-**
-- **Enhancement:** Redesigned the phone number migration wizard with a 5-step flow, step indicator, in-flight progress bar, and explicit safety messaging shown before the user commits. Revert is now wired through a confirmation dialog, the dashboard notice is dynamic ("Improve delivery reliability for N phone numbers"), and the wizard can no longer be dismissed mid-execute.
-- **Security:** Hardened access control on admin AJAX endpoints.
-- **Enhancement:** Added phone number normalization wizard to standardize numbers with country code for reliable delivery.
-- **Enhancement:** Tested up to WordPress v7.0
-- **Enhancement:** Normalized phone numbers to canonical E.164 format at every write path and at the dispatch chokepoints, so form-plugin integrations (CF7, Forminator, Formidable, etc.) and any custom caller automatically store and dispatch canonical numbers.
-- **Enhancement:** Short codes (4–6 digit marketing codes) now pass through the dispatch chokepoints unchanged.
-- **Enhancement:** Migration wizard now sweeps the admin notification number and scheduled-post recipients, with namespaced backup keys and a transient lock guarding against double-execution.
-- **Fix:** Improved validation error messages in settings to show which field caused the failure.
-- **Fix:** Fixed missing countries data in release package causing empty country dropdowns and phone validation failures.
-- **Fix:** Fixed subscriber form shortcode `groups` parameter not assigning subscribers to the specified group when the global group visibility setting is disabled.
-- **Fix:** OTP verification no longer fails when generation and verification submit different surface forms of the same number.
-- **Fix:** OTP rate limits now match against legacy non-canonical rows so the limit window does not reset at deploy time.
-- **Fix:** Subscriber duplicate detection now matches across surface forms.
-- **Developer:** The `wp_sms_to`, `wp_sms_add_subscriber`, and `wp_sms_mobile_number_validity` hooks now receive canonical (E.164) values rather than raw input. Adapter code that re-normalized values should be reviewed.
-- **Note:** After updating, run the phone number normalization wizard from the dashboard notice to clean up legacy data.
-- **Enhancement:** Default Country Code is now surfaced as a persistent admin notice when international input is disabled and the field is empty, and the settings save handler blocks half-configured states.
-- **Enhancement:** Setup Wizard persists the picked country as the Default Country Code on fresh installs.
-- **Enhancement:** Validation error messages now include the offending value and a locale-specific example.
-- **Enhancement:** New "Recent phone number normalization failures" admin panel surfaces silent integration failures with source, value, and reason.
-- **Enhancement:** Subscriber search matches across phone number surface forms.
-- **Enhancement:** Phone numbers in admin tables now wrap in `<bdi>` for correct rendering in RTL admin layouts.
+v7.2.2 - 2026-03-09
+- **Enhancement:** Redesigned the phone number migration wizard with a simpler 5-step flow, progress tracking, and improved safety messaging.
+- **Enhancement:** Added a phone number normalization wizard to standardize numbers for improved delivery reliability.
+- **Enhancement:** Phone numbers are now automatically normalized into a consistent international format for better compatibility across integrations.
+- **Enhancement:** Improved default country code setup and validation during onboarding and settings configuration.
+- **Enhancement:** Added admin tools to monitor recent phone number normalization failures.
+- **Enhancement:** Improved subscriber search and duplicate detection across phone number variations.
+- **Enhancement:** Improved phone number display in RTL admin layouts.
+- **Enhancement:** Tested compatibility up to WordPress v7.0.
+- **Enhancement:** Improved security for admin AJAX endpoints.
+- **Fix:** Improved validation messages to better identify invalid phone number input.
+- **Fix:** Fixed missing country data issue causing empty dropdowns and validation problems.
+- **Fix:** Fixed subscriber form group assignment when global group visibility is disabled.
+- **Fix:** Improved OTP verification and rate limiting for normalized phone numbers.
 
 = v7.2.1 - 2026-03-17 =
 - **New:** Added Contact column to the Two-Way inbox, showing subscriber name or WordPress user display name for each sender.
