@@ -275,7 +275,7 @@ class SubscribersApi extends RestApi
             $search_like = '%' . $this->db->esc_like($search) . '%';
 
             // For phone-like search terms, also match against canonical surface forms so a user
-            // typing 09123456789 still finds the row stored as +989123456789 and vice versa.
+            // typing 2025550123 still finds the row stored as +12025550123 and vice versa.
             $isPhoneLike = (bool) preg_match('/^[\+0-9\s\-\(\)]+$/', trim($search));
 
             if ($isPhoneLike) {
@@ -376,10 +376,11 @@ class SubscribersApi extends RestApi
         return self::response(__('Subscribers retrieved successfully', 'wp-sms'), 200, [
             'items'      => $formatted,
             'pagination' => [
-                'total'       => $total,
-                'total_pages' => ceil($total / $per_page),
+                'total'        => $total,
+                'total_pages'  => ceil($total / $per_page),
                 'current_page' => $page,
-                'per_page'    => $per_page,
+                'per_page'     => $per_page,
+                'max_per_page' => $max_per_page,
             ],
             'stats'      => [
                 'total'    => $stats_total,

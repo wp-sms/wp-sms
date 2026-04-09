@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WSMS (formerly WP SMS) 7.2.2\n"
+"Project-Id-Version: WSMS (formerly WP SMS) 7.2.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-sms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-04-09T06:32:37+00:00\n"
+"POT-Creation-Date: 2026-04-09T14:09:06+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wp-sms\n"
@@ -76,8 +76,8 @@ msgstr ""
 #: includes/class-front.php:36
 #: includes/class-wpsms-gateway.php:322
 #: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:50
-#: includes/templates/admin/fields/field-team-member-repeater.php:42
-#: includes/templates/admin/fields/field-team-member-repeater.php:86
+#: includes/templates/admin/fields/field-team-member-repeater.php:43
+#: includes/templates/admin/fields/field-team-member-repeater.php:87
 #: includes/templates/admin/user-profile-fields.php:2
 msgid "SMS"
 msgstr ""
@@ -1390,7 +1390,7 @@ msgid "Message resent successfully"
 msgstr ""
 
 #: includes/api/v1/class-wpsms-api-outbox.php:469
-#: includes/api/v1/class-wpsms-api-subscribers.php:594
+#: includes/api/v1/class-wpsms-api-subscribers.php:595
 msgid "No items selected"
 msgstr ""
 
@@ -1487,7 +1487,7 @@ msgid "SMS Message"
 msgstr ""
 
 #: includes/api/v1/class-wpsms-api-privacy.php:273
-#: includes/api/v1/class-wpsms-api-subscribers.php:708
+#: includes/api/v1/class-wpsms-api-subscribers.php:709
 msgid "Export data ready"
 msgstr ""
 
@@ -1693,93 +1693,93 @@ msgstr ""
 msgid "Subscribers retrieved successfully"
 msgstr ""
 
-#: includes/api/v1/class-wpsms-api-subscribers.php:402
-#: includes/api/v1/class-wpsms-api-subscribers.php:504
-#: includes/api/v1/class-wpsms-api-subscribers.php:568
+#: includes/api/v1/class-wpsms-api-subscribers.php:403
+#: includes/api/v1/class-wpsms-api-subscribers.php:505
+#: includes/api/v1/class-wpsms-api-subscribers.php:569
 msgid "Subscriber not found"
 msgstr ""
 
-#: includes/api/v1/class-wpsms-api-subscribers.php:407
+#: includes/api/v1/class-wpsms-api-subscribers.php:408
 msgid "Subscriber retrieved successfully"
 msgstr ""
 
-#: includes/api/v1/class-wpsms-api-subscribers.php:462
+#: includes/api/v1/class-wpsms-api-subscribers.php:463
 msgid "Subscriber already exists in all selected groups"
 msgstr ""
 
-#: includes/api/v1/class-wpsms-api-subscribers.php:465
-#: includes/api/v1/class-wpsms-api-subscribers.php:490
+#: includes/api/v1/class-wpsms-api-subscribers.php:466
+#: includes/api/v1/class-wpsms-api-subscribers.php:491
 msgid "Subscriber created successfully"
 msgstr ""
 
-#: includes/api/v1/class-wpsms-api-subscribers.php:486
+#: includes/api/v1/class-wpsms-api-subscribers.php:487
 msgid "Failed to create subscriber"
 msgstr ""
 
-#: includes/api/v1/class-wpsms-api-subscribers.php:531
+#: includes/api/v1/class-wpsms-api-subscribers.php:532
 msgid "A subscriber with this phone number already exists"
 msgstr ""
 
-#: includes/api/v1/class-wpsms-api-subscribers.php:556
+#: includes/api/v1/class-wpsms-api-subscribers.php:557
 msgid "Subscriber updated successfully"
 msgstr ""
 
-#: includes/api/v1/class-wpsms-api-subscribers.php:578
+#: includes/api/v1/class-wpsms-api-subscribers.php:579
 msgid "Failed to delete subscriber"
 msgstr ""
 
-#: includes/api/v1/class-wpsms-api-subscribers.php:581
+#: includes/api/v1/class-wpsms-api-subscribers.php:582
 msgid "Subscriber deleted successfully"
 msgstr ""
 
-#: includes/api/v1/class-wpsms-api-subscribers.php:634
+#: includes/api/v1/class-wpsms-api-subscribers.php:635
 msgid "Group ID is required for move action"
 msgstr ""
 
 #. translators: %d: number of subscribers updated
-#: includes/api/v1/class-wpsms-api-subscribers.php:648
+#: includes/api/v1/class-wpsms-api-subscribers.php:649
 #, php-format
 msgid "%d subscriber(s) updated successfully"
 msgstr ""
 
-#: includes/api/v1/class-wpsms-api-subscribers.php:723
+#: includes/api/v1/class-wpsms-api-subscribers.php:724
 msgid "No file uploaded"
 msgstr ""
 
-#: includes/api/v1/class-wpsms-api-subscribers.php:738
+#: includes/api/v1/class-wpsms-api-subscribers.php:739
 msgid "Invalid file type. Please upload a CSV file."
 msgstr ""
 
-#: includes/api/v1/class-wpsms-api-subscribers.php:744
+#: includes/api/v1/class-wpsms-api-subscribers.php:745
 msgid "Failed to read uploaded file"
 msgstr ""
 
 #. translators: %d: row number in the CSV import file
-#: includes/api/v1/class-wpsms-api-subscribers.php:801
+#: includes/api/v1/class-wpsms-api-subscribers.php:802
 #, php-format
 msgid "Row %d: Mobile number is required"
 msgstr ""
 
 #. translators: %1$d: row number in the CSV import file, %2$s: error message
-#: includes/api/v1/class-wpsms-api-subscribers.php:812
+#: includes/api/v1/class-wpsms-api-subscribers.php:813
 #, php-format
 msgid "Row %1$d: %2$s"
 msgstr ""
 
 #. translators: %d: row number in the CSV import file
-#: includes/api/v1/class-wpsms-api-subscribers.php:825
+#: includes/api/v1/class-wpsms-api-subscribers.php:826
 #, php-format
 msgid "Row %d: Subscriber already exists"
 msgstr ""
 
 #. translators: %d: row number in the CSV import file
-#: includes/api/v1/class-wpsms-api-subscribers.php:838
+#: includes/api/v1/class-wpsms-api-subscribers.php:839
 #, php-format
 msgid "Row %d: Failed to add subscriber"
 msgstr ""
 
 #. translators: %1$d: number of subscribers imported, %2$d: number of subscribers skipped
-#: includes/api/v1/class-wpsms-api-subscribers.php:847
+#: includes/api/v1/class-wpsms-api-subscribers.php:848
 #, php-format
 msgid "Import completed: %1$d imported, %2$d skipped"
 msgstr ""
@@ -2677,8 +2677,8 @@ msgid "<b>SMS Route</b>: Please follow this format in your messages: <pre>messag
 msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:51
-#: includes/templates/admin/fields/field-team-member-repeater.php:38
-#: includes/templates/admin/fields/field-team-member-repeater.php:82
+#: includes/templates/admin/fields/field-team-member-repeater.php:39
+#: includes/templates/admin/fields/field-team-member-repeater.php:83
 msgid "WhatsApp"
 msgstr ""
 
@@ -2832,7 +2832,7 @@ msgstr ""
 
 #: includes/templates/admin/fields/field-resource-link-repeater.php:13
 #: includes/templates/admin/fields/field-resource-link-repeater.php:29
-#: src/Services/MessageButton/ChatBoxDecorator.php:160
+#: src/Services/MessageButton/ChatBoxDecorator.php:161
 msgid "Troubleshooting Common Issues"
 msgstr ""
 
@@ -2848,8 +2848,8 @@ msgstr ""
 
 #: includes/templates/admin/fields/field-resource-link-repeater.php:20
 #: includes/templates/admin/fields/field-resource-link-repeater.php:36
-#: includes/templates/admin/fields/field-team-member-repeater.php:52
-#: includes/templates/admin/fields/field-team-member-repeater.php:96
+#: includes/templates/admin/fields/field-team-member-repeater.php:53
+#: includes/templates/admin/fields/field-team-member-repeater.php:97
 #: includes/templates/admin/fields/field-wc-status-repeater.php:39
 #: includes/templates/admin/fields/field-wc-status-repeater.php:70
 #: src/Admin/Dashboard.php:1651
@@ -2860,8 +2860,8 @@ msgstr ""
 msgid "Add another link"
 msgstr ""
 
-#: includes/templates/admin/fields/field-team-member-repeater.php:17
-#: includes/templates/admin/fields/field-team-member-repeater.php:61
+#: includes/templates/admin/fields/field-team-member-repeater.php:18
+#: includes/templates/admin/fields/field-team-member-repeater.php:62
 #: includes/templates/admin/group-form.php:6
 #: includes/templates/admin/group-form.php:7
 #: includes/templates/admin/subscriber-form.php:10
@@ -2870,112 +2870,112 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: includes/templates/admin/fields/field-team-member-repeater.php:17
-#: includes/templates/admin/fields/field-team-member-repeater.php:61
+#: includes/templates/admin/fields/field-team-member-repeater.php:18
+#: includes/templates/admin/fields/field-team-member-repeater.php:62
 #: src/Services/MessageButton/ChatBoxDecorator.php:102
 msgid "Emily Brown"
 msgstr ""
 
-#: includes/templates/admin/fields/field-team-member-repeater.php:18
-#: includes/templates/admin/fields/field-team-member-repeater.php:62
+#: includes/templates/admin/fields/field-team-member-repeater.php:19
+#: includes/templates/admin/fields/field-team-member-repeater.php:63
 msgid "Team member's name, e.g., 'Jane Doe'"
-msgstr ""
-
-#: includes/templates/admin/fields/field-team-member-repeater.php:21
-#: includes/templates/admin/fields/field-team-member-repeater.php:65
-msgid "Role"
-msgstr ""
-
-#: includes/templates/admin/fields/field-team-member-repeater.php:21
-#: includes/templates/admin/fields/field-team-member-repeater.php:65
-#: src/Services/MessageButton/ChatBoxDecorator.php:105
-msgid "Marketing Manager"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:22
 #: includes/templates/admin/fields/field-team-member-repeater.php:66
-msgid "Team member's department or role, e.g., 'Customer Support'"
+msgid "Role"
 msgstr ""
 
-#: includes/templates/admin/fields/field-team-member-repeater.php:26
-#: includes/templates/admin/fields/field-team-member-repeater.php:70
-msgid "Photo"
+#: includes/templates/admin/fields/field-team-member-repeater.php:22
+#: includes/templates/admin/fields/field-team-member-repeater.php:66
+#: src/Services/MessageButton/ChatBoxDecorator.php:105
+msgid "Marketing Manager"
+msgstr ""
+
+#: includes/templates/admin/fields/field-team-member-repeater.php:23
+#: includes/templates/admin/fields/field-team-member-repeater.php:67
+msgid "Team member's department or role, e.g., 'Customer Support'"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:27
 #: includes/templates/admin/fields/field-team-member-repeater.php:71
+msgid "Photo"
+msgstr ""
+
+#: includes/templates/admin/fields/field-team-member-repeater.php:28
+#: includes/templates/admin/fields/field-team-member-repeater.php:72
 msgid "Upload"
 msgstr ""
 
-#: includes/templates/admin/fields/field-team-member-repeater.php:29
-#: includes/templates/admin/fields/field-team-member-repeater.php:73
+#: includes/templates/admin/fields/field-team-member-repeater.php:30
+#: includes/templates/admin/fields/field-team-member-repeater.php:74
 msgid "Upload team member's photo."
-msgstr ""
-
-#: includes/templates/admin/fields/field-team-member-repeater.php:32
-#: includes/templates/admin/fields/field-team-member-repeater.php:76
-msgid "Availability"
-msgstr ""
-
-#: includes/templates/admin/fields/field-team-member-repeater.php:32
-#: includes/templates/admin/fields/field-team-member-repeater.php:76
-#: src/Services/MessageButton/ChatBoxDecorator.php:108
-msgid "Available 10AM-5PM PST"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:33
 #: includes/templates/admin/fields/field-team-member-repeater.php:77
+msgid "Availability"
+msgstr ""
+
+#: includes/templates/admin/fields/field-team-member-repeater.php:33
+#: includes/templates/admin/fields/field-team-member-repeater.php:77
+#: src/Services/MessageButton/ChatBoxDecorator.php:108
+msgid "Available 10AM-5PM PST"
+msgstr ""
+
+#: includes/templates/admin/fields/field-team-member-repeater.php:34
+#: includes/templates/admin/fields/field-team-member-repeater.php:78
 msgid "State team member's chat hours, e.g., 'Available 10AM-5PM PST.'"
 msgstr ""
 
-#: includes/templates/admin/fields/field-team-member-repeater.php:36
 #: includes/templates/admin/fields/field-team-member-repeater.php:37
-#: includes/templates/admin/fields/field-team-member-repeater.php:80
+#: includes/templates/admin/fields/field-team-member-repeater.php:38
 #: includes/templates/admin/fields/field-team-member-repeater.php:81
+#: includes/templates/admin/fields/field-team-member-repeater.php:82
 msgid "Contact Type"
-msgstr ""
-
-#: includes/templates/admin/fields/field-team-member-repeater.php:39
-#: includes/templates/admin/fields/field-team-member-repeater.php:83
-msgid "Phone Call"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:40
 #: includes/templates/admin/fields/field-team-member-repeater.php:84
-msgid "Facebook Messenger"
+msgid "Phone Call"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:41
 #: includes/templates/admin/fields/field-team-member-repeater.php:85
+msgid "Facebook Messenger"
+msgstr ""
+
+#: includes/templates/admin/fields/field-team-member-repeater.php:42
+#: includes/templates/admin/fields/field-team-member-repeater.php:86
 msgid "Telegram"
 msgstr ""
 
-#: includes/templates/admin/fields/field-team-member-repeater.php:43
-#: includes/templates/admin/fields/field-team-member-repeater.php:87
+#: includes/templates/admin/fields/field-team-member-repeater.php:44
+#: includes/templates/admin/fields/field-team-member-repeater.php:88
 msgid "E-mail"
 msgstr ""
 
-#: includes/templates/admin/fields/field-team-member-repeater.php:45
-#: includes/templates/admin/fields/field-team-member-repeater.php:89
+#: includes/templates/admin/fields/field-team-member-repeater.php:46
+#: includes/templates/admin/fields/field-team-member-repeater.php:90
 msgid "Set visitor communication methods, e.g., WhatsApp, Email."
-msgstr ""
-
-#: includes/templates/admin/fields/field-team-member-repeater.php:48
-#: includes/templates/admin/fields/field-team-member-repeater.php:92
-msgid "Contact Value"
-msgstr ""
-
-#: includes/templates/admin/fields/field-team-member-repeater.php:48
-#: includes/templates/admin/fields/field-team-member-repeater.php:92
-msgid "+1122334455"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:49
 #: includes/templates/admin/fields/field-team-member-repeater.php:93
+msgid "Contact Value"
+msgstr ""
+
+#: includes/templates/admin/fields/field-team-member-repeater.php:49
+#: includes/templates/admin/fields/field-team-member-repeater.php:93
+msgid "+1122334455"
+msgstr ""
+
+#: includes/templates/admin/fields/field-team-member-repeater.php:50
+#: includes/templates/admin/fields/field-team-member-repeater.php:94
 msgid "Provide contact details for the chosen method."
 msgstr ""
 
-#: includes/templates/admin/fields/field-team-member-repeater.php:103
+#: includes/templates/admin/fields/field-team-member-repeater.php:104
 msgid "Add another member"
 msgstr ""
 

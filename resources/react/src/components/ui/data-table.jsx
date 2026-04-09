@@ -183,13 +183,18 @@ function RowActionsDropdown({ actions, row }) {
   )
 }
 
+// Per-page options
+const PER_PAGE_OPTIONS = [20, 50, 100, 200, 500]
+
 // Pagination component
 function Pagination({
   currentPage,
   totalPages,
   totalItems,
   perPage,
+  maxPerPage,
   onPageChange,
+  onPerPageChange,
 }) {
   const startItem = (currentPage - 1) * perPage + 1
   const endItem = Math.min(currentPage * perPage, totalItems)
@@ -211,89 +216,112 @@ function Pagination({
     return items
   }, [currentPage, totalPages])
 
-  if (totalPages <= 1) return null
+  if (totalPages <= 1 && !onPerPageChange) return null
 
   return (
     <nav aria-label={__('Pagination')} className="wsms-flex wsms-flex-col sm:wsms-flex-row wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-4 wsms-py-3 wsms-border-t wsms-border-border wsms-bg-muted/20">
-      <p className="wsms-text-[12px] wsms-text-muted-foreground">
-        {__('Showing')} <span className="wsms-font-medium wsms-text-foreground">{startItem}</span> {__('to')}{' '}
-        <span className="wsms-font-medium wsms-text-foreground">{endItem}</span> {__('of')}{' '}
-        <span className="wsms-font-medium wsms-text-foreground">{totalItems}</span> {__('results')}
-      </p>
-
-      <div className="wsms-flex wsms-items-center wsms-gap-1">
-        <Button
-          variant="outline"
-          size="icon"
-          className="wsms-h-8 wsms-w-8"
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage <= 1}
-          aria-label={__('Go to previous page')}
-        >
-          <ChevronLeft className="wsms-h-4 wsms-w-4 rtl:wsms-scale-x-[-1]" />
-        </Button>
-
-        {pages[0] > 1 && (
-          <>
-            <Button
-              variant={currentPage === 1 ? 'default' : 'ghost'}
-              size="icon"
-              className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
-              onClick={() => onPageChange(1)}
-              aria-label={__('Go to page %s').replace('%s', '1')}
-              aria-current={currentPage === 1 ? 'page' : undefined}
+      <div className="wsms-flex wsms-items-center wsms-gap-4">
+        <p className="wsms-text-[12px] wsms-text-muted-foreground">
+          {__('Showing')} <span className="wsms-font-medium wsms-text-foreground">{startItem}</span> {__('to')}{' '}
+          <span className="wsms-font-medium wsms-text-foreground">{endItem}</span> {__('of')}{' '}
+          <span className="wsms-font-medium wsms-text-foreground">{totalItems}</span> {__('results')}
+        </p>
+        {onPerPageChange && (
+          <div className="wsms-flex wsms-items-center wsms-gap-1.5">
+            <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-whitespace-nowrap">
+              {__('Per page')}
+            </span>
+            <select
+              value={perPage}
+              onChange={(e) => onPerPageChange(Number(e.target.value))}
+              className="wsms-h-7 wsms-appearance-none wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-px-2 wsms-pr-6 wsms-text-[12px] wsms-text-foreground wsms-cursor-pointer focus:wsms-outline-none focus:wsms-ring-1 focus:wsms-ring-ring"
+              style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%236b7280\' stroke-width=\'2\'%3E%3Cpath d=\'M6 9l6 6 6-6\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 6px center' }}
             >
-              1
-            </Button>
-            {pages[0] > 2 && (
-              <span className="wsms-px-1 wsms-text-muted-foreground">...</span>
-            )}
-          </>
+              {PER_PAGE_OPTIONS.filter((option) => option <= (maxPerPage || 100)).map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
         )}
-
-        {pages.map((page) => (
-          <Button
-            key={page}
-            variant={currentPage === page ? 'default' : 'ghost'}
-            size="icon"
-            className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
-            onClick={() => onPageChange(page)}
-            aria-label={__('Go to page %s').replace('%s', String(page))}
-            aria-current={currentPage === page ? 'page' : undefined}
-          >
-            {page}
-          </Button>
-        ))}
-
-        {pages[pages.length - 1] < totalPages && (
-          <>
-            {pages[pages.length - 1] < totalPages - 1 && (
-              <span className="wsms-px-1 wsms-text-muted-foreground">...</span>
-            )}
-            <Button
-              variant={currentPage === totalPages ? 'default' : 'ghost'}
-              size="icon"
-              className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
-              onClick={() => onPageChange(totalPages)}
-              aria-label={__('Go to page %s').replace('%s', String(totalPages))}
-              aria-current={currentPage === totalPages ? 'page' : undefined}
-            >
-              {totalPages}
-            </Button>
-          </>
-        )}
-
-        <Button
-          variant="outline"
-          size="icon"
-          className="wsms-h-8 wsms-w-8"
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage >= totalPages}
-          aria-label={__('Go to next page')}
-        >
-          <ChevronRight className="wsms-h-4 wsms-w-4 rtl:wsms-scale-x-[-1]" />
-        </Button>
       </div>
+
+      {totalPages > 1 && (
+        <div className="wsms-flex wsms-items-center wsms-gap-1">
+          <Button
+            variant="outline"
+            size="icon"
+            className="wsms-h-8 wsms-w-8"
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage <= 1}
+            aria-label={__('Go to previous page')}
+          >
+            <ChevronLeft className="wsms-h-4 wsms-w-4 rtl:wsms-scale-x-[-1]" />
+          </Button>
+
+          {pages[0] > 1 && (
+            <>
+              <Button
+                variant={currentPage === 1 ? 'default' : 'ghost'}
+                size="icon"
+                className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
+                onClick={() => onPageChange(1)}
+                aria-label={__('Go to page %s').replace('%s', '1')}
+                aria-current={currentPage === 1 ? 'page' : undefined}
+              >
+                1
+              </Button>
+              {pages[0] > 2 && (
+                <span className="wsms-px-1 wsms-text-muted-foreground">...</span>
+              )}
+            </>
+          )}
+
+          {pages.map((page) => (
+            <Button
+              key={page}
+              variant={currentPage === page ? 'default' : 'ghost'}
+              size="icon"
+              className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
+              onClick={() => onPageChange(page)}
+              aria-label={__('Go to page %s').replace('%s', String(page))}
+              aria-current={currentPage === page ? 'page' : undefined}
+            >
+              {page}
+            </Button>
+          ))}
+
+          {pages[pages.length - 1] < totalPages && (
+            <>
+              {pages[pages.length - 1] < totalPages - 1 && (
+                <span className="wsms-px-1 wsms-text-muted-foreground">...</span>
+              )}
+              <Button
+                variant={currentPage === totalPages ? 'default' : 'ghost'}
+                size="icon"
+                className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
+                onClick={() => onPageChange(totalPages)}
+                aria-label={__('Go to page %s').replace('%s', String(totalPages))}
+                aria-current={currentPage === totalPages ? 'page' : undefined}
+              >
+                {totalPages}
+              </Button>
+            </>
+          )}
+
+          <Button
+            variant="outline"
+            size="icon"
+            className="wsms-h-8 wsms-w-8"
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage >= totalPages}
+            aria-label={__('Go to next page')}
+          >
+            <ChevronRight className="wsms-h-4 wsms-w-4 rtl:wsms-scale-x-[-1]" />
+          </Button>
+        </div>
+      )}
     </nav>
   )
 }
@@ -554,7 +582,9 @@ export function DataTable({
           totalPages={pagination.totalPages}
           totalItems={pagination.total}
           perPage={pagination.perPage}
+          maxPerPage={pagination.maxPerPage}
           onPageChange={pagination.onPageChange}
+          onPerPageChange={pagination.onPerPageChange}
         />
       )}
     </div>
@@ -583,6 +613,7 @@ DataTable.propTypes = {
     total: PropTypes.number.isRequired,
     totalPages: PropTypes.number.isRequired,
     onPageChange: PropTypes.func.isRequired,
+    onPerPageChange: PropTypes.func,
   }),
   selection: PropTypes.shape({
     selected: PropTypes.array.isRequired,

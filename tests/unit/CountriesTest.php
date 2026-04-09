@@ -47,7 +47,7 @@ class CountriesTest extends WP_UnitTestCase
 
         $this->assertIsArray($countries);
         $this->assertArrayHasKey('+1', $countries);
-        $this->assertArrayHasKey('+98', $countries);
+        $this->assertArrayHasKey('+44', $countries);
     }
 
     /**
@@ -55,10 +55,10 @@ class CountriesTest extends WP_UnitTestCase
      */
     public function testGetCountryByPrefixReturnsCorrectCountry()
     {
-        $country = $this->countries->getCountryByPrefix('+98');
+        $country = $this->countries->getCountryByPrefix('+1');
 
         $this->assertIsArray($country);
-        $this->assertEquals('Iran', $country['name']);
+        $this->assertEquals('United States (USA)', $country['name']);
     }
 
     /**

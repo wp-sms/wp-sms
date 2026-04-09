@@ -432,6 +432,7 @@ export default function Groups() {
                 page: table.pagination.current_page,
                 perPage: table.pagination.per_page,
                 onPageChange: table.handlePageChange,
+                onPerPageChange: table.handlePerPageChange,
               }}
               onSort={handleSort}
               rowActions={rowActions}

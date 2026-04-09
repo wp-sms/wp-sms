@@ -13,14 +13,14 @@ import { test, expect } from '../../fixtures/test.js';
 const FAKE_SCAN = {
   success: true,
   data: {
-    country_code: '+98',
+    country_code: '+1',
     sources: {
       subscribers: { label: 'Subscribers', total: 50, need_fix: 42, already_intl: 8 },
     },
     total_need_fix: 42,
     total_already_intl: 8,
     total_records: 50,
-    samples: ['09123456789', '09123456788', '09123456787'],
+    samples: ['2025550123', '2025550122', '2025550121'],
     backup_exists: false,
     backup_timestamp: null,
     backup_timestamp_iso: null,
@@ -40,8 +40,8 @@ const FAKE_PREVIEW = {
         label: 'Subscribers',
         id: 1,
         name: 'Alice',
-        original: '09123456789',
-        migrated: '+989123456789',
+        original: '2025550123',
+        migrated: '+12025550123',
         changed: true,
       },
       {
@@ -49,15 +49,15 @@ const FAKE_PREVIEW = {
         label: 'Subscribers',
         id: 2,
         name: 'Bob',
-        original: '09123456788',
-        migrated: '+989123456788',
+        original: '2025550122',
+        migrated: '+12025550122',
         changed: true,
       },
     ],
     page: 1,
     per_page: 20,
     total: 42,
-    country_code: '+98',
+    country_code: '+1',
   },
 }
 

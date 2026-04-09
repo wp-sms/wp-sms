@@ -192,7 +192,7 @@ class SettingsApiTest extends WPSMSTestCase
     {
         $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
-                'admin_mobile_number' => '+9876543210',
+                'admin_mobile_number' => '+12025550123',
                 'notif_publish_new_post_enabled' => '1',
             ],
         ]);

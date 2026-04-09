@@ -171,7 +171,7 @@ class SmsFlowSettingsTest extends WPSMSTestCase
         Option::updateOption('mobile_county_code', '');
         $this->reinitializeGateway();
 
-        $numbers = ['5551234567', '09121234567'];
+        $numbers = ['5551234567', '2025550123'];
 
         $filtered = apply_filters('wp_sms_to', $numbers);
 
@@ -198,14 +198,14 @@ class SmsFlowSettingsTest extends WPSMSTestCase
      */
     public function testCountryCodeStripsLeadingZero()
     {
-        Option::updateOption('mobile_county_code', '+98');
+        Option::updateOption('mobile_county_code', '+1');
         $this->reinitializeGateway();
 
-        $numbers = ['09121234567'];
+        $numbers = ['02025550123'];
 
         $filtered = apply_filters('wp_sms_to', $numbers);
 
-        $this->assertEquals(['+989121234567'], $filtered);
+        $this->assertEquals(['+12025550123'], $filtered);
     }
 
     /**
@@ -231,12 +231,12 @@ class SmsFlowSettingsTest extends WPSMSTestCase
         Option::updateOption('mobile_county_code', '+1');
         $this->reinitializeGateway();
 
-        $numbers = ['+445551234567', '+989121234567'];
+        $numbers = ['+445551234567', '+12025550123'];
 
         $filtered = apply_filters('wp_sms_to', $numbers);
 
         // Numbers with + prefix should remain unchanged
-        $this->assertEquals(['+445551234567', '+989121234567'], $filtered);
+        $this->assertEquals(['+445551234567', '+12025550123'], $filtered);
     }
 
     /**
@@ -265,10 +265,10 @@ class SmsFlowSettingsTest extends WPSMSTestCase
     public function testLocalNumbersDisabledAllowsAllNumbers()
     {
         Option::updateOption('send_only_local_numbers', '');
-        Option::updateOption('only_local_numbers_countries', ['+1', '+44', '+98']);
+        Option::updateOption('only_local_numbers_countries', ['+1', '+44']);
         $this->reinitializeGateway();
 
-        $numbers = ['+15551234567', '+449876543210', '+989121234567', '+8612345678901'];
+        $numbers = ['+15551234567', '+449876543210', '+12025550123', '+8612345678901'];
 
         $filtered = apply_filters('wp_sms_to', $numbers);
 
@@ -285,7 +285,7 @@ class SmsFlowSettingsTest extends WPSMSTestCase
         Option::updateOption('only_local_numbers_countries', ['+1', '+44']);
         $this->reinitializeGateway();
 
-        $numbers = ['+15551234567', '+449876543210', '+989121234567', '+8612345678901'];
+        $numbers = ['+15551234567', '+449876543210', '+12025550123', '+8612345678901'];
 
         $filtered = apply_filters('wp_sms_to', $numbers);
 
@@ -302,7 +302,7 @@ class SmsFlowSettingsTest extends WPSMSTestCase
         Option::updateOption('only_local_numbers_countries', []);
         $this->reinitializeGateway();
 
-        $numbers = ['+15551234567', '+989121234567'];
+        $numbers = ['+15551234567', '+12025550123'];
 
         $filtered = apply_filters('wp_sms_to', $numbers);
 
@@ -316,15 +316,15 @@ class SmsFlowSettingsTest extends WPSMSTestCase
     public function testLocalNumbersFiltersAllNonMatching()
     {
         Option::updateOption('send_only_local_numbers', '1');
-        Option::updateOption('only_local_numbers_countries', ['+98']);
+        Option::updateOption('only_local_numbers_countries', ['+1']);
         $this->reinitializeGateway();
 
         $numbers = ['+15551234567', '+449876543210', '+8612345678901'];
 
         $filtered = apply_filters('wp_sms_to', $numbers);
 
-        // None should pass as none start with +98
-        $this->assertEquals([], $filtered);
+        // Only +1 should pass.
+        $this->assertEquals(['+15551234567'], $filtered);
     }
 
     /**
@@ -588,9 +588,9 @@ class SmsFlowSettingsTest extends WPSMSTestCase
     public function testArrayValueForCountriesIsHandledCorrectly()
     {
         Option::updateOption('send_only_local_numbers', '1');
-        Option::updateOption('only_local_numbers_countries', ['+1', '+44', '+98']);
+        Option::updateOption('only_local_numbers_countries', ['+1', '+44']);
         $this->reinitializeGateway();
 
-        $this->assertEquals(['+1', '+44', '+98'], Option::getOption('only_local_numbers_countries'));
+        $this->assertEquals(['+1', '+44'], Option::getOption('only_local_numbers_countries'));
     }
 }

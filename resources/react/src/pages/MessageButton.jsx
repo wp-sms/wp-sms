@@ -45,7 +45,8 @@ function getDefaultAvatarUrl() {
 function getContactIconUrl(type) {
   const wpSettings = getWpSettings()
   const baseUrl = wpSettings?.pluginUrl || '/wp-content/plugins/wp-sms/'
-  return `${baseUrl}public/images/chatbox/icon-${type || 'whatsapp'}.svg`
+  const iconName = type === 'call' ? 'phone' : (type || 'whatsapp')
+  return `${baseUrl}public/images/chatbox/icon-${iconName}.svg`
 }
 
 export default function MessageButton() {

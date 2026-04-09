@@ -492,6 +492,7 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
                 loading={loading}
                 onNext={() => handlePreviewLoad(1)}
                 onBack={() => setStep(STEP.INTRO)}
+                onClose={() => handleOpenChange(false)}
                 onRevertOldBackup={openRevert}
                 onClearOldBackup={handleClearBackup}
                 onWrongCountry={handleWrongCountry}
@@ -552,4 +553,3 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
     </>
   )
 }
-

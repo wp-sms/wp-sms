@@ -21,10 +21,10 @@ export default function CountryStep({
 
   const exampleLine = useMemo(() => {
     if (!value) {
-      return __('Numbers like 0912 345 6789 will become +98 912 345 6789')
+      return __('Numbers like 202 555 0147 will become +1 202 555 0147')
     }
     const cc = String(value).replace(/^\+?/, '+')
-    return sprintf(__('Numbers like 0912 345 6789 will become %s 912 345 6789'), cc)
+    return sprintf(__('Numbers like 202 555 0147 will become %s 202 555 0147'), cc)
   }, [value])
 
   const bodyCopy =

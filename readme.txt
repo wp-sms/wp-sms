@@ -4,7 +4,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 7.2.2
+Stable tag: 7.2.3
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -138,7 +138,11 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
-v7.2.2 - 2026-03-09
+= v7.2.3 - 2026-03-09 =
+- **New:** Added per-page selector to all list pages (Subscribers, Outbox, Groups, Scheduled, Campaigns, Two-Way Inbox), allowing users to choose how many items to display per page.
+- **Enhancement:** Minor improvements.
+
+= v7.2.2 - 2026-03-09 =
 - **Enhancement:** Redesigned the phone number migration wizard with a simpler 5-step flow, progress tracking, and improved safety messaging.
 - **Enhancement:** Added a phone number normalization wizard to standardize numbers for improved delivery reliability.
 - **Enhancement:** Phone numbers are now automatically normalized into a consistent international E.164 format for better compatibility across integrations.

@@ -1,6 +1,7 @@
 <?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class="repeater">
     <div data-repeater-list="wpsms_settings[<?php echo esc_attr($args['id']) ?>]">
+        <?php $member_contact_type = ''; ?>
         <?php if (is_array($value) && count($value)) : ?>
             <?php foreach ($value as $key => $data) : ?>
                 <?php 
@@ -36,7 +37,7 @@
                             <select aria-label="<?php esc_attr_e('Contact Type', 'wp-sms'); ?>" name="member_contact_type" style="display: block; min-width: 100%;">
                                 <option value=""><?php esc_html_e('Contact Type', 'wp-sms') ?></option>
                                 <option value="whatsapp" <?php selected($member_contact_type, 'whatsapp') ?>><?php esc_html_e('WhatsApp', 'wp-sms') ?></option>
-                                <option value="call" <?php selected($member_contact_type, 'call') ?>><?php esc_html_e('Phone Call', 'wp-sms') ?></option>
+                                <option value="phone" <?php selected(in_array($member_contact_type, ['phone', 'call'], true), true) ?>><?php esc_html_e('Phone Call', 'wp-sms') ?></option>
                                 <option value="facebook" <?php selected($member_contact_type, 'facebook') ?>><?php esc_html_e('Facebook Messenger', 'wp-sms') ?></option>
                                 <option value="telegram" <?php selected($member_contact_type, 'telegram') ?>><?php esc_html_e('Telegram', 'wp-sms') ?></option>
                                 <option value="sms" <?php selected($member_contact_type, 'sms') ?>><?php esc_html_e('SMS', 'wp-sms') ?></option>
@@ -80,7 +81,7 @@
                         <select aria-label="<?php esc_attr_e('Contact Type', 'wp-sms'); ?>" name="member_contact_type" style="display: block; min-width: 100%;">
                             <option value=""><?php esc_html_e('Contact Type', 'wp-sms') ?></option>
                             <option value="whatsapp"><?php esc_html_e('WhatsApp', 'wp-sms') ?></option>
-                            <option value="call"><?php esc_html_e('Phone Call', 'wp-sms') ?></option>
+                            <option value="phone" <?php selected(in_array($member_contact_type, ['phone', 'call'], true), true) ?>><?php esc_html_e('Phone Call', 'wp-sms') ?></option>
                             <option value="facebook"><?php esc_html_e('Facebook Messenger', 'wp-sms') ?></option>
                             <option value="telegram"><?php esc_html_e('Telegram', 'wp-sms') ?></option>
                             <option value="sms"><?php esc_html_e('SMS', 'wp-sms') ?></option>

@@ -459,6 +459,7 @@ function ScheduledSmsTab() {
               page: table.pagination.current_page,
               perPage: table.pagination.per_page,
               onPageChange: table.handlePageChange,
+              onPerPageChange: table.handlePerPageChange,
             }}
             selection={{
               selected: table.selectedIds,
@@ -1040,6 +1041,7 @@ function RepeatingSmsTab() {
               page: table.pagination.current_page,
               perPage: table.pagination.per_page,
               onPageChange: table.handlePageChange,
+              onPerPageChange: table.handlePerPageChange,
             }}
             selection={{
               selected: table.selectedIds,

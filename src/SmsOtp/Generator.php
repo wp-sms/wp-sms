@@ -44,7 +44,7 @@ final class Generator
     {
         // Normalize once at the boundary so the row inserted by saveIntoDatabase() and the
         // row looked up by Verifier::verify() share an identical canonical representation,
-        // regardless of whether the user submits +98912..., 0912..., or 912... .
+        // regardless of whether the user submits +1202555..., 0202555..., or 202555... .
         $this->phoneNumber = Helper::normalizeToE164($phoneNumber);
         $this->agent       = $agent;
     }

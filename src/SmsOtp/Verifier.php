@@ -39,7 +39,7 @@ final class Verifier
     {
         // Normalize once at the boundary so verify() looks up the same canonical row that
         // Generator::saveIntoDatabase() inserted, even when generation and verification
-        // submit different surface forms (e.g. 0912... vs +98912...).
+        // submit different surface forms (e.g. 0202555... vs +1202555...).
         $this->phoneNumber = Helper::normalizeToE164($phoneNumber);
         $this->agent       = $agent;
     }

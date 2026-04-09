@@ -18,7 +18,7 @@ export default function IntroStep({ headlineRef, loading, onStart, onCancel }) {
         </h2>
         <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-leading-relaxed">
           {__(
-            "Some of your stored numbers are in local format (like 0912 345 6789) instead of the international format your SMS gateway needs (+98 912 345 6789). We'll find them, show you exactly what will change, and apply the fix in one batch."
+            "Some of your stored numbers are in local format (like 202 555 0147) instead of the international format your SMS gateway needs (+1 202 555 0147). We'll find them, show you exactly what will change, and apply the fix in one batch."
           )}
         </p>
       </div>

@@ -54,7 +54,7 @@ class MeliPayamakGatewayTest extends WP_UnitTestCase
         $this->gateway->username = '';
         $this->gateway->password = '';
         $this->gateway->msg      = 'Hello world';
-        $this->gateway->to       = '09123456789';
+        $this->gateway->to       = '2025550123';
 
         $result = $this->gateway->SendSMS();
 
