@@ -5,7 +5,10 @@ namespace WSms\Container;
 use WSms\Auth\AccountLockout;
 use WSms\Auth\AccountManager;
 use WSms\Auth\AccountSuspension;
+use WSms\Auth\FreshnessManager;
+use WSms\Auth\StepUpChallengeStore;
 use WSms\Auth\UserInfo;
+use WSms\Auth\WpSessionTokenStore;
 use WSms\Database\Connection;
 use WSms\Auth\ApiAuthGuard;
 use WSms\Auth\AuthOrchestrator;
@@ -26,6 +29,8 @@ use WSms\Auth\RegistrationFormRepository;
 use WSms\Auth\SettingsRepository;
 use WSms\Auth\TrustedDeviceManager;
 use WSms\Service\Admin\AdminBarManager;
+use WSms\Support\Clock;
+use WSms\Support\SystemClock;
 
 defined('ABSPATH') || exit;
 
@@ -41,6 +46,28 @@ class AuthServiceProvider implements ServiceProvider
     {
         $container->register('auth.settings', function () {
             return new SettingsRepository();
+        });
+
+        $container->register('support.clock', function () {
+            return new SystemClock();
+        });
+
+        $container->register('auth.session_token_store', function () {
+            return new WpSessionTokenStore();
+        });
+
+        $container->register('auth.freshness', function () use ($container) {
+            return new FreshnessManager(
+                $container->get('auth.session_token_store'),
+                $container->get('support.clock'),
+            );
+        });
+
+        $container->register('auth.stepup_store', function () use ($container) {
+            return new StepUpChallengeStore(
+                $container->get('auth.session_token_store'),
+                $container->get('support.clock'),
+            );
         });
 
         $container->register('auth.field_registry', function () use ($container) {
@@ -98,6 +125,7 @@ class AuthServiceProvider implements ServiceProvider
                 $container->get('auth.settings'),
                 $container->get('auth.trusted_devices'),
                 $container->get('auth.suspension'),
+                $container->get('auth.freshness'),
             );
         });
 
@@ -113,6 +141,7 @@ class AuthServiceProvider implements ServiceProvider
                 $container->get('auth.field_registry'),
                 $container->get('auth.trusted_devices'),
                 $container->get('log.app'),
+                $container->get('auth.freshness'),
             );
         });
 

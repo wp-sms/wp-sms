@@ -255,6 +255,81 @@ class PolicyEngine
     }
 
     /**
+     * Methods the given user can use for a step-up re-authentication.
+     *
+     * Mirrors login strength: if the user has a password and it is enabled,
+     * password is offered; enrolled login/MFA channels that support OTP or
+     * passkey assertion are offered as alternatives. The frontend drives the
+     * UI from this list and the step-up controller validates each response
+     * against the matching verification path.
+     *
+     * If MFA is required for this user, the list includes their enrolled MFA
+     * factors as well — the frontend then runs two sequential step-ups
+     * (primary + MFA) and only the last one stamps the freshness timestamp.
+     *
+     * @return string[] e.g. ['password', 'otp_email', 'otp_phone', 'passkey']
+     */
+    public function stepUpMethodsFor(int $userId): array
+    {
+        $user = get_userdata($userId);
+        if (!$user) {
+            return [];
+        }
+
+        $settings = $this->settingsRepo->all();
+        $methods = [];
+
+        // Password: only when the user actually has one set.
+        $passwordEnabled = !empty($settings['password']['enabled']);
+        if ($passwordEnabled && UserInfo::hasUsablePassword($userId)) {
+            $methods[] = 'password';
+        }
+
+        // Channel-based methods (email/phone OTP, passkey assertion).
+        foreach ($this->mfaManager->getAvailableChannels() as $channel) {
+            $channelKey = $channel->getId();
+            $channelSettings = $settings[$channelKey] ?? [];
+
+            // Channel must be enabled at all.
+            $enabledKey = $channel->getEnabledSettingKey();
+            if (empty($channelSettings[$enabledKey] ?? null)) {
+                continue;
+            }
+
+            if (!$channel->isAvailableForUser($userId) || !$channel->isEnrolled($userId)) {
+                continue;
+            }
+
+            // Passkey is a factor on its own.
+            if ($channelKey === 'passkey') {
+                $methods[] = 'passkey';
+                continue;
+            }
+
+            // TOTP can also re-prove identity.
+            if ($channelKey === 'totp') {
+                $methods[] = 'totp';
+                continue;
+            }
+
+            // Backup codes are single-use MFA fallbacks; honor them only when
+            // the user already has an active enrollment.
+            if ($channelKey === 'backup_codes') {
+                $methods[] = 'backup_codes';
+                continue;
+            }
+
+            // Channels with OTP verification (email, phone, telegram, line).
+            $verificationMethods = $channelSettings['verification_methods'] ?? ['otp'];
+            if (in_array('otp', $verificationMethods, true)) {
+                $methods[] = 'otp_' . $channelKey;
+            }
+        }
+
+        return array_values(array_unique($methods));
+    }
+
+    /**
      * Determine the smart default method based on how the user identified themselves.
      */
     public function getDefaultMethod(string $identifierType, array $availableMethods): ?string

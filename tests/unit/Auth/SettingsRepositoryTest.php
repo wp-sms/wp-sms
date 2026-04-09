@@ -235,6 +235,56 @@ class SettingsRepositoryTest extends TestCase
         }
     }
 
+    // --- fresh_auth_window_seconds ---
+
+    public function testFreshAuthWindowDefaultIsSixHours(): void
+    {
+        $repo = new SettingsRepository();
+        $this->assertSame(21600, $repo->getFreshAuthWindowSeconds());
+    }
+
+    public function testFreshAuthWindowClampsTooLow(): void
+    {
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'fresh_auth_window_seconds' => 1,
+        ];
+
+        $repo = new SettingsRepository();
+        [$min] = SettingsRepository::freshAuthWindowBounds();
+        $this->assertSame($min, $repo->getFreshAuthWindowSeconds());
+    }
+
+    public function testFreshAuthWindowClampsTooHigh(): void
+    {
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'fresh_auth_window_seconds' => 10_000_000,
+        ];
+
+        $repo = new SettingsRepository();
+        [, $max] = SettingsRepository::freshAuthWindowBounds();
+        $this->assertSame($max, $repo->getFreshAuthWindowSeconds());
+    }
+
+    public function testFreshAuthWindowZeroIsPreserved(): void
+    {
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'fresh_auth_window_seconds' => 0,
+        ];
+
+        $repo = new SettingsRepository();
+        $this->assertSame(0, $repo->getFreshAuthWindowSeconds());
+    }
+
+    public function testFreshAuthWindowNegativeCollapsesToZero(): void
+    {
+        $GLOBALS['_test_options'][SettingsRepository::OPTION_KEY] = [
+            'fresh_auth_window_seconds' => -42,
+        ];
+
+        $repo = new SettingsRepository();
+        $this->assertSame(0, $repo->getFreshAuthWindowSeconds());
+    }
+
     // --- PHP-to-frontend sync: export DEFAULTS as JSON snapshot ---
 
     public function testExportDefaultsSnapshot(): void

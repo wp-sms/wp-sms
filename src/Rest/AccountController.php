@@ -290,6 +290,17 @@ class AccountController extends Controller
     public function handleUpdateProfile(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
+            // Tier 1 fields (email/phone) require fresh auth; other fields do not.
+            $touchesIdentifier = $request->get_param('email') !== null
+                || $request->get_param('phone') !== null;
+
+            if ($touchesIdentifier) {
+                $fresh = $this->requireFreshAuth($request);
+                if ($fresh !== true) {
+                    return $fresh;
+                }
+            }
+
             $data = array_filter([
                 'display_name' => $request->get_param('display_name'),
                 'first_name'   => $request->get_param('first_name'),
@@ -324,6 +335,13 @@ class AccountController extends Controller
 
             if (!$rl['allowed']) {
                 return $this->rateLimitedResponse($rl['retry_after']);
+            }
+
+            // Tier 2: freshness required unless the caller supplies their
+            // current password (which the handler verifies below).
+            $fresh = $this->requireFreshAuth($request, allowPasswordEscapeHatch: true);
+            if ($fresh !== true) {
+                return $fresh;
             }
 
             $result = $this->accountManager->changePassword(

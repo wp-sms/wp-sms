@@ -46,6 +46,7 @@ class AdminController extends Controller
         'mfa_policy_activated_at',
         'subscription_consent_text',
         'subscription_consent_required',
+        'fresh_auth_window_seconds',
     ];
 
     /** Channel keys that accept nested sub-objects. */
@@ -507,6 +508,15 @@ class AdminController extends Controller
             $v = (int) $settings['log_retention_days'];
             if ($v < 1 || $v > 365) {
                 $errors[] = 'log_retention_days must be between 1 and 365.';
+            }
+        }
+
+        if (isset($settings['fresh_auth_window_seconds'])) {
+            $v = (int) $settings['fresh_auth_window_seconds'];
+            [$min, $max] = SettingsRepository::freshAuthWindowBounds();
+            // 0 is allowed as a special "always step up" sentinel.
+            if ($v !== 0 && ($v < $min || $v > $max)) {
+                $errors[] = "fresh_auth_window_seconds must be 0 or between {$min} and {$max}.";
             }
         }
 

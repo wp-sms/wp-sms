@@ -236,6 +236,7 @@ export const DEFAULTS: Required<AuthSettings> = {
   privacy_url: '',
   subscription_consent_text: '',
   subscription_consent_required: false,
+  fresh_auth_window_seconds: 21600,
 };
 
 export type ChannelId = 'phone' | 'email' | 'password';

@@ -1206,6 +1206,8 @@ if (!class_exists('WP_Session_Tokens')) {
     class WP_Session_Tokens {
         private static array $instances = [];
         private int $userId;
+        /** @var array<string, array<string, mixed>> Keyed by hashed token. */
+        private array $sessions = [];
 
         protected function __construct(int $userId) {
             $this->userId = $userId;
@@ -1218,13 +1220,40 @@ if (!class_exists('WP_Session_Tokens')) {
             return self::$instances[$userId];
         }
 
+        public function get(string $token): ?array {
+            $hash = hash('sha256', $token);
+            return $this->sessions[$hash] ?? null;
+        }
+
+        public function update(string $token, array $session): void {
+            $hash = hash('sha256', $token);
+            $this->sessions[$hash] = $session;
+        }
+
         public function destroy_all(): void {
+            $this->sessions = [];
             $GLOBALS['_test_sessions_destroyed'][$this->userId] = true;
+        }
+
+        public function destroy_others(string $token): void {
+            $keep = hash('sha256', $token);
+            foreach (array_keys($this->sessions) as $hash) {
+                if ($hash !== $keep) {
+                    unset($this->sessions[$hash]);
+                }
+            }
+            $GLOBALS['_test_sessions_destroyed_others'][$this->userId] = true;
         }
 
         public static function resetInstances(): void {
             self::$instances = [];
         }
+    }
+}
+
+if (!function_exists('wp_get_session_token')) {
+    function wp_get_session_token(): string {
+        return $GLOBALS['_test_current_session_token'] ?? '';
     }
 }
 

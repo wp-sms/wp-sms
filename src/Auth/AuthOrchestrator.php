@@ -27,6 +27,7 @@ class AuthOrchestrator
         private SettingsRepository $settingsRepo,
         private ?TrustedDeviceManager $trustedDevices = null,
         private ?AccountSuspension $suspension = null,
+        private ?FreshnessManager $freshnessManager = null,
     ) {
     }
 
@@ -433,6 +434,7 @@ class AuthOrchestrator
         update_user_meta($userId, UserMeta::MFA_ENROLLMENT_PENDING, '1');
         wp_set_auth_cookie($userId, true);
         wp_set_current_user($userId);
+        $this->freshnessManager?->markFresh($userId);
 
         $this->auditLogger->log(EventType::LoginSuccess, 'enrollment_gated', $userId, [
             'method' => $method,
@@ -494,6 +496,7 @@ class AuthOrchestrator
 
         wp_set_auth_cookie($userId, true);
         wp_set_current_user($userId);
+        $this->freshnessManager?->markFresh($userId);
 
         $this->auditLogger->log(EventType::LoginSuccess, 'success', $userId, [
             'channel'     => $method,

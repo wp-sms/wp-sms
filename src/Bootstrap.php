@@ -160,6 +160,14 @@ class Bootstrap
     }
 
     /**
+     * Shorthand to check if a service is registered.
+     */
+    public static function has(string $id): bool
+    {
+        return self::container()->has($id);
+    }
+
+    /**
      * Register translation filters early so bundled translations take
      * precedence even if JIT loading fires before `init`.
      *

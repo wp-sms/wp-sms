@@ -42,4 +42,8 @@ enum EventType: string
     case StandaloneVerificationFailed = 'standalone_verification_failed';
     case AccountSuspended = 'account_suspended';
     case AccountUnsuspended = 'account_unsuspended';
+    case FreshAuthGateTriggered = 'fresh_auth_gate_triggered';
+    case StepUpSucceeded = 'step_up_succeeded';
+    case StepUpFailed = 'step_up_failed';
+    case StepUpUnavailable = 'step_up_unavailable';
 }

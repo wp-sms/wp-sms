@@ -19,6 +19,7 @@ use WSms\Rest\MessageLogController;
 use WSms\Rest\MfaController;
 use WSms\Rest\EnrollmentController;
 use WSms\Rest\SocialAuthController;
+use WSms\Rest\StepUpController;
 use WSms\Rest\LineController;
 use WSms\Rest\TelegramController;
 use WSms\Rest\GatewayCallbackController;
@@ -90,6 +91,18 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('auth.field_registry'),
                 $container->get('auth.avatar_manager'),
                 $container->get('auth.trusted_devices'),
+            );
+        });
+
+        $container->register('rest.stepup', function () use ($container) {
+            return new StepUpController(
+                $container->get('auth.freshness'),
+                $container->get('auth.stepup_store'),
+                $container->get('auth.policy'),
+                $container->get('mfa.manager'),
+                $container->get('auth.lockout'),
+                $container->get('audit.logger'),
+                $container->get('auth.settings'),
             );
         });
 
@@ -308,6 +321,7 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('rest.enrollment')->registerRoutes();
                 $container->get('rest.account')->registerRoutes();
                 $container->get('rest.social')->registerRoutes();
+                $container->get('rest.stepup')->registerRoutes();
                 $container->get('rest.telegram')->registerRoutes();
                 $container->get('rest.line')->registerRoutes();
             }

@@ -132,7 +132,15 @@ class SettingsRepository
         'privacy_url'                     => '',
         'subscription_consent_text'       => '',
         'subscription_consent_required'   => false,
+
+        // Seconds since last re-auth within which a session is considered "fresh".
+        // Sensitive operations require a fresh session; 0 disables the freshness
+        // grace (always step up), otherwise clamped into {@see FRESH_AUTH_WINDOW_BOUNDS}.
+        'fresh_auth_window_seconds'       => 21600, // 6 hours
     ];
+
+    /** Default [min, max] bounds for the fresh_auth_window_seconds setting. */
+    public const FRESH_AUTH_WINDOW_BOUNDS = [60, 86400];
 
     /**
      * Get all settings with defaults applied.
@@ -212,6 +220,52 @@ class SettingsRepository
     {
         return (bool) $this->get('auth_enabled', false)
             && !get_option('wsms_transition_mode');
+    }
+
+    /**
+     * Effective fresh-auth window in seconds, clamped to configured bounds.
+     *
+     * Returns 0 for "always step up" (intentionally outside the min bound);
+     * any other value is clamped into the [min, max] range. The bounds are
+     * filterable via `wsms_fresh_auth_window_bounds` so tests and high-
+     * security deployments can widen them.
+     */
+    public function getFreshAuthWindowSeconds(): int
+    {
+        $raw = (int) $this->get('fresh_auth_window_seconds', self::DEFAULTS['fresh_auth_window_seconds']);
+
+        if ($raw <= 0) {
+            return 0;
+        }
+
+        [$min, $max] = self::freshAuthWindowBounds();
+
+        return max($min, min($max, $raw));
+    }
+
+    /**
+     * @return array{0: int, 1: int}
+     */
+    public static function freshAuthWindowBounds(): array
+    {
+        $bounds = self::FRESH_AUTH_WINDOW_BOUNDS;
+
+        if (function_exists('apply_filters')) {
+            $filtered = apply_filters('wsms_fresh_auth_window_bounds', $bounds);
+
+            if (is_array($filtered) && count($filtered) === 2 && is_numeric($filtered[0]) && is_numeric($filtered[1])) {
+                $bounds = [(int) $filtered[0], (int) $filtered[1]];
+            }
+        }
+
+        if ($bounds[0] < 0) {
+            $bounds[0] = 0;
+        }
+        if ($bounds[1] < $bounds[0]) {
+            $bounds[1] = $bounds[0];
+        }
+
+        return $bounds;
     }
 
     /**

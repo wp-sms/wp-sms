@@ -176,6 +176,15 @@ class SocialAuthController extends Controller
     public function handleUnlink(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
+            // Tier 1: social unlink is gated on fresh auth. Mirrors Better
+            // Auth's /unlink-account treatment — a pure DB delete with no
+            // external verification, so a stolen cookie could lock a user
+            // out of their recovery provider without step-up.
+            $fresh = $this->requireFreshAuth($request);
+            if ($fresh !== true) {
+                return $fresh;
+            }
+
             $providerId = $request->get_param('provider');
             $userId = get_current_user_id();
 

@@ -2,7 +2,34 @@ let { restUrl, nonce } = window.wsmsAuth || {};
 
 const SESSION_EXPIRED = SESSION_EXPIRED;
 
-async function request(method, endpoint, body = null, extraHeaders = {}) {
+/**
+ * Step-up re-auth gate handler. Consumers (e.g. Profile.jsx) register a
+ * handler that opens a modal and returns true on successful step-up; we
+ * replay the original request once.
+ */
+let freshAuthHandler = null;
+let pendingStepUp = null;
+
+export function setFreshAuthHandler(handler) {
+    freshAuthHandler = handler;
+}
+
+function runOneStepUp(info) {
+    if (!freshAuthHandler) return Promise.resolve(false);
+    // A thrown handler maps to "step up declined" so the singleton always
+    // resolves and never gets stuck mid-flight.
+    if (pendingStepUp === null) {
+        pendingStepUp = Promise.resolve()
+            .then(() => freshAuthHandler(info))
+            .catch(() => false)
+            .finally(() => {
+                pendingStepUp = null;
+            });
+    }
+    return pendingStepUp;
+}
+
+async function doFetch(method, endpoint, body, extraHeaders) {
     const isFormData = body instanceof FormData;
     const headers = { 'X-WP-Nonce': nonce, ...extraHeaders };
     if (!isFormData) headers['Content-Type'] = 'application/json';
@@ -29,10 +56,32 @@ async function request(method, endpoint, body = null, extraHeaders = {}) {
         };
     }
 
+    return { res, data };
+}
+
+async function request(method, endpoint, body = null, extraHeaders = {}) {
+    const { res, data } = await doFetch(method, endpoint, body, extraHeaders);
+
     if (!res.ok) {
         if (res.status === 403 && data?.code === 'rest_cookie_invalid_nonce') {
             throw { status: 403, code: 'nonce_expired', message: SESSION_EXPIRED };
         }
+
+        if (res.status === 403 && (data?.code === 'fresh_auth_required' || data?.error === 'fresh_auth_required')) {
+            const info = {
+                step_up_methods: data?.data?.step_up_methods ?? [],
+                current_freshness_age: data?.data?.current_freshness_age ?? null,
+            };
+            const ok = await runOneStepUp(info);
+            if (ok) {
+                const replay = await doFetch(method, endpoint, body, extraHeaders);
+                if (!replay.res.ok) {
+                    throw { status: replay.res.status, ...replay.data };
+                }
+                return replay.data;
+            }
+        }
+
         throw { status: res.status, ...data };
     }
     return data;

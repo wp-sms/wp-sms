@@ -43,6 +43,7 @@ class AccountManager
         private ?ProfileFieldRegistry $fieldRegistry = null,
         private ?TrustedDeviceManager $trustedDevices = null,
         private ?LoggerInterface $logger = null,
+        private ?FreshnessManager $freshnessManager = null,
     ) {
     }
 
@@ -655,8 +656,17 @@ class AccountManager
         wp_set_password($newPassword, $userId);
         update_user_meta($userId, UserMeta::HAS_USABLE_PASSWORD, '1');
         $this->trustedDevices?->revokeAll($userId);
+        // Destroy any other live WP sessions so a stolen cookie from another
+        // device cannot survive a password change on the user's current one.
+        if (function_exists('wp_get_session_token')) {
+            $currentToken = wp_get_session_token();
+            if ($currentToken !== '' && class_exists('WP_Session_Tokens')) {
+                \WP_Session_Tokens::get_instance($userId)->destroy_others($currentToken);
+            }
+        }
         wp_set_auth_cookie($userId, false);
         wp_set_current_user($userId);
+        $this->freshnessManager?->markFresh($userId);
 
         $this->auditLogger->log(EventType::PasswordChange, 'success', $userId);
 
