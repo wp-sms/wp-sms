@@ -872,7 +872,9 @@ export default function Subscribers() {
               totalPages: table.pagination.total_pages,
               page: table.pagination.current_page,
               perPage: table.pagination.per_page,
+              maxPerPage: table.pagination.max_per_page,
               onPageChange: table.handlePageChange,
+              onPerPageChange: table.handlePerPageChange,
             }}
             selection={{
               selected: table.selectedIds,

@@ -881,6 +881,7 @@ export default function SmsCampaigns() {
               page: table.pagination.current_page,
               perPage: table.pagination.per_page,
               onPageChange: table.handlePageChange,
+              onPerPageChange: table.handlePerPageChange,
             }}
             rowActions={rowActions}
             emptyMessage={__('No campaigns found')}

@@ -376,10 +376,11 @@ class SubscribersApi extends RestApi
         return self::response(__('Subscribers retrieved successfully', 'wp-sms'), 200, [
             'items'      => $formatted,
             'pagination' => [
-                'total'       => $total,
-                'total_pages' => ceil($total / $per_page),
+                'total'        => $total,
+                'total_pages'  => ceil($total / $per_page),
                 'current_page' => $page,
-                'per_page'    => $per_page,
+                'per_page'     => $per_page,
+                'max_per_page' => $max_per_page,
             ],
             'stats'      => [
                 'total'    => $stats_total,
