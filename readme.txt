@@ -4,7 +4,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 7.2.3
+Stable tag: 7.2.4
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -138,7 +138,7 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
-= v7.2.4 - ** =
+= v7.2.4 - 2026-03-** =
 - **Fix:** Updated EaziSMSpro gateway to use the new API endpoint (`dashboard.eazismspro.com`), resolving connection failures caused by the deprecated `apps.eazismspro.com` endpoint.
 
 = v7.2.3 - 2026-03-09 =
