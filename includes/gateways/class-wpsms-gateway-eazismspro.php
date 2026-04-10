@@ -4,9 +4,11 @@ namespace WP_SMS\Gateway;
 
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
+use Exception;
+
 class eazismspro extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "http://apps.eazismspro.com/smsapi/";
+    private $wsdl_link = "https://dashboard.eazismspro.com/sms/api";
     public $unitrial = false;
     public $unit;
     public $flash = "disable";
@@ -30,7 +32,7 @@ class eazismspro extends \WP_SMS\Gateway
         parent::__construct();
         $this->has_key        = true;
         $this->validateNumber = "The recipient's phone in international format with the country code (you can omit the leading \"+\"). Example: Phone = 233240123456. You can specify multiple recipient numbers separated by commas. Example: Phone = 233240123456, 233240123457";
-        $this->help           = "Visit <a href='http://apps.eazismspro.com/api/api'>http://apps.eazismspro.com/api/api</a> and click on 'GENERATE API' to create your API Key. This gateway does not use a username or password. <br>";
+        $this->help           = "Visit <a href='https://dashboard.eazismspro.com'>dashboard.eazismspro.com</a> and click on 'GENERATE API' to create your API Key. This gateway does not use a username or password. <br>";
         $this->help           .= "<span style='color: red; font-weight: bold'>We also deliver messages worldwide. All you need to do is to prefix the right country code</span>. <br>";
         $this->help           .= "Visit <a href='https://eazismspro.com/blog/faqs-on-eazi-sms-pro-gateway-on-wp-sms-wordpress-plugin/'>Our FAQ</a>  for assistance";
     }
@@ -73,53 +75,38 @@ class eazismspro extends \WP_SMS\Gateway
 
         // Check gateway credit
         if (is_wp_error($credit)) {
-            // Log the result
             $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
 
             return $credit;
         }
 
-        if (count($this->to) == 1) {
-            $to = $this->to[0];
-        } else {
-            $to = implode(",", $this->to);
-        }
+        $to   = implode(",", $this->to);
         $text = iconv('cp1251', 'utf-8', $this->msg);
 
-        $result = wp_remote_get($this->wsdl_link . "?key=" . $this->options['gateway_key'] . "&sender_id=" . $this->from . "&msg=" . urlencode($text) . "&to=" . $to);
+        try {
+            $response = $this->request('GET', $this->wsdl_link, [
+                'action'   => 'send-sms',
+                'api_key'  => $this->options['gateway_key'],
+                'from'     => $this->from,
+                'sms'      => $text,
+                'to'       => $to,
+                'response' => 'json',
+            ]);
 
-        if ($result) {
-            $response_body = $result['body'];
-
-            // in EaziSMSPro, if response is not 1000, the message was not sent
+            $response_code = $response->code ?? null;
 
             if (count($this->to) == 1) {
-                if ($result['body'] != '1000') {
-                    $this->log($this->from, $this->msg, $this->to, $this->_responses[$response_body], 'error');
-                    return new \WP_Error('send-sms', $this->_responses[$response_body]);
-                } else {
-                    // Log the result
-                    $this->log($this->from, $this->msg, $this->to, $this->_responses[$response_body]);
+                if ($response_code != '1000') {
+                    $message = $this->_responses[$response_code] ?? $response->message ?? 'Unknown error';
+                    $this->log($this->from, $this->msg, $this->to, $message, 'error');
+                    return new \WP_Error('send-sms', $message);
                 }
+
+                $this->log($this->from, $this->msg, $this->to, $this->_responses[$response_code]);
             }
 
-            // check the result for bulk messages. Format: 233246227810:1000|233206527740:1000
             if (count($this->to) > 1) {
-                $response_body  = '';
-                $response_array = explode("|", $result['body']);
-                $all_submit     = true;
-                foreach ($response_array as $response) {
-                    $array         = explode(":", $response);
-                    $response_body .= $array[0] . ' (' . $this->_responses[$array[1]] . ') | ';
-                    if ($array[1] != '1000') {
-                        $all_submit = false;
-                    }
-                }
-                $send_status = 'success';
-                if ($all_submit == false) {
-                    $send_status = 'success + error';
-                }
-                $this->log($this->from, $this->msg, $this->to, $response_body, $send_status);
+                $this->log($this->from, $this->msg, $this->to, $response->message ?? 'Bulk SMS sent');
             }
 
             /**
@@ -129,15 +116,14 @@ class eazismspro extends \WP_SMS\Gateway
              * @since 2.4
              *
              */
-            do_action('wp_sms_send', $response_body);
+            do_action('wp_sms_send', $response);
 
-            return $result;
+            return $response;
+        } catch (Exception $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+            return new \WP_Error('send-sms', $e->getMessage());
         }
-        // Log the result
-        $response_body = $result['body'];
-        $this->log($this->from, $this->msg, $this->to, $response_body, 'error');
-
-        return new \WP_Error('send-sms', $response_body);
     }
 
     public function GetCredit()
@@ -147,24 +133,16 @@ class eazismspro extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', esc_html__('API username or API password is not entered.', 'wp-sms'));
         }
 
-        $response = wp_remote_get($this->wsdl_link . "balance?key={$this->options['gateway_key']}");
+        try {
+            $response = $this->request('GET', $this->wsdl_link, [
+                'action'   => 'check-balance',
+                'api_key'  => $this->options['gateway_key'],
+                'response' => 'json',
+            ]);
 
-        // Check gateway credit
-        if (is_wp_error($response)) {
-            return new \WP_Error('account-credit', $response->get_error_message());
-        }
-
-        $response_code = wp_remote_retrieve_response_code($response);
-
-        if ($response_code == '200') {
-            $result = $response['body'];
-            if (isset($result['error'])) {
-                return new \WP_Error('account-credit', $result['error']);
-            } else {
-                return $result;
-            }
-        } else {
-            return new \WP_Error('account-credit', $response['body']);
+            return $response->balance ?? $response;
+        } catch (Exception $e) {
+            return new \WP_Error('account-credit', $e->getMessage());
         }
     }
 }

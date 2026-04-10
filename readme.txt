@@ -138,6 +138,9 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
+= v7.2.4 - ** =
+- **Fix:** Updated EaziSMSpro gateway to use the new API endpoint (`dashboard.eazismspro.com`), resolving connection failures caused by the deprecated `apps.eazismspro.com` endpoint.
+
 = v7.2.3 - 2026-03-09 =
 - **New:** Added per-page selector to all list pages (Subscribers, Outbox, Groups, Scheduled, Campaigns, Two-Way Inbox), allowing users to choose how many items to display per page.
 - **Enhancement:** Minor improvements.
