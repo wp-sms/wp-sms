@@ -1,9 +1,10 @@
+import { __ } from '@wordpress/i18n'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { DataTable } from '@/components/ui/data-table'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
-import { cn, __ } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 
 /**
  * ListPageLayout - Standardized layout for list/table pages
@@ -174,7 +175,7 @@ export function ListPageLayout({
         getRowId={getRowId}
         onRowClick={onRowClick}
         onSort={onSort}
-        emptyMessage={emptyConfig.message || emptyMessage || __('No items found')}
+        emptyMessage={emptyConfig.message || emptyMessage || __('No items found', 'wp-sms')}
         emptyIcon={emptyConfig.icon || emptyIcon}
         className={tableClassName}
       />
@@ -227,7 +228,7 @@ export function ListPageLayout({
               getRowId={getRowId}
               onRowClick={onRowClick}
               onSort={onSort}
-              emptyMessage={emptyConfig.message || emptyMessage || __('No items found')}
+              emptyMessage={emptyConfig.message || emptyMessage || __('No items found', 'wp-sms')}
               emptyIcon={emptyConfig.icon || emptyIcon}
               className={tableClassName}
             />

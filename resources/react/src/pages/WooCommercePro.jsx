@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React from 'react'
 import * as Icons from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
@@ -6,7 +7,7 @@ import { useSettings } from '@/context/SettingsContext'
 import { useAddonSettings } from '@/hooks/useAddonSettings'
 import { AddonUpdateRequired } from '@/components/shared/AddonUpdateRequired'
 import { DynamicField } from '@/components/ui/DynamicField'
-import { __, getWpSettings, isAddonDashboardReady } from '@/lib/utils'
+import { getWpSettings, isAddonDashboardReady } from '@/lib/utils'
 
 const { ShoppingCart, AlertCircle, ExternalLink } = Icons
 

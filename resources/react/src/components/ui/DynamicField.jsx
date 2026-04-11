@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useMemo, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { InputField, TextareaField, SelectField, SwitchField, FieldDescription } from './form-field'
@@ -8,7 +9,7 @@ import { Label } from './label'
 import { Input } from './input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
 import { useSettings } from '@/context/SettingsContext'
-import { getWpSettings, __ } from '@/lib/utils'
+import { getWpSettings } from '@/lib/utils'
 
 /**
  * Resolve options reference from add-on data
@@ -380,7 +381,7 @@ export function DynamicField({ field }) {
                 className="wsms-w-[70px]"
                 disabled={field.disabled}
               />
-              <span className="wsms-text-sm wsms-text-muted-foreground">{__('Days')}</span>
+              <span className="wsms-text-sm wsms-text-muted-foreground">{__('Days', 'wp-sms')}</span>
             </div>
             <div className="wsms-flex wsms-items-center wsms-gap-1.5">
               <Input
@@ -392,7 +393,7 @@ export function DynamicField({ field }) {
                 className="wsms-w-[70px]"
                 disabled={field.disabled}
               />
-              <span className="wsms-text-sm wsms-text-muted-foreground">{__('Hours')}</span>
+              <span className="wsms-text-sm wsms-text-muted-foreground">{__('Hours', 'wp-sms')}</span>
             </div>
             <div className="wsms-flex wsms-items-center wsms-gap-1.5">
               <Input
@@ -405,7 +406,7 @@ export function DynamicField({ field }) {
                 className="wsms-w-[70px]"
                 disabled={field.disabled}
               />
-              <span className="wsms-text-sm wsms-text-muted-foreground">{__('Minutes')}</span>
+              <span className="wsms-text-sm wsms-text-muted-foreground">{__('Minutes', 'wp-sms')}</span>
             </div>
           </div>
           {field.description && (

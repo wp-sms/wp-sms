@@ -1,7 +1,8 @@
+import { __ } from '@wordpress/i18n'
 import React, { useCallback, useState } from 'react'
 import { Image, X, ImageOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { cn, __ } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 
 /**
  * Check if URL looks like an image (handles query params)
@@ -35,12 +36,12 @@ export function MediaSelector({
     }
 
     const mediaUploader = wp.media({
-      title: __('Select Media'),
+      title: __('Select Media', 'wp-sms'),
       library: {
         type: allowedTypes,
       },
       button: {
-        text: __('Use this media'),
+        text: __('Use this media', 'wp-sms'),
       },
       multiple: false,
     })
@@ -73,7 +74,7 @@ export function MediaSelector({
         {isImage && !imageError ? (
           <img
             src={value}
-            alt={__('Selected media')}
+            alt={__('Selected media', 'wp-sms')}
             onError={handleImageError}
             className="wsms-h-9 wsms-w-9 wsms-rounded wsms-object-cover wsms-border wsms-border-border"
           />
@@ -90,7 +91,7 @@ export function MediaSelector({
           disabled={disabled}
           className="wsms-h-9 wsms-text-xs"
         >
-          {__('Change')}
+          {__('Change', 'wp-sms')}
         </Button>
         <Button
           type="button"
@@ -99,7 +100,7 @@ export function MediaSelector({
           onClick={handleRemove}
           disabled={disabled}
           className="wsms-h-9 wsms-w-9 wsms-p-0 wsms-text-muted-foreground hover:wsms-text-destructive"
-          aria-label={__('Remove media')}
+          aria-label={__('Remove media', 'wp-sms')}
         >
           <X className="wsms-h-4 wsms-w-4" />
         </Button>
@@ -116,7 +117,7 @@ export function MediaSelector({
               <div className="wsms-relative wsms-rounded wsms-overflow-hidden wsms-border wsms-border-border wsms-bg-muted/30">
                 <img
                   src={value}
-                  alt={__('Selected media')}
+                  alt={__('Selected media', 'wp-sms')}
                   onError={handleImageError}
                   className="wsms-w-9 wsms-h-9 wsms-object-cover"
                 />
@@ -129,14 +130,14 @@ export function MediaSelector({
                 disabled={disabled}
                 className="wsms-h-9 wsms-text-xs"
               >
-                {__('Change')}
+                {__('Change', 'wp-sms')}
               </Button>
               <button
                 type="button"
                 onClick={handleRemove}
                 disabled={disabled}
                 className="wsms-p-1.5 wsms-rounded hover:wsms-bg-destructive/10 wsms-text-muted-foreground hover:wsms-text-destructive wsms-transition-colors"
-                aria-label={__('Remove media')}
+                aria-label={__('Remove media', 'wp-sms')}
               >
                 <X className="wsms-h-4 wsms-w-4" />
               </button>
@@ -156,7 +157,7 @@ export function MediaSelector({
                 onClick={handleRemove}
                 disabled={disabled}
                 className="wsms-p-1 wsms-rounded-full hover:wsms-bg-destructive/10 wsms-text-destructive wsms-transition-colors"
-                aria-label={__('Remove media')}
+                aria-label={__('Remove media', 'wp-sms')}
               >
                 <X className="wsms-h-3 wsms-w-3" />
               </button>
@@ -173,7 +174,7 @@ export function MediaSelector({
           className="wsms-gap-2"
         >
           <Image className="wsms-h-4 wsms-w-4" />
-          {buttonText || __('Select Media')}
+          {buttonText || __('Select Media', 'wp-sms')}
         </Button>
       )}
     </div>

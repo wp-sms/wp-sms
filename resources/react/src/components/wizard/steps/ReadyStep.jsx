@@ -1,7 +1,8 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState } from 'react'
 import { PartyPopper, Send, Bell, Settings, ArrowRight, CheckCircle, Sparkles, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { __, getGatewayDisplayName as getGatewayName } from '@/lib/utils'
+import { getGatewayDisplayName as getGatewayName } from '@/lib/utils'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 
 /**
@@ -28,22 +29,22 @@ export default function ReadyStep({
     {
       id: 'send-sms',
       icon: Send,
-      title: __('Send Your First SMS'),
-      description: __('Start sending messages right away'),
+      title: __('Send Your First SMS', 'wp-sms'),
+      description: __('Start sending messages right away', 'wp-sms'),
       primary: true,
     },
     {
       id: 'notifications',
       icon: Bell,
-      title: __('Configure Notifications'),
-      description: __('Set up automatic SMS alerts'),
+      title: __('Configure Notifications', 'wp-sms'),
+      description: __('Set up automatic SMS alerts', 'wp-sms'),
       primary: false,
     },
     {
       id: 'gateway',
       icon: Settings,
-      title: __('Explore Settings'),
-      description: __('Fine-tune your SMS configuration'),
+      title: __('Explore Settings', 'wp-sms'),
+      description: __('Fine-tune your SMS configuration', 'wp-sms'),
       primary: false,
     },
   ]
@@ -63,10 +64,10 @@ export default function ReadyStep({
           </div>
         </div>
         <h2 className="wsms-text-xl wsms-font-bold wsms-text-foreground wsms-mb-2">
-          {__("You're All Set!")}
+          {__("You're All Set!", 'wp-sms')}
         </h2>
         <p className="wsms-text-[13px] wsms-text-muted-foreground">
-          {__('Your SMS gateway is configured and ready to use.')}
+          {__('Your SMS gateway is configured and ready to use.', 'wp-sms')}
         </p>
       </div>
 
@@ -76,7 +77,7 @@ export default function ReadyStep({
           <div className="wsms-inline-flex wsms-items-center wsms-gap-2 wsms-px-4 wsms-py-2.5 wsms-rounded-full wsms-bg-success/10 wsms-border wsms-border-success/20">
             <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-success" />
             <span className="wsms-text-[13px] wsms-font-medium wsms-text-success">
-              {__('Connected to')} {getGatewayDisplayName()}
+              {__('Connected to', 'wp-sms')} {getGatewayDisplayName()}
             </span>
           </div>
         </div>
@@ -85,7 +86,7 @@ export default function ReadyStep({
       {/* Quick Actions */}
       <div className="wsms-space-y-3 wsms-mb-8">
         <p className="wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide wsms-text-center wsms-mb-4">
-          {__('What would you like to do next?')}
+          {__('What would you like to do next?', 'wp-sms')}
         </p>
         {quickActions.map((action) => {
           const Icon = action.icon
@@ -145,10 +146,10 @@ export default function ReadyStep({
           {isCompleting ? (
             <>
               <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
-              {__('Completing...')}
+              {__('Completing...', 'wp-sms')}
             </>
           ) : (
-            __('Close Setup Wizard')
+            __('Close Setup Wizard', 'wp-sms')
           )}
         </Button>
       </div>

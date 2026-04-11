@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React from 'react'
 import * as Icons from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
@@ -6,7 +7,6 @@ import { Badge } from '@/components/ui/badge'
 import { useSettings } from '@/context/SettingsContext'
 import { useAddonSettings } from '@/hooks/useAddonSettings'
 import { DynamicField } from '@/components/ui/DynamicField'
-import { __ } from '@/lib/utils'
 
 const { Shield, Diamond } = Icons
 

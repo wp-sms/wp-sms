@@ -1,5 +1,6 @@
 v7.2.4 - 2026-03-**
 - **Fix:** Updated EaziSMSpro gateway to use the new API endpoint (`dashboard.eazismspro.com`), resolving connection failures caused by the deprecated `apps.eazismspro.com` endpoint.
+- **Fix:** Fixed some dashboard strings that were not translatable.
 
 v7.2.3 - 2026-03-09
 - **New:** Added per-page selector to all list pages (Subscribers, Outbox, Groups, Scheduled, Campaigns, Two-Way Inbox), allowing users to choose how many items to display per page.

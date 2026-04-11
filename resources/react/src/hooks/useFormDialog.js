@@ -1,6 +1,6 @@
+import { __ } from '@wordpress/i18n'
 import { useState, useCallback, useMemo } from 'react'
 import { useToast } from '@/components/ui/toaster'
-import { __ } from '@/lib/utils'
 
 /**
  * Custom hook for managing form dialog state (create/edit dialogs)
@@ -172,8 +172,8 @@ export function useFormDialog({
       let message = successMessage
       if (!message) {
         message = id
-          ? updateSuccessMessage || __('Updated successfully')
-          : createSuccessMessage || __('Created successfully')
+          ? updateSuccessMessage || __('Updated successfully', 'wp-sms')
+          : createSuccessMessage || __('Created successfully', 'wp-sms')
       }
 
       toast({
@@ -192,7 +192,7 @@ export function useFormDialog({
       return result
     } catch (error) {
       // Handle API errors
-      const errorMessage = error.message || __('Failed to save')
+      const errorMessage = error.message || __('Failed to save', 'wp-sms')
 
       toast({
         title: errorMessage,

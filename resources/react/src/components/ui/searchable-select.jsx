@@ -1,6 +1,7 @@
+import { __ } from '@wordpress/i18n'
 import * as React from 'react'
 import { Check, ChevronDown, Search } from 'lucide-react'
-import { cn, __ } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { Button } from './button'
 import { Input } from './input'
 
@@ -171,7 +172,7 @@ const SearchableSelect = React.forwardRef(
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={searchPlaceholder}
-                  aria-label={searchPlaceholder || __('Search')}
+                  aria-label={searchPlaceholder || __('Search', 'wp-sms')}
                   className="wsms-h-8 wsms-ps-8 wsms-text-start"
                 />
               </div>
@@ -181,7 +182,7 @@ const SearchableSelect = React.forwardRef(
             <div className="wsms-max-h-[200px] wsms-overflow-y-auto wsms-p-1">
               {filteredOptions.length === 0 ? (
                 <div className="wsms-py-4 wsms-text-center wsms-text-sm wsms-text-muted-foreground">
-                  {__('No results found')}
+                  {__('No results found', 'wp-sms')}
                 </div>
               ) : (
                 filteredOptions.map((option) => {

@@ -1,8 +1,9 @@
+import { __ } from '@wordpress/i18n'
 import React from 'react'
 import { AlertTriangle, ExternalLink } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { getWpSettings, __ } from '@/lib/utils'
+import { getWpSettings } from '@/lib/utils'
 
 const ADDON_INFO = {
   pro: {
@@ -45,14 +46,14 @@ export function AddonUpdateRequired({ addonKey, icon: Icon }) {
               )}
             </div>
             <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-              {__('Update Required')}
+              {__('Update Required', 'wp-sms')}
             </h3>
             <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
-              {__('The %s add-on needs to be updated to work with the new dashboard. Please update it to the latest version.').replace('%s', info.name)}
+              {__('The %s add-on needs to be updated to work with the new dashboard. Please update it to the latest version.', 'wp-sms').replace('%s', info.name)}
             </p>
             <Button variant="outline" asChild>
               <a href={pluginsPageUrl}>
-                {__('Go to Plugins')}
+                {__('Go to Plugins', 'wp-sms')}
                 <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
               </a>
             </Button>

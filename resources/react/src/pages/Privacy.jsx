@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState } from 'react'
 import {
   Shield,
@@ -31,7 +32,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { privacyApi } from '@/api/privacyApi'
-import { cn, formatDate, __, downloadCsv, getWpSettings } from '@/lib/utils'
+import { cn, formatDate, downloadCsv, getWpSettings } from '@/lib/utils'
 import { useToast } from '@/components/ui/toaster'
 import { useSettings, useSavedSetting } from '@/context/SettingsContext'
 
@@ -65,7 +66,7 @@ export default function Privacy() {
 
       if (!result.found) {
         toast({
-          title: __('No data found for this phone number'),
+          title: __('No data found for this phone number', 'wp-sms'),
           variant: 'default',
         })
       }
@@ -128,11 +129,11 @@ export default function Privacy() {
   const getSourceLabel = (source) => {
     switch (source) {
       case 'wp_users':
-        return __('WordPress User')
+        return __('WordPress User', 'wp-sms')
       case 'sms_subscribes':
-        return __('Subscriber')
+        return __('Subscriber', 'wp-sms')
       case 'sms_send':
-        return __('SMS Message')
+        return __('SMS Message', 'wp-sms')
       default:
         return source
     }
@@ -162,12 +163,12 @@ export default function Privacy() {
 
     // For SMS messages
     if (source === 'sms_send') {
-      return status === 'success' ? __('Sent') : __('Failed')
+      return status === 'success' ? __('Sent', 'wp-sms') : __('Failed', 'wp-sms')
     }
 
     // For subscribers
     if (source === 'sms_subscribes') {
-      return status === '1' || status === 'Active' ? __('Active') : __('Inactive')
+      return status === '1' || status === 'Active' ? __('Active', 'wp-sms') : __('Inactive', 'wp-sms')
     }
 
     // Default
@@ -185,13 +186,13 @@ export default function Privacy() {
                 <Shield className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                {__('GDPR Compliance Required')}
+                {__('GDPR Compliance Required', 'wp-sms')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
-                {__('Enable the GDPR Compliance setting to access privacy data management tools.')}
+                {__('Enable the GDPR Compliance setting to access privacy data management tools.', 'wp-sms')}
               </p>
               <Button variant="outline" onClick={() => setCurrentPage('phone')}>
-                {__('Go to Phone Settings')}
+                {__('Go to Phone Settings', 'wp-sms')}
               </Button>
             </div>
           </CardContent>
@@ -268,7 +269,7 @@ export default function Privacy() {
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   placeholder="+1234567890"
-                  aria-label={__('Phone number')}
+                  aria-label={__('Phone number', 'wp-sms')}
                   className="wsms-ps-8 wsms-h-9 wsms-font-mono"
                 />
               </div>
@@ -310,8 +311,8 @@ export default function Privacy() {
                 <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-2">
                   <ExportButton
                     onExport={handleExport}
-                    label={__('Export CSV')}
-                    successMessage={__('Exported %d records successfully')}
+                    label={__('Export CSV', 'wp-sms')}
+                    successMessage={__('Exported %d records successfully', 'wp-sms')}
                   />
                   <Button variant="destructive" onClick={() => setShowDeleteConfirm(true)}>
                     <Trash2 className="wsms-h-4 wsms-w-4 wsms-me-2" />
@@ -390,7 +391,7 @@ export default function Privacy() {
                       <div className="wsms-flex-1 wsms-min-w-0">
                         <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-mb-1">
                           <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
-                            {record.display_name || __('Unknown')}
+                            {record.display_name || __('Unknown', 'wp-sms')}
                           </span>
                           {/* Show group badge for subscribers, nothing for SMS (icon is sufficient) */}
                           {record.source === 'sms_subscribes' && record.group && (

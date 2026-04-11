@@ -1,9 +1,9 @@
+import { __, sprintf } from '@wordpress/i18n'
 import React, { useState } from 'react'
 import { CheckCircle2, Send, Users, Undo2, ChevronDown, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { __, sprintf } from '@/lib/utils'
 
 export default function DoneStep({
   headlineRef,
@@ -20,13 +20,13 @@ export default function DoneStep({
     sources_touched: sourcesTouched = 0,
     counts = {},
     errors = [],
-    backup_timestamp: backupTimestamp = __('just now'),
+    backup_timestamp: backupTimestamp = __('just now', 'wp-sms'),
   } = executeData || {}
 
   const body = sprintf(
     __(
       'We updated %1$d numbers across %2$d sources. A full backup was saved on %3$s and you can undo this at any time.'
-    ),
+    , 'wp-sms'),
     totalMigrated,
     sourcesTouched,
     backupTimestamp
@@ -54,7 +54,7 @@ export default function DoneStep({
           aria-live="polite"
           className="wsms-text-[18px] wsms-font-semibold wsms-text-foreground wsms-mb-2 wsms-outline-none"
         >
-          {__('Done. Your numbers now use the standard format.')}
+          {__('Done. Your numbers now use the standard format.', 'wp-sms')}
         </h2>
         <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-leading-relaxed wsms-max-w-lg wsms-mx-auto">
           {body}
@@ -82,7 +82,7 @@ export default function DoneStep({
         <Alert variant="warning">
           <AlertDescription>
             <div className="wsms-flex wsms-flex-col wsms-gap-2">
-              <span>{sprintf(__("%d records couldn't be updated."), errors.length)}</span>
+              <span>{sprintf(__("%d records couldn't be updated.", 'wp-sms'), errors.length)}</span>
               <div className="wsms-flex wsms-gap-3 wsms-text-[12px]">
                 <button
                   type="button"
@@ -94,14 +94,14 @@ export default function DoneStep({
                   ) : (
                     <ChevronRight className="wsms-h-3 wsms-w-3 wsms-rtl:wsms-rotate-180" aria-hidden="true" />
                   )}
-                  {__('View details')}
+                  {__('View details', 'wp-sms')}
                 </button>
                 <button
                   type="button"
                   onClick={copyErrorLog}
                   className="wsms-underline wsms-text-inherit"
                 >
-                  {__('Copy error log')}
+                  {__('Copy error log', 'wp-sms')}
                 </button>
               </div>
               {showErrors && (
@@ -119,16 +119,16 @@ export default function DoneStep({
       <Card>
         <CardContent className="wsms-py-4">
           <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground wsms-mb-3">
-            {__("What's next?")}
+            {__("What's next?", 'wp-sms')}
           </p>
           <div className="wsms-flex wsms-flex-wrap wsms-gap-2">
             <Button variant="outline" size="sm" onClick={() => onNavigate?.('send-test')}>
               <Send className="wsms-h-3.5 wsms-w-3.5 wsms-me-1.5" aria-hidden="true" />
-              {__('Send a test SMS')}
+              {__('Send a test SMS', 'wp-sms')}
             </Button>
             <Button variant="outline" size="sm" onClick={() => onNavigate?.('subscribers')}>
               <Users className="wsms-h-3.5 wsms-w-3.5 wsms-me-1.5" aria-hidden="true" />
-              {__('View your subscribers')}
+              {__('View your subscribers', 'wp-sms')}
             </Button>
           </div>
         </CardContent>
@@ -141,7 +141,7 @@ export default function DoneStep({
           className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-underline-offset-2 hover:wsms-underline"
         >
           <Undo2 className="wsms-h-3.5 wsms-w-3.5" aria-hidden="true" />
-          {__('Undo this update')}
+          {__('Undo this update', 'wp-sms')}
         </button>
         <div className="wsms-flex wsms-items-center wsms-gap-2">
           <button
@@ -149,9 +149,9 @@ export default function DoneStep({
             onClick={onRescan}
             className="wsms-text-[12px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-underline-offset-2 hover:wsms-underline"
           >
-            {__('Did we miss something? Re-scan to check')}
+            {__('Did we miss something? Re-scan to check', 'wp-sms')}
           </button>
-          <Button onClick={onClose}>{__('Close')}</Button>
+          <Button onClick={onClose}>{__('Close', 'wp-sms')}</Button>
         </div>
       </div>
     </div>

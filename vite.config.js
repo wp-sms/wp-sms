@@ -99,6 +99,11 @@ export default defineConfig(({ command, mode }) => ({
       // Ensure single React instance (prevents "useState is null" errors)
       'react': path.resolve(__dirname, 'node_modules/react'),
       'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
+      // Route @wordpress/i18n imports to a tiny shim that re-exports the
+      // `wp.i18n` global. WordPress injects translations into wp.i18n via
+      // wp_set_script_translations(), so the bundle stays ~0 KB heavier
+      // while `wp i18n make-pot` still extracts every __()/_n() call.
+      '@wordpress/i18n': path.resolve(__dirname, 'resources/react/src/lib/wp-i18n-shim.js'),
     },
     // Dedupe React to prevent multiple instances from dependencies
     dedupe: ['react', 'react-dom']

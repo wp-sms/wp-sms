@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useMemo } from 'react'
 import { Bell, FileText, UserPlus, MessageCircle, LogIn, RefreshCw } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
@@ -6,7 +7,7 @@ import { Label } from '@/components/ui/label'
 import { InputField, SelectField, MultiSelectField, SettingRow } from '@/components/ui/form-field'
 import { TemplateTextarea } from '@/components/shared/TemplateTextarea'
 import { useSetting } from '@/context/SettingsContext'
-import { getWpSettings, __ } from '@/lib/utils'
+import { getWpSettings } from '@/lib/utils'
 
 function NotificationSection({
   icon: Icon,
@@ -103,52 +104,52 @@ export default function Notifications() {
       {/* New Post Alerts */}
       <NotificationSection
         icon={FileText}
-        title={__('New Content Notifications')}
-        description={__('Send SMS when you publish new posts or pages.')}
+        title={__('New Content Notifications', 'wp-sms')}
+        description={__('Send SMS when you publish new posts or pages.', 'wp-sms')}
         enabled={notifNewPost === '1'}
         onToggle={(checked) => setNotifNewPost(checked ? '1' : '')}
       >
         <MultiSelectField
-          label={__('Content Types')}
+          label={__('Content Types', 'wp-sms')}
           options={postTypes}
           value={notifNewPostTypes}
           onValueChange={setNotifNewPostTypes}
-          placeholder={__('All post types')}
-          searchPlaceholder={__('Search post types...')}
-          description={__('Which content types trigger notifications.')}
+          placeholder={__('All post types', 'wp-sms')}
+          searchPlaceholder={__('Search post types...', 'wp-sms')}
+          description={__('Which content types trigger notifications.', 'wp-sms')}
         />
 
         <MultiSelectField
-          label={__('Categories & Tags')}
+          label={__('Categories & Tags', 'wp-sms')}
           options={taxonomyOptions}
           value={notifNewPostTaxonomies}
           onValueChange={setNotifNewPostTaxonomies}
-          placeholder={__('All taxonomies')}
-          searchPlaceholder={__('Search categories, tags...')}
-          description={__('Only notify for content in these categories or with these tags. Leave empty for all.')}
+          placeholder={__('All taxonomies', 'wp-sms')}
+          searchPlaceholder={__('Search categories, tags...', 'wp-sms')}
+          description={__('Only notify for content in these categories or with these tags. Leave empty for all.', 'wp-sms')}
         />
 
         <SelectField
-          label={__('Send To')}
+          label={__('Send To', 'wp-sms')}
           value={notifNewPostReceiver}
           onValueChange={setNotifNewPostReceiver}
-          placeholder={__('Select recipients')}
-          description={__('Who should receive these notifications.')}
+          placeholder={__('Select recipients', 'wp-sms')}
+          description={__('Who should receive these notifications.', 'wp-sms')}
           options={[
-            { value: 'subscriber', label: __('Subscribers') },
-            { value: 'numbers', label: __('Phone Numbers') },
-            { value: 'users', label: __('User Roles') },
+            { value: 'subscriber', label: __('Subscribers', 'wp-sms') },
+            { value: 'numbers', label: __('Phone Numbers', 'wp-sms') },
+            { value: 'users', label: __('User Roles', 'wp-sms') },
           ]}
         />
 
         {notifNewPostReceiver === 'subscriber' && (
           <SelectField
-            label={__('Subscriber Group')}
+            label={__('Subscriber Group', 'wp-sms')}
             value={notifNewPostGroup}
             onValueChange={setNotifNewPostGroup}
-            placeholder={__('Select group')}
+            placeholder={__('Select group', 'wp-sms')}
             options={[
-              { value: '0', label: __('All Groups') },
+              { value: '0', label: __('All Groups', 'wp-sms') },
               ...(Array.isArray(groups) ? groups : Object.values(groups || {})).map((group) => ({
                 value: String(group.id || group.ID),
                 label: group.name || group,
@@ -159,87 +160,87 @@ export default function Notifications() {
 
         {notifNewPostReceiver === 'numbers' && (
           <InputField
-            label={__('Phone Numbers')}
+            label={__('Phone Numbers', 'wp-sms')}
             value={notifNewPostNumbers}
             onChange={(e) => setNotifNewPostNumbers(e.target.value)}
             placeholder="+1 555 111 2222, +1 555 333 4444"
-            description={__('Enter phone numbers, separated by commas.')}
+            description={__('Enter phone numbers, separated by commas.', 'wp-sms')}
           />
         )}
 
         {notifNewPostReceiver === 'users' && (
           <MultiSelectField
-            label={__('User Roles')}
+            label={__('User Roles', 'wp-sms')}
             options={roles}
             value={notifNewPostUsers}
             onValueChange={setNotifNewPostUsers}
-            placeholder={__('Select user roles...')}
-            searchPlaceholder={__('Search roles...')}
-            description={__('Notify users with these roles.')}
+            placeholder={__('Select user roles...', 'wp-sms')}
+            searchPlaceholder={__('Search roles...', 'wp-sms')}
+            description={__('Notify users with these roles.', 'wp-sms')}
           />
         )}
 
         <SettingRow
-          title={__('Auto-send')}
-          description={__('Send automatically when publishing (no confirmation prompt).')}
+          title={__('Auto-send', 'wp-sms')}
+          description={__('Send automatically when publishing (no confirmation prompt).', 'wp-sms')}
           checked={notifNewPostForce === '1'}
           onCheckedChange={(checked) => setNotifNewPostForce(checked ? '1' : '')}
         />
 
         <SettingRow
-          title={__('Include Featured Image')}
-          description={__("Send as MMS with the post's featured image (if gateway supports MMS).")}
+          title={__('Include Featured Image', 'wp-sms')}
+          description={__("Send as MMS with the post's featured image (if gateway supports MMS).", 'wp-sms')}
           checked={notifNewPostMMS === '1'}
           onCheckedChange={(checked) => setNotifNewPostMMS(checked ? '1' : '')}
         />
 
         <div className="wsms-space-y-2">
-          <Label htmlFor="postTemplate">{__('Message Template')}</Label>
+          <Label htmlFor="postTemplate">{__('Message Template', 'wp-sms')}</Label>
           <TemplateTextarea
             id="postTemplate"
             value={notifNewPostTemplate}
             onChange={setNotifNewPostTemplate}
-            placeholder={__('New post: %post_title% - Read more: %post_url%')}
+            placeholder={__('New post: %post_title% - Read more: %post_url%', 'wp-sms')}
             rows={3}
             variables={['%post_title%', '%post_content%', '%post_url%', '%post_date%', '%post_thumbnail%', '%post_author%', '%post_author_email%', '%post_status%', '%post_password%', '%post_comment_count%', '%post_post_type%', '%post_id%']}
           />
         </div>
 
         <InputField
-          label={__('Content Word Limit')}
+          label={__('Content Word Limit', 'wp-sms')}
           type="number"
           value={notifNewPostWordCount}
           onChange={(e) => setNotifNewPostWordCount(e.target.value)}
           placeholder="10"
-          description={__('Maximum words to include from post content in %post_content%.')}
+          description={__('Maximum words to include from post content in %post_content%.', 'wp-sms')}
         />
       </NotificationSection>
 
       {/* Post Author Notification */}
       <NotificationSection
         icon={FileText}
-        title={__('Author Notifications')}
-        description={__('Notify post authors when their content is published.')}
+        title={__('Author Notifications', 'wp-sms')}
+        description={__('Notify post authors when their content is published.', 'wp-sms')}
         enabled={notifPostAuthor === '1'}
         onToggle={(checked) => setNotifPostAuthor(checked ? '1' : '')}
       >
         <MultiSelectField
-          label={__('Content Types')}
+          label={__('Content Types', 'wp-sms')}
           options={postTypes}
           value={notifPostAuthorPostTypes}
           onValueChange={setNotifPostAuthorPostTypes}
-          placeholder={__('All post types')}
-          searchPlaceholder={__('Search post types...')}
-          description={__('Which content types trigger author notifications.')}
+          placeholder={__('All post types', 'wp-sms')}
+          searchPlaceholder={__('Search post types...', 'wp-sms')}
+          description={__('Which content types trigger author notifications.', 'wp-sms')}
         />
 
         <div className="wsms-space-y-2">
-          <Label htmlFor="authorTemplate">{__('Message Template')}</Label>
+          <Label htmlFor="authorTemplate">{__('Message Template', 'wp-sms')}</Label>
           <TemplateTextarea
             id="authorTemplate"
             value={notifPostAuthorTemplate}
             onChange={setNotifPostAuthorTemplate}
-            placeholder={__("Your post '%post_title%' has been published!")}
+            placeholder={__("Your post '%post_title%' has been published!", 'wp-sms')}
             rows={3}
             variables={['%post_title%', '%post_content%', '%post_url%', '%post_date%', '%post_thumbnail%', '%post_author%', '%post_author_email%', '%post_status%', '%post_password%', '%post_comment_count%', '%post_post_type%', '%post_id%']}
           />
@@ -249,8 +250,8 @@ export default function Notifications() {
       {/* WordPress Update */}
       <NotificationSection
         icon={RefreshCw}
-        title={__('WordPress Updates')}
-        description={__('Get SMS alerts when a new WordPress version is available.')}
+        title={__('WordPress Updates', 'wp-sms')}
+        description={__('Get SMS alerts when a new WordPress version is available.', 'wp-sms')}
         enabled={notifWpVersion === '1'}
         onToggle={(checked) => setNotifWpVersion(checked ? '1' : '')}
       />
@@ -258,38 +259,38 @@ export default function Notifications() {
       {/* New User Registration */}
       <NotificationSection
         icon={UserPlus}
-        title={__('New User Alerts')}
-        description={__('Send SMS when someone registers on your site.')}
+        title={__('New User Alerts', 'wp-sms')}
+        description={__('Send SMS when someone registers on your site.', 'wp-sms')}
         enabled={notifNewUser === '1'}
         onToggle={(checked) => setNotifNewUser(checked ? '1' : '')}
       >
         <div className="wsms-space-y-2">
-          <Label htmlFor="userAdminTemplate">{__('Admin Notification')}</Label>
+          <Label htmlFor="userAdminTemplate">{__('Admin Notification', 'wp-sms')}</Label>
           <TemplateTextarea
             id="userAdminTemplate"
             value={notifNewUserAdminTemplate}
             onChange={setNotifNewUserAdminTemplate}
-            placeholder={__('New user registered: %user_login% (%user_email%)')}
+            placeholder={__('New user registered: %user_login% (%user_email%)', 'wp-sms')}
             rows={3}
             variables={['%user_id%', '%user_login%', '%user_email%', '%date_register%', '%user_url%', '%display_name%', '%first_name%', '%last_name%', '%user_role%']}
           />
           <p className="wsms-text-[12px] wsms-text-muted-foreground">
-            {__('Sent to admin.')}
+            {__('Sent to admin.', 'wp-sms')}
           </p>
         </div>
 
         <div className="wsms-space-y-2">
-          <Label htmlFor="userTemplate">{__('Welcome Message')}</Label>
+          <Label htmlFor="userTemplate">{__('Welcome Message', 'wp-sms')}</Label>
           <TemplateTextarea
             id="userTemplate"
             value={notifNewUserTemplate}
             onChange={setNotifNewUserTemplate}
-            placeholder={__('Welcome %first_name%! Your account has been created.')}
+            placeholder={__('Welcome %first_name%! Your account has been created.', 'wp-sms')}
             rows={3}
             variables={['%user_id%', '%user_login%', '%user_email%', '%date_register%', '%user_url%', '%display_name%', '%first_name%', '%last_name%', '%user_role%']}
           />
           <p className="wsms-text-[12px] wsms-text-muted-foreground">
-            {__('Sent to new user.')}
+            {__('Sent to new user.', 'wp-sms')}
           </p>
         </div>
       </NotificationSection>
@@ -297,18 +298,18 @@ export default function Notifications() {
       {/* New Comment */}
       <NotificationSection
         icon={MessageCircle}
-        title={__('New Comment Alerts')}
-        description={__('Get SMS when someone comments on your content.')}
+        title={__('New Comment Alerts', 'wp-sms')}
+        description={__('Get SMS when someone comments on your content.', 'wp-sms')}
         enabled={notifNewComment === '1'}
         onToggle={(checked) => setNotifNewComment(checked ? '1' : '')}
       >
         <div className="wsms-space-y-2">
-          <Label htmlFor="commentTemplate">{__('Message Template')}</Label>
+          <Label htmlFor="commentTemplate">{__('Message Template', 'wp-sms')}</Label>
           <TemplateTextarea
             id="commentTemplate"
             value={notifNewCommentTemplate}
             onChange={setNotifNewCommentTemplate}
-            placeholder={__("New comment on '%comment_post_title%' by %comment_author%")}
+            placeholder={__("New comment on '%comment_post_title%' by %comment_author%", 'wp-sms')}
             rows={3}
             variables={['%comment_id%', '%comment_author%', '%comment_author_email%', '%comment_author_url%', '%comment_author_IP%', '%comment_date%', '%comment_content%', '%comment_url%', '%comment_post_title%', '%comment_post_url%', '%comment_post_id%']}
           />
@@ -318,28 +319,28 @@ export default function Notifications() {
       {/* User Login */}
       <NotificationSection
         icon={LogIn}
-        title={__('Login Alerts')}
-        description={__('Get SMS when users log into your site.')}
+        title={__('Login Alerts', 'wp-sms')}
+        description={__('Get SMS when users log into your site.', 'wp-sms')}
         enabled={notifUserLogin === '1'}
         onToggle={(checked) => setNotifUserLogin(checked ? '1' : '')}
       >
         <MultiSelectField
-          label={__('Monitor Roles')}
+          label={__('Monitor Roles', 'wp-sms')}
           options={roles}
           value={notifUserLoginRoles}
           onValueChange={setNotifUserLoginRoles}
-          placeholder={__('All user roles')}
-          searchPlaceholder={__('Search roles...')}
-          description={__('Only notify when users with these roles log in.')}
+          placeholder={__('All user roles', 'wp-sms')}
+          searchPlaceholder={__('Search roles...', 'wp-sms')}
+          description={__('Only notify when users with these roles log in.', 'wp-sms')}
         />
 
         <div className="wsms-space-y-2">
-          <Label htmlFor="loginTemplate">{__('Message Template')}</Label>
+          <Label htmlFor="loginTemplate">{__('Message Template', 'wp-sms')}</Label>
           <TemplateTextarea
             id="loginTemplate"
             value={notifUserLoginTemplate}
             onChange={setNotifUserLoginTemplate}
-            placeholder={__('User %user_login% logged in')}
+            placeholder={__('User %user_login% logged in', 'wp-sms')}
             rows={3}
             variables={['%user_id%', '%user_login%', '%user_email%', '%date_register%', '%user_url%', '%display_name%', '%first_name%', '%last_name%', '%user_role%']}
           />

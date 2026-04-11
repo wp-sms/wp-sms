@@ -1,8 +1,8 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState } from 'react'
 import { Upload, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/toaster'
-import { __ } from '@/lib/utils'
 
 /**
  * Reusable Export Button with loading state
@@ -44,7 +44,7 @@ export function ExportButton({
       }
     } catch (error) {
       toast({
-        title: error.message || errorMessage || __('Export failed'),
+        title: error.message || errorMessage || __('Export failed', 'wp-sms'),
         variant: 'destructive',
       })
     } finally {
@@ -65,7 +65,7 @@ export function ExportButton({
       ) : (
         <Upload className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
       )}
-      {label || __('Export')}
+      {label || __('Export', 'wp-sms')}
     </Button>
   )
 }

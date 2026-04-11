@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 /**
  * Page Registry - Single source of truth for all page definitions
  *
@@ -37,7 +38,6 @@ import {
   CalendarClock,
   Blocks,
 } from 'lucide-react'
-import { __ } from '@/lib/utils'
 
 // Eager-loaded pages (needed immediately, no lazy loading)
 import SendSms from '@/pages/SendSms'
@@ -64,19 +64,19 @@ import Overview from '@/pages/Overview'
 export const pageDefinitions = {
   // ===== MESSAGING =====
   'send-sms': {
-    label: () => __('Send SMS'),
+    label: () => __('Send SMS', 'wp-sms'),
     icon: Send,
     component: SendSms, // Eager loaded - first page users see
     nav: { type: 'item', order: 1 },
   },
   'outbox': {
-    label: () => __('Outbox'),
+    label: () => __('Outbox', 'wp-sms'),
     icon: Inbox,
     component: lazy(() => import('@/pages/Outbox')),
     nav: { type: 'item', order: 2 },
   },
   'scheduled': {
-    label: () => __('Scheduled'),
+    label: () => __('Scheduled', 'wp-sms'),
     icon: CalendarClock,
     component: lazy(() => import('@/pages/Scheduled')),
     nav: { type: 'item', order: 2.5 },
@@ -85,13 +85,13 @@ export const pageDefinitions = {
 
   // ===== SUBSCRIBERS =====
   'subscribers': {
-    label: () => __('Subscribers'),
+    label: () => __('Subscribers', 'wp-sms'),
     icon: Users,
     component: lazy(() => import('@/pages/Subscribers')),
     nav: { type: 'item', order: 3 },
   },
   'groups': {
-    label: () => __('Groups'),
+    label: () => __('Groups', 'wp-sms'),
     icon: FolderOpen,
     component: lazy(() => import('@/pages/Groups')),
     nav: { type: 'item', order: 4 },
@@ -99,7 +99,7 @@ export const pageDefinitions = {
 
   // ===== PRIVACY =====
   'privacy': {
-    label: () => __('Privacy'),
+    label: () => __('Privacy', 'wp-sms'),
     icon: Shield,
     component: lazy(() => import('@/pages/Privacy')),
     nav: { type: 'item', order: 5 },
@@ -108,7 +108,7 @@ export const pageDefinitions = {
 
   // ===== ADD-ONS =====
   'add-ons': {
-    label: () => __('Add-Ons'),
+    label: () => __('Add-Ons', 'wp-sms'),
     icon: Blocks,
     component: lazy(() => import('@/pages/AddOns')),
     nav: { type: 'item', order: 6 },
@@ -116,56 +116,56 @@ export const pageDefinitions = {
 
   // ===== SETTINGS (grouped) =====
   'overview': {
-    label: () => __('Overview'),
+    label: () => __('Overview', 'wp-sms'),
     icon: LayoutDashboard,
     component: Overview, // Eager loaded
     nav: { type: 'group-item', group: 'settings', order: 1 },
   },
   'gateway': {
-    label: () => __('Gateway'),
+    label: () => __('Gateway', 'wp-sms'),
     icon: Radio,
     component: lazy(() => import('@/pages/Gateway')),
     nav: { type: 'group-item', group: 'settings', order: 2 },
   },
   'phone': {
-    label: () => __('Phone'),
+    label: () => __('Phone', 'wp-sms'),
     icon: Phone,
     component: lazy(() => import('@/pages/PhoneConfig')),
     nav: { type: 'group-item', group: 'settings', order: 3 },
   },
   'message-button': {
-    label: () => __('Message Button'),
+    label: () => __('Message Button', 'wp-sms'),
     icon: MessageSquare,
     component: lazy(() => import('@/pages/MessageButton')),
     nav: { type: 'group-item', group: 'settings', order: 4 },
   },
   'notifications': {
-    label: () => __('Notifications'),
+    label: () => __('Notifications', 'wp-sms'),
     icon: Bell,
     component: lazy(() => import('@/pages/Notifications')),
     nav: { type: 'group-item', group: 'settings', order: 5 },
   },
   'authentication': {
-    label: () => __('Authentication'),
+    label: () => __('Authentication', 'wp-sms'),
     icon: Shield,
     component: lazy(() => import('@/pages/Authentication')),
     nav: { type: 'group-item', group: 'settings', order: 5.5 },
     condition: 'hasProAddon',
   },
   'newsletter': {
-    label: () => __('Newsletter'),
+    label: () => __('Newsletter', 'wp-sms'),
     icon: Mail,
     component: lazy(() => import('@/pages/Newsletter')),
     nav: { type: 'group-item', group: 'settings', order: 6 },
   },
   'integrations': {
-    label: () => __('Integrations'),
+    label: () => __('Integrations', 'wp-sms'),
     icon: Puzzle,
     component: lazy(() => import('@/pages/Integrations')),
     nav: { type: 'group-item', group: 'settings', order: 7 },
   },
   'advanced': {
-    label: () => __('Advanced'),
+    label: () => __('Advanced', 'wp-sms'),
     icon: Settings,
     component: lazy(() => import('@/pages/Advanced')),
     nav: { type: 'group-item', group: 'settings', order: 8 },
@@ -173,21 +173,21 @@ export const pageDefinitions = {
 
   // ===== WOOCOMMERCE PRO (add-on) =====
   'sms-campaigns': {
-    label: () => __('SMS Campaigns'),
+    label: () => __('SMS Campaigns', 'wp-sms'),
     icon: Megaphone,
     component: lazy(() => import('@/pages/SmsCampaigns')),
     nav: { type: 'group-item', group: 'woocommerce-pro', order: 1 },
     condition: 'hasWooCommercePro',
   },
   'cart-abandonment': {
-    label: () => __('Cart Abandonment'),
+    label: () => __('Cart Abandonment', 'wp-sms'),
     icon: RotateCcw,
     component: lazy(() => import('@/pages/CartAbandonment')),
     nav: { type: 'group-item', group: 'woocommerce-pro', order: 2 },
     condition: 'hasWooCommercePro',
   },
   'woocommerce-pro': {
-    label: () => __('Settings'),
+    label: () => __('Settings', 'wp-sms'),
     icon: Settings,
     component: lazy(() => import('@/pages/WooCommercePro')),
     nav: { type: 'group-item', group: 'woocommerce-pro', order: 3 },
@@ -196,21 +196,21 @@ export const pageDefinitions = {
 
   // ===== TWO-WAY SMS (add-on) =====
   'two-way-inbox': {
-    label: () => __('Inbox'),
+    label: () => __('Inbox', 'wp-sms'),
     icon: Inbox,
     component: lazy(() => import('@/pages/TwoWayInbox')),
     nav: { type: 'group-item', group: 'two-way', order: 1 },
     condition: 'hasTwoWay',
   },
   'two-way-commands': {
-    label: () => __('Commands'),
+    label: () => __('Commands', 'wp-sms'),
     icon: Terminal,
     component: lazy(() => import('@/pages/TwoWayCommands')),
     nav: { type: 'group-item', group: 'two-way', order: 2 },
     condition: 'hasTwoWay',
   },
   'two-way-settings': {
-    label: () => __('Settings'),
+    label: () => __('Settings', 'wp-sms'),
     icon: Settings,
     component: lazy(() => import('@/pages/TwoWaySettings')),
     nav: { type: 'group-item', group: 'two-way', order: 3 },
@@ -228,20 +228,20 @@ export const pageDefinitions = {
  */
 export const navGroups = {
   'settings': {
-    label: () => __('Settings'),
+    label: () => __('Settings', 'wp-sms'),
     icon: Cog,
     order: 10,
     defaultExpanded: false,
   },
   'woocommerce-pro': {
-    label: () => __('WooCommerce Pro'),
+    label: () => __('WooCommerce Pro', 'wp-sms'),
     icon: ShoppingCart,
     order: 20,
     defaultExpanded: false,
     condition: 'hasWooCommercePro',
   },
   'two-way': {
-    label: () => __('Two-Way SMS'),
+    label: () => __('Two-Way SMS', 'wp-sms'),
     icon: ArrowLeftRight,
     order: 21,
     defaultExpanded: false,
@@ -316,7 +316,7 @@ export function getNavigation() {
       addOnSeparatorInserted = true
       navigation.push({
         type: 'separator',
-        label: __('ADD-ONS'),
+        label: __('ADD-ONS', 'wp-sms'),
         condition: 'hasAnyAddon',
       })
     }

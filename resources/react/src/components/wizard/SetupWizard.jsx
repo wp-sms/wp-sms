@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import {
@@ -18,7 +19,7 @@ import { useSettings } from '@/context/SettingsContext'
 import { settingsApi } from '@/api/settingsApi'
 import { wizardApi } from '@/api/wizardApi'
 import { useRootZIndex } from '@/hooks/useRootZIndex'
-import { getWpSettings, cn, __ } from '@/lib/utils'
+import { getWpSettings, cn } from '@/lib/utils'
 
 import WizardStepper from './WizardStepper'
 import GettingStartedStep from './steps/GettingStartedStep'
@@ -92,17 +93,17 @@ export default function SetupWizard() {
   // Build steps array based on conditions
   const steps = useMemo(() => {
     const baseSteps = [
-      { id: 'getting-started', label: __('Getting Started') },
-      { id: 'sms-gateway', label: __('SMS Gateway') },
-      { id: 'configuration', label: __('Configuration') },
-      { id: 'test-setup', label: __('Test Setup') },
+      { id: 'getting-started', label: __('Getting Started', 'wp-sms') },
+      { id: 'sms-gateway', label: __('SMS Gateway', 'wp-sms') },
+      { id: 'configuration', label: __('Configuration', 'wp-sms') },
+      { id: 'test-setup', label: __('Test Setup', 'wp-sms') },
     ]
 
     if (showAllInOneStep) {
-      baseSteps.push({ id: 'all-in-one', label: __('All-in-One') })
+      baseSteps.push({ id: 'all-in-one', label: __('All-in-One', 'wp-sms') })
     }
 
-    baseSteps.push({ id: 'ready', label: __('Ready') })
+    baseSteps.push({ id: 'ready', label: __('Ready', 'wp-sms') })
 
     return baseSteps
   }, [showAllInOneStep])
@@ -322,9 +323,9 @@ export default function SetupWizard() {
   // Get button labels based on current step
   const getNextButtonLabel = () => {
     const stepId = steps[currentStep]?.id
-    if (stepId === 'ready') return __('Finish')
-    if (stepId === 'test-setup' && !testSmsSent) return __('Skip')
-    return __('Continue')
+    if (stepId === 'ready') return __('Finish', 'wp-sms')
+    if (stepId === 'test-setup' && !testSmsSent) return __('Skip', 'wp-sms')
+    return __('Continue', 'wp-sms')
   }
 
   if (!isOpen) return null
@@ -354,10 +355,10 @@ export default function SetupWizard() {
               <Logo className="wsms-h-8 wsms-w-auto" />
               <div>
                 <h1 className="wsms-text-[15px] wsms-font-semibold wsms-text-foreground">
-                  {__('WSMS Setup Wizard')}
+                  {__('WSMS Setup Wizard', 'wp-sms')}
                 </h1>
                 <p className="wsms-text-[11px] wsms-text-muted-foreground">
-                  {__('Step')} {currentStep + 1} {__('of')} {steps.length}
+                  {__('Step', 'wp-sms')} {currentStep + 1} {__('of', 'wp-sms')} {steps.length}
                 </p>
               </div>
             </div>
@@ -406,14 +407,14 @@ export default function SetupWizard() {
                 className={`rtl:wsms-flex-row-reverse ${currentStep === 0 ? 'wsms-invisible' : ''}`}
               >
                 <ChevronLeft className="wsms-h-4 wsms-w-4 wsms-me-1 rtl:wsms-me-0 rtl:wsms-ms-1 rtl:wsms-scale-x-[-1]" />
-                {__('Back')}
+                {__('Back', 'wp-sms')}
               </Button>
 
               <Button onClick={handleNext} disabled={!canProceed || saving}>
                 {saving ? (
                   <>
                     <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1.5 wsms-animate-spin" />
-                    {__('Saving...')}
+                    {__('Saving...', 'wp-sms')}
                   </>
                 ) : (
                   <>

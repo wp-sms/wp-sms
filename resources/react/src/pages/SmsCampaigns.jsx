@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import {
   Megaphone,
@@ -52,14 +53,14 @@ import { useListPage } from '@/hooks/useListPage'
 import { useFormDialog } from '@/hooks/useFormDialog'
 import { useToast } from '@/components/ui/toaster'
 import { woocommerceProApi } from '@/api/woocommerceProApi'
-import { __, cn, formatDate, isAddonDashboardReady } from '@/lib/utils'
+import { cn, formatDate, isAddonDashboardReady } from '@/lib/utils'
 
 // Status badge component
 const StatusBadge = ({ status }) => {
   const statusConfig = {
-    publish: { label: __('Active'), icon: CheckCircle2, className: 'wsms-bg-green-100 wsms-text-green-800 dark:wsms-bg-green-900 dark:wsms-text-green-300' },
-    draft: { label: __('Draft'), icon: Edit2, className: 'wsms-bg-gray-100 wsms-text-gray-800 dark:wsms-bg-gray-800 dark:wsms-text-gray-300' },
-    pending: { label: __('Pending'), icon: Clock, className: 'wsms-bg-yellow-100 wsms-text-yellow-800 dark:wsms-bg-yellow-900 dark:wsms-text-yellow-300' },
+    publish: { label: __('Active', 'wp-sms'), icon: CheckCircle2, className: 'wsms-bg-green-100 wsms-text-green-800 dark:wsms-bg-green-900 dark:wsms-text-green-300' },
+    draft: { label: __('Draft', 'wp-sms'), icon: Edit2, className: 'wsms-bg-gray-100 wsms-text-gray-800 dark:wsms-bg-gray-800 dark:wsms-text-gray-300' },
+    pending: { label: __('Pending', 'wp-sms'), icon: Clock, className: 'wsms-bg-yellow-100 wsms-text-yellow-800 dark:wsms-bg-yellow-900 dark:wsms-text-yellow-300' },
   }
 
   const config = statusConfig[status] || statusConfig.draft
@@ -80,10 +81,10 @@ const QueueStatusBadge = ({ queueStatus, nextSchedule }) => {
   }
 
   const statusConfig = {
-    pending: { label: __('Queued'), icon: Clock, className: 'wsms-bg-purple-100 wsms-text-purple-800' },
-    processing: { label: __('Processing'), icon: RefreshCw, className: 'wsms-bg-blue-100 wsms-text-blue-800' },
-    completed: { label: __('Completed'), icon: CheckCircle2, className: 'wsms-bg-green-100 wsms-text-green-800' },
-    failed: { label: __('Failed'), icon: XCircle, className: 'wsms-bg-red-100 wsms-text-red-800' },
+    pending: { label: __('Queued', 'wp-sms'), icon: Clock, className: 'wsms-bg-purple-100 wsms-text-purple-800' },
+    processing: { label: __('Processing', 'wp-sms'), icon: RefreshCw, className: 'wsms-bg-blue-100 wsms-text-blue-800' },
+    completed: { label: __('Completed', 'wp-sms'), icon: CheckCircle2, className: 'wsms-bg-green-100 wsms-text-green-800' },
+    failed: { label: __('Failed', 'wp-sms'), icon: XCircle, className: 'wsms-bg-red-100 wsms-text-red-800' },
   }
 
   const config = statusConfig[queueStatus] || statusConfig.pending
@@ -104,11 +105,11 @@ const QueueStatusBadge = ({ queueStatus, nextSchedule }) => {
 
 // Time specification display
 const TimeSpecDisplay = ({ timeSpec, specificDate, delayedTime }) => {
-  const defaultConfig = { label: __('Right Away'), icon: Send }
+  const defaultConfig = { label: __('Right Away', 'wp-sms'), icon: Send }
   const specConfig = {
     'right-away': defaultConfig,
-    'specific-date': { label: __('Specific Date'), icon: Calendar },
-    'after-placing-order': { label: __('After Placing Order'), icon: Timer },
+    'specific-date': { label: __('Specific Date', 'wp-sms'), icon: Calendar },
+    'after-placing-order': { label: __('After Placing Order', 'wp-sms'), icon: Timer },
   }
 
   const config = (timeSpec && specConfig[timeSpec]) || defaultConfig
@@ -261,38 +262,38 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
       <form id={formId} onSubmit={handleSubmit} className="wsms-space-y-6 wsms-px-6">
         {/* Title */}
         <div className="wsms-space-y-2">
-          <Label htmlFor="title">{__('Campaign Title')}</Label>
+          <Label htmlFor="title">{__('Campaign Title', 'wp-sms')}</Label>
           <Input
             id="title"
             value={formData.title}
             onChange={(e) => updateField('title', e.target.value)}
-            placeholder={__('Enter campaign title...')}
+            placeholder={__('Enter campaign title...', 'wp-sms')}
             required
           />
         </div>
 
         {/* Status */}
         <div className="wsms-space-y-2">
-          <Label htmlFor="status">{__('Status')}</Label>
+          <Label htmlFor="status">{__('Status', 'wp-sms')}</Label>
           <Select value={formData.status} onValueChange={(value) => updateField('status', value)}>
             <SelectTrigger id="status">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="draft">{__('Draft')}</SelectItem>
-              <SelectItem value="publish">{__('Active')}</SelectItem>
-              <SelectItem value="pending">{__('Pending')}</SelectItem>
+              <SelectItem value="draft">{__('Draft', 'wp-sms')}</SelectItem>
+              <SelectItem value="publish">{__('Active', 'wp-sms')}</SelectItem>
+              <SelectItem value="pending">{__('Pending', 'wp-sms')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Conditions */}
         <div className="wsms-space-y-3">
-          <Label>{__('Conditions')}</Label>
+          <Label>{__('Conditions', 'wp-sms')}</Label>
 
           {formData.conditionGroups.length === 0 && (
             <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-py-4 wsms-text-center wsms-border wsms-border-dashed wsms-rounded-lg">
-              {__('No conditions added. Campaign will match all orders.')}
+              {__('No conditions added. Campaign will match all orders.', 'wp-sms')}
             </p>
           )}
 
@@ -301,19 +302,19 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
               {groupIndex > 0 && (
                 <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-my-2">
                   <div className="wsms-flex-1 wsms-border-t wsms-border-border" />
-                  <span className="wsms-text-xs wsms-font-medium wsms-text-orange-600 wsms-bg-orange-50 wsms-px-2 wsms-py-0.5 wsms-rounded">{__('OR')}</span>
+                  <span className="wsms-text-xs wsms-font-medium wsms-text-orange-600 wsms-bg-orange-50 wsms-px-2 wsms-py-0.5 wsms-rounded">{__('OR', 'wp-sms')}</span>
                   <div className="wsms-flex-1 wsms-border-t wsms-border-border" />
                 </div>
               )}
               <div className="wsms-p-3 wsms-border wsms-border-border wsms-rounded-lg wsms-space-y-2">
                 {groupIndex === 0 && (
-                  <p className="wsms-text-xs wsms-text-muted-foreground wsms-mb-1">{__('Send SMS to orders if')}</p>
+                  <p className="wsms-text-xs wsms-text-muted-foreground wsms-mb-1">{__('Send SMS to orders if', 'wp-sms')}</p>
                 )}
                 {group.conditions.map((condition, condIndex) => (
                   <div key={condIndex}>
                     {condIndex > 0 && (
                       <div className="wsms-flex wsms-justify-center wsms-my-1">
-                        <span className="wsms-text-[11px] wsms-font-medium wsms-text-blue-600 wsms-bg-blue-50 wsms-px-2 wsms-py-0.5 wsms-rounded">{__('AND')}</span>
+                        <span className="wsms-text-[11px] wsms-font-medium wsms-text-blue-600 wsms-bg-blue-50 wsms-px-2 wsms-py-0.5 wsms-rounded">{__('AND', 'wp-sms')}</span>
                       </div>
                     )}
                     <div className="wsms-flex wsms-items-center wsms-gap-2">
@@ -322,8 +323,8 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
                           value={condition.condition_key}
                           onValueChange={(value) => updateConditionInGroup(groupIndex, condIndex, 'condition_key', value)}
                         >
-                          <SelectTrigger aria-label={__('Condition type')}>
-                            <SelectValue placeholder={__('Select type...')} />
+                          <SelectTrigger aria-label={__('Condition type', 'wp-sms')}>
+                            <SelectValue placeholder={__('Select type...', 'wp-sms')} />
                           </SelectTrigger>
                           <SelectContent>
                             {Array.isArray(conditionOptions) && conditionOptions.map(opt => (
@@ -338,8 +339,8 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
                           value={condition.condition_value}
                           onValueChange={(value) => updateConditionInGroup(groupIndex, condIndex, 'condition_value', value)}
                         >
-                          <SelectTrigger aria-label={__('Condition value')}>
-                            <SelectValue placeholder={__('Select value...')} />
+                          <SelectTrigger aria-label={__('Condition value', 'wp-sms')}>
+                            <SelectValue placeholder={__('Select value...', 'wp-sms')} />
                           </SelectTrigger>
                           <SelectContent>
                             {getConditionValues(condition.condition_key).map(opt => (
@@ -363,7 +364,7 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
                 ))}
                 <Button type="button" variant="ghost" size="sm" onClick={() => addConditionToGroup(groupIndex)} className="wsms-mt-1">
                   <Plus className="wsms-h-3.5 wsms-w-3.5 wsms-me-1" />
-                  {__('Add condition')}
+                  {__('Add condition', 'wp-sms')}
                 </Button>
               </div>
             </div>
@@ -371,25 +372,25 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
 
           <Button type="button" variant="outline" size="sm" onClick={addConditionGroup}>
             <Plus className="wsms-h-4 wsms-w-4 wsms-me-1" />
-            {__('Add condition group')}
+            {__('Add condition group', 'wp-sms')}
           </Button>
         </div>
 
         {/* Time Specification */}
         <div className="wsms-space-y-3">
-          <Label>{__('When to Send')}</Label>
+          <Label>{__('When to Send', 'wp-sms')}</Label>
           <Select
             value={formData.time_specification}
             onValueChange={(value) => updateField('time_specification', value)}
           >
-            <SelectTrigger aria-label={__('When to send')}>
-              <SelectValue placeholder={__('Select when to send...')} />
+            <SelectTrigger aria-label={__('When to send', 'wp-sms')}>
+              <SelectValue placeholder={__('Select when to send...', 'wp-sms')} />
             </SelectTrigger>
             <SelectContent>
               {(timeSpecifications.length > 0 ? timeSpecifications : [
-                { value: 'right-away', label: __('Right Away') },
-                { value: 'specific-date', label: __('Specific Date') },
-                { value: 'after-placing-order', label: __('After Placing Order') },
+                { value: 'right-away', label: __('Right Away', 'wp-sms') },
+                { value: 'specific-date', label: __('Specific Date', 'wp-sms') },
+                { value: 'after-placing-order', label: __('After Placing Order', 'wp-sms') },
               ]).map(spec => (
                 <SelectItem key={spec.value} value={spec.value}>{spec.label}</SelectItem>
               ))}
@@ -401,7 +402,7 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
               type="datetime-local"
               value={formData.specific_date}
               onChange={(e) => updateField('specific_date', e.target.value)}
-              aria-label={__('Specific date')}
+              aria-label={__('Specific date', 'wp-sms')}
             />
           )}
 
@@ -413,7 +414,7 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
                   min="1"
                   value={formData.delayed_time.value}
                   onChange={(e) => updateField('delayed_time', { ...formData.delayed_time, value: parseInt(e.target.value) || 1 })}
-                  aria-label={__('Delay value')}
+                  aria-label={__('Delay value', 'wp-sms')}
                 />
               </div>
               <div className="wsms-w-28 wsms-shrink-0">
@@ -421,29 +422,29 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
                   value={formData.delayed_time.unit}
                   onValueChange={(value) => updateField('delayed_time', { ...formData.delayed_time, unit: value })}
                 >
-                  <SelectTrigger aria-label={__('Delay unit')}>
+                  <SelectTrigger aria-label={__('Delay unit', 'wp-sms')}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="minutes">{__('Minutes')}</SelectItem>
-                    <SelectItem value="hours">{__('Hours')}</SelectItem>
-                    <SelectItem value="days">{__('Days')}</SelectItem>
+                    <SelectItem value="minutes">{__('Minutes', 'wp-sms')}</SelectItem>
+                    <SelectItem value="hours">{__('Hours', 'wp-sms')}</SelectItem>
+                    <SelectItem value="days">{__('Days', 'wp-sms')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <span className="wsms-text-xs wsms-text-muted-foreground wsms-whitespace-nowrap">{__('after order is placed')}</span>
+              <span className="wsms-text-xs wsms-text-muted-foreground wsms-whitespace-nowrap">{__('after order is placed', 'wp-sms')}</span>
             </div>
           )}
         </div>
 
         {/* Message Content */}
         <div className="wsms-space-y-2">
-          <Label htmlFor="message">{__('Message Content')}</Label>
+          <Label htmlFor="message">{__('Message Content', 'wp-sms')}</Label>
           <TemplateTextarea
             id="message"
             value={formData.message_content}
             onChange={(value) => updateField('message_content', value)}
-            placeholder={__('Enter your SMS message...')}
+            placeholder={__('Enter your SMS message...', 'wp-sms')}
             rows={4}
             variables={messageVariables.length > 0 ? messageVariables : [
               { variable: '%billing_first_name%', description: 'First Name' },
@@ -463,18 +464,18 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
       {/* Form Actions - outside form to use DialogFooter's own padding */}
       <DialogFooter>
         <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
-          {__('Cancel')}
+          {__('Cancel', 'wp-sms')}
         </Button>
         <Button type="submit" form={formId} disabled={isLoading}>
           {isLoading ? (
             <>
               <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
-              {__('Saving...')}
+              {__('Saving...', 'wp-sms')}
             </>
           ) : (
             <>
               <Save className="wsms-h-4 wsms-w-4 wsms-me-2" />
-              {campaign ? __('Update Campaign') : __('Create Campaign')}
+              {campaign ? __('Update Campaign', 'wp-sms') : __('Create Campaign', 'wp-sms')}
             </>
           )}
         </Button>
@@ -488,7 +489,7 @@ const campaignColumns = [
   {
     id: 'title',
     accessorKey: 'title',
-    header: __('Campaign'),
+    header: __('Campaign', 'wp-sms'),
     cell: ({ row }) => (
       <div>
         <p className="wsms-font-medium wsms-text-[13px]">{row.title}</p>
@@ -503,13 +504,13 @@ const campaignColumns = [
   {
     id: 'status',
     accessorKey: 'status',
-    header: __('Status'),
+    header: __('Status', 'wp-sms'),
     cell: ({ row }) => <StatusBadge status={row.status} />,
   },
   {
     id: 'schedule',
     accessorKey: 'time_specification',
-    header: __('Schedule'),
+    header: __('Schedule', 'wp-sms'),
     cell: ({ row }) => (
       <TimeSpecDisplay
         timeSpec={row.time_specification}
@@ -521,7 +522,7 @@ const campaignColumns = [
   {
     id: 'queue',
     accessorKey: 'queue_status',
-    header: __('Queue'),
+    header: __('Queue', 'wp-sms'),
     cell: ({ row }) => (
       <QueueStatusBadge
         queueStatus={row.queue_status}
@@ -532,7 +533,7 @@ const campaignColumns = [
   {
     id: 'created',
     accessorKey: 'created_at',
-    header: __('Created'),
+    header: __('Created', 'wp-sms'),
     cell: ({ row }) => (
       <span className="wsms-text-[12px] wsms-text-muted-foreground">
         {row.created_at ? (row.created_at_formatted || formatDate(row.created_at)) : '\u2014'}
@@ -545,22 +546,22 @@ const campaignColumns = [
 function getCampaignRowActions({ onView, onViewQueue, onEdit, onDelete }) {
   return [
     {
-      label: __('View Details'),
+      label: __('View Details', 'wp-sms'),
       icon: Eye,
       onClick: onView,
     },
     {
-      label: __('View Queue'),
+      label: __('View Queue', 'wp-sms'),
       icon: ListOrdered,
       onClick: onViewQueue,
     },
     {
-      label: __('Edit'),
+      label: __('Edit', 'wp-sms'),
       icon: Edit2,
       onClick: onEdit,
     },
     {
-      label: __('Delete'),
+      label: __('Delete', 'wp-sms'),
       icon: Trash2,
       onClick: onDelete,
       variant: 'destructive',
@@ -583,7 +584,7 @@ export default function SmsCampaigns() {
     perPage: 10,
     fetchOnMount: hasWooCommercePro && dashboardReady,
     messages: {
-      deleteSuccess: __('Campaign deleted successfully'),
+      deleteSuccess: __('Campaign deleted successfully', 'wp-sms'),
     },
   })
 
@@ -608,7 +609,7 @@ export default function SmsCampaigns() {
       await woocommerceProApi.deleteCampaign(id, { force: true })
       table.removeItems([id])
     },
-    successMessage: __('Campaign deleted successfully'),
+    successMessage: __('Campaign deleted successfully', 'wp-sms'),
   })
 
   // Fetch condition options
@@ -623,10 +624,10 @@ export default function SmsCampaigns() {
         let transformedConditions = []
         if (conditions && typeof conditions === 'object' && !Array.isArray(conditions)) {
           const labelMap = {
-            order_statues: __('Order Status'),
-            coupon_codes: __('Coupon Code'),
-            product: __('Product'),
-            product_type: __('Product Type'),
+            order_statues: __('Order Status', 'wp-sms'),
+            coupon_codes: __('Coupon Code', 'wp-sms'),
+            product: __('Product', 'wp-sms'),
+            product_type: __('Product Type', 'wp-sms'),
           }
           transformedConditions = Object.entries(conditions).map(([key, options]) => ({
             key,
@@ -665,7 +666,7 @@ export default function SmsCampaigns() {
       const data = await woocommerceProApi.getCampaign(campaign.id)
       setSelectedCampaign(data)
     } catch (err) {
-      toast({ title: err.message || __('Failed to load campaign details'), variant: 'destructive' })
+      toast({ title: err.message || __('Failed to load campaign details', 'wp-sms'), variant: 'destructive' })
     } finally {
       setDetailLoading(false)
     }
@@ -679,7 +680,7 @@ export default function SmsCampaigns() {
       const data = await woocommerceProApi.getCampaign(campaign.id)
       setSelectedCampaign(data)
     } catch (err) {
-      toast({ title: err.message || __('Failed to load campaign details'), variant: 'destructive' })
+      toast({ title: err.message || __('Failed to load campaign details', 'wp-sms'), variant: 'destructive' })
     } finally {
       setDetailLoading(false)
     }
@@ -693,7 +694,7 @@ export default function SmsCampaigns() {
       const data = await woocommerceProApi.getCampaign(campaign.id)
       setQueueCampaign(data)
     } catch (err) {
-      toast({ title: err.message || __('Failed to load queue data'), variant: 'destructive' })
+      toast({ title: err.message || __('Failed to load queue data', 'wp-sms'), variant: 'destructive' })
     } finally {
       setQueueLoading(false)
     }
@@ -717,15 +718,15 @@ export default function SmsCampaigns() {
     try {
       if (selectedCampaign) {
         await woocommerceProApi.updateCampaign(selectedCampaign.id, formData)
-        toast({ title: __('Campaign updated successfully'), variant: 'success' })
+        toast({ title: __('Campaign updated successfully', 'wp-sms'), variant: 'success' })
       } else {
         await woocommerceProApi.createCampaign(formData)
-        toast({ title: __('Campaign created successfully'), variant: 'success' })
+        toast({ title: __('Campaign created successfully', 'wp-sms'), variant: 'success' })
       }
       setIsFormOpen(false)
       table.refresh()
     } catch (err) {
-      toast({ title: err.message || __('Failed to save campaign'), variant: 'destructive' })
+      toast({ title: err.message || __('Failed to save campaign', 'wp-sms'), variant: 'destructive' })
     } finally {
       setFormLoading(false)
     }
@@ -747,9 +748,9 @@ export default function SmsCampaigns() {
           <CardContent className="wsms-py-8">
             <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
               <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
-              <h3 className="wsms-font-medium wsms-mb-2">{__('WooCommerce Pro Add-on Required')}</h3>
+              <h3 className="wsms-font-medium wsms-mb-2">{__('WooCommerce Pro Add-on Required', 'wp-sms')}</h3>
               <p className="wsms-text-sm wsms-text-muted-foreground wsms-mb-4">
-                {__('Install and activate the WSMS WooCommerce Pro add-on to access SMS Campaigns.')}
+                {__('Install and activate the WSMS WooCommerce Pro add-on to access SMS Campaigns.', 'wp-sms')}
               </p>
               <Button variant="outline" asChild>
                 <a
@@ -757,7 +758,7 @@ export default function SmsCampaigns() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {__('Learn More')}
+                  {__('Learn More', 'wp-sms')}
                   <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
                 </a>
               </Button>
@@ -790,16 +791,16 @@ export default function SmsCampaigns() {
               </div>
               <div>
                 <h2 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-1">
-                  {__('SMS Campaigns')}
+                  {__('SMS Campaigns', 'wp-sms')}
                 </h2>
                 <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-max-w-lg">
-                  {__('Create targeted SMS marketing campaigns based on customer behavior. Set conditions, schedule delivery, and track results.')}
+                  {__('Create targeted SMS marketing campaigns based on customer behavior. Set conditions, schedule delivery, and track results.', 'wp-sms')}
                 </p>
               </div>
             </div>
             <Button size="sm" onClick={handleCreate}>
               <Plus className="wsms-h-4 wsms-w-4 wsms-me-2" />
-              {__('New Campaign')}
+              {__('New Campaign', 'wp-sms')}
             </Button>
           </div>
         </div>
@@ -819,9 +820,9 @@ export default function SmsCampaigns() {
                 type="text"
                 value={filters.filters.search}
                 onChange={(e) => filters.setFilter('search', e.target.value)}
-                placeholder={__('Search campaigns...')}
+                placeholder={__('Search campaigns...', 'wp-sms')}
                 className="wsms-ps-8 wsms-h-9"
-                aria-label={__('Search campaigns')}
+                aria-label={__('Search campaigns', 'wp-sms')}
               />
             </div>
 
@@ -830,14 +831,14 @@ export default function SmsCampaigns() {
               value={filters.filters.status}
               onValueChange={(value) => filters.setFilter('status', value)}
             >
-              <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[12px]" aria-label={__('Filter by status')}>
-                <SelectValue placeholder={__('All Statuses')} />
+              <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[12px]" aria-label={__('Filter by status', 'wp-sms')}>
+                <SelectValue placeholder={__('All Statuses', 'wp-sms')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="any">{__('All Statuses')}</SelectItem>
-                <SelectItem value="publish">{__('Active')}</SelectItem>
-                <SelectItem value="draft">{__('Draft')}</SelectItem>
-                <SelectItem value="pending">{__('Pending')}</SelectItem>
+                <SelectItem value="any">{__('All Statuses', 'wp-sms')}</SelectItem>
+                <SelectItem value="publish">{__('Active', 'wp-sms')}</SelectItem>
+                <SelectItem value="draft">{__('Draft', 'wp-sms')}</SelectItem>
+                <SelectItem value="pending">{__('Pending', 'wp-sms')}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -848,7 +849,7 @@ export default function SmsCampaigns() {
                 size="sm"
                 onClick={() => filters.resetFilters()}
                 className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
-                aria-label={__('Clear all filters')}
+                aria-label={__('Clear all filters', 'wp-sms')}
               >
                 <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
               </Button>
@@ -860,7 +861,7 @@ export default function SmsCampaigns() {
               size="sm"
               onClick={() => table.fetch({ page: 1 })}
               className="wsms-h-9 wsms-px-2.5 xl:wsms-ms-auto"
-              aria-label={__('Refresh')}
+              aria-label={__('Refresh', 'wp-sms')}
             >
               <RefreshCw className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')} />
             </Button>
@@ -884,7 +885,7 @@ export default function SmsCampaigns() {
               onPerPageChange: table.handlePerPageChange,
             }}
             rowActions={rowActions}
-            emptyMessage={__('No campaigns found')}
+            emptyMessage={__('No campaigns found', 'wp-sms')}
             emptyIcon={Megaphone}
           />
         </CardContent>
@@ -895,12 +896,12 @@ export default function SmsCampaigns() {
         <DialogContent className="wsms-max-h-[90vh] wsms-overflow-y-auto wsms-scrollbar-thin" style={{ maxWidth: '768px' }}>
           <DialogHeader>
             <DialogTitle>
-              {selectedCampaign ? __('Edit Campaign') : __('Create Campaign')}
+              {selectedCampaign ? __('Edit Campaign', 'wp-sms') : __('Create Campaign', 'wp-sms')}
             </DialogTitle>
             <DialogDescription>
               {selectedCampaign
-                ? __('Update your SMS campaign settings.')
-                : __('Create a new targeted SMS marketing campaign.')
+                ? __('Update your SMS campaign settings.', 'wp-sms')
+                : __('Create a new targeted SMS marketing campaign.', 'wp-sms')
               }
             </DialogDescription>
           </DialogHeader>
@@ -926,7 +927,7 @@ export default function SmsCampaigns() {
           <DialogHeader>
             <DialogTitle>{selectedCampaign?.title}</DialogTitle>
             <DialogDescription>
-              {__('Campaign details and configuration')}
+              {__('Campaign details and configuration', 'wp-sms')}
             </DialogDescription>
           </DialogHeader>
           {detailLoading ? (
@@ -935,14 +936,14 @@ export default function SmsCampaigns() {
             <DialogBody>
               <div className="wsms-space-y-4">
                 <div>
-                  <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Status')}</Label>
+                  <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Status', 'wp-sms')}</Label>
                   <div className="wsms-mt-1">
                     <StatusBadge status={selectedCampaign.status} />
                   </div>
                 </div>
 
                 <div>
-                  <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Schedule')}</Label>
+                  <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Schedule', 'wp-sms')}</Label>
                   <div className="wsms-mt-1">
                     <TimeSpecDisplay
                       timeSpec={selectedCampaign.time_specification}
@@ -954,14 +955,14 @@ export default function SmsCampaigns() {
 
                 {selectedCampaign.conditions && selectedCampaign.conditions.length > 0 && (
                   <div>
-                    <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Conditions')}</Label>
+                    <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Conditions', 'wp-sms')}</Label>
                     <div className="wsms-mt-1 wsms-space-y-1">
                       {normalizeConditionGroups(selectedCampaign.conditions).map((group, groupIndex) => (
                         <div key={groupIndex}>
                           {groupIndex > 0 && (
                             <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-my-1">
                               <div className="wsms-flex-1 wsms-border-t wsms-border-border" />
-                              <span className="wsms-text-[10px] wsms-font-medium wsms-text-orange-600">{__('OR')}</span>
+                              <span className="wsms-text-[10px] wsms-font-medium wsms-text-orange-600">{__('OR', 'wp-sms')}</span>
                               <div className="wsms-flex-1 wsms-border-t wsms-border-border" />
                             </div>
                           )}
@@ -969,7 +970,7 @@ export default function SmsCampaigns() {
                             {group.conditions.map((condition, condIndex) => (
                               <div key={condIndex}>
                                 {condIndex > 0 && (
-                                  <span className="wsms-text-[10px] wsms-font-medium wsms-text-blue-600 wsms-block wsms-text-center wsms-my-0.5">{__('AND')}</span>
+                                  <span className="wsms-text-[10px] wsms-font-medium wsms-text-blue-600 wsms-block wsms-text-center wsms-my-0.5">{__('AND', 'wp-sms')}</span>
                                 )}
                                 <div className="wsms-text-[12px]">
                                   {condition.condition_key} = {condition.condition_value}
@@ -984,7 +985,7 @@ export default function SmsCampaigns() {
                 )}
 
                 <div>
-                  <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Message Preview')}</Label>
+                  <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Message Preview', 'wp-sms')}</Label>
                   <div className="wsms-mt-2 wsms-rounded-lg wsms-border wsms-border-border wsms-bg-muted/10 wsms-p-4">
                     {selectedCampaign.message_content ? (
                       <div className="wsms-max-w-[75%]">
@@ -994,11 +995,11 @@ export default function SmsCampaigns() {
                           </p>
                         </div>
                         <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-1 wsms-ms-1">
-                          {selectedCampaign.message_content.length} {__('characters')}
+                          {selectedCampaign.message_content.length} {__('characters', 'wp-sms')}
                         </p>
                       </div>
                     ) : (
-                      <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('No message content')}</p>
+                      <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('No message content', 'wp-sms')}</p>
                     )}
                   </div>
                 </div>
@@ -1008,11 +1009,11 @@ export default function SmsCampaigns() {
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsViewOpen(false)}>
-              {__('Close')}
+              {__('Close', 'wp-sms')}
             </Button>
             <Button onClick={() => { setIsViewOpen(false); handleEdit(selectedCampaign) }}>
               <Edit2 className="wsms-h-4 wsms-w-4 wsms-me-2" />
-              {__('Edit')}
+              {__('Edit', 'wp-sms')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1027,7 +1028,7 @@ export default function SmsCampaigns() {
               <span className="wsms-truncate">{queueCampaign?.title}</span>
             </DialogTitle>
             <DialogDescription>
-              {__('Queue execution details and target orders')}
+              {__('Queue execution details and target orders', 'wp-sms')}
             </DialogDescription>
           </DialogHeader>
           {queueLoading ? (
@@ -1038,7 +1039,7 @@ export default function SmsCampaigns() {
                 {/* Queue Summary */}
                 <div className="wsms-grid wsms-grid-cols-1 sm:wsms-grid-cols-3 wsms-gap-3">
                   <div>
-                    <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Status')}</Label>
+                    <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Status', 'wp-sms')}</Label>
                     <div className="wsms-mt-1">
                       <QueueStatusBadge
                         queueStatus={queueCampaign.queue_status}
@@ -1048,13 +1049,13 @@ export default function SmsCampaigns() {
                   </div>
                   {queueCampaign.last_execution && (
                     <div>
-                      <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Last Execution')}</Label>
+                      <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Last Execution', 'wp-sms')}</Label>
                       <p className="wsms-mt-1 wsms-text-[13px]">{queueCampaign.last_execution_formatted || formatDate(queueCampaign.last_execution)}</p>
                     </div>
                   )}
                   {queueCampaign.queue_response && (
                     <div>
-                      <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Response')}</Label>
+                      <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Response', 'wp-sms')}</Label>
                       <p className="wsms-mt-1 wsms-text-[13px] wsms-text-muted-foreground">{queueCampaign.queue_response}</p>
                     </div>
                   )}
@@ -1064,16 +1065,16 @@ export default function SmsCampaigns() {
                 {Array.isArray(queueCampaign.target_orders) && queueCampaign.target_orders.length > 0 ? (
                   <div>
                     <Label className="wsms-text-[12px] wsms-text-muted-foreground">
-                      {__('Target Orders')} ({queueCampaign.target_orders.length})
+                      {__('Target Orders', 'wp-sms')} ({queueCampaign.target_orders.length})
                     </Label>
 
                     {/* Mobile: Card layout */}
                     <div className="wsms-mt-2 wsms-space-y-2 md:wsms-hidden">
                       {queueCampaign.target_orders.map((order, index) => {
                         const statusConfig = {
-                          success: { label: __('Sent'), className: 'wsms-text-emerald-600' },
-                          pending: { label: __('In Queue'), className: 'wsms-text-blue-600' },
-                          failed: { label: __('Failed'), className: 'wsms-text-red-600' },
+                          success: { label: __('Sent', 'wp-sms'), className: 'wsms-text-emerald-600' },
+                          pending: { label: __('In Queue', 'wp-sms'), className: 'wsms-text-blue-600' },
+                          failed: { label: __('Failed', 'wp-sms'), className: 'wsms-text-red-600' },
                         }
                         const smsStatus = statusConfig[order.status] || statusConfig.pending
                         return (
@@ -1106,19 +1107,19 @@ export default function SmsCampaigns() {
                       <table className="wsms-w-full wsms-text-[12px]">
                         <thead className="wsms-sticky wsms-top-0">
                           <tr className="wsms-bg-muted/50 wsms-border-b wsms-border-border">
-                            <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">{__('Order ID')}</th>
-                            <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">{__('Order Date')}</th>
-                            <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">{__('Mobile Number')}</th>
-                            <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">{__('SMS Status')}</th>
-                            <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">{__('Response')}</th>
+                            <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">{__('Order ID', 'wp-sms')}</th>
+                            <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">{__('Order Date', 'wp-sms')}</th>
+                            <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">{__('Mobile Number', 'wp-sms')}</th>
+                            <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">{__('SMS Status', 'wp-sms')}</th>
+                            <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">{__('Response', 'wp-sms')}</th>
                           </tr>
                         </thead>
                         <tbody>
                           {queueCampaign.target_orders.map((order, index) => {
                             const statusConfig = {
-                              success: { label: __('Sent'), className: 'wsms-text-emerald-600' },
-                              pending: { label: __('In Queue'), className: 'wsms-text-blue-600' },
-                              failed: { label: __('Failed'), className: 'wsms-text-red-600' },
+                              success: { label: __('Sent', 'wp-sms'), className: 'wsms-text-emerald-600' },
+                              pending: { label: __('In Queue', 'wp-sms'), className: 'wsms-text-blue-600' },
+                              failed: { label: __('Failed', 'wp-sms'), className: 'wsms-text-red-600' },
                             }
                             const smsStatus = statusConfig[order.status] || statusConfig.pending
                             return (
@@ -1147,7 +1148,7 @@ export default function SmsCampaigns() {
                 ) : (
                   <div className="wsms-text-center wsms-py-8">
                     <ListOrdered className="wsms-h-8 wsms-w-8 wsms-text-muted-foreground wsms-mx-auto wsms-mb-2" />
-                    <p className="wsms-text-[13px] wsms-text-muted-foreground">{__('No target orders found for this campaign')}</p>
+                    <p className="wsms-text-[13px] wsms-text-muted-foreground">{__('No target orders found for this campaign', 'wp-sms')}</p>
                   </div>
                 )}
               </div>
@@ -1155,7 +1156,7 @@ export default function SmsCampaigns() {
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsQueueOpen(false)}>
-              {__('Close')}
+              {__('Close', 'wp-sms')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1167,8 +1168,8 @@ export default function SmsCampaigns() {
         onClose={deleteDialog.close}
         onConfirm={handleDeleteConfirm}
         isSaving={deleteDialog.isSaving}
-        title={__('Delete Campaign')}
-        description={__('Are you sure you want to delete this campaign? This action is irreversible and cannot be undone.')}
+        title={__('Delete Campaign', 'wp-sms')}
+        description={__('Are you sure you want to delete this campaign? This action is irreversible and cannot be undone.', 'wp-sms')}
       >
         {deleteDialog.item && (
           <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">

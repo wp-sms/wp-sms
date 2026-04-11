@@ -1,6 +1,6 @@
+import { __ } from '@wordpress/i18n'
 import { useCallback } from 'react'
 import { useSettings } from '@/context/SettingsContext'
-import { __ } from '@/lib/utils'
 
 /**
  * Hook to filter phone numbers against country restrictions.

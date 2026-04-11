@@ -1,7 +1,8 @@
+import { __ } from '@wordpress/i18n'
 import React from 'react'
 import { Clock, Image, Eye, Edit, MessageSquare, Send, Trash2, RefreshCw, UserCheck, UserX, Repeat } from 'lucide-react'
 import { StatusBadge } from '@/components/shared/StatusBadge'
-import { formatDate, __, cn } from '@/lib/utils'
+import { formatDate, cn } from '@/lib/utils'
 
 /**
  * Factory function to create a date column
@@ -15,7 +16,7 @@ import { formatDate, __, cn } from '@/lib/utils'
 export function createDateColumn({
   id = 'date',
   accessorKey = 'date',
-  header = __('Date'),
+  header = __('Date', 'wp-sms'),
   showTime = true,
 } = {}) {
   return {
@@ -55,13 +56,13 @@ export function createDateColumn({
 export function createStatusColumn({
   id = 'status',
   accessorKey = 'status',
-  header = __('Status'),
+  header = __('Status', 'wp-sms'),
   statusMap = {
-    success: { variant: 'success', label: __('Sent') },
-    failed: { variant: 'failed', label: __('Failed') },
-    pending: { variant: 'warning', label: __('Pending') },
-    active: { variant: 'success', label: __('Active') },
-    inactive: { variant: 'default', label: __('Inactive') },
+    success: { variant: 'success', label: __('Sent', 'wp-sms') },
+    failed: { variant: 'failed', label: __('Failed', 'wp-sms') },
+    pending: { variant: 'warning', label: __('Pending', 'wp-sms') },
+    active: { variant: 'success', label: __('Active', 'wp-sms') },
+    inactive: { variant: 'default', label: __('Inactive', 'wp-sms') },
   },
 } = {}) {
   return {
@@ -108,7 +109,7 @@ export function createTextColumn({
 export function createMediaColumn({
   id = 'media',
   accessorKey = 'media',
-  header = __('Media'),
+  header = __('Media', 'wp-sms'),
   maxVisible = 2,
 } = {}) {
   return {
@@ -169,12 +170,12 @@ export const outboxColumns = [
   {
     id: 'recipient',
     accessorKey: 'recipient',
-    header: __('Recipient'),
+    header: __('Recipient', 'wp-sms'),
     cell: ({ row }) => {
       // Show "-" for empty or invalid recipients
       const hasRecipient = row.recipient && row.recipient.trim() !== ''
       const displayRecipient = hasRecipient
-        ? (row.recipient_count > 1 ? `${row.recipient_count} ${__('recipients')}` : row.recipient)
+        ? (row.recipient_count > 1 ? `${row.recipient_count} ${__('recipients', 'wp-sms')}` : row.recipient)
         : '—'
 
       return (
@@ -186,19 +187,19 @@ export const outboxColumns = [
             {displayRecipient}
           </span>
           {row.sender && (
-            <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('From:')} {row.sender}</p>
+            <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('From:', 'wp-sms')} {row.sender}</p>
           )}
         </div>
       )
     },
   },
-  createTextColumn({ id: 'message', accessorKey: 'message', header: __('Message') }),
+  createTextColumn({ id: 'message', accessorKey: 'message', header: __('Message', 'wp-sms') }),
   createMediaColumn(),
   createStatusColumn({
     statusMap: {
-      success: { variant: 'success', label: __('Sent') },
-      failed: { variant: 'failed', label: __('Failed') },
-      error: { variant: 'failed', label: __('Failed') },
+      success: { variant: 'success', label: __('Sent', 'wp-sms') },
+      failed: { variant: 'failed', label: __('Failed', 'wp-sms') },
+      error: { variant: 'failed', label: __('Failed', 'wp-sms') },
     },
   }),
 ]
@@ -211,25 +212,25 @@ export const outboxColumns = [
 export function getOutboxRowActions({ onView, onQuickReply, onResend, onDelete, isResending }) {
   return [
     {
-      label: __('View Details'),
+      label: __('View Details', 'wp-sms'),
       icon: Eye,
       onClick: onView,
     },
     {
-      label: __('Quick Reply'),
+      label: __('Quick Reply', 'wp-sms'),
       icon: MessageSquare,
       onClick: onQuickReply,
       // Hide Quick Reply for failed messages or messages with no valid recipient
       hidden: (row) => row.status === 'failed' || !row.recipient || row.recipient.trim() === '',
     },
     {
-      label: __('Resend'),
+      label: __('Resend', 'wp-sms'),
       icon: Send,
       onClick: onResend,
       loading: isResending,
     },
     {
-      label: __('Delete'),
+      label: __('Delete', 'wp-sms'),
       icon: Trash2,
       onClick: onDelete,
       variant: 'destructive',
@@ -245,13 +246,13 @@ export function getOutboxRowActions({ onView, onQuickReply, onResend, onDelete, 
 export function getOutboxBulkActions({ onDelete, onResend }) {
   return [
     {
-      label: __('Delete Selected'),
+      label: __('Delete Selected', 'wp-sms'),
       icon: Trash2,
       onClick: onDelete,
       variant: 'destructive',
     },
     {
-      label: __('Resend Selected'),
+      label: __('Resend Selected', 'wp-sms'),
       icon: RefreshCw,
       onClick: onResend,
     },
@@ -274,7 +275,7 @@ export function getSubscriberColumns({ groups = [], countries = {} } = {}) {
     {
       id: 'mobile',
       accessorKey: 'mobile',
-      header: __('Phone Number'),
+      header: __('Phone Number', 'wp-sms'),
       cell: ({ row }) => (
         <div className="wsms-space-y-0.5">
           <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground wsms-font-mono">
@@ -290,12 +291,12 @@ export function getSubscriberColumns({ groups = [], countries = {} } = {}) {
     {
       id: 'group',
       accessorKey: 'group_id',
-      header: __('Group'),
+      header: __('Group', 'wp-sms'),
       cell: ({ row }) => {
         const group = groups.find((g) => String(g.id) === String(row.group_id))
         return (
           <span className="wsms-text-[12px] wsms-text-muted-foreground">
-            {group?.name || __('No group')}
+            {group?.name || __('No group', 'wp-sms')}
           </span>
         )
       },
@@ -303,7 +304,7 @@ export function getSubscriberColumns({ groups = [], countries = {} } = {}) {
     {
       id: 'country',
       accessorKey: 'country_code',
-      header: __('Country'),
+      header: __('Country', 'wp-sms'),
       cell: ({ row }) => {
         const country = countries[row.country_code]
         if (!country) {
@@ -318,16 +319,16 @@ export function getSubscriberColumns({ groups = [], countries = {} } = {}) {
     },
     createStatusColumn({
       statusMap: {
-        '1': { variant: 'success', label: __('Active') },
-        '0': { variant: 'default', label: __('Inactive') },
-        active: { variant: 'success', label: __('Active') },
-        inactive: { variant: 'default', label: __('Inactive') },
+        '1': { variant: 'success', label: __('Active', 'wp-sms') },
+        '0': { variant: 'default', label: __('Inactive', 'wp-sms') },
+        active: { variant: 'success', label: __('Active', 'wp-sms') },
+        inactive: { variant: 'default', label: __('Inactive', 'wp-sms') },
       },
     }),
     createDateColumn({
       id: 'date',
       accessorKey: 'date',
-      header: __('Subscribed'),
+      header: __('Subscribed', 'wp-sms'),
       showTime: false,
     }),
   ]
@@ -341,22 +342,22 @@ export function getSubscriberColumns({ groups = [], countries = {} } = {}) {
 export function getSubscriberRowActions({ onEdit, onQuickReply, onToggleStatus, onDelete }) {
   return [
     {
-      label: __('Edit'),
+      label: __('Edit', 'wp-sms'),
       icon: Edit,
       onClick: onEdit,
     },
     {
-      label: __('Send SMS'),
+      label: __('Send SMS', 'wp-sms'),
       icon: MessageSquare,
       onClick: onQuickReply,
     },
     {
-      label: __('Toggle Status'),
+      label: __('Toggle Status', 'wp-sms'),
       icon: UserCheck,
       onClick: onToggleStatus,
     },
     {
-      label: __('Delete'),
+      label: __('Delete', 'wp-sms'),
       icon: Trash2,
       onClick: onDelete,
       variant: 'destructive',
@@ -372,18 +373,18 @@ export function getSubscriberRowActions({ onEdit, onQuickReply, onToggleStatus, 
 export function getSubscriberBulkActions({ onDelete, onActivate, onDeactivate, onMoveToGroup }) {
   return [
     {
-      label: __('Delete Selected'),
+      label: __('Delete Selected', 'wp-sms'),
       icon: Trash2,
       onClick: onDelete,
       variant: 'destructive',
     },
     {
-      label: __('Activate'),
+      label: __('Activate', 'wp-sms'),
       icon: UserCheck,
       onClick: onActivate,
     },
     {
-      label: __('Deactivate'),
+      label: __('Deactivate', 'wp-sms'),
       icon: UserX,
       onClick: onDeactivate,
     },
@@ -401,31 +402,31 @@ export const scheduledSmsColumns = [
   createDateColumn({
     id: 'date',
     accessorKey: 'date',
-    header: __('Scheduled Date'),
+    header: __('Scheduled Date', 'wp-sms'),
     showTime: true,
   }),
   {
     id: 'recipient',
     accessorKey: 'recipient',
-    header: __('Recipient'),
+    header: __('Recipient', 'wp-sms'),
     cell: ({ row }) => (
       <div className="wsms-space-y-0.5">
         <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
-          {row.recipient_count > 1 ? `${row.recipient_count} ${__('recipients')}` : row.recipient}
+          {row.recipient_count > 1 ? `${row.recipient_count} ${__('recipients', 'wp-sms')}` : row.recipient}
         </span>
         {row.sender && (
-          <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('From:')} {row.sender}</p>
+          <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('From:', 'wp-sms')} {row.sender}</p>
         )}
       </div>
     ),
   },
-  createTextColumn({ id: 'message', accessorKey: 'message', header: __('Message') }),
+  createTextColumn({ id: 'message', accessorKey: 'message', header: __('Message', 'wp-sms') }),
   createMediaColumn(),
   createStatusColumn({
     statusMap: {
-      pending: { variant: 'warning', label: __('Pending') },
-      sent: { variant: 'success', label: __('Sent') },
-      failed: { variant: 'failed', label: __('Failed') },
+      pending: { variant: 'warning', label: __('Pending', 'wp-sms') },
+      sent: { variant: 'success', label: __('Sent', 'wp-sms') },
+      failed: { variant: 'failed', label: __('Failed', 'wp-sms') },
     },
   }),
 ]
@@ -438,24 +439,24 @@ export const scheduledSmsColumns = [
 export function getScheduledRowActions({ onView, onEdit, onSendNow, onDelete }) {
   return [
     {
-      label: __('View Details'),
+      label: __('View Details', 'wp-sms'),
       icon: Eye,
       onClick: onView,
     },
     {
-      label: __('Edit'),
+      label: __('Edit', 'wp-sms'),
       icon: Edit,
       onClick: onEdit,
       condition: (row) => row.status === 'pending',
     },
     {
-      label: __('Send Now'),
+      label: __('Send Now', 'wp-sms'),
       icon: Send,
       onClick: onSendNow,
       condition: (row) => row.status === 'pending',
     },
     {
-      label: __('Delete'),
+      label: __('Delete', 'wp-sms'),
       icon: Trash2,
       onClick: onDelete,
       variant: 'destructive',
@@ -471,13 +472,13 @@ export function getScheduledRowActions({ onView, onEdit, onSendNow, onDelete }) 
 export function getScheduledBulkActions({ onDelete, onSendAll }) {
   return [
     {
-      label: __('Delete Selected'),
+      label: __('Delete Selected', 'wp-sms'),
       icon: Trash2,
       onClick: onDelete,
       variant: 'destructive',
     },
     {
-      label: __('Send Selected Now'),
+      label: __('Send Selected Now', 'wp-sms'),
       icon: Send,
       onClick: onSendAll,
     },
@@ -495,20 +496,20 @@ export const repeatingMessagesColumns = [
   {
     id: 'interval',
     accessorKey: 'interval',
-    header: __('Interval'),
+    header: __('Interval', 'wp-sms'),
     cell: ({ row }) => {
       const unitLabels = {
-        minute: row.interval === 1 ? __('minute') : __('minutes'),
-        hour: row.interval === 1 ? __('hour') : __('hours'),
-        day: row.interval === 1 ? __('day') : __('days'),
-        week: row.interval === 1 ? __('week') : __('weeks'),
-        month: row.interval === 1 ? __('month') : __('months'),
+        minute: row.interval === 1 ? __('minute', 'wp-sms') : __('minutes', 'wp-sms'),
+        hour: row.interval === 1 ? __('hour', 'wp-sms') : __('hours', 'wp-sms'),
+        day: row.interval === 1 ? __('day', 'wp-sms') : __('days', 'wp-sms'),
+        week: row.interval === 1 ? __('week', 'wp-sms') : __('weeks', 'wp-sms'),
+        month: row.interval === 1 ? __('month', 'wp-sms') : __('months', 'wp-sms'),
       }
       return (
         <div className="wsms-flex wsms-items-center wsms-gap-2">
           <Repeat className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" aria-hidden="true" />
           <span className="wsms-text-[12px] wsms-text-foreground">
-            {__('Every')} {row.interval} {unitLabels[row.interval_unit] || row.interval_unit}
+            {__('Every', 'wp-sms')} {row.interval} {unitLabels[row.interval_unit] || row.interval_unit}
           </span>
         </div>
       )
@@ -517,39 +518,39 @@ export const repeatingMessagesColumns = [
   createDateColumn({
     id: 'next_occurrence',
     accessorKey: 'next_occurrence',
-    header: __('Next Occurrence'),
+    header: __('Next Occurrence', 'wp-sms'),
     showTime: true,
   }),
   {
     id: 'ends_at',
     accessorKey: 'ends_at_date',
-    header: __('Ends At'),
+    header: __('Ends At', 'wp-sms'),
     cell: ({ row }) => (
       <span className="wsms-text-[12px] wsms-text-muted-foreground">
-        {row.ends_at_date ? (row.ends_at_formatted || formatDate(row.ends_at_date, true)) : __('Never')}
+        {row.ends_at_date ? (row.ends_at_formatted || formatDate(row.ends_at_date, true)) : __('Never', 'wp-sms')}
       </span>
     ),
   },
   {
     id: 'recipient',
     accessorKey: 'recipient',
-    header: __('Recipient'),
+    header: __('Recipient', 'wp-sms'),
     cell: ({ row }) => (
       <div className="wsms-space-y-0.5">
         <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
-          {row.recipient_count > 1 ? `${row.recipient_count} ${__('recipients')}` : row.recipient}
+          {row.recipient_count > 1 ? `${row.recipient_count} ${__('recipients', 'wp-sms')}` : row.recipient}
         </span>
         {row.sender && (
-          <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('From:')} {row.sender}</p>
+          <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('From:', 'wp-sms')} {row.sender}</p>
         )}
       </div>
     ),
   },
-  createTextColumn({ id: 'message', accessorKey: 'message', header: __('Message') }),
+  createTextColumn({ id: 'message', accessorKey: 'message', header: __('Message', 'wp-sms') }),
   {
     id: 'occurrences',
     accessorKey: 'occurrences_sent',
-    header: __('Sent'),
+    header: __('Sent', 'wp-sms'),
     cell: ({ row }) => (
       <span className="wsms-text-[12px] wsms-text-muted-foreground">
         {row.occurrences_sent || 0}
@@ -559,8 +560,8 @@ export const repeatingMessagesColumns = [
   },
   createStatusColumn({
     statusMap: {
-      active: { variant: 'success', label: __('Active') },
-      ended: { variant: 'default', label: __('Ended') },
+      active: { variant: 'success', label: __('Active', 'wp-sms') },
+      ended: { variant: 'default', label: __('Ended', 'wp-sms') },
     },
   }),
 ]
@@ -573,18 +574,18 @@ export const repeatingMessagesColumns = [
 export function getRepeatingRowActions({ onView, onEdit, onDelete }) {
   return [
     {
-      label: __('View Details'),
+      label: __('View Details', 'wp-sms'),
       icon: Eye,
       onClick: onView,
     },
     {
-      label: __('Edit'),
+      label: __('Edit', 'wp-sms'),
       icon: Edit,
       onClick: onEdit,
       condition: (row) => row.status === 'active',
     },
     {
-      label: __('Delete'),
+      label: __('Delete', 'wp-sms'),
       icon: Trash2,
       onClick: onDelete,
       variant: 'destructive',
@@ -600,7 +601,7 @@ export function getRepeatingRowActions({ onView, onEdit, onDelete }) {
 export function getRepeatingBulkActions({ onDelete }) {
   return [
     {
-      label: __('Delete Selected'),
+      label: __('Delete Selected', 'wp-sms'),
       icon: Trash2,
       onClick: onDelete,
       variant: 'destructive',

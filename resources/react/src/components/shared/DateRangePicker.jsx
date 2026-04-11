@@ -1,6 +1,7 @@
+import { __ } from '@wordpress/i18n'
 import React from 'react'
 import { CalendarDays } from 'lucide-react'
-import { cn, __ } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
 
 /**
@@ -37,7 +38,7 @@ export function DateRangePicker({
         onChange={(e) => onFromChange?.(e.target.value)}
         disabled={disabled}
         className="wsms-h-9 wsms-min-w-0 wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[130px] wsms-text-[12px]"
-        aria-label={__('From date')}
+        aria-label={__('From date', 'wp-sms')}
       />
       <span className="wsms-text-muted-foreground" aria-hidden="true">-</span>
       <Input
@@ -46,7 +47,7 @@ export function DateRangePicker({
         onChange={(e) => onToChange?.(e.target.value)}
         disabled={disabled}
         className="wsms-h-9 wsms-min-w-0 wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[130px] wsms-text-[12px]"
-        aria-label={__('To date')}
+        aria-label={__('To date', 'wp-sms')}
       />
     </div>
   )

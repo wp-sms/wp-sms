@@ -1,7 +1,7 @@
+import { __ } from '@wordpress/i18n'
 import React from 'react'
 import { Crown, Check, ExternalLink, Zap, Shield, BarChart3, MessageCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { __ } from '@/lib/utils'
 
 /**
  * All-in-One upsell step - Promote WSMS All-in-One features
@@ -10,31 +10,31 @@ export default function AllInOneStep({ onSkip }) {
   const features = [
     {
       icon: MessageCircle,
-      title: __('Two-Way SMS'),
-      description: __('Receive replies and create auto-responses'),
+      title: __('Two-Way SMS', 'wp-sms'),
+      description: __('Receive replies and create auto-responses', 'wp-sms'),
     },
     {
       icon: BarChart3,
-      title: __('WooCommerce'),
-      description: __('Order notifications & cart abandonment'),
+      title: __('WooCommerce', 'wp-sms'),
+      description: __('Order notifications & cart abandonment', 'wp-sms'),
     },
     {
       icon: Shield,
-      title: __('OTP & 2FA'),
-      description: __('Secure login with SMS verification'),
+      title: __('OTP & 2FA', 'wp-sms'),
+      description: __('Secure login with SMS verification', 'wp-sms'),
     },
     {
       icon: Zap,
-      title: __('Automations'),
-      description: __('Trigger SMS based on user actions'),
+      title: __('Automations', 'wp-sms'),
+      description: __('Trigger SMS based on user actions', 'wp-sms'),
     },
   ]
 
   const benefits = [
-    __('Priority email support'),
-    __('Regular updates and new features'),
-    __('Access to premium gateways'),
-    __('Detailed analytics and reports'),
+    __('Priority email support', 'wp-sms'),
+    __('Regular updates and new features', 'wp-sms'),
+    __('Access to premium gateways', 'wp-sms'),
+    __('Detailed analytics and reports', 'wp-sms'),
   ]
 
   return (
@@ -47,10 +47,10 @@ export default function AllInOneStep({ onSkip }) {
           </div>
         </div>
         <h2 className="wsms-text-xl wsms-font-bold wsms-text-foreground wsms-mb-2">
-          {__('Unlock More with All-in-One')}
+          {__('Unlock More with All-in-One', 'wp-sms')}
         </h2>
         <p className="wsms-text-[13px] wsms-text-muted-foreground">
-          {__('Take your SMS communications to the next level with powerful features.')}
+          {__('Take your SMS communications to the next level with powerful features.', 'wp-sms')}
         </p>
       </div>
 
@@ -84,7 +84,7 @@ export default function AllInOneStep({ onSkip }) {
       {/* Benefits List */}
       <div className="wsms-rounded-xl wsms-border wsms-border-amber-200 wsms-bg-amber-50/50 dark:wsms-border-amber-900/30 dark:wsms-bg-amber-950/20 wsms-p-5 wsms-mb-6">
         <h3 className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground wsms-mb-3">
-          {__('All All-in-One plans include:')}
+          {__('All All-in-One plans include:', 'wp-sms')}
         </h3>
         <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2">
           {benefits.map((item, index) => (
@@ -110,12 +110,12 @@ export default function AllInOneStep({ onSkip }) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            {__('View Plans')}
+            {__('View Plans', 'wp-sms')}
             <ExternalLink className="wsms-h-4 wsms-w-4 wsms-ms-2" />
           </a>
         </Button>
         <Button variant="ghost" onClick={onSkip} className="wsms-text-muted-foreground">
-          {__('Skip for now')}
+          {__('Skip for now', 'wp-sms')}
         </Button>
       </div>
     </div>

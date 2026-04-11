@@ -1,5 +1,5 @@
+import { __ } from '@wordpress/i18n'
 import { ApiClient } from './client'
-import { __ } from '@/lib/utils'
 import { buildRestUrl } from '@/lib/utils'
 
 /**

@@ -1,7 +1,7 @@
+import { __ } from '@wordpress/i18n'
 import React, { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import ProgressBar from './ProgressBar'
-import { __ } from '@/lib/utils'
 
 /**
  * In-flight Execute screen. Displays slow-path hints after 30s ("larger than usual")
@@ -34,19 +34,19 @@ export default function ExecuteStep({ headlineRef, estimatedMs, isDone, onForceR
           aria-live="polite"
           className="wsms-text-[18px] wsms-font-semibold wsms-text-foreground wsms-mb-2 wsms-outline-none"
         >
-          {__('Applying your changes…')}
+          {__('Applying your changes…', 'wp-sms')}
         </h2>
         <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-leading-relaxed wsms-max-w-md wsms-mx-auto">
           {__(
             "Processing in batches. This usually takes a few seconds. You can safely leave this tab open — we'll keep going."
-          )}
+          , 'wp-sms')}
         </p>
       </div>
 
       <div className="wsms-max-w-md wsms-mx-auto wsms-space-y-2">
         <ProgressBar estimatedMs={estimatedMs} isDone={isDone} />
         <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-text-center">
-          {__("Please don't close this tab until it's done.")}
+          {__("Please don't close this tab until it's done.", 'wp-sms')}
         </p>
       </div>
 
@@ -54,7 +54,7 @@ export default function ExecuteStep({ headlineRef, estimatedMs, isDone, onForceR
         <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-text-center">
           {__(
             "This is a larger update than usual. Please don't close the tab — we'll keep working."
-          )}
+          , 'wp-sms')}
         </p>
       )}
 
@@ -63,14 +63,14 @@ export default function ExecuteStep({ headlineRef, estimatedMs, isDone, onForceR
           <p className="wsms-text-[13px] wsms-text-destructive">
             {__(
               'Something seems to be stuck. The update may still be running on the server.'
-            )}
+            , 'wp-sms')}
           </p>
           <button
             type="button"
             onClick={onForceRefresh}
             className="wsms-text-[12px] wsms-underline wsms-text-primary"
           >
-            {__('Force refresh status')}
+            {__('Force refresh status', 'wp-sms')}
           </button>
         </div>
       )}

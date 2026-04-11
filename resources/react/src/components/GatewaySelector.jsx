@@ -1,8 +1,9 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState, useMemo } from 'react'
 import { Search, CheckCircle, Star, Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { SearchableSelect } from '@/components/ui/searchable-select'
-import { cn, __, countryCodeToFlag, getGatewayLogo } from '@/lib/utils'
+import { cn, countryCodeToFlag, getGatewayLogo } from '@/lib/utils'
 import { GatewayCard, GatewayCardMinimal, PremiumSearchResults, MoreGatewaysNotice } from '@/components/GatewayCard'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 
@@ -178,7 +179,7 @@ export default function GatewaySelector({
     return (
       <div className="wsms-flex wsms-items-center wsms-justify-center wsms-py-12 wsms-text-muted-foreground">
         <Loader2 className="wsms-h-5 wsms-w-5 wsms-animate-spin wsms-me-2" />
-        <span className="wsms-text-[12px]">{__('Loading gateways...')}</span>
+        <span className="wsms-text-[12px]">{__('Loading gateways...', 'wp-sms')}</span>
       </div>
     )
   }
@@ -186,7 +187,7 @@ export default function GatewaySelector({
   if (error && gateways.length === 0) {
     return (
       <div className="wsms-py-8 wsms-text-center wsms-text-[12px] wsms-text-destructive">
-        {__('Failed to load gateways. Please refresh the page.')}
+        {__('Failed to load gateways. Please refresh the page.', 'wp-sms')}
       </div>
     )
   }
@@ -198,7 +199,7 @@ export default function GatewaySelector({
         <div className="wsms-relative wsms-flex-1">
           <Search className="wsms-absolute wsms-start-3 wsms-top-1/2 wsms-h-4 wsms-w-4 wsms--translate-y-1/2 wsms-text-muted-foreground" />
           <Input
-            placeholder={__('Search gateways...')}
+            placeholder={__('Search gateways...', 'wp-sms')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="wsms-ps-9"
@@ -209,10 +210,10 @@ export default function GatewaySelector({
           <SearchableSelect
             value={selectedRegion}
             onValueChange={setSelectedRegion}
-            placeholder={__('All Regions')}
-            searchPlaceholder={__('Search regions...')}
+            placeholder={__('All Regions', 'wp-sms')}
+            searchPlaceholder={__('Search regions...', 'wp-sms')}
             options={[
-              { value: 'all', label: __('All Regions') },
+              { value: 'all', label: __('All Regions', 'wp-sms') },
               ...regionOptions,
             ]}
             triggerClassName="wsms-capitalize"
@@ -241,7 +242,7 @@ export default function GatewaySelector({
             {countryGroups.ungrouped.length > 0 && (
               <div>
                 <p className="wsms-mb-2 wsms-text-[12px] wsms-font-semibold wsms-text-foreground">
-                  {__('Other')}
+                  {__('Other', 'wp-sms')}
                 </p>
                 <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
                   {countryGroups.ungrouped.map(renderCard)}
@@ -256,7 +257,7 @@ export default function GatewaySelector({
               <div>
                 <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
                   <Star className="wsms-h-3 wsms-w-3 wsms-text-amber-500" />
-                  {__('Recommended')}
+                  {__('Recommended', 'wp-sms')}
                 </p>
                 <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
                   {recommended.map(renderCard)}
@@ -268,7 +269,7 @@ export default function GatewaySelector({
             {regionGroups.globalList.length > 0 && (
               <div>
                 <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-font-semibold wsms-text-foreground">
-                  {__('Global')} 🌐
+                  {__('Global', 'wp-sms')} 🌐
                 </p>
                 <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
                   {regionGroups.globalList.map(renderCard)}
@@ -298,7 +299,7 @@ export default function GatewaySelector({
               <div className="wsms-mb-4">
                 <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
                   <Star className="wsms-h-3 wsms-w-3 wsms-text-amber-500" />
-                  {__('Recommended')}
+                  {__('Recommended', 'wp-sms')}
                 </p>
                 <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
                   {recommended.map(renderCard)}
@@ -311,7 +312,7 @@ export default function GatewaySelector({
               <div>
                 {recommended.length > 0 && (
                   <p className="wsms-mb-2 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
-                    {__('All Gateways')}
+                    {__('All Gateways', 'wp-sms')}
                   </p>
                 )}
                 <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
@@ -345,7 +346,7 @@ export default function GatewaySelector({
           })()}
           {(!isApiSource) && <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-primary" />}
           <span className="wsms-text-[12px] wsms-text-foreground">
-            <span className="wsms-text-muted-foreground">{__('Selected:')}</span>{' '}
+            <span className="wsms-text-muted-foreground">{__('Selected:', 'wp-sms')}</span>{' '}
             <span className="wsms-font-medium">
               {gateways.find((g) => g.slug === selectedGateway)?.name || selectedGateway}
             </span>

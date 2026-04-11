@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React from 'react'
 import { Loader2, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -10,7 +11,6 @@ import {
   DialogBody,
   DialogFooter,
 } from '@/components/ui/dialog'
-import { __ } from '@/lib/utils'
 
 /**
  * Reusable delete confirmation dialog
@@ -45,18 +45,18 @@ export function DeleteConfirmDialog({
         {children && <DialogBody>{children}</DialogBody>}
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            {__('Cancel')}
+            {__('Cancel', 'wp-sms')}
           </Button>
           <Button variant="destructive" onClick={onConfirm} disabled={isSaving}>
             {isSaving ? (
               <>
                 <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
-                {__('Deleting...')}
+                {__('Deleting...', 'wp-sms')}
               </>
             ) : (
               <>
                 <Trash2 className="wsms-h-4 wsms-w-4 wsms-me-2" />
-                {confirmLabel || __('Delete')}
+                {confirmLabel || __('Delete', 'wp-sms')}
               </>
             )}
           </Button>

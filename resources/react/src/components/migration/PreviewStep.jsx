@@ -1,8 +1,8 @@
+import { __, sprintf } from '@wordpress/i18n'
 import React, { useMemo, useState } from 'react'
 import { ArrowRight, Loader2, Play } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import { __, sprintf } from '@/lib/utils'
 
 export default function PreviewStep({
   headlineRef,
@@ -37,7 +37,7 @@ export default function PreviewStep({
   const bodyCopy = sprintf(
     __(
       "We'll add +%s to numbers that are missing it, and normalize a few trunk-prefix variations. Numbers that are already in international format aren't touched."
-    ),
+    , 'wp-sms'),
     countryCodeClean
   )
 
@@ -54,7 +54,7 @@ export default function PreviewStep({
           aria-live="polite"
           className="wsms-text-[18px] wsms-font-semibold wsms-text-foreground wsms-mb-2 wsms-outline-none"
         >
-          {__('Review the changes')}
+          {__('Review the changes', 'wp-sms')}
         </h2>
         <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-leading-relaxed">
           {bodyCopy}{' '}
@@ -63,7 +63,7 @@ export default function PreviewStep({
             onClick={onWrongCountry}
             className="wsms-underline wsms-text-primary"
           >
-            {__('Wrong country?')}
+            {__('Wrong country?', 'wp-sms')}
           </button>
         </p>
       </div>
@@ -72,10 +72,10 @@ export default function PreviewStep({
         <table className="wsms-w-full wsms-text-[13px]">
           <thead>
             <tr className="wsms-bg-muted/50">
-              <th className="wsms-text-start wsms-px-3 wsms-py-2 wsms-font-medium">{__('Name')}</th>
-              <th className="wsms-text-start wsms-px-3 wsms-py-2 wsms-font-medium">{__('Before')}</th>
+              <th className="wsms-text-start wsms-px-3 wsms-py-2 wsms-font-medium">{__('Name', 'wp-sms')}</th>
+              <th className="wsms-text-start wsms-px-3 wsms-py-2 wsms-font-medium">{__('Before', 'wp-sms')}</th>
               <th className="wsms-text-center wsms-px-1 wsms-py-2" />
-              <th className="wsms-text-start wsms-px-3 wsms-py-2 wsms-font-medium">{__('After')}</th>
+              <th className="wsms-text-start wsms-px-3 wsms-py-2 wsms-font-medium">{__('After', 'wp-sms')}</th>
             </tr>
           </thead>
           <tbody>
@@ -86,7 +86,7 @@ export default function PreviewStep({
                     colSpan={4}
                     className="wsms-px-3 wsms-py-1.5 wsms-text-[12px] wsms-font-semibold wsms-text-foreground/80 wsms-sticky wsms-top-0"
                   >
-                    {sprintf(__('%1$s — %2$d changes'), group.label, group.rows.length)}
+                    {sprintf(__('%1$s — %2$d changes', 'wp-sms'), group.label, group.rows.length)}
                   </td>
                 </tr>
                 {group.rows.map((item, index) => (
@@ -117,7 +117,7 @@ export default function PreviewStep({
             {groups.length === 0 && (
               <tr>
                 <td colSpan={4} className="wsms-px-3 wsms-py-6 wsms-text-center wsms-text-muted-foreground">
-                  {__('No numbers to preview on this page.')}
+                  {__('No numbers to preview on this page.', 'wp-sms')}
                 </td>
               </tr>
             )}
@@ -128,7 +128,7 @@ export default function PreviewStep({
       {previewData && (previewData.total || 0) > (previewData.per_page || 20) && (
         <div className="wsms-flex wsms-items-center wsms-justify-between wsms-text-[13px]">
           <span className="wsms-text-muted-foreground">
-            {sprintf(__('Page %d'), previewPage)}
+            {sprintf(__('Page %d', 'wp-sms'), previewPage)}
           </span>
           <div className="wsms-flex wsms-gap-2">
             <Button
@@ -137,7 +137,7 @@ export default function PreviewStep({
               disabled={!hasPrevPage || loading}
               onClick={() => onPageChange(previewPage - 1)}
             >
-              {__('Previous')}
+              {__('Previous', 'wp-sms')}
             </Button>
             <Button
               variant="outline"
@@ -145,7 +145,7 @@ export default function PreviewStep({
               disabled={!hasNextPage || loading}
               onClick={() => onPageChange(previewPage + 1)}
             >
-              {__('Next')}
+              {__('Next', 'wp-sms')}
             </Button>
           </div>
         </div>
@@ -161,13 +161,13 @@ export default function PreviewStep({
           />
           <span className="wsms-flex wsms-flex-col wsms-gap-1">
             <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
-              {__("I've reviewed the changes above and I'm ready to apply them.")}
+              {__("I've reviewed the changes above and I'm ready to apply them.", 'wp-sms')}
             </span>
             <span
               id="wpsms-migration-confirm-sub"
               className="wsms-text-[12px] wsms-text-muted-foreground"
             >
-              {__('A backup will be saved before any change is made.')}
+              {__('A backup will be saved before any change is made.', 'wp-sms')}
             </span>
           </span>
         </label>
@@ -175,18 +175,18 @@ export default function PreviewStep({
 
       <div className="wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-pt-2">
         <Button variant="outline" onClick={onBack} disabled={loading}>
-          {__('Back')}
+          {__('Back', 'wp-sms')}
         </Button>
         <Button onClick={onApply} disabled={loading || !acknowledged}>
           {loading ? (
             <>
               <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1.5 wsms-animate-spin" aria-hidden="true" />
-              {__('Starting...')}
+              {__('Starting...', 'wp-sms')}
             </>
           ) : (
             <>
               <Play className="wsms-h-4 wsms-w-4 wsms-me-1.5" aria-hidden="true" />
-              {__('Apply changes')}
+              {__('Apply changes', 'wp-sms')}
             </>
           )}
         </Button>

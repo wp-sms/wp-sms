@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import {
@@ -12,7 +13,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { useAllInOneModal } from '@/hooks/useAllInOneModal'
 import { useRootZIndex } from '@/hooks/useRootZIndex'
-import { getWpSettings, cn, __ } from '@/lib/utils'
+import { getWpSettings, cn } from '@/lib/utils'
 
 const WP_SMS_SITE = 'https://wsms.io'
 const PRICING_URL = `${WP_SMS_SITE}/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-aio`
@@ -34,56 +35,56 @@ const STEPS = [
     id: 'wp-sms-pro',
     slug: 'wp-sms-pro',
     addonName: 'WSMS Pro',
-    title: __('Key SMS Tools for Your Site'),
-    description: __('WSMS Pro offers phone logins, two-factor authentication, scheduled and repeating messages, shorter Bitly URLs, and a Gutenberg block. It also integrates with WooCommerce, BuddyPress, Quform, Gravity Forms, Easy Digital Downloads, WP Job Manager, and WP Awesome Support.'),
+    title: __('Key SMS Tools for Your Site', 'wp-sms'),
+    description: __('WSMS Pro offers phone logins, two-factor authentication, scheduled and repeating messages, shorter Bitly URLs, and a Gutenberg block. It also integrates with WooCommerce, BuddyPress, Quform, Gravity Forms, Easy Digital Downloads, WP Job Manager, and WP Awesome Support.', 'wp-sms'),
     learnMoreSlug: 'wsms-pro',
   },
   {
     id: 'wp-sms-woocommerce-pro',
     slug: 'wp-sms-woocommerce-pro',
     addonName: 'WSMS WooCommerce Pro',
-    title: __('Advanced WooCommerce SMS Features'),
-    description: __('WooCommerce Pro boosts sales and support with SMS campaigns, abandoned cart reminders, phone verification at checkout, SMS login and registration, and local shipping notifications.'),
+    title: __('Advanced WooCommerce SMS Features', 'wp-sms'),
+    description: __('WooCommerce Pro boosts sales and support with SMS campaigns, abandoned cart reminders, phone verification at checkout, SMS login and registration, and local shipping notifications.', 'wp-sms'),
     learnMoreSlug: 'woocommerce-pro',
   },
   {
     id: 'wp-sms-two-way',
     slug: 'wp-sms-two-way',
     addonName: 'WSMS Two-Way',
-    title: __('Send and Receive Messages'),
-    description: __('Two-Way lets you view incoming texts in your dashboard, set keywords to trigger replies, allow customers to update orders via SMS, and let subscribers join or leave newsletters by texting.'),
+    title: __('Send and Receive Messages', 'wp-sms'),
+    description: __('Two-Way lets you view incoming texts in your dashboard, set keywords to trigger replies, allow customers to update orders via SMS, and let subscribers join or leave newsletters by texting.', 'wp-sms'),
     learnMoreSlug: 'two-way',
   },
   {
     id: 'wp-sms-elementor-form',
     slug: 'wp-sms-elementor-form',
     addonName: 'WSMS Elementor Form',
-    title: __('Elementor Form SMS Alerts'),
-    description: __('Link your Elementor Pro forms to WSMS and send text message alerts to you and your users whenever a form is submitted.'),
+    title: __('Elementor Form SMS Alerts', 'wp-sms'),
+    description: __('Link your Elementor Pro forms to WSMS and send text message alerts to you and your users whenever a form is submitted.', 'wp-sms'),
     learnMoreSlug: 'elementor',
   },
   {
     id: 'wp-sms-membership-integrations',
     slug: 'wp-sms-membership-integrations',
     addonName: 'WSMS Membership Integrations',
-    title: __('Keep Members Informed'),
-    description: __('Send automatic text messages whenever important membership events happen, like new signups, payment confirmations, or membership cancellations, so everyone stays in the loop.'),
+    title: __('Keep Members Informed', 'wp-sms'),
+    description: __('Send automatic text messages whenever important membership events happen, like new signups, payment confirmations, or membership cancellations, so everyone stays in the loop.', 'wp-sms'),
     learnMoreSlug: 'membership',
   },
   {
     id: 'wp-sms-booking-integrations',
     slug: 'wp-sms-booking-integrations',
     addonName: 'WSMS Booking Integrations',
-    title: __('Booking SMS Notifications'),
-    description: __('Send SMS messages whenever important booking events happen. Automatically notify users for new, approved, canceled, or rescheduled appointments.'),
+    title: __('Booking SMS Notifications', 'wp-sms'),
+    description: __('Send SMS messages whenever important booking events happen. Automatically notify users for new, approved, canceled, or rescheduled appointments.', 'wp-sms'),
     learnMoreSlug: 'booking',
   },
   {
     id: 'wp-sms-fluent-integrations',
     slug: 'wp-sms-fluent-integrations',
     addonName: 'WSMS Fluent Integrations',
-    title: __('Connect with Fluent'),
-    description: __('Connect WSMS with Fluent CRM, Fluent Forms, and Fluent Support. Get real-time SMS notifications for new subscribers, form submissions, or support tickets.'),
+    title: __('Connect with Fluent', 'wp-sms'),
+    description: __('Connect WSMS with Fluent CRM, Fluent Forms, and Fluent Support. Get real-time SMS notifications for new subscribers, form submissions, or support tickets.', 'wp-sms'),
     learnMoreSlug: 'fluent',
   },
 ]
@@ -103,19 +104,19 @@ function getStepImageUrl(slug) {
 function getFirstStepContent(isPremium, hasAnyLicense) {
   if (isPremium) {
     return {
-      title: __("You're All Set with WSMS All-in-One"),
-      description: __("You already have the complete bundle! Enjoy every premium feature and integration with no extra steps. Thanks for your support — have fun exploring everything!"),
+      title: __("You're All Set with WSMS All-in-One", 'wp-sms'),
+      description: __("You already have the complete bundle! Enjoy every premium feature and integration with no extra steps. Thanks for your support — have fun exploring everything!", 'wp-sms'),
     }
   }
   if (hasAnyLicense) {
     return {
-      title: __("You're Already Enjoying Add-Ons!"),
-      description: __("Looks like you have a few premium features active. Upgrade to All-in-One to unlock every tool and integration. Get the most out of WSMS and boost your site's performance."),
+      title: __("You're Already Enjoying Add-Ons!", 'wp-sms'),
+      description: __("Looks like you have a few premium features active. Upgrade to All-in-One to unlock every tool and integration. Get the most out of WSMS and boost your site's performance.", 'wp-sms'),
     }
   }
   return {
-    title: __('All Premium SMS Features in One Package'),
-    description: __('All-in-One includes Pro, WooCommerce Pro, Two-Way, and more. Send better SMS, handle two-way messaging, secure logins, and manage everything in one place.'),
+    title: __('All Premium SMS Features in One Package', 'wp-sms'),
+    description: __('All-in-One includes Pro, WooCommerce Pro, Two-Way, and more. Send better SMS, handle two-way messaging, secure logins, and manage everything in one place.', 'wp-sms'),
   }
 }
 
@@ -134,28 +135,28 @@ function AddonBadge({ addon }) {
     return (
       <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[10px] wsms-font-medium wsms-text-emerald-600 wsms-bg-emerald-50 wsms-px-1.5 wsms-py-0.5 wsms-rounded-full">
         <Check className="wsms-h-2.5 wsms-w-2.5" />
-        {__('Active')}
+        {__('Active', 'wp-sms')}
       </span>
     )
   }
   if (addon.hasLicense && !addon.isInstalled) {
     return (
       <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[10px] wsms-font-medium wsms-text-amber-600 wsms-bg-amber-50 wsms-px-1.5 wsms-py-0.5 wsms-rounded-full">
-        {__('Not Installed')}
+        {__('Not Installed', 'wp-sms')}
       </span>
     )
   }
   if (addon.hasLicense && !addon.isActive) {
     return (
       <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[10px] wsms-font-medium wsms-text-amber-600 wsms-bg-amber-50 wsms-px-1.5 wsms-py-0.5 wsms-rounded-full">
-        {__('Not Activated')}
+        {__('Not Activated', 'wp-sms')}
       </span>
     )
   }
   if (!addon.hasLicense && addon.isActive) {
     return (
       <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[10px] wsms-font-medium wsms-text-red-600 wsms-bg-red-50 wsms-px-1.5 wsms-py-0.5 wsms-rounded-full">
-        {__('No License')}
+        {__('No License', 'wp-sms')}
       </span>
     )
   }
@@ -173,11 +174,11 @@ function StepNotice({ addon, step }) {
       <div className="wsms-flex wsms-items-start wsms-gap-2.5 wsms-p-3 wsms-rounded-lg wsms-bg-amber-50 wsms-border wsms-border-amber-200 wsms-mt-4">
         <AlertTriangle className="wsms-h-4 wsms-w-4 wsms-text-amber-500 wsms-mt-0.5 wsms-shrink-0" />
         <p className="wsms-text-[12px] wsms-text-amber-800 wsms-leading-relaxed">
-          {__('Your license includes the')}{' '}
+          {__('Your license includes the', 'wp-sms')}{' '}
           <strong>{step.addonName}</strong>
-          {__(', but it\'s not installed yet. Go to the Add-Ons page to install and')}{' '}
-          <strong>{__('activate')}</strong>{' '}
-          {__('it, so you can start using all its features.')}
+          {__(', but it\'s not installed yet. Go to the Add-Ons page to install and', 'wp-sms')}{' '}
+          <strong>{__('activate', 'wp-sms')}</strong>{' '}
+          {__('it, so you can start using all its features.', 'wp-sms')}
         </p>
       </div>
     )
@@ -188,9 +189,9 @@ function StepNotice({ addon, step }) {
       <div className="wsms-flex wsms-items-start wsms-gap-2.5 wsms-p-3 wsms-rounded-lg wsms-bg-red-50 wsms-border wsms-border-red-200 wsms-mt-4">
         <AlertTriangle className="wsms-h-4 wsms-w-4 wsms-text-red-500 wsms-mt-0.5 wsms-shrink-0" />
         <p className="wsms-text-[12px] wsms-text-red-800 wsms-leading-relaxed">
-          {__('This add-on does')}{' '}
-          <strong>{__('not have an active license')}</strong>
-          {__(', which means it cannot receive updates, including important security updates. For uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license.')}
+          {__('This add-on does', 'wp-sms')}{' '}
+          <strong>{__('not have an active license', 'wp-sms')}</strong>
+          {__(', which means it cannot receive updates, including important security updates. For uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license.', 'wp-sms')}
         </p>
       </div>
     )
@@ -212,7 +213,7 @@ function StepActions({ step, addon, isPremium, onClose }) {
       return (
         <Button disabled className="wsms-gap-1.5">
           <Crown className="wsms-h-4 wsms-w-4" />
-          {__('All-in-One Activated')}
+          {__('All-in-One Activated', 'wp-sms')}
         </Button>
       )
     }
@@ -220,12 +221,12 @@ function StepActions({ step, addon, isPremium, onClose }) {
       <div className="wsms-flex wsms-items-center wsms-gap-3">
         <Button asChild>
           <a href={PRICING_URL} target="_blank" rel="noopener noreferrer">
-            {__('Upgrade Now')}
+            {__('Upgrade Now', 'wp-sms')}
             <ExternalLink className="wsms-h-3.5 wsms-w-3.5" />
           </a>
         </Button>
         <Button variant="ghost" onClick={onClose}>
-          {__('Maybe Later')}
+          {__('Maybe Later', 'wp-sms')}
         </Button>
       </div>
     )
@@ -237,12 +238,12 @@ function StepActions({ step, addon, isPremium, onClose }) {
       <div className="wsms-flex wsms-items-center wsms-gap-3">
         <Button asChild>
           <a href={PRICING_URL} target="_blank" rel="noopener noreferrer">
-            {__('Upgrade to All-in-One')}
+            {__('Upgrade to All-in-One', 'wp-sms')}
             <ExternalLink className="wsms-h-3.5 wsms-w-3.5" />
           </a>
         </Button>
         <Button variant="ghost" onClick={onClose}>
-          {__('Maybe Later')}
+          {__('Maybe Later', 'wp-sms')}
         </Button>
       </div>
     )
@@ -252,7 +253,7 @@ function StepActions({ step, addon, isPremium, onClose }) {
     return (
       <Button asChild variant="outline">
         <a href={addOnsPageUrl}>
-          {__('Go to Add-Ons Page')}
+          {__('Go to Add-Ons Page', 'wp-sms')}
         </a>
       </Button>
     )
@@ -262,7 +263,7 @@ function StepActions({ step, addon, isPremium, onClose }) {
     return (
       <Button disabled className="wsms-gap-1.5">
         <Check className="wsms-h-4 wsms-w-4" />
-        {__('Add-on Activated')}
+        {__('Add-on Activated', 'wp-sms')}
       </Button>
     )
   }
@@ -272,12 +273,12 @@ function StepActions({ step, addon, isPremium, onClose }) {
     <div className="wsms-flex wsms-items-center wsms-gap-3">
       <Button asChild>
         <a href={PRICING_URL} target="_blank" rel="noopener noreferrer">
-          {__('Upgrade to All-in-One')}
+          {__('Upgrade to All-in-One', 'wp-sms')}
           <ExternalLink className="wsms-h-3.5 wsms-w-3.5" />
         </a>
       </Button>
       <Button variant="ghost" onClick={onClose}>
-        {__('Maybe Later')}
+        {__('Maybe Later', 'wp-sms')}
       </Button>
     </div>
   )
@@ -392,7 +393,7 @@ export default function AllInOneModal() {
               </div>
               <div>
                 <DialogPrimitive.Title className="wsms-text-[14px] wsms-font-semibold wsms-text-foreground wsms-leading-tight">
-                  {__('WSMS All-in-One')}
+                  {__('WSMS All-in-One', 'wp-sms')}
                 </DialogPrimitive.Title>
                 <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-leading-tight wsms-mt-0.5">
                   {stepTitle}
@@ -424,7 +425,7 @@ export default function AllInOneModal() {
                         ? 'wsms-w-6 wsms-bg-primary'
                         : 'wsms-w-1.5 wsms-bg-border hover:wsms-bg-muted-foreground/40'
                     )}
-                    aria-label={`${__('Go to step')} ${i + 1}`}
+                    aria-label={`${__('Go to step', 'wp-sms')} ${i + 1}`}
                   />
                 ))}
               </div>
@@ -445,7 +446,7 @@ export default function AllInOneModal() {
                         rel="noopener noreferrer"
                         className="wsms-text-primary hover:wsms-underline wsms-font-medium"
                       >
-                        {__('Learn more')}
+                        {__('Learn more', 'wp-sms')}
                       </a>
                     </>
                   )}
@@ -492,7 +493,7 @@ export default function AllInOneModal() {
               {/* Sidebar header */}
               <div className="wsms-px-4 wsms-py-3 wsms-border-b wsms-border-border">
                 <p className="wsms-text-[12px] wsms-font-semibold wsms-text-foreground wsms-uppercase wsms-tracking-wide">
-                  {__('All-in-One Includes')}
+                  {__('All-in-One Includes', 'wp-sms')}
                 </p>
               </div>
 
@@ -552,7 +553,7 @@ export default function AllInOneModal() {
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-px-5 wsms-py-3.5 wsms-border-t wsms-border-border wsms-bg-muted/30">
             <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-text-[11px] wsms-text-muted-foreground">
               <Crown className="wsms-h-3.5 wsms-w-3.5" />
-              <span>{__('Unlock all premium features with one license')}</span>
+              <span>{__('Unlock all premium features with one license', 'wp-sms')}</span>
             </div>
             <StepActions
               step={step}

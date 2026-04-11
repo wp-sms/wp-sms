@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import {
   Inbox,
@@ -30,7 +31,7 @@ import { useListPage } from '@/hooks/useListPage'
 import { useFormDialog } from '@/hooks/useFormDialog'
 import { useSettings } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
-import { cn, __, isAddonDashboardReady, getWpSettings } from '@/lib/utils'
+import { cn, isAddonDashboardReady, getWpSettings } from '@/lib/utils'
 import { inboxApi } from '@/api/twoWayApi'
 import {
   Dialog,
@@ -112,7 +113,7 @@ export default function TwoWayInbox() {
   const { filters, table, handleDelete, handleBulkDelete } = useListPage({
     fetchFn: async (params) => {
       const response = await inboxApi.getMessages(params)
-      if (!response.success) throw new Error(__('Failed to load messages'))
+      if (!response.success) throw new Error(__('Failed to load messages', 'wp-sms'))
       const data = response.data || {}
       return {
         items: Array.isArray(data.messages) ? data.messages : [],
@@ -129,8 +130,8 @@ export default function TwoWayInbox() {
     initialFilters: { search: '', status: 'all', action_status: 'all', command_id: 'all' },
     fetchOnMount: dashboardReady,
     messages: {
-      deleteSuccess: __('Message deleted'),
-      bulkSuccess: __('Messages deleted'),
+      deleteSuccess: __('Message deleted', 'wp-sms'),
+      bulkSuccess: __('Messages deleted', 'wp-sms'),
     },
   })
 
@@ -140,7 +141,7 @@ export default function TwoWayInbox() {
       await handleDelete(id)
       fetchStats()
     },
-    successMessage: __('Message deleted'),
+    successMessage: __('Message deleted', 'wp-sms'),
   })
 
   const handleDeleteClick = useCallback((message) => {
@@ -163,12 +164,12 @@ export default function TwoWayInbox() {
       setIsReplying(true)
       const response = await inboxApi.replyToMessage(replyingTo.id, replyMessage.trim())
       if (response.success) {
-        toast({ title: __('Reply sent successfully'), variant: 'success' })
+        toast({ title: __('Reply sent successfully', 'wp-sms'), variant: 'success' })
         setReplyingTo(null)
         setReplyMessage('')
       }
     } catch (error) {
-      toast({ title: error.message || __('Failed to send reply'), variant: 'destructive' })
+      toast({ title: error.message || __('Failed to send reply', 'wp-sms'), variant: 'destructive' })
     } finally {
       setIsReplying(false)
     }
@@ -198,7 +199,7 @@ export default function TwoWayInbox() {
         if (response.data?.contact_name) setConversationContactName(response.data.contact_name)
       }
     } catch (error) {
-      toast({ title: error.message || __('Failed to load conversation'), variant: 'destructive' })
+      toast({ title: error.message || __('Failed to load conversation', 'wp-sms'), variant: 'destructive' })
     } finally {
       setIsConversationLoading(false)
     }
@@ -218,16 +219,16 @@ export default function TwoWayInbox() {
       if (response.success) {
         setConversationMessages(prev => [...prev, {
           message: conversationReply.trim(),
-          date_formatted: __('Just now'),
+          date_formatted: __('Just now', 'wp-sms'),
           type: 'outgoing',
           status: 'success',
         }])
         setConversationReply('')
         conversationDirtyRef.current = true
-        toast({ title: __('Reply sent'), variant: 'success' })
+        toast({ title: __('Reply sent', 'wp-sms'), variant: 'success' })
       }
     } catch (error) {
-      toast({ title: error.message || __('Failed to send reply'), variant: 'destructive' })
+      toast({ title: error.message || __('Failed to send reply', 'wp-sms'), variant: 'destructive' })
     } finally {
       setIsSendingReply(false)
     }
@@ -276,20 +277,20 @@ export default function TwoWayInbox() {
       URL.revokeObjectURL(url)
       return { count: response.data.total }
     }
-    throw new Error(__('Failed to export messages'))
+    throw new Error(__('Failed to export messages', 'wp-sms'))
   }
 
   // Bulk mark as read
   const handleBulkMarkAsRead = useCallback(async () => {
-    setBulkActionLoading(__('Mark as Read'))
+    setBulkActionLoading(__('Mark as Read', 'wp-sms'))
     try {
       await inboxApi.bulkMarkAsRead(table.selectedIds)
       table.clearSelection()
       table.refresh()
       fetchStats()
-      toast({ title: __('Messages marked as read'), variant: 'success' })
+      toast({ title: __('Messages marked as read', 'wp-sms'), variant: 'success' })
     } catch {
-      toast({ title: __('Failed to mark messages as read'), variant: 'destructive' })
+      toast({ title: __('Failed to mark messages as read', 'wp-sms'), variant: 'destructive' })
     } finally {
       setBulkActionLoading(null)
     }
@@ -297,7 +298,7 @@ export default function TwoWayInbox() {
 
   // Bulk delete with confirmation
   const handleBulkDeleteConfirm = useCallback(async () => {
-    setBulkActionLoading(__('Delete Selected'))
+    setBulkActionLoading(__('Delete Selected', 'wp-sms'))
     try {
       await handleBulkDelete()
       fetchStats()
@@ -320,7 +321,7 @@ export default function TwoWayInbox() {
     {
       id: 'sender_number',
       accessorKey: 'sender_number',
-      header: __('Sender'),
+      header: __('Sender', 'wp-sms'),
       cell: ({ row }) => (
         <span className="wsms-text-[13px] wsms-font-mono wsms-text-foreground">
           {row.sender_number}
@@ -330,7 +331,7 @@ export default function TwoWayInbox() {
     {
       id: 'contact_name',
       accessorKey: 'contact_name',
-      header: __('Contact'),
+      header: __('Contact', 'wp-sms'),
       cell: ({ row }) => {
         if (!row.contact_name) return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
         if (row.contact_user_id) {
@@ -343,7 +344,7 @@ export default function TwoWayInbox() {
     {
       id: 'text',
       accessorKey: 'text',
-      header: __('Message'),
+      header: __('Message', 'wp-sms'),
       cell: ({ value }) => (
         <span className="wsms-text-[13px] wsms-max-w-xs wsms-truncate wsms-block">
           {value?.substring(0, 50)}{value?.length > 50 ? '...' : ''}
@@ -353,7 +354,7 @@ export default function TwoWayInbox() {
     {
       id: 'command_name',
       accessorKey: 'command_name',
-      header: __('Command'),
+      header: __('Command', 'wp-sms'),
       cell: ({ value }) => value
         ? <Badge variant="outline">{value}</Badge>
         : <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>,
@@ -361,17 +362,17 @@ export default function TwoWayInbox() {
     {
       id: 'action_status',
       accessorKey: 'action_status',
-      header: __('Action Status'),
+      header: __('Action Status', 'wp-sms'),
       cell: ({ value }) => {
-        if (value === 'successful') return <StatusBadge variant="success">{__('Successful')}</StatusBadge>
-        if (value === 'failed') return <StatusBadge variant="failed">{__('Failed')}</StatusBadge>
-        if (value === 'plain') return <StatusBadge variant="default">{__('Plain')}</StatusBadge>
+        if (value === 'successful') return <StatusBadge variant="success">{__('Successful', 'wp-sms')}</StatusBadge>
+        if (value === 'failed') return <StatusBadge variant="failed">{__('Failed', 'wp-sms')}</StatusBadge>
+        if (value === 'plain') return <StatusBadge variant="default">{__('Plain', 'wp-sms')}</StatusBadge>
         return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
       },
     },
     {
       id: 'received_at',
-      header: __('Date'),
+      header: __('Date', 'wp-sms'),
       cell: ({ row }) => (
         <span className="wsms-text-[12px] wsms-text-muted-foreground">
           {row.received_at_formatted || row.received_at}
@@ -381,17 +382,17 @@ export default function TwoWayInbox() {
     {
       id: 'is_read',
       accessorKey: 'is_read',
-      header: __('Read'),
+      header: __('Read', 'wp-sms'),
       cell: ({ value }) => value
-        ? <StatusBadge variant="default" showIcon={false}>{__('Read')}</StatusBadge>
-        : <StatusBadge variant="active">{__('New')}</StatusBadge>,
+        ? <StatusBadge variant="default" showIcon={false}>{__('Read', 'wp-sms')}</StatusBadge>
+        : <StatusBadge variant="active">{__('New', 'wp-sms')}</StatusBadge>,
     },
   ]
 
   // Row actions
   const rowActions = [
     {
-      label: __('View'),
+      label: __('View', 'wp-sms'),
       icon: Eye,
       onClick: (row) => {
         setViewingMessage(row)
@@ -399,17 +400,17 @@ export default function TwoWayInbox() {
       },
     },
     {
-      label: __('Conversation'),
+      label: __('Conversation', 'wp-sms'),
       icon: MessagesSquare,
       onClick: handleOpenConversation,
     },
     {
-      label: __('Reply'),
+      label: __('Reply', 'wp-sms'),
       icon: MessageSquare,
       onClick: (row) => setReplyingTo(row),
     },
     {
-      label: __('Delete'),
+      label: __('Delete', 'wp-sms'),
       icon: Trash2,
       variant: 'destructive',
       onClick: handleDeleteClick,
@@ -419,13 +420,13 @@ export default function TwoWayInbox() {
   // Bulk actions
   const bulkActions = [
     {
-      label: __('Mark as Read'),
+      label: __('Mark as Read', 'wp-sms'),
       icon: MailOpen,
       onClick: handleBulkMarkAsRead,
-      loading: bulkActionLoading === __('Mark as Read'),
+      loading: bulkActionLoading === __('Mark as Read', 'wp-sms'),
     },
     {
-      label: __('Delete Selected'),
+      label: __('Delete Selected', 'wp-sms'),
       icon: Trash2,
       variant: 'destructive',
       onClick: () => setShowBulkDeleteConfirm(true),
@@ -443,14 +444,14 @@ export default function TwoWayInbox() {
                 <Inbox className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                {__('Two-Way SMS Add-on Required')}
+                {__('Two-Way SMS Add-on Required', 'wp-sms')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
-                {__('Install and activate the WSMS Two-Way add-on to receive incoming messages.')}
+                {__('Install and activate the WSMS Two-Way add-on to receive incoming messages.', 'wp-sms')}
               </p>
               <Button variant="outline" asChild>
                 <a href="https://wsms.io/product/wp-sms-two-way/" target="_blank" rel="noopener noreferrer">
-                  {__('Learn More')}
+                  {__('Learn More', 'wp-sms')}
                   <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
                 </a>
               </Button>
@@ -483,7 +484,7 @@ export default function TwoWayInbox() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -496,7 +497,7 @@ export default function TwoWayInbox() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.today}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Today')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Today', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -509,7 +510,7 @@ export default function TwoWayInbox() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.week}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('This Week')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('This Week', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -531,7 +532,7 @@ export default function TwoWayInbox() {
                   'wsms-text-xl wsms-font-bold',
                   stats.unread > 0 ? 'wsms-text-destructive' : 'wsms-text-muted-foreground'
                 )}>{stats.unread}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Unread')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Unread', 'wp-sms')}</p>
               </div>
             </div>
           </div>
@@ -540,7 +541,7 @@ export default function TwoWayInbox() {
           <div className="wsms-col-span-2 xl:wsms-col-span-1 wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-mt-2 xl:wsms-mt-0">
             <ExportButton
               onExport={handleExport}
-              successMessage={__('Exported %d messages successfully')}
+              successMessage={__('Exported %d messages successfully', 'wp-sms')}
             />
           </div>
         </div>
@@ -557,32 +558,32 @@ export default function TwoWayInbox() {
                 type="text"
                 value={filters.filters.search}
                 onChange={(e) => filters.setFilter('search', e.target.value)}
-                placeholder={__('Search messages...')}
+                placeholder={__('Search messages...', 'wp-sms')}
                 className="wsms-ps-8 wsms-h-9"
-                aria-label={__('Search messages')}
+                aria-label={__('Search messages', 'wp-sms')}
               />
             </div>
 
             {/* Filters */}
             <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-2">
               <Select value={filters.filters.action_status} onValueChange={(v) => filters.setFilter('action_status', v)}>
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label={__('Filter by action status')}>
-                  <SelectValue placeholder={__('All Actions')} />
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label={__('Filter by action status', 'wp-sms')}>
+                  <SelectValue placeholder={__('All Actions', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{__('All Actions')}</SelectItem>
-                  <SelectItem value="successful">{__('Successful')}</SelectItem>
-                  <SelectItem value="failed">{__('Failed')}</SelectItem>
-                  <SelectItem value="plain">{__('Plain')}</SelectItem>
+                  <SelectItem value="all">{__('All Actions', 'wp-sms')}</SelectItem>
+                  <SelectItem value="successful">{__('Successful', 'wp-sms')}</SelectItem>
+                  <SelectItem value="failed">{__('Failed', 'wp-sms')}</SelectItem>
+                  <SelectItem value="plain">{__('Plain', 'wp-sms')}</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select value={filters.filters.command_id} onValueChange={(v) => filters.setFilter('command_id', v)}>
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[130px] wsms-text-[12px]" aria-label={__('Filter by command')}>
-                  <SelectValue placeholder={__('All Commands')} />
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[130px] wsms-text-[12px]" aria-label={__('Filter by command', 'wp-sms')}>
+                  <SelectValue placeholder={__('All Commands', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{__('All Commands')}</SelectItem>
+                  <SelectItem value="all">{__('All Commands', 'wp-sms')}</SelectItem>
                   {commands.map((cmd) => (
                     <SelectItem key={cmd.id} value={String(cmd.id)}>
                       {cmd.name}
@@ -592,13 +593,13 @@ export default function TwoWayInbox() {
               </Select>
 
               <Select value={filters.filters.status} onValueChange={(v) => filters.setFilter('status', v)}>
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[100px] wsms-text-[12px]" aria-label={__('Filter by read status')}>
-                  <SelectValue placeholder={__('All')} />
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[100px] wsms-text-[12px]" aria-label={__('Filter by read status', 'wp-sms')}>
+                  <SelectValue placeholder={__('All', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{__('All')}</SelectItem>
-                  <SelectItem value="unread">{__('Unread')}</SelectItem>
-                  <SelectItem value="read">{__('Read')}</SelectItem>
+                  <SelectItem value="all">{__('All', 'wp-sms')}</SelectItem>
+                  <SelectItem value="unread">{__('Unread', 'wp-sms')}</SelectItem>
+                  <SelectItem value="read">{__('Read', 'wp-sms')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -610,7 +611,7 @@ export default function TwoWayInbox() {
                 size="sm"
                 onClick={filters.resetFilters}
                 className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
-                aria-label={__('Clear all filters')}
+                aria-label={__('Clear all filters', 'wp-sms')}
               >
                 <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
               </Button>
@@ -622,7 +623,7 @@ export default function TwoWayInbox() {
               size="sm"
               onClick={() => { table.fetch({ page: 1 }); fetchStats() }}
               className="wsms-h-9 wsms-px-2.5 xl:wsms-ms-auto"
-              aria-label={__('Refresh messages')}
+              aria-label={__('Refresh messages', 'wp-sms')}
             >
               <RefreshCw
                 className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')}
@@ -655,7 +656,7 @@ export default function TwoWayInbox() {
             }}
             rowActions={rowActions}
             bulkActions={bulkActions}
-            emptyMessage={__('No messages match your filters')}
+            emptyMessage={__('No messages match your filters', 'wp-sms')}
             emptyIcon={Inbox}
           />
         </CardContent>
@@ -667,10 +668,10 @@ export default function TwoWayInbox() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
-              {__('Message Details')}
+              {__('Message Details', 'wp-sms')}
             </DialogTitle>
             <DialogDescription>
-              {__('Received')}: {viewingMessage?.received_at_formatted || viewingMessage?.received_at}
+              {__('Received', 'wp-sms')}: {viewingMessage?.received_at_formatted || viewingMessage?.received_at}
             </DialogDescription>
           </DialogHeader>
           <DialogBody>
@@ -678,7 +679,7 @@ export default function TwoWayInbox() {
               {/* Sender & Status Row */}
               <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-p-4 wsms-rounded-lg wsms-bg-muted/30">
                 <div className="wsms-flex-1">
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Sender')}</p>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Sender', 'wp-sms')}</p>
                   <p className="wsms-text-[13px] wsms-font-mono wsms-font-medium">{viewingMessage?.sender_number}</p>
                   {viewingMessage?.contact_name && (
                     <p className="wsms-text-[12px] wsms-text-muted-foreground">{viewingMessage.contact_name}</p>
@@ -686,19 +687,19 @@ export default function TwoWayInbox() {
                 </div>
                 <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
                 <div className="wsms-flex-1">
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Status')}</p>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Status', 'wp-sms')}</p>
                   {viewingMessage?.action_status === 'successful'
-                    ? <StatusBadge variant="success">{__('Successful')}</StatusBadge>
+                    ? <StatusBadge variant="success">{__('Successful', 'wp-sms')}</StatusBadge>
                     : viewingMessage?.action_status === 'failed'
-                      ? <StatusBadge variant="failed">{__('Failed')}</StatusBadge>
-                      : <StatusBadge variant="default">{__('Plain')}</StatusBadge>
+                      ? <StatusBadge variant="failed">{__('Failed', 'wp-sms')}</StatusBadge>
+                      : <StatusBadge variant="default">{__('Plain', 'wp-sms')}</StatusBadge>
                   }
                 </div>
                 {viewingMessage?.command_name && (
                   <>
                     <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
                     <div className="wsms-flex-1">
-                      <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Command')}</p>
+                      <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Command', 'wp-sms')}</p>
                       <Badge variant="outline">{viewingMessage.command_name}</Badge>
                     </div>
                   </>
@@ -707,7 +708,7 @@ export default function TwoWayInbox() {
 
               {/* Message */}
               <div>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Message')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Message', 'wp-sms')}</p>
                 <div className="wsms-p-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
                   <p className="wsms-text-[13px] wsms-whitespace-pre-wrap">{viewingMessage?.text}</p>
                 </div>
@@ -716,14 +717,14 @@ export default function TwoWayInbox() {
           </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={() => setViewingMessage(null)}>
-              {__('Close')}
+              {__('Close', 'wp-sms')}
             </Button>
             <Button onClick={() => {
               setReplyingTo(viewingMessage)
               setViewingMessage(null)
             }}>
               <MessageSquare className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
-              {__('Reply')}
+              {__('Reply', 'wp-sms')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -735,50 +736,50 @@ export default function TwoWayInbox() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
-              {__('Quick Reply')}
+              {__('Quick Reply', 'wp-sms')}
             </DialogTitle>
             <DialogDescription>
-              {__('Send an SMS reply to this number')}
+              {__('Send an SMS reply to this number', 'wp-sms')}
             </DialogDescription>
           </DialogHeader>
           <DialogBody>
             <div className="wsms-space-y-4">
               <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/50 wsms-border wsms-border-border">
-                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-1">{__('Recipient')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-1">{__('Recipient', 'wp-sms')}</p>
                 <p className="wsms-text-[13px] wsms-font-mono wsms-text-foreground">
                   {replyingTo?.sender_number}
                 </p>
               </div>
               <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/30 wsms-text-[13px]">
-                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-1">{__('Original message')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-1">{__('Original message', 'wp-sms')}</p>
                 <p>{replyingTo?.text?.substring(0, 100)}{replyingTo?.text?.length > 100 ? '...' : ''}</p>
               </div>
               <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium" htmlFor="reply-message">{__('Message')}</label>
+                <label className="wsms-text-[12px] wsms-font-medium" htmlFor="reply-message">{__('Message', 'wp-sms')}</label>
                 <Textarea
                   id="reply-message"
-                  placeholder={__('Type your reply...')}
+                  placeholder={__('Type your reply...', 'wp-sms')}
                   value={replyMessage}
                   onChange={(e) => setReplyMessage(e.target.value)}
                   rows={4}
                 />
                 <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-text-right">
-                  {replyMessage.length} {__('characters')}
+                  {replyMessage.length} {__('characters', 'wp-sms')}
                 </p>
               </div>
             </div>
           </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={() => { setReplyingTo(null); setReplyMessage('') }}>
-              {__('Cancel')}
+              {__('Cancel', 'wp-sms')}
             </Button>
             <Button onClick={handleReply} disabled={!replyMessage.trim() || isReplying}>
               {isReplying ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" aria-hidden="true" />
-                  {__('Sending...')}
+                  {__('Sending...', 'wp-sms')}
                 </>
-              ) : __('Send Reply')}
+              ) : __('Send Reply', 'wp-sms')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -790,7 +791,7 @@ export default function TwoWayInbox() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <MessagesSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
-              {__('Conversation')}
+              {__('Conversation', 'wp-sms')}
             </DialogTitle>
             <DialogDescription>
               <span className="wsms-font-mono">{conversationSender}</span>
@@ -807,7 +808,7 @@ export default function TwoWayInbox() {
                 </div>
               ) : conversationMessages.length === 0 ? (
                 <div className="wsms-text-center wsms-py-12 wsms-text-[13px] wsms-text-muted-foreground">
-                  {__('No messages in this conversation')}
+                  {__('No messages in this conversation', 'wp-sms')}
                 </div>
               ) : (
                 conversationMessages.map((msg, index) => (
@@ -837,7 +838,7 @@ export default function TwoWayInbox() {
                           'wsms-text-[10px] wsms-font-medium',
                           msg.status === 'success' ? 'wsms-text-success' : 'wsms-text-destructive'
                         )}>
-                          {msg.status === 'success' ? __('Sent') : __('Failed')}
+                          {msg.status === 'success' ? __('Sent', 'wp-sms') : __('Failed', 'wp-sms')}
                         </span>
                       )}
                     </div>
@@ -855,8 +856,8 @@ export default function TwoWayInbox() {
                     type="text"
                     value={conversationReply}
                     onChange={(e) => setConversationReply(e.target.value)}
-                    placeholder={__('Type a reply...')}
-                    aria-label={__('Reply message')}
+                    placeholder={__('Type a reply...', 'wp-sms')}
+                    aria-label={__('Reply message', 'wp-sms')}
                     className="wsms-h-9"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {
@@ -866,7 +867,7 @@ export default function TwoWayInbox() {
                     }}
                   />
                   <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-text-right">
-                    {conversationReply.length} {__('characters')}
+                    {conversationReply.length} {__('characters', 'wp-sms')}
                   </p>
                 </div>
                 <Button
@@ -893,8 +894,8 @@ export default function TwoWayInbox() {
         onClose={deleteDialog.close}
         onConfirm={handleDeleteConfirm}
         isSaving={deleteDialog.isSaving}
-        title={__('Delete Message')}
-        description={__('Are you sure you want to delete this message?')}
+        title={__('Delete Message', 'wp-sms')}
+        description={__('Are you sure you want to delete this message?', 'wp-sms')}
       >
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
           <div className="wsms-space-y-1">
@@ -913,13 +914,13 @@ export default function TwoWayInbox() {
         isOpen={showBulkDeleteConfirm}
         onClose={() => setShowBulkDeleteConfirm(false)}
         onConfirm={handleBulkDeleteConfirm}
-        isSaving={bulkActionLoading === __('Delete Selected')}
-        title={__('Delete Messages')}
-        description={__('Are you sure you want to delete the selected messages?')}
+        isSaving={bulkActionLoading === __('Delete Selected', 'wp-sms')}
+        title={__('Delete Messages', 'wp-sms')}
+        description={__('Are you sure you want to delete the selected messages?', 'wp-sms')}
       >
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
           <p className="wsms-text-[13px] wsms-text-foreground">
-            {__('%d message(s) will be permanently deleted.').replace('%d', table.selectedIds.length)}
+            {__('%d message(s) will be permanently deleted.', 'wp-sms').replace('%d', table.selectedIds.length)}
           </p>
         </div>
       </DeleteConfirmDialog>
