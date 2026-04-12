@@ -2,16 +2,28 @@
 
 namespace WSms\Messaging\Gateway\Provider;
 
+use WSms\Messaging\Catalog\TemplateCatalogManager;
+use WSms\Messaging\Catalog\TemplateMapping;
+use WSms\Messaging\Catalog\VariableStyle;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\MessageInterface;
+use WSms\Messaging\Contracts\SupportsDynamicOptions;
+use WSms\Messaging\Contracts\SupportsTemplates;
 use WSms\Messaging\Contracts\TestConnectionResult;
 use WSms\Messaging\Gateway\AbstractProvider;
 
 defined('ABSPATH') || exit;
 
-class SmsIrProvider extends AbstractProvider
+class SmsIrProvider extends AbstractProvider implements SupportsDynamicOptions, SupportsTemplates
 {
     private const API_BASE = 'https://api.sms.ir/v1';
+
+    private ?TemplateCatalogManager $catalogManager = null;
+
+    public function setCatalogManager(TemplateCatalogManager $manager): void
+    {
+        $this->catalogManager = $manager;
+    }
 
     public function getId(): string
     {
@@ -46,6 +58,7 @@ class SmsIrProvider extends AbstractProvider
                         'type'        => 'string',
                         'label'       => __('Line Number', 'wp-sms'),
                         'required'    => true,
+                        'dynamic'     => true,
                         'description' => __('Your dedicated sender line number from the SMS.ir panel', 'wp-sms'),
                         'placeholder' => '30001234567890',
                     ],
@@ -79,18 +92,46 @@ class SmsIrProvider extends AbstractProvider
     protected function doSend(MessageInterface $message): DeliveryResult
     {
         $apiKey = $this->getSharedConfig('api_key');
-        $lineNumber = $this->getChannelConfig('sms', 'line_number');
 
-        if (!$apiKey || !$lineNumber) {
+        if (!$apiKey) {
             return DeliveryResult::failed(__('SMS.ir credentials not configured', 'wp-sms'));
         }
 
+        $meta = $message->getMeta();
+
+        // Flow direct template path — template already resolved
+        if ($meta['template_mode'] ?? false) {
+            return $this->sendVerify(
+                $apiKey,
+                $message->getRecipient(),
+                $meta['provider_template_id'],
+                $meta['template_variables'] ?? [],
+            );
+        }
+
+        // System template path — resolve mapping from catalog
+        $templateType = $meta['template_type'] ?? null;
+        if ($templateType && $this->catalogManager) {
+            $mapping = $this->catalogManager->resolveMapping($templateType, $this->getId());
+            if ($mapping) {
+                $resolved = $mapping->resolveVariables($meta['template_variables'] ?? []);
+                return $this->sendVerify(
+                    $apiKey,
+                    $message->getRecipient(),
+                    $mapping->providerTemplateId,
+                    $resolved,
+                );
+            }
+        }
+
+        // Raw SMS send (no template)
+        $lineNumber = $this->getChannelConfig('sms', 'line_number');
+        if (!$lineNumber) {
+            return DeliveryResult::failed(__('SMS.ir line number not configured', 'wp-sms'));
+        }
+
         $result = $this->httpPost(self::API_BASE . '/send/bulk', [
-            'headers' => [
-                'X-API-KEY'    => $apiKey,
-                'Content-Type' => 'application/json',
-                'Accept'       => 'application/json',
-            ],
+            'headers' => $this->apiHeaders($apiKey),
             'body' => wp_json_encode([
                 'lineNumber'  => $lineNumber,
                 'messageText' => $message->getBody(),
@@ -98,6 +139,47 @@ class SmsIrProvider extends AbstractProvider
             ]),
         ]);
 
+        return $this->parseBulkResponse($result);
+    }
+
+    /**
+     * Send via SMS.ir verify endpoint (template-based).
+     */
+    private function sendVerify(string $apiKey, string $recipient, string $templateId, array $resolvedVariables): DeliveryResult
+    {
+        $parameters = [];
+        foreach ($resolvedVariables as $name => $value) {
+            $parameters[] = ['name' => (string) $name, 'value' => (string) $value];
+        }
+
+        $result = $this->httpPost(self::API_BASE . '/send/verify', [
+            'headers' => $this->apiHeaders($apiKey),
+            'body' => wp_json_encode([
+                'mobile'     => $recipient,
+                'templateId' => (int) $templateId,
+                'parameters' => $parameters,
+            ]),
+        ]);
+
+        if ($result instanceof DeliveryResult) {
+            return $result;
+        }
+
+        $data = json_decode($result['body'], true);
+
+        if (($data['status'] ?? 0) === 1) {
+            $messageId = $data['data']['messageId'] ?? null;
+            return DeliveryResult::sent(
+                providerId: $messageId !== null ? (string) $messageId : null,
+                cost: isset($data['data']['cost']) ? (float) $data['data']['cost'] : null,
+            );
+        }
+
+        return DeliveryResult::failed($data['message'] ?? __('SMS.ir verify send failed', 'wp-sms'));
+    }
+
+    private function parseBulkResponse(array|DeliveryResult $result): DeliveryResult
+    {
         if ($result instanceof DeliveryResult) {
             return $result;
         }
@@ -178,5 +260,69 @@ class SmsIrProvider extends AbstractProvider
             sprintf(__('Connected — Credit: %s', 'wp-sms'), $credit),
             ['credit' => $credit],
         );
+    }
+
+    // --- SupportsDynamicOptions ---
+
+    public function getConfigOptions(string $fieldKey, string $section, array $config, array $context = []): array
+    {
+        if ($fieldKey !== 'line_number') {
+            return [];
+        }
+
+        return $this->withConfig($config, function () {
+            $apiKey = $this->getSharedConfig('api_key');
+            $data = $this->fetchJsonOrFail(self::API_BASE . '/line', [
+                'headers' => [
+                    'X-API-KEY' => $apiKey,
+                    'Accept'    => 'application/json',
+                ],
+            ]);
+
+            $lines = $data['data'] ?? [];
+            $options = [];
+
+            foreach ($lines as $line) {
+                $lineStr = (string) $line;
+                $options[] = ['value' => $lineStr, 'label' => $lineStr];
+            }
+
+            return $options;
+        });
+    }
+
+    // --- SupportsTemplates ---
+
+    public function requiresTemplateForChannel(string $channel): bool
+    {
+        return false;
+    }
+
+    public function getVariableStyle(): VariableStyle
+    {
+        return VariableStyle::Named;
+    }
+
+    public function buildTemplatePayload(TemplateMapping $mapping, array $resolvedVariables): array
+    {
+        $parameters = [];
+        foreach ($resolvedVariables as $name => $value) {
+            $parameters[] = ['name' => (string) $name, 'value' => (string) $value];
+        }
+
+        return [
+            'endpoint'   => 'send/verify',
+            'templateId' => (int) $mapping->providerTemplateId,
+            'parameters' => $parameters,
+        ];
+    }
+
+    private function apiHeaders(string $apiKey): array
+    {
+        return [
+            'X-API-KEY'    => $apiKey,
+            'Content-Type' => 'application/json',
+            'Accept'       => 'application/json',
+        ];
     }
 }

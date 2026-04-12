@@ -2,6 +2,8 @@
 
 namespace WSms\Tests\Unit\Messaging\Gateway\Provider;
 
+use WSms\Messaging\Catalog\TemplateMapping;
+use WSms\Messaging\Catalog\VariableStyle;
 use WSms\Messaging\Gateway\AbstractProvider;
 use WSms\Messaging\Gateway\Provider\SmsIrProvider;
 use WSms\Messaging\Message\Message;
@@ -28,9 +30,9 @@ class SmsIrProviderTest extends AbstractProviderTestCase
         ];
     }
 
-    private function createMessage(string $recipient = '09121234567', string $body = 'Hello'): Message
+    private function createMessage(string $recipient = '09121234567', string $body = 'Hello', array $meta = []): Message
     {
-        return new Message('sms', $recipient, $body);
+        return new Message('sms', $recipient, $body, meta: $meta);
     }
 
     private function mockHttpPost(array $responseBody, int $statusCode = 200): void
@@ -49,7 +51,7 @@ class SmsIrProviderTest extends AbstractProviderTestCase
         ];
     }
 
-    // --- Send tests ---
+    // --- Send tests (raw SMS) ---
 
     public function testSendReturnsSuccessWithMessageId(): void
     {
@@ -136,6 +138,92 @@ class SmsIrProviderTest extends AbstractProviderTestCase
         $this->assertSame('https://api.sms.ir/v1/send/bulk', $lastUrl);
     }
 
+    public function testSendReturnsFailedWhenLineNumberMissing(): void
+    {
+        $GLOBALS['_test_options']['wsms_gateway_configs'] = [
+            'smsir' => [
+                'shared' => ['api_key' => 'test_api_key_123'],
+                'channels' => ['sms' => []],
+            ],
+        ];
+
+        $provider = $this->createProvider();
+        $result = $provider->send($this->createMessage());
+
+        $this->assertFalse($result->success);
+        $this->assertStringContainsString('line number', $result->error);
+    }
+
+    // --- Send via verify endpoint (template mode) ---
+
+    public function testSendViaVerifyEndpointInTemplateMode(): void
+    {
+        $this->configureProvider();
+        $this->mockHttpPost([
+            'status' => 1,
+            'data'   => ['messageId' => 89545112, 'cost' => 1.0],
+        ]);
+
+        $provider = $this->createProvider();
+        $result = $provider->send($this->createMessage('09121234567', '', [
+            'template_mode'        => true,
+            'provider_template_id' => '100200',
+            'template_variables'   => ['Code' => '12345'],
+        ]));
+
+        $this->assertTrue($result->success);
+        $this->assertSame('89545112', $result->providerId);
+        $this->assertSame(1.0, $result->cost);
+
+        $lastUrl = $GLOBALS['_test_wp_remote_post_last_url'];
+        $this->assertSame('https://api.sms.ir/v1/send/verify', $lastUrl);
+    }
+
+    public function testSendVerifyPassesCorrectPayload(): void
+    {
+        $this->configureProvider();
+        $this->mockHttpPost([
+            'status' => 1,
+            'data'   => ['messageId' => 1],
+        ]);
+
+        $provider = $this->createProvider();
+        $provider->send($this->createMessage('09121234567', '', [
+            'template_mode'        => true,
+            'provider_template_id' => '555',
+            'template_variables'   => ['Code' => '9999', 'Name' => 'Ali'],
+        ]));
+
+        $lastArgs = $GLOBALS['_test_wp_remote_post_last_args'];
+        $this->assertSame('test_api_key_123', $lastArgs['headers']['X-API-KEY']);
+
+        $body = json_decode($lastArgs['body'], true);
+        $this->assertSame('09121234567', $body['mobile']);
+        $this->assertSame(555, $body['templateId']);
+        $this->assertCount(2, $body['parameters']);
+        $this->assertSame(['name' => 'Code', 'value' => '9999'], $body['parameters'][0]);
+        $this->assertSame(['name' => 'Name', 'value' => 'Ali'], $body['parameters'][1]);
+    }
+
+    public function testSendVerifyReturnsFailedOnApiError(): void
+    {
+        $this->configureProvider();
+        $this->mockHttpPost([
+            'status'  => 0,
+            'message' => 'قالب یافت نشد',
+        ]);
+
+        $provider = $this->createProvider();
+        $result = $provider->send($this->createMessage('09121234567', '', [
+            'template_mode'        => true,
+            'provider_template_id' => '999',
+            'template_variables'   => ['Code' => '1234'],
+        ]));
+
+        $this->assertFalse($result->success);
+        $this->assertSame('قالب یافت نشد', $result->error);
+    }
+
     // --- Credit tests ---
 
     public function testGetCreditReturnsBalance(): void
@@ -203,6 +291,82 @@ class SmsIrProviderTest extends AbstractProviderTestCase
 
         $this->assertFalse($result->success);
         $this->assertStringContainsString('API Key is required', $result->message);
+    }
+
+    // --- Dynamic options (line number fetching) ---
+
+    public function testGetConfigOptionsReturnsLineNumbers(): void
+    {
+        $provider = $this->createProvider();
+
+        $this->mockHttpGet([
+            'status' => 1,
+            'data'   => [10002155613464, 30004505000017],
+        ]);
+
+        $config = [
+            'shared' => ['api_key' => 'test_key'],
+            'channels' => ['sms' => []],
+        ];
+
+        $options = $provider->getConfigOptions('line_number', 'sms', $config);
+
+        $this->assertCount(2, $options);
+        $this->assertSame('10002155613464', $options[0]['value']);
+        $this->assertSame('10002155613464', $options[0]['label']);
+        $this->assertSame('30004505000017', $options[1]['value']);
+        $this->assertSame('30004505000017', $options[1]['label']);
+    }
+
+    public function testGetConfigOptionsReturnsEmptyForUnknownField(): void
+    {
+        $provider = $this->createProvider();
+
+        $options = $provider->getConfigOptions('unknown_field', 'sms', []);
+
+        $this->assertSame([], $options);
+    }
+
+    // --- SupportsTemplates ---
+
+    public function testRequiresTemplateReturnsFalse(): void
+    {
+        $provider = $this->createProvider();
+        $this->assertFalse($provider->requiresTemplateForChannel('sms'));
+    }
+
+    public function testVariableStyleIsNamed(): void
+    {
+        $provider = $this->createProvider();
+        $this->assertSame(VariableStyle::Named, $provider->getVariableStyle());
+    }
+
+    public function testBuildTemplatePayloadFormatsParameters(): void
+    {
+        $provider = $this->createProvider();
+
+        $mapping = new TemplateMapping(
+            templateType: 'otp',
+            providerTemplateId: '100200',
+            gatewayId: 'smsir',
+            language: 'fa',
+            variableMap: ['otp_code' => 'Code'],
+        );
+
+        $payload = $provider->buildTemplatePayload($mapping, ['Code' => '482916']);
+
+        $this->assertSame('send/verify', $payload['endpoint']);
+        $this->assertSame(100200, $payload['templateId']);
+        $this->assertCount(1, $payload['parameters']);
+        $this->assertSame(['name' => 'Code', 'value' => '482916'], $payload['parameters'][0]);
+    }
+
+    public function testConfigSchemaHasDynamicLineNumber(): void
+    {
+        $provider = $this->createProvider();
+        $schema = $provider->getConfigSchema();
+
+        $this->assertTrue($schema['channels']['sms']['line_number']['dynamic']);
     }
 
     // --- Metadata & features tests ---
