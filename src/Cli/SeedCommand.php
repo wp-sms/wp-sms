@@ -58,7 +58,6 @@ class SeedCommand
      * scenarios = edge-case rows on top of demo. load = bulk contacts and
      * message_logs for pagination/search stress. all = demo + scenarios + load.
      * ---
-     * default: demo
      * options:
      *   - demo
      *   - scenarios
@@ -73,8 +72,9 @@ class SeedCommand
      * ---
      *
      * [--clear]
-     * : Wipe all previously seeded rows before seeding. Passed without
-     * --profile, the command wipes and exits.
+     * : Wipe ALL WSMS plugin data (contacts, campaigns, message logs, flows,
+     * tags, lists, auth logs, etc.) and seeded WP users before seeding.
+     * Passed without --profile, the command wipes and exits.
      *
      * [--dry-run]
      * : Print what would be inserted without touching the database.
@@ -107,10 +107,7 @@ class SeedCommand
 
         if ($clearRequested) {
             $this->clearSeededData();
-            // WP_CLI fills --profile with its default ('demo'), so we can't
-            // tell from $assoc_args whether the user passed --profile
-            // explicitly. Fall back to scanning the raw command line.
-            if (! $this->hadProfileArg()) {
+            if (! isset($assoc_args['profile'])) {
                 return;
             }
         }
@@ -277,17 +274,6 @@ class SeedCommand
         $this->log(sprintf('Sentinel written: %s', $runId));
     }
 
-    private function hadProfileArg(): bool
-    {
-        $argv = $GLOBALS['argv'] ?? [];
-        foreach ($argv as $arg) {
-            if (strpos($arg, '--profile') === 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     // ─────────────────────────────────────────────────────────────
     // Clear
     // ─────────────────────────────────────────────────────────────
@@ -297,7 +283,7 @@ class SeedCommand
         global $wpdb;
 
         if (! $this->yes && ! $this->dryRun) {
-            WP_CLI::confirm('About to delete all seeded WSMS rows and seeded WP users. Continue?');
+            WP_CLI::confirm('About to delete ALL WSMS plugin data (contacts, campaigns, logs, etc.) and seeded WP users. Continue?');
         }
 
         $this->log('Clearing seeded data...');
@@ -632,7 +618,7 @@ class SeedCommand
                     'SM' . strtolower(substr($this->ulid(), -16)),
                     0.005,
                     $sentAt ?: $createdAt,
-                    $deliveredAt ?: ($status === 'delivered' ? $createdAt : $createdAt),
+                    $deliveredAt,
                     $createdAt
                 );
             }
