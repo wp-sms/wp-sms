@@ -12,10 +12,9 @@ defined('ABSPATH') || exit;
 abstract class AbstractProvider implements GatewayInterface
 {
     private ?array $configCache = null;
+    private ?GatewayApiClient $apiClient = null;
 
     abstract public function getId(): string;
-
-    abstract public function getName(): string;
 
     /** @return string[] */
     abstract public function getSupportedChannels(): array;
@@ -26,6 +25,16 @@ abstract class AbstractProvider implements GatewayInterface
     abstract public function getConfigSchema(): array;
 
     abstract protected function doSend(MessageInterface $message): DeliveryResult;
+
+    public function setApiClient(GatewayApiClient $apiClient): void
+    {
+        $this->apiClient = $apiClient;
+    }
+
+    public function getName(): string
+    {
+        return $this->apiClient?->get($this->getId())['name'] ?? $this->getId();
+    }
 
     public function send(MessageInterface $message): DeliveryResult
     {
@@ -108,12 +117,30 @@ abstract class AbstractProvider implements GatewayInterface
 
     public function getMetadata(): array
     {
-        return [];
+        $api = $this->apiClient?->get($this->getId());
+
+        if (!$api) {
+            return [];
+        }
+
+        return [
+            'description' => $api['description'] ?? '',
+            'website'     => $api['website'] ?? '',
+            'icon'        => $api['branding']['logo_square'] ?? '',
+            'regions'     => $api['coverage']['regions'] ?? [],
+            'setup_url'   => $api['setup']['dashboard'] ?? '',
+            'setup_notes' => $api['setup']['notes'] ?? [],
+            'status'      => $api['status'] ?? 'active',
+            'tier'        => $api['tier'] ?? 'free',
+            'recommended' => $api['recommended'] ?? false,
+            'branding'    => $api['branding'] ?? [],
+            'coverage'    => $api['coverage'] ?? [],
+        ];
     }
 
     public function getFeatures(): array
     {
-        return [
+        $base = [
             'mms'              => false,
             'flash_sms'        => false,
             'delivery_receipt' => false,
@@ -121,6 +148,19 @@ abstract class AbstractProvider implements GatewayInterface
             'unicode'          => true,
             'test_connection'  => false,
         ];
+
+        $api = $this->apiClient?->get($this->getId());
+
+        if ($api) {
+            if (isset($api['features'])) {
+                $base = array_merge($base, array_intersect_key($api['features'], $base));
+            }
+            if (isset($api['test_connection'])) {
+                $base['test_connection'] = $api['test_connection'];
+            }
+        }
+
+        return $base;
     }
 
     public function getCredit(): ?string

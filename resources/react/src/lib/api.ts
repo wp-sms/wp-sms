@@ -817,6 +817,17 @@ export interface GatewayConfigSchema {
   channels: Record<string, Record<string, GatewayConfigField>>;
 }
 
+export interface GatewayBranding {
+  logo_square?: string;
+  logo_rectangular?: string;
+  color?: string;
+}
+
+export interface GatewayCoverage {
+  regions?: string[];
+  countries?: string[];
+}
+
 export interface GatewayMetadata {
   description?: string;
   website?: string;
@@ -824,6 +835,11 @@ export interface GatewayMetadata {
   regions?: string[];
   setup_url?: string;
   setup_notes?: string[];
+  status?: 'active' | 'deprecated' | 'disabled' | 'development' | 'planned';
+  tier?: 'free' | 'premium';
+  recommended?: boolean;
+  branding?: GatewayBranding;
+  coverage?: GatewayCoverage;
 }
 
 export interface GatewayConfig {
@@ -841,6 +857,10 @@ export interface Gateway {
   config: GatewayConfig;
   metadata: GatewayMetadata;
   features: Record<string, boolean>;
+  status: 'active' | 'deprecated' | 'disabled' | 'development' | 'planned';
+  tier: 'free' | 'premium';
+  recommended: boolean;
+  branding?: GatewayBranding;
 }
 
 export interface GatewayTestResult {

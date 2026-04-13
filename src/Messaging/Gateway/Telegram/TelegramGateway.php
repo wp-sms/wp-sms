@@ -7,15 +7,23 @@ use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\GatewayInterface;
 use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Contracts\TestConnectionResult;
+use WSms\Messaging\Gateway\GatewayApiClient;
 use WSms\Telegram\TelegramBotClient;
 
 defined('ABSPATH') || exit;
 
 class TelegramGateway implements GatewayInterface
 {
+    private ?GatewayApiClient $apiClient = null;
+
     public function __construct(
         private readonly TelegramBotClient $telegramClient,
     ) {
+    }
+
+    public function setApiClient(GatewayApiClient $apiClient): void
+    {
+        $this->apiClient = $apiClient;
     }
 
     public function getId(): string
@@ -25,7 +33,7 @@ class TelegramGateway implements GatewayInterface
 
     public function getName(): string
     {
-        return __('Telegram Bot', 'wp-sms');
+        return $this->apiClient?->get($this->getId())['name'] ?? __('Telegram Bot', 'wp-sms');
     }
 
     public function getSupportedChannels(): array
@@ -82,15 +90,43 @@ class TelegramGateway implements GatewayInterface
 
     public function getMetadata(): array
     {
+        $api = $this->apiClient?->get($this->getId());
+
+        if (!$api) {
+            return ['description' => __('Send messages via Telegram Bot API', 'wp-sms')];
+        }
+
         return [
-            'description' => __('Send messages via Telegram Bot API', 'wp-sms'),
-            'website'     => 'https://core.telegram.org/bots',
+            'description' => $api['description'] ?? '',
+            'website'     => $api['website'] ?? '',
+            'icon'        => $api['branding']['logo_square'] ?? '',
+            'regions'     => $api['coverage']['regions'] ?? [],
+            'setup_url'   => $api['setup']['dashboard'] ?? '',
+            'setup_notes' => $api['setup']['notes'] ?? [],
+            'status'      => $api['status'] ?? 'active',
+            'tier'        => $api['tier'] ?? 'free',
+            'recommended' => $api['recommended'] ?? false,
+            'branding'    => $api['branding'] ?? [],
+            'coverage'    => $api['coverage'] ?? [],
         ];
     }
 
     public function getFeatures(): array
     {
-        return ['unicode' => true];
+        $base = ['unicode' => true, 'test_connection' => false];
+
+        $api = $this->apiClient?->get($this->getId());
+
+        if ($api) {
+            if (isset($api['features'])) {
+                $base = array_merge($base, $api['features']);
+            }
+            if (isset($api['test_connection'])) {
+                $base['test_connection'] = $api['test_connection'];
+            }
+        }
+
+        return $base;
     }
 
     public function getCredit(): ?string

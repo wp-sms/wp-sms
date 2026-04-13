@@ -32,11 +32,6 @@ class MailtrapGateway extends AbstractProvider implements SupportsStatusCallback
         return 'mailtrap';
     }
 
-    public function getName(): string
-    {
-        return 'Mailtrap';
-    }
-
     public function getSupportedChannels(): array
     {
         return ['email'];
@@ -78,28 +73,6 @@ class MailtrapGateway extends AbstractProvider implements SupportsStatusCallback
                 ],
             ],
         ];
-    }
-
-    public function getMetadata(): array
-    {
-        return [
-            'description' => __('Email delivery platform for transactional and bulk email', 'wp-sms'),
-            'website'     => 'https://mailtrap.io',
-            'setup_notes' => [
-                __('Verify your sending domain in the Mailtrap dashboard.', 'wp-sms'),
-                __('Create an API token with sending permissions at Settings > API Tokens.', 'wp-sms'),
-                __('For delivery tracking, configure a webhook pointing to the callback URL shown below.', 'wp-sms'),
-                __('This plugin sends all emails (including campaigns) through Mailtrap\'s Email Sending API. This is separate from Mailtrap\'s built-in campaign feature.', 'wp-sms'),
-            ],
-        ];
-    }
-
-    public function getFeatures(): array
-    {
-        return array_merge(parent::getFeatures(), [
-            'delivery_receipt' => true,
-            'test_connection'  => true,
-        ]);
     }
 
     protected function doSend(MessageInterface $message): DeliveryResult

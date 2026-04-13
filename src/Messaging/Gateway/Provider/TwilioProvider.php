@@ -39,11 +39,6 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
         return 'twilio';
     }
 
-    public function getName(): string
-    {
-        return 'Twilio';
-    }
-
     public function getSupportedChannels(): array
     {
         return ['sms', 'whatsapp', 'rcs'];
@@ -107,33 +102,6 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
                 ],
             ],
         ];
-    }
-
-    public function getMetadata(): array
-    {
-        return [
-            'description' => __('Cloud communications platform for SMS, WhatsApp, RCS, and more', 'wp-sms'),
-            'website'     => 'https://www.twilio.com',
-            'icon'        => '',
-            'regions'     => ['global'],
-            'setup_url'   => 'https://console.twilio.com/',
-            'setup_notes' => [
-                __('Find your Account SID and Auth Token on the Twilio Console dashboard.', 'wp-sms'),
-                __('For SMS, purchase a phone number at Phone Numbers > Manage > Buy a Number.', 'wp-sms'),
-                __('For WhatsApp, enable the sandbox at Messaging > Try it out > Send a WhatsApp message.', 'wp-sms'),
-                __('For RCS, create a Messaging Service and register an RCS Business Messaging sender.', 'wp-sms'),
-            ],
-        ];
-    }
-
-    public function getFeatures(): array
-    {
-        return array_merge(parent::getFeatures(), [
-            'mms'              => true,
-            'delivery_receipt' => true,
-            'incoming'         => true,
-            'test_connection'  => true,
-        ]);
     }
 
     protected function doSend(MessageInterface $message): DeliveryResult

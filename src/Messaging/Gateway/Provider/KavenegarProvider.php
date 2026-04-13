@@ -32,11 +32,6 @@ class KavenegarProvider extends AbstractProvider implements SupportsTemplates
         return 'kavenegar';
     }
 
-    public function getName(): string
-    {
-        return 'Kavenegar';
-    }
-
     public function getSupportedChannels(): array
     {
         return ['sms'];
@@ -64,21 +59,6 @@ class KavenegarProvider extends AbstractProvider implements SupportsTemplates
                         'placeholder' => '10001234567890',
                     ],
                 ],
-            ],
-        ];
-    }
-
-    public function getMetadata(): array
-    {
-        return [
-            'description' => __('Iranian SMS and messaging service provider', 'wp-sms'),
-            'website'     => 'https://kavenegar.com',
-            'icon'        => '',
-            'regions'     => ['IR'],
-            'setup_url'   => 'https://panel.kavenegar.com/',
-            'setup_notes' => [
-                __('Find your API Key in the Kavenegar Panel under Settings > API Key.', 'wp-sms'),
-                __('Your sender number (line) is listed under SMS > Lines in the panel.', 'wp-sms'),
             ],
         ];
     }
@@ -189,13 +169,6 @@ class KavenegarProvider extends AbstractProvider implements SupportsTemplates
 
         $data = json_decode($result['body'], true);
         return (string) ($data['entries']['remaincredit'] ?? '');
-    }
-
-    public function getFeatures(): array
-    {
-        return array_merge(parent::getFeatures(), [
-            'test_connection' => true,
-        ]);
     }
 
     public function testConnection(): TestConnectionResult

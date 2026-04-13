@@ -111,23 +111,23 @@ class TwilioProviderTest extends AbstractProviderTestCase
         $this->assertFalse($provider->isConfiguredForChannel('whatsapp'));
     }
 
-    public function testMetadataHasExpectedKeys(): void
+    public function testMetadataEmptyWithoutApiClient(): void
     {
         $provider = $this->createProvider();
         $metadata = $provider->getMetadata();
 
-        $this->assertArrayHasKey('description', $metadata);
-        $this->assertArrayHasKey('website', $metadata);
-        $this->assertArrayHasKey('regions', $metadata);
+        $this->assertEmpty($metadata);
     }
 
-    public function testFeaturesIncludesMmsAndDeliveryReceipt(): void
+    public function testFeaturesReturnBaseDefaultsWithoutApiClient(): void
     {
         $provider = $this->createProvider();
         $features = $provider->getFeatures();
 
-        $this->assertTrue($features['mms']);
-        $this->assertTrue($features['delivery_receipt']);
+        $this->assertFalse($features['mms']);
+        $this->assertFalse($features['delivery_receipt']);
+        $this->assertTrue($features['unicode']);
+        $this->assertFalse($features['test_connection']);
     }
 
     // --- doSend tests ---

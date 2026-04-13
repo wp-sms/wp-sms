@@ -19,11 +19,6 @@ class NetGsmProvider extends AbstractProvider
         return 'netgsm';
     }
 
-    public function getName(): string
-    {
-        return 'NetGSM';
-    }
-
     public function getSupportedChannels(): array
     {
         return ['sms'];
@@ -58,21 +53,6 @@ class NetGsmProvider extends AbstractProvider
                         'placeholder' => 'MYCOMPANY',
                     ],
                 ],
-            ],
-        ];
-    }
-
-    public function getMetadata(): array
-    {
-        return [
-            'description' => __('Turkish SMS and communication services provider', 'wp-sms'),
-            'website'     => 'https://www.netgsm.com.tr',
-            'icon'        => '',
-            'regions'     => ['TR'],
-            'setup_url'   => 'https://www.netgsm.com.tr/',
-            'setup_notes' => [
-                __('Use the same username and password you use to log in to the NetGSM panel.', 'wp-sms'),
-                __('Your Message Header (sender name) must be pre-approved in your NetGSM panel before use.', 'wp-sms'),
             ],
         ];
     }
@@ -149,13 +129,6 @@ class NetGsmProvider extends AbstractProvider
         // Response format: credit|...
         $parts = explode('|', $body);
         return $parts[0] ?? null;
-    }
-
-    public function getFeatures(): array
-    {
-        return array_merge(parent::getFeatures(), [
-            'test_connection' => true,
-        ]);
     }
 
     public function testConnection(): TestConnectionResult

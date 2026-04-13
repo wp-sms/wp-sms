@@ -5,6 +5,7 @@ namespace WSms\Messaging\Gateway\Line;
 use WSms\Line\LineBotClient;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\GatewayInterface;
+use WSms\Messaging\Gateway\GatewayApiClient;
 use WSms\Messaging\Contracts\InboundMessage;
 use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Contracts\SupportsInboundMessage;
@@ -16,9 +17,16 @@ defined('ABSPATH') || exit;
 
 class LineGateway implements GatewayInterface, SupportsInboundMessage, SupportsOptOutDetection
 {
+    private ?GatewayApiClient $apiClient = null;
+
     public function __construct(
         private readonly LineBotClient $client,
     ) {
+    }
+
+    public function setApiClient(GatewayApiClient $apiClient): void
+    {
+        $this->apiClient = $apiClient;
     }
 
     public function getId(): string
@@ -28,7 +36,7 @@ class LineGateway implements GatewayInterface, SupportsInboundMessage, SupportsO
 
     public function getName(): string
     {
-        return 'LINE';
+        return $this->apiClient?->get($this->getId())['name'] ?? 'LINE';
     }
 
     public function getSupportedChannels(): array
@@ -111,29 +119,49 @@ class LineGateway implements GatewayInterface, SupportsInboundMessage, SupportsO
 
     public function getMetadata(): array
     {
+        $api = $this->apiClient?->get($this->getId());
+
+        if (!$api) {
+            return ['description' => __('Send messages via LINE Messaging API', 'wp-sms')];
+        }
+
         return [
-            'description' => __('Send messages via LINE Messaging API to users in Japan, Thailand, and Taiwan.', 'wp-sms'),
-            'website'     => 'https://developers.line.biz',
-            'icon'        => 'message-circle',
-            'regions'     => ['JP', 'TH', 'TW', 'ID'],
-            'setup_url'   => 'https://developers.line.biz/console/',
-            'setup_notes' => [
-                __('Create a Messaging API channel in LINE Developers Console.', 'wp-sms'),
-                __('Copy the Channel Access Token and Channel Secret from the channel settings.', 'wp-sms'),
-                __('Set the Webhook URL in LINE Developers Console to the callback URL shown below.', 'wp-sms'),
-            ],
+            'description' => $api['description'] ?? '',
+            'website'     => $api['website'] ?? '',
+            'icon'        => $api['branding']['logo_square'] ?? '',
+            'regions'     => $api['coverage']['regions'] ?? [],
+            'setup_url'   => $api['setup']['dashboard'] ?? '',
+            'setup_notes' => $api['setup']['notes'] ?? [],
+            'status'      => $api['status'] ?? 'active',
+            'tier'        => $api['tier'] ?? 'free',
+            'recommended' => $api['recommended'] ?? false,
+            'branding'    => $api['branding'] ?? [],
+            'coverage'    => $api['coverage'] ?? [],
         ];
     }
 
     public function getFeatures(): array
     {
-        return [
+        $base = [
             'mms'              => true,
             'delivery_receipt' => false,
             'incoming'         => true,
             'unicode'          => true,
             'test_connection'  => true,
         ];
+
+        $api = $this->apiClient?->get($this->getId());
+
+        if ($api) {
+            if (isset($api['features'])) {
+                $base = array_merge($base, array_intersect_key($api['features'], $base));
+            }
+            if (isset($api['test_connection'])) {
+                $base['test_connection'] = $api['test_connection'];
+            }
+        }
+
+        return $base;
     }
 
     public function getCredit(): ?string

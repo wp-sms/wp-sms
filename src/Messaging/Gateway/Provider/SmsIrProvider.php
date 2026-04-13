@@ -30,11 +30,6 @@ class SmsIrProvider extends AbstractProvider implements SupportsDynamicOptions, 
         return 'smsir';
     }
 
-    public function getName(): string
-    {
-        return 'SMS.ir';
-    }
-
     public function getSupportedChannels(): array
     {
         return ['sms'];
@@ -65,28 +60,6 @@ class SmsIrProvider extends AbstractProvider implements SupportsDynamicOptions, 
                 ],
             ],
         ];
-    }
-
-    public function getMetadata(): array
-    {
-        return [
-            'description' => __('Iranian SMS service provider', 'wp-sms'),
-            'website'     => 'https://sms.ir',
-            'icon'        => '',
-            'regions'     => ['IR'],
-            'setup_url'   => 'https://app.sms.ir/',
-            'setup_notes' => [
-                __('Find your API Key in the SMS.ir panel under the Developer API section.', 'wp-sms'),
-                __('Your line number is listed in the SMS.ir panel under Lines.', 'wp-sms'),
-            ],
-        ];
-    }
-
-    public function getFeatures(): array
-    {
-        return array_merge(parent::getFeatures(), [
-            'test_connection' => true,
-        ]);
     }
 
     protected function doSend(MessageInterface $message): DeliveryResult

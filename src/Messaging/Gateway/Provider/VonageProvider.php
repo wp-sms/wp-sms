@@ -23,11 +23,6 @@ class VonageProvider extends AbstractProvider implements SupportsDynamicOptions,
         return 'vonage';
     }
 
-    public function getName(): string
-    {
-        return 'Vonage (Nexmo)';
-    }
-
     public function getSupportedChannels(): array
     {
         return ['sms'];
@@ -65,31 +60,6 @@ class VonageProvider extends AbstractProvider implements SupportsDynamicOptions,
                 ],
             ],
         ];
-    }
-
-    public function getMetadata(): array
-    {
-        return [
-            'description' => __('Global cloud communications provider (formerly Nexmo)', 'wp-sms'),
-            'website'     => 'https://www.vonage.com',
-            'icon'        => '',
-            'regions'     => ['global'],
-            'setup_url'   => 'https://dashboard.nexmo.com/settings',
-            'setup_notes' => [
-                __('Find your API Key and API Secret on the Vonage API Dashboard under Settings.', 'wp-sms'),
-                __('Purchase a virtual number at Numbers > Buy numbers to use as the Sender ID.', 'wp-sms'),
-                __('Alphanumeric sender IDs (e.g., "MyApp") are available in supported countries.', 'wp-sms'),
-            ],
-        ];
-    }
-
-    public function getFeatures(): array
-    {
-        return array_merge(parent::getFeatures(), [
-            'delivery_receipt' => true,
-            'incoming'         => true,
-            'test_connection'  => true,
-        ]);
     }
 
     protected function doSend(MessageInterface $message): DeliveryResult

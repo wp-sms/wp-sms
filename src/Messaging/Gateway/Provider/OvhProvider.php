@@ -18,11 +18,6 @@ class OvhProvider extends AbstractProvider
         return 'ovh';
     }
 
-    public function getName(): string
-    {
-        return 'OVH';
-    }
-
     public function getSupportedChannels(): array
     {
         return ['sms'];
@@ -71,22 +66,6 @@ class OvhProvider extends AbstractProvider
                         'placeholder' => '+33612345678',
                     ],
                 ],
-            ],
-        ];
-    }
-
-    public function getMetadata(): array
-    {
-        return [
-            'description' => __('European cloud provider with SMS services', 'wp-sms'),
-            'website'     => 'https://www.ovh.com/sms/',
-            'icon'        => '',
-            'regions'     => ['EU', 'FR'],
-            'setup_url'   => 'https://api.ovh.com/createToken/',
-            'setup_notes' => [
-                __('Create API credentials at api.ovh.com/createToken with GET, POST, PUT rights on /sms/*.', 'wp-sms'),
-                __('Find your Service Name in the OVH Control Panel under Telecom > SMS.', 'wp-sms'),
-                __('Register a sender name or number in the OVH SMS panel before use.', 'wp-sms'),
             ],
         ];
     }
@@ -174,13 +153,6 @@ class OvhProvider extends AbstractProvider
 
         $data = json_decode($result['body'], true);
         return isset($data['creditsLeft']) ? (string) $data['creditsLeft'] : null;
-    }
-
-    public function getFeatures(): array
-    {
-        return array_merge(parent::getFeatures(), [
-            'test_connection' => true,
-        ]);
     }
 
     public function testConnection(): TestConnectionResult

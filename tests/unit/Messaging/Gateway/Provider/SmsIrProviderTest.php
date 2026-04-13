@@ -371,23 +371,21 @@ class SmsIrProviderTest extends AbstractProviderTestCase
 
     // --- Metadata & features tests ---
 
-    public function testMetadataHasExpectedKeys(): void
+    public function testMetadataEmptyWithoutApiClient(): void
     {
         $provider = $this->createProvider();
         $metadata = $provider->getMetadata();
 
-        $this->assertArrayHasKey('description', $metadata);
-        $this->assertArrayHasKey('website', $metadata);
-        $this->assertArrayHasKey('regions', $metadata);
-        $this->assertContains('IR', $metadata['regions']);
+        $this->assertEmpty($metadata);
     }
 
-    public function testFeaturesIncludesTestConnection(): void
+    public function testFeaturesReturnBaseDefaultsWithoutApiClient(): void
     {
         $provider = $this->createProvider();
         $features = $provider->getFeatures();
 
-        $this->assertTrue($features['test_connection']);
+        $this->assertFalse($features['test_connection']);
+        $this->assertTrue($features['unicode']);
     }
 
     public function testIsConfiguredWithFullConfig(): void
