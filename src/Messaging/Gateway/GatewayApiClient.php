@@ -12,38 +12,43 @@ class GatewayApiClient
     private const TTL = DAY_IN_SECONDS;
     private const TIMEOUT = 10;
 
-    /** @var array<string, array>|null In-memory cache to avoid repeated transient lookups */
-    private ?array $memoryCache = null;
+    /** @var array<string, array>|null */
+    private static ?array $cache = null;
+
+    /**
+     * Get a single gateway's data by slug.
+     */
+    public static function get(string $slug): ?array
+    {
+        return self::getAll()[$slug] ?? null;
+    }
 
     /**
      * Get all gateway data as a slug-keyed associative array.
      *
-     * @return array<string, array>|null Null if no data is available (API unreachable AND no cache/fallback).
+     * @return array<string, array>|null Null if no data is available.
      */
-    public function getAll(): ?array
+    public static function getAll(): ?array
     {
-        if ($this->memoryCache !== null) {
-            return $this->memoryCache;
+        if (self::$cache !== null) {
+            return self::$cache;
         }
 
-        // Try transient cache first
         $cached = get_transient(self::TRANSIENT_KEY);
         if (is_array($cached) && !empty($cached)) {
-            $this->memoryCache = $cached;
+            self::$cache = $cached;
             return $cached;
         }
 
-        // Transient expired — fetch from API
-        $data = $this->fetch();
+        $data = self::fetch();
         if ($data !== null) {
-            $this->memoryCache = $data;
+            self::$cache = $data;
             return $data;
         }
 
-        // Fetch failed — try stale fallback
         $fallback = get_option(self::FALLBACK_OPTION, null);
         if (is_array($fallback) && !empty($fallback)) {
-            $this->memoryCache = $fallback;
+            self::$cache = $fallback;
             return $fallback;
         }
 
@@ -51,29 +56,15 @@ class GatewayApiClient
     }
 
     /**
-     * Get a single gateway's data by slug.
-     */
-    public function get(string $slug): ?array
-    {
-        return $this->getAll()[$slug] ?? null;
-    }
-
-    /**
      * Force-refresh the cache from the API.
      */
-    public function refresh(): bool
+    public static function refresh(): bool
     {
-        $this->memoryCache = null;
-        $data = $this->fetch();
-        return $data !== null;
+        self::$cache = null;
+        return self::fetch() !== null;
     }
 
-    /**
-     * Fetch from API, validate, cache, and return slug-keyed data.
-     *
-     * @return array<string, array>|null
-     */
-    private function fetch(): ?array
+    private static function fetch(): ?array
     {
         $url = defined('WSMS_GATEWAY_API_URL') ? WSMS_GATEWAY_API_URL : self::API_URL;
         $url = apply_filters('wsms_gateway_api_url', $url);
@@ -102,7 +93,6 @@ class GatewayApiClient
             return null;
         }
 
-        // The built API wraps gateways in {"version", "generated", "gateways": [...]}
         $gateways = $decoded['gateways'] ?? $decoded;
 
         if (!is_array($gateways) || empty($gateways)) {
@@ -110,11 +100,12 @@ class GatewayApiClient
             return null;
         }
 
-        // Re-key by slug for O(1) lookups
         $data = array_column($gateways, null, 'slug');
 
         set_transient(self::TRANSIENT_KEY, $data, self::TTL);
         update_option(self::FALLBACK_OPTION, $data, false);
+
+        self::$cache = $data;
 
         return $data;
     }

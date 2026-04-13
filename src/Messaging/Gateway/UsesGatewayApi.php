@@ -6,21 +6,14 @@ defined('ABSPATH') || exit;
 
 trait UsesGatewayApi
 {
-    private ?GatewayApiClient $apiClient = null;
-
-    public function setApiClient(GatewayApiClient $apiClient): void
-    {
-        $this->apiClient = $apiClient;
-    }
-
     public function getName(): string
     {
-        return $this->apiData()['name'] ?? $this->getId();
+        return GatewayApiClient::get($this->getId())['name'] ?? $this->getId();
     }
 
     public function getMetadata(): array
     {
-        $api = $this->apiData();
+        $api = GatewayApiClient::get($this->getId());
 
         if (!$api) {
             return [];
@@ -43,7 +36,7 @@ trait UsesGatewayApi
 
     public function getFeatures(): array
     {
-        $api = $this->apiData();
+        $api = GatewayApiClient::get($this->getId());
 
         if (!$api) {
             return [];
@@ -56,10 +49,5 @@ trait UsesGatewayApi
         }
 
         return $features;
-    }
-
-    private function apiData(): ?array
-    {
-        return $this->apiClient?->get($this->getId());
     }
 }

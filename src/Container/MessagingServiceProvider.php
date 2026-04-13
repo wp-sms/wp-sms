@@ -8,7 +8,6 @@ use WSms\Messaging\Email\EmailHeaderComposer;
 use WSms\Messaging\Email\UnsubscribeTokenService;
 use WSms\Messaging\Gateway\Email\MailtrapGateway;
 use WSms\Messaging\Gateway\Email\WpMailGateway;
-use WSms\Messaging\Gateway\GatewayApiClient;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\Gateway\Provider\KavenegarProvider;
 use WSms\Messaging\Gateway\Provider\NetGsmProvider;
@@ -42,7 +41,6 @@ class MessagingServiceProvider implements ServiceProvider
 
     public function register(ServiceContainer $container): void
     {
-        $container->register('gateway.api_client', fn() => new GatewayApiClient());
         $container->register('gateway.registry', fn() => new GatewayRegistry());
         $container->register('gateway.email.wp', fn() => new WpMailGateway());
         $container->register('gateway.webhook', fn() => new HttpWebhookGateway());
@@ -110,43 +108,32 @@ class MessagingServiceProvider implements ServiceProvider
         );
 
         $registry = $container->get('gateway.registry');
-        $apiClient = $container->get('gateway.api_client');
 
         // Eager: built-in gateways (always available, no external API deps)
         $registry->register($container->get('gateway.email.wp'));
         $registry->register($container->get('gateway.webhook'));
 
         // Deferred: email gateways with external API deps
-        $registry->registerDeferred('mailtrap', function () use ($apiClient) {
-            $gateway = new MailtrapGateway();
-            $gateway->setApiClient($apiClient);
-            return $gateway;
-        });
+        $registry->registerDeferred('mailtrap', MailtrapGateway::class);
 
         // Deferred: gateways with constructor dependencies
-        $registry->registerDeferred('telegram', function () use ($container, $apiClient) {
-            $gateway = $container->get('gateway.telegram');
-            $gateway->setApiClient($apiClient);
-            return $gateway;
-        });
-        $registry->registerDeferred('line', function () use ($container, $apiClient) {
-            $gateway = $container->get('gateway.line');
-            $gateway->setApiClient($apiClient);
-            return $gateway;
-        });
+        $registry->registerDeferred('telegram', fn() => $container->get('gateway.telegram'));
+        $registry->registerDeferred('line', fn() => $container->get('gateway.line'));
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
+        // Providers implementing SupportsTemplates get the catalog manager injected
         $templateProviders = ['twilio', 'kavenegar', 'smsir'];
 
         foreach (self::PROVIDERS as $id => $class) {
-            $registry->registerDeferred($id, function () use ($container, $class, $id, $apiClient, $templateProviders) {
-                $provider = new $class();
-                $provider->setApiClient($apiClient);
-                if (in_array($id, $templateProviders, true)) {
+            if (in_array($id, $templateProviders, true)) {
+                $registry->registerDeferred($id, function () use ($container, $class) {
+                    $provider = new $class();
                     $provider->setCatalogManager($container->get('template.catalog_manager'));
-                }
-                return $provider;
-            });
+                    return $provider;
+                });
+            } else {
+                $registry->registerDeferred($id, $class);
+            }
         }
 
         // Test gateway: only in debug mode
