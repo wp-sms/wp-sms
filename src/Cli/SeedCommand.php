@@ -17,6 +17,7 @@ class SeedCommand
     private const SEED_META_KEY = 'wsms_seed';
     private const SEED_META_VALUE = '1';
     private const SENTINEL_OPTION = 'wsms_seed_run_id';
+    private const MANIFEST_OPTION = 'wsms_seed_manifest';
 
     /** The 11 custom WSMS tables, in delete-safe reverse-topological order. */
     private const TABLES_REVERSE_TOPO = [
@@ -33,11 +34,21 @@ class SeedCommand
         'wsms_verifications',
     ];
 
+    /** Tables whose seeded rows are linked by user_id (deleted as a safety net alongside manifest IDs). */
+    private const USER_LINKED_TABLES = [
+        'wsms_auth_logs',
+        'wsms_user_factors',
+        'wsms_verifications',
+    ];
+
     private Faker $faker;
     private bool $dryRun = false;
     private bool $force = false;
     private bool $yes = false;
     private int $loadCount = 5000;
+
+    /** IDs of all seeded rows, keyed by table suffix. Persisted as manifest for targeted cleanup. */
+    private array $manifest = [];
 
     /** Cached lookups populated during seeding, consumed by later steps. */
     private array $userIds = [];      // [handle => user_id]
@@ -72,8 +83,8 @@ class SeedCommand
      * ---
      *
      * [--clear]
-     * : Wipe ALL WSMS plugin data (contacts, campaigns, message logs, flows,
-     * tags, lists, auth logs, etc.) and seeded WP users before seeding.
+     * : Remove seeder-inserted data using the stored manifest (non-seeded rows
+     * are preserved). Falls back to full table truncation if no manifest exists.
      * Passed without --profile, the command wipes and exits.
      *
      * [--dry-run]
@@ -271,7 +282,16 @@ class SeedCommand
         }
         $runId = sprintf('%s-%s', $profile, gmdate('Ymd-His'));
         update_option(self::SENTINEL_OPTION, $runId, false);
+        $this->persistManifest();
         $this->log(sprintf('Sentinel written: %s', $runId));
+    }
+
+    private function persistManifest(): void
+    {
+        if ($this->dryRun) {
+            return;
+        }
+        update_option(self::MANIFEST_OPTION, wp_json_encode($this->manifest), false);
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -282,13 +302,97 @@ class SeedCommand
     {
         global $wpdb;
 
-        if (! $this->yes && ! $this->dryRun) {
-            WP_CLI::confirm('About to delete ALL WSMS plugin data (contacts, campaigns, logs, etc.) and seeded WP users. Continue?');
+        $raw = get_option(self::MANIFEST_OPTION, '');
+        $manifest = $raw ? json_decode($raw, true) : null;
+
+        if (! is_array($manifest)) {
+            $this->clearSeededDataLegacy();
+            return;
         }
 
-        $this->log('Clearing seeded data...');
+        if (! $this->yes && ! $this->dryRun) {
+            WP_CLI::confirm('About to delete seeder-inserted data (non-seeded rows are preserved). Continue?');
+        }
 
-        // Count what we're about to delete for reporting.
+        $this->log('Clearing seeded data (targeted)...');
+
+        $contactIds = $manifest['wsms_contacts'] ?? [];
+        $seededUserIds = $wpdb->get_col($wpdb->prepare(
+            "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = %s",
+            self::SEED_META_KEY,
+            self::SEED_META_VALUE
+        ));
+
+        foreach (self::TABLES_REVERSE_TOPO as $suffix) {
+            $ids = $manifest[$suffix] ?? [];
+            if ($suffix === 'wsms_contact_tag') {
+                $this->log(sprintf('  - %s: via %d contact IDs', $suffix, count($contactIds)));
+            } elseif (in_array($suffix, self::USER_LINKED_TABLES, true)) {
+                $this->log(sprintf('  - %s: %d IDs + by %d user IDs', $suffix, count($ids), count($seededUserIds)));
+            } else {
+                $this->log(sprintf('  - %s: %d IDs', $suffix, count($ids)));
+            }
+        }
+        $this->log(sprintf('  - wp_users: %d', count($seededUserIds)));
+
+        if ($this->dryRun) {
+            $this->log('Dry run: no rows deleted.');
+            return;
+        }
+
+        $totalDeleted = 0;
+        foreach (self::TABLES_REVERSE_TOPO as $suffix) {
+            $table = $wpdb->prefix . $suffix;
+
+            if ($suffix === 'wsms_contact_tag') {
+                if ($contactIds) {
+                    $totalDeleted += $this->deleteInBatches($table, 'contact_id', $contactIds);
+                }
+                continue;
+            }
+
+            $ids = $manifest[$suffix] ?? [];
+            if ($ids) {
+                $totalDeleted += $this->deleteInBatches($table, 'id', $ids);
+            }
+
+            if (in_array($suffix, self::USER_LINKED_TABLES, true) && $seededUserIds) {
+                $totalDeleted += $this->deleteInBatches($table, 'user_id', $seededUserIds);
+            }
+        }
+
+        if (! function_exists('wp_delete_user')) {
+            require_once ABSPATH . 'wp-admin/includes/user.php';
+        }
+        foreach ($seededUserIds as $uid) {
+            wp_delete_user((int) $uid);
+        }
+
+        delete_option(self::MANIFEST_OPTION);
+        delete_option(self::SENTINEL_OPTION);
+
+        WP_CLI::success(sprintf(
+            'Cleared %d seeded rows and %d WP users.',
+            $totalDeleted,
+            count($seededUserIds)
+        ));
+    }
+
+    /**
+     * Fallback for databases seeded before manifest tracking was added.
+     */
+    private function clearSeededDataLegacy(): void
+    {
+        global $wpdb;
+
+        WP_CLI::warning('No seed manifest found — falling back to full table truncation.');
+
+        if (! $this->yes && ! $this->dryRun) {
+            WP_CLI::confirm('About to TRUNCATE all WSMS tables and delete seeded WP users. Continue?');
+        }
+
+        $this->log('Clearing all data (legacy)...');
+
         $totals = [];
         foreach (self::TABLES_REVERSE_TOPO as $suffix) {
             $table = $wpdb->prefix . $suffix;
@@ -300,25 +404,22 @@ class SeedCommand
             self::SEED_META_KEY,
             self::SEED_META_VALUE
         ));
-        $userCount = count($seededUserIds);
 
         foreach ($totals as $suffix => $count) {
             $this->log(sprintf('  - %s: %d rows', $suffix, $count));
         }
-        $this->log(sprintf('  - wp_users (seeded): %d rows', $userCount));
+        $this->log(sprintf('  - wp_users (seeded): %d', count($seededUserIds)));
 
         if ($this->dryRun) {
             $this->log('Dry run: no rows deleted.');
             return;
         }
 
-        // Truncate each WSMS table.
         foreach (self::TABLES_REVERSE_TOPO as $suffix) {
             $table = $wpdb->prefix . $suffix;
             $wpdb->query("TRUNCATE TABLE {$table}");
         }
 
-        // Delete seeded WP users (wp_delete_user cleans up usermeta/author reassignment).
         if (! function_exists('wp_delete_user')) {
             require_once ABSPATH . 'wp-admin/includes/user.php';
         }
@@ -326,12 +427,13 @@ class SeedCommand
             wp_delete_user((int) $uid);
         }
 
+        delete_option(self::MANIFEST_OPTION);
         delete_option(self::SENTINEL_OPTION);
 
         WP_CLI::success(sprintf(
-            'Cleared %d WSMS rows and %d seeded users.',
+            'Cleared %d WSMS rows and %d seeded users (legacy truncate).',
             array_sum($totals),
-            $userCount
+            count($seededUserIds)
         ));
     }
 
@@ -595,6 +697,7 @@ class SeedCommand
         $gateways = ['twilio', 'vonage', 'kavenegar', 'ovh', 'netgsm', 'wp_mail'];
         $channels = ['sms' => 70, 'email' => 25, 'whatsapp' => 5];
         $statuses = ['delivered' => 78, 'sent' => 10, 'failed' => 8, 'bounced' => 3, 'queued' => 1];
+        $loadLogIds = [];
 
         for ($i = 0; $i < $targetLogs; $i += $batchSize) {
             $values = [];
@@ -608,10 +711,12 @@ class SeedCommand
                 $sentAt = $status !== 'queued' ? $createdAt : null;
                 $deliveredAt = $status === 'delivered' ? gmdate('Y-m-d H:i:s', strtotime($createdAt) + 15) : null;
                 $recipient = $channel === 'email' ? $this->faker->safeEmail() : '+1415' . $this->faker->numerify('#######');
+                $logId = $this->ulid();
+                $loadLogIds[] = $logId;
                 $placeholders[] = '(%s, NULL, NULL, %s, %s, %s, %s, NULL, %s, %s, %s, NULL, %f, %s, %s, %s)';
                 array_push(
                     $values,
-                    $this->ulid(),
+                    $logId,
                     $gateway, $channel, 'transactional', $recipient,
                     'Load test message',
                     $status,
@@ -629,6 +734,10 @@ class SeedCommand
             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $wpdb->query($wpdb->prepare($sql, $values));
         }
+
+        // Merge bulk IDs into the manifest (demo profile IDs are already there via insert()).
+        $this->manifest['wsms_contacts'] = array_merge($this->manifest['wsms_contacts'] ?? [], $loadContactIds);
+        $this->manifest['wsms_message_logs'] = array_merge($this->manifest['wsms_message_logs'] ?? [], $loadLogIds);
 
         $elapsed = microtime(true) - $before;
         $this->log(sprintf(
@@ -2370,6 +2479,21 @@ class SeedCommand
         WP_CLI::log($message);
     }
 
+    private function deleteInBatches(string $table, string $column, array $ids, int $batchSize = 500): int
+    {
+        global $wpdb;
+        $total = 0;
+        foreach (array_chunk($ids, $batchSize) as $chunk) {
+            $placeholders = implode(',', array_fill(0, count($chunk), '%s'));
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+            $total += (int) $wpdb->query($wpdb->prepare(
+                "DELETE FROM {$table} WHERE {$column} IN ({$placeholders})",
+                $chunk
+            ));
+        }
+        return $total;
+    }
+
     private function insert(string $tableSuffix, array $row): void
     {
         global $wpdb;
@@ -2384,6 +2508,12 @@ class SeedCommand
                 $tableSuffix,
                 $wpdb->last_error ?: 'unknown error'
             ));
+        }
+
+        // Track the inserted ID for the manifest (contact_tag is cleaned via contact_id).
+        if ($tableSuffix !== 'wsms_contact_tag') {
+            $id = $row['id'] ?? $wpdb->insert_id;
+            $this->manifest[$tableSuffix][] = $id;
         }
     }
 }
