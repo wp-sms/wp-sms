@@ -92,41 +92,17 @@ class TelegramGateway implements GatewayInterface
     {
         $api = $this->apiClient?->get($this->getId());
 
-        if (!$api) {
-            return ['description' => __('Send messages via Telegram Bot API', 'wp-sms')];
-        }
-
-        return [
-            'description' => $api['description'] ?? '',
-            'website'     => $api['website'] ?? '',
-            'icon'        => $api['branding']['logo_square'] ?? '',
-            'regions'     => $api['coverage']['regions'] ?? [],
-            'setup_url'   => $api['setup']['dashboard'] ?? '',
-            'setup_notes' => $api['setup']['notes'] ?? [],
-            'status'      => $api['status'] ?? 'active',
-            'tier'        => $api['tier'] ?? 'free',
-            'recommended' => $api['recommended'] ?? false,
-            'branding'    => $api['branding'] ?? [],
-            'coverage'    => $api['coverage'] ?? [],
-        ];
+        return $api
+            ? GatewayApiClient::buildMetadata($api)
+            : ['description' => __('Send messages via Telegram Bot API', 'wp-sms')];
     }
 
     public function getFeatures(): array
     {
         $base = ['unicode' => true, 'test_connection' => false];
-
         $api = $this->apiClient?->get($this->getId());
 
-        if ($api) {
-            if (isset($api['features'])) {
-                $base = array_merge($base, $api['features']);
-            }
-            if (isset($api['test_connection'])) {
-                $base['test_connection'] = $api['test_connection'];
-            }
-        }
-
-        return $base;
+        return $api ? GatewayApiClient::mergeFeatures($base, $api) : $base;
     }
 
     public function getCredit(): ?string

@@ -64,7 +64,7 @@ function GatewayCard({ gateway, getCredit, onConfigure }: {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-white text-sm font-semibold ${getGatewayColor(gateway.id)}`}>
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-white text-sm font-semibold" style={{ backgroundColor: getGatewayColor(gateway) }}>
               {getGatewayInitial(gateway.name)}
             </div>
             <CardTitle className="text-base">{gateway.name}</CardTitle>

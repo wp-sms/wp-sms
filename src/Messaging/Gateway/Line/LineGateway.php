@@ -121,23 +121,9 @@ class LineGateway implements GatewayInterface, SupportsInboundMessage, SupportsO
     {
         $api = $this->apiClient?->get($this->getId());
 
-        if (!$api) {
-            return ['description' => __('Send messages via LINE Messaging API', 'wp-sms')];
-        }
-
-        return [
-            'description' => $api['description'] ?? '',
-            'website'     => $api['website'] ?? '',
-            'icon'        => $api['branding']['logo_square'] ?? '',
-            'regions'     => $api['coverage']['regions'] ?? [],
-            'setup_url'   => $api['setup']['dashboard'] ?? '',
-            'setup_notes' => $api['setup']['notes'] ?? [],
-            'status'      => $api['status'] ?? 'active',
-            'tier'        => $api['tier'] ?? 'free',
-            'recommended' => $api['recommended'] ?? false,
-            'branding'    => $api['branding'] ?? [],
-            'coverage'    => $api['coverage'] ?? [],
-        ];
+        return $api
+            ? GatewayApiClient::buildMetadata($api)
+            : ['description' => __('Send messages via LINE Messaging API', 'wp-sms')];
     }
 
     public function getFeatures(): array
@@ -152,16 +138,7 @@ class LineGateway implements GatewayInterface, SupportsInboundMessage, SupportsO
 
         $api = $this->apiClient?->get($this->getId());
 
-        if ($api) {
-            if (isset($api['features'])) {
-                $base = array_merge($base, array_intersect_key($api['features'], $base));
-            }
-            if (isset($api['test_connection'])) {
-                $base['test_connection'] = $api['test_connection'];
-            }
-        }
-
-        return $base;
+        return $api ? GatewayApiClient::mergeFeatures($base, $api) : $base;
     }
 
     public function getCredit(): ?string
