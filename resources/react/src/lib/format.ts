@@ -42,7 +42,9 @@ export function formatDate(iso: string): string {
 const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });
 
 export function formatRelativeTime(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
+  const timestamp = new Date(iso).getTime();
+  if (!Number.isFinite(timestamp)) return '—';
+  const diff = Date.now() - timestamp;
   const seconds = Math.round(diff / 1000);
   if (seconds < 60) return rtf.format(-seconds, 'second');
   const minutes = Math.round(seconds / 60);
@@ -73,7 +75,9 @@ export function formatDuration(startIso: string, endIso: string): string {
 }
 
 export function formatFutureRelativeTime(iso: string): string {
-  const diff = new Date(iso).getTime() - Date.now();
+  const timestamp = new Date(iso).getTime();
+  if (!Number.isFinite(timestamp)) return '—';
+  const diff = timestamp - Date.now();
   if (diff <= 0) return 'now';
   const seconds = Math.round(diff / 1000);
   if (seconds < 60) return `in ${seconds}s`;

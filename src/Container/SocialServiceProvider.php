@@ -61,6 +61,17 @@ class SocialServiceProvider implements ServiceProvider
             );
         });
 
+        // LINE OIDC provider.
+        $container->register('social.provider.line', function () use ($container) {
+            $line = $container->get('auth.settings')->channel('social')['line'] ?? [];
+
+            return new OidcProvider(
+                OidcPresets::line($line['client_id'] ?? '', $line['client_secret'] ?? ''),
+                $container->get('social.oidc.discovery'),
+                $container->get('social.oidc.jwt_validator'),
+            );
+        });
+
         $container->register('social.orchestrator', function () use ($container) {
             return new SocialAuthOrchestrator(
                 $container->get('social.manager'),
@@ -92,6 +103,7 @@ class SocialServiceProvider implements ServiceProvider
         $manager->registerProvider($container->get('social.provider.google'));
         $manager->registerProvider($container->get('social.provider.github'));
         $manager->registerProvider($container->get('social.provider.telegram'));
+        $manager->registerProvider($container->get('social.provider.line'));
 
         try {
             do_action('wsms_register_social_providers', $manager);

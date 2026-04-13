@@ -13,6 +13,7 @@ use WSms\Messaging\Gateway\Provider\KavenegarProvider;
 use WSms\Messaging\Gateway\Provider\NetGsmProvider;
 use WSms\Messaging\Gateway\Provider\OvhProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
+use WSms\Messaging\Gateway\Provider\SmsIrProvider;
 use WSms\Messaging\Gateway\Provider\VonageProvider;
 use WSms\Messaging\Gateway\Line\LineGateway;
 use WSms\Messaging\Gateway\Telegram\TelegramGateway;
@@ -35,6 +36,7 @@ class MessagingServiceProvider implements ServiceProvider
         'kavenegar' => KavenegarProvider::class,
         'ovh'       => OvhProvider::class,
         'netgsm'    => NetGsmProvider::class,
+        'smsir'     => SmsIrProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
@@ -120,7 +122,7 @@ class MessagingServiceProvider implements ServiceProvider
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
         // Providers implementing SupportsTemplates get the catalog manager injected
-        $templateProviders = ['twilio', 'kavenegar'];
+        $templateProviders = ['twilio', 'kavenegar', 'smsir'];
 
         foreach (self::PROVIDERS as $id => $class) {
             if (in_array($id, $templateProviders, true)) {

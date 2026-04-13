@@ -418,6 +418,19 @@ class PolicyEngine
 
         // Dynamically check each verification channel.
         foreach ($this->getVerificationChannelKeys() as $channelKey) {
+            // MFA-usage channels are enrolled through the MFA factor system
+            // (wsms_user_factors + MfaManager + EmailChannel/PhoneChannel::enroll),
+            // not the profile-verification meta system. Requiring profile
+            // verification here for an MFA-usage channel forces the user
+            // through an OTP step for a factor they never enrolled in,
+            // with no durable effect — no row is ever created in
+            // wsms_user_factors. Skip MFA-usage channels and let the MFA
+            // enrollment flow own them.
+            $usage = $settings[$channelKey]['usage'] ?? ChannelUsage::Login->value;
+            if ($usage === ChannelUsage::Mfa->value) {
+                continue;
+            }
+
             $requiresVerification = !empty($settings[$channelKey]['verify_at_signup'])
                 || !empty($settings[$channelKey]['verify_at_login']);
             if (

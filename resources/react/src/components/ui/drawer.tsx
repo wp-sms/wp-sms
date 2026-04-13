@@ -64,7 +64,11 @@ function DrawerContent({
       <DrawerPrimitive.Content
         data-slot="drawer-content"
         className={cn(
-          "group/drawer-content fixed z-[100100] flex h-auto flex-col bg-background",
+          // overflow-x-hidden clips vaul's ::after pseudo-element, which is positioned
+          // 100% outside the drawer with width: 200% as a drag-overshoot filler. Without
+          // clipping, panels that set overflow-y-auto trigger the CSS rule that promotes
+          // overflow-x: visible to auto, exposing the pseudo as horizontally scrollable.
+          "group/drawer-content fixed z-[100100] flex h-auto flex-col overflow-x-hidden bg-background",
           "data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-lg data-[vaul-drawer-direction=top]:border-b-2 data-[vaul-drawer-direction=top]:border-b-foreground",
           "data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-lg data-[vaul-drawer-direction=bottom]:border-t-2 data-[vaul-drawer-direction=bottom]:border-t-foreground",
           "data-[vaul-drawer-direction=right]:top-[var(--wp-admin--admin-bar--height,32px)] data-[vaul-drawer-direction=right]:bottom-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:border-l-2 data-[vaul-drawer-direction=right]:border-l-foreground data-[vaul-drawer-direction=right]:sm:max-w-sm",

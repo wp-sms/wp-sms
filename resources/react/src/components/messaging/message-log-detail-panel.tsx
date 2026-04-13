@@ -31,7 +31,7 @@ export function MessageLogDetailPanel({ log, onClose }: MessageLogDetailPanelPro
             <DrawerHeader className="border-b">
               <div className="flex items-center justify-between">
                 <DrawerTitle>{__('Message Details', 'wp-sms')}</DrawerTitle>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 pe-8">
                   <ChannelBadge channel={log.channel} />
                   <StatusBadge status={log.status} />
                 </div>
