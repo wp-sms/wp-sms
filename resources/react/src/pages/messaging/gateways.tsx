@@ -130,14 +130,22 @@ export function Gateways({ embedded }: { embedded?: boolean } = {}) {
 
   // Filtered gateways
   const filtered = useMemo(() => {
-    return gateways.filter((g) => {
-      if (searchQuery) {
-        const q = searchQuery.toLowerCase();
-        if (!g.name.toLowerCase().includes(q) && !g.id.toLowerCase().includes(q)) return false;
-      }
-      if (channelFilter !== 'all' && !g.supported_channels.includes(channelFilter)) return false;
-      return true;
-    });
+    return gateways
+      .filter((g) => {
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          if (!g.name.toLowerCase().includes(q) && !g.id.toLowerCase().includes(q)) return false;
+        }
+        if (channelFilter !== 'all' && !g.supported_channels.includes(channelFilter)) return false;
+        return true;
+      })
+      .sort((a, b) => {
+        const aDefault = Object.values(a.config?.is_default ?? {}).some(Boolean);
+        const bDefault = Object.values(b.config?.is_default ?? {}).some(Boolean);
+        if (aDefault !== bDefault) return aDefault ? -1 : 1;
+        if (a.is_configured !== b.is_configured) return a.is_configured ? -1 : 1;
+        return 0;
+      });
   }, [gateways, searchQuery, channelFilter]);
 
   // Channel defaults: for each channel, which gateway is default
