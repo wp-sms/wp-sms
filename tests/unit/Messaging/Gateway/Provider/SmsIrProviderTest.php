@@ -379,13 +379,11 @@ class SmsIrProviderTest extends AbstractProviderTestCase
         $this->assertEmpty($metadata);
     }
 
-    public function testFeaturesReturnBaseDefaultsWithoutApiClient(): void
+    public function testFeaturesEmptyWithoutApiClient(): void
     {
         $provider = $this->createProvider();
-        $features = $provider->getFeatures();
 
-        $this->assertFalse($features['test_connection']);
-        $this->assertTrue($features['unicode']);
+        $this->assertEmpty($provider->getFeatures());
     }
 
     public function testIsConfiguredWithFullConfig(): void

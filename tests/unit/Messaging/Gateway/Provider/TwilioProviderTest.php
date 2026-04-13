@@ -119,15 +119,11 @@ class TwilioProviderTest extends AbstractProviderTestCase
         $this->assertEmpty($metadata);
     }
 
-    public function testFeaturesReturnBaseDefaultsWithoutApiClient(): void
+    public function testFeaturesEmptyWithoutApiClient(): void
     {
         $provider = $this->createProvider();
-        $features = $provider->getFeatures();
 
-        $this->assertFalse($features['mms']);
-        $this->assertFalse($features['delivery_receipt']);
-        $this->assertTrue($features['unicode']);
-        $this->assertFalse($features['test_connection']);
+        $this->assertEmpty($provider->getFeatures());
     }
 
     // --- doSend tests ---

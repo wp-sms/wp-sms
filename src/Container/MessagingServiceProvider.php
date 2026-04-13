@@ -136,7 +136,6 @@ class MessagingServiceProvider implements ServiceProvider
         });
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
-        // All providers get the API client; template providers also get the catalog manager
         $templateProviders = ['twilio', 'kavenegar', 'smsir'];
 
         foreach (self::PROVIDERS as $id => $class) {

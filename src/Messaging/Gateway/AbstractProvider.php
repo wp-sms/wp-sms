@@ -11,8 +11,9 @@ defined('ABSPATH') || exit;
 
 abstract class AbstractProvider implements GatewayInterface
 {
+    use UsesGatewayApi;
+
     private ?array $configCache = null;
-    private ?GatewayApiClient $apiClient = null;
 
     abstract public function getId(): string;
 
@@ -25,16 +26,6 @@ abstract class AbstractProvider implements GatewayInterface
     abstract public function getConfigSchema(): array;
 
     abstract protected function doSend(MessageInterface $message): DeliveryResult;
-
-    public function setApiClient(GatewayApiClient $apiClient): void
-    {
-        $this->apiClient = $apiClient;
-    }
-
-    public function getName(): string
-    {
-        return $this->apiClient?->get($this->getId())['name'] ?? $this->getId();
-    }
 
     public function send(MessageInterface $message): DeliveryResult
     {
@@ -113,29 +104,6 @@ abstract class AbstractProvider implements GatewayInterface
         // Check channel-specific required fields
         $channelSchema = $schema['channels'][$channel] ?? [];
         return $this->isChannelConfigComplete($config, $channelSchema, $channel);
-    }
-
-    public function getMetadata(): array
-    {
-        $api = $this->apiClient?->get($this->getId());
-
-        return $api ? GatewayApiClient::buildMetadata($api) : [];
-    }
-
-    public function getFeatures(): array
-    {
-        $base = [
-            'mms'              => false,
-            'flash_sms'        => false,
-            'delivery_receipt' => false,
-            'incoming'         => false,
-            'unicode'          => true,
-            'test_connection'  => false,
-        ];
-
-        $api = $this->apiClient?->get($this->getId());
-
-        return $api ? GatewayApiClient::mergeFeatures($base, $api) : $base;
     }
 
     public function getCredit(): ?string

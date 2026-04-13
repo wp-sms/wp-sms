@@ -7,33 +7,23 @@ use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\GatewayInterface;
 use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Contracts\TestConnectionResult;
-use WSms\Messaging\Gateway\GatewayApiClient;
+use WSms\Messaging\Gateway\UsesGatewayApi;
 use WSms\Telegram\TelegramBotClient;
 
 defined('ABSPATH') || exit;
 
 class TelegramGateway implements GatewayInterface
 {
-    private ?GatewayApiClient $apiClient = null;
+    use UsesGatewayApi;
 
     public function __construct(
         private readonly TelegramBotClient $telegramClient,
     ) {
     }
 
-    public function setApiClient(GatewayApiClient $apiClient): void
-    {
-        $this->apiClient = $apiClient;
-    }
-
     public function getId(): string
     {
         return 'telegram';
-    }
-
-    public function getName(): string
-    {
-        return $this->apiClient?->get($this->getId())['name'] ?? __('Telegram Bot', 'wp-sms');
     }
 
     public function getSupportedChannels(): array
@@ -86,23 +76,6 @@ class TelegramGateway implements GatewayInterface
     public function isConfiguredForChannel(string $channel): bool
     {
         return $channel === 'telegram' && $this->isConfigured();
-    }
-
-    public function getMetadata(): array
-    {
-        $api = $this->apiClient?->get($this->getId());
-
-        return $api
-            ? GatewayApiClient::buildMetadata($api)
-            : ['description' => __('Send messages via Telegram Bot API', 'wp-sms')];
-    }
-
-    public function getFeatures(): array
-    {
-        $base = ['unicode' => true, 'test_connection' => false];
-        $api = $this->apiClient?->get($this->getId());
-
-        return $api ? GatewayApiClient::mergeFeatures($base, $api) : $base;
     }
 
     public function getCredit(): ?string

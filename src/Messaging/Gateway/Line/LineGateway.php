@@ -5,38 +5,28 @@ namespace WSms\Messaging\Gateway\Line;
 use WSms\Line\LineBotClient;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\GatewayInterface;
-use WSms\Messaging\Gateway\GatewayApiClient;
 use WSms\Messaging\Contracts\InboundMessage;
 use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Contracts\SupportsInboundMessage;
 use WSms\Messaging\Contracts\SupportsOptOutDetection;
 use WSms\Messaging\Contracts\TestConnectionResult;
+use WSms\Messaging\Gateway\UsesGatewayApi;
 use WP_REST_Request;
 
 defined('ABSPATH') || exit;
 
 class LineGateway implements GatewayInterface, SupportsInboundMessage, SupportsOptOutDetection
 {
-    private ?GatewayApiClient $apiClient = null;
+    use UsesGatewayApi;
 
     public function __construct(
         private readonly LineBotClient $client,
     ) {
     }
 
-    public function setApiClient(GatewayApiClient $apiClient): void
-    {
-        $this->apiClient = $apiClient;
-    }
-
     public function getId(): string
     {
         return 'line';
-    }
-
-    public function getName(): string
-    {
-        return $this->apiClient?->get($this->getId())['name'] ?? 'LINE';
     }
 
     public function getSupportedChannels(): array
@@ -115,30 +105,6 @@ class LineGateway implements GatewayInterface, SupportsInboundMessage, SupportsO
     public function isConfiguredForChannel(string $channel): bool
     {
         return $channel === 'line' && $this->isConfigured();
-    }
-
-    public function getMetadata(): array
-    {
-        $api = $this->apiClient?->get($this->getId());
-
-        return $api
-            ? GatewayApiClient::buildMetadata($api)
-            : ['description' => __('Send messages via LINE Messaging API', 'wp-sms')];
-    }
-
-    public function getFeatures(): array
-    {
-        $base = [
-            'mms'              => true,
-            'delivery_receipt' => false,
-            'incoming'         => true,
-            'unicode'          => true,
-            'test_connection'  => true,
-        ];
-
-        $api = $this->apiClient?->get($this->getId());
-
-        return $api ? GatewayApiClient::mergeFeatures($base, $api) : $base;
     }
 
     public function getCredit(): ?string
