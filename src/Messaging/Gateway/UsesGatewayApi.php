@@ -14,7 +14,7 @@ trait UsesGatewayApi
 
     public function getMetadata(): array
     {
-        $api = GatewayApiClient::get($this->getId());
+        $api = GatewayApiClient::get($this->getId()) ?? [];
 
         return [
             'description' => $api['description'] ?? '',

@@ -116,9 +116,11 @@ class UsesGatewayApiTest extends TestCase
         $this->assertTrue($metadata['recommended']);
     }
 
-    public function testGetMetadataReturnsDefaultsWhenApiUnavailable(): void
+    public function testGetMetadataReturnsDefaultsWhenApiReturnsNull(): void
     {
-        // No cache at all
+        // Explicitly set cache to empty — GatewayApiClient::get('twilio') returns null
+        self::setApiCache([]);
+
         $metadata = $this->gateway->getMetadata();
 
         $this->assertSame('', $metadata['description']);
