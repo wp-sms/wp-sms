@@ -8,16 +8,13 @@ trait UsesGatewayApi
 {
     public function getName(): string
     {
-        return GatewayApiClient::get($this->getId())['name'] ?? $this->getId();
+        return GatewayApiClient::get($this->getId())['name']
+            ?? ucwords(str_replace(['-', '_'], ' ', $this->getId()));
     }
 
     public function getMetadata(): array
     {
         $api = GatewayApiClient::get($this->getId());
-
-        if (!$api) {
-            return [];
-        }
 
         return [
             'description' => $api['description'] ?? '',
