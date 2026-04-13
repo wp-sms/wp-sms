@@ -42,7 +42,7 @@ trait UsesGatewayApi
             'delivery_receipt' => false,
             'incoming'         => false,
             'unicode'          => true,
-            'test_connection'  => false,
+            'test_connection'  => true,
         ];
 
         $api = GatewayApiClient::get($this->getId());
@@ -52,12 +52,7 @@ trait UsesGatewayApi
         }
 
         $known = array_intersect_key($api['features'] ?? [], $base);
-        $features = array_merge($base, $known);
 
-        if (isset($api['test_connection'])) {
-            $features['test_connection'] = (bool) $api['test_connection'];
-        }
-
-        return $features;
+        return array_merge($base, $known);
     }
 }
