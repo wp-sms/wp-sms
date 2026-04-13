@@ -36,16 +36,26 @@ trait UsesGatewayApi
 
     public function getFeatures(): array
     {
+        $base = [
+            'mms'              => false,
+            'flash_sms'        => false,
+            'delivery_receipt' => false,
+            'incoming'         => false,
+            'unicode'          => true,
+            'test_connection'  => false,
+        ];
+
         $api = GatewayApiClient::get($this->getId());
 
         if (!$api) {
-            return [];
+            return $base;
         }
 
-        $features = $api['features'] ?? [];
+        $known = array_intersect_key($api['features'] ?? [], $base);
+        $features = array_merge($base, $known);
 
         if (isset($api['test_connection'])) {
-            $features['test_connection'] = $api['test_connection'];
+            $features['test_connection'] = (bool) $api['test_connection'];
         }
 
         return $features;

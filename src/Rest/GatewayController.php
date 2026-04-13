@@ -127,10 +127,6 @@ class GatewayController extends Controller
                     'config'             => $configs[$id] ?? [],
                     'metadata'           => $metadata,
                     'features'           => $gateway->getFeatures(),
-                    'status'             => $metadata['status'] ?? 'active',
-                    'tier'               => $metadata['tier'] ?? 'free',
-                    'recommended'        => $metadata['recommended'] ?? false,
-                    'branding'           => $metadata['branding'] ?? null,
                 ];
             }
 

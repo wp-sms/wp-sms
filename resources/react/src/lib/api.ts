@@ -835,6 +835,9 @@ export interface GatewayMetadata {
   regions?: string[];
   setup_url?: string;
   setup_notes?: string[];
+  status?: 'active' | 'deprecated' | 'disabled' | 'development' | 'planned';
+  tier?: 'free' | 'premium';
+  recommended?: boolean;
   branding?: GatewayBranding;
   coverage?: GatewayCoverage;
 }
@@ -854,10 +857,6 @@ export interface Gateway {
   config: GatewayConfig;
   metadata: GatewayMetadata;
   features: Record<string, boolean>;
-  status: 'active' | 'deprecated' | 'disabled' | 'development' | 'planned';
-  tier: 'free' | 'premium';
-  recommended: boolean;
-  branding?: GatewayBranding;
 }
 
 export interface GatewayTestResult {

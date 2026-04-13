@@ -30,9 +30,9 @@ interface GatewayInterface
     public function isConfiguredForChannel(string $channel): bool;
 
     /**
-     * Provider metadata: description, website, icon URL, supported regions.
+     * Provider metadata sourced from the gateway registry API.
      *
-     * @return array{description?: string, website?: string, icon?: string, regions?: string[]}
+     * @return array{description?: string, website?: string, icon?: string, regions?: string[], setup_url?: string, setup_notes?: string[], status?: string, tier?: string, recommended?: bool, branding?: array, coverage?: array}
      */
     public function getMetadata(): array;
 
