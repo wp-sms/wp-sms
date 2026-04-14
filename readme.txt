@@ -139,6 +139,7 @@ All premium features + all add-ons in one package.
 
 == Changelog ==
 = v7.2.4 - 2026-03-** =
+- **New:** Added credit balance support for the GuniSMS gateway.
 - **Fix:** Updated EaziSMSpro gateway to use the new API endpoint (`dashboard.eazismspro.com`), resolving connection failures caused by the deprecated `apps.eazismspro.com` endpoint.
 - **Fix:** Fixed some dashboard strings that were not translatable.
 - **Fix:** Fixed the "Configure now" link in the Default Country Code admin notice not navigating to the correct settings page.
