@@ -91,6 +91,11 @@ class cellsynt extends \WP_SMS\Gateway
             return $credit;
         }
 
+        // Cellsynt expects 00-prefixed international format (e.g. 0046708123456), not + prefix
+        $this->to = array_map(function ($number) {
+            return preg_replace('/^\+/', '00', $number);
+        }, $this->to);
+
         $params = [
             'username'        => $this->username,
             'password'        => $this->password,
