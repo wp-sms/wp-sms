@@ -151,13 +151,13 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 ],
             ];
 
-            $response = $this->request('POST', $this->wsdl_link . 'user/balance', [], $args, false);
+            $response = $this->request('GET', $this->wsdl_link . 'user/balance', [], $args, false);
 
             if (!$response->status) {
                 throw new Exception($response->message ?? 'Failed to retrieve balance.');
             }
 
-            return $response->balance;
+            return $response->data->balance;
         } catch (Exception $e) {
             return new WP_Error('account-credit', $e->getMessage());
         }
