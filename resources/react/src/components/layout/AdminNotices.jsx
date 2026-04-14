@@ -207,9 +207,11 @@ const AdminNotices = memo(function AdminNotices() {
       } else if (target === 'migration-wizard') {
         // Dispatch global event for the migration wizard modal
         window.dispatchEvent(new CustomEvent('wpsms:open-migration-wizard'))
+      } else {
+        setCurrentPage(target)
       }
     },
-    []
+    [setCurrentPage]
   )
 
   if (!hasNotices || visibleNotices.length === 0) return null

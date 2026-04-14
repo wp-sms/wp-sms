@@ -379,7 +379,7 @@ class Dashboard extends Singleton
                 'actions'      => [
                     [
                         'label'    => __('Configure now', 'wp-sms'),
-                        'navigate' => 'settings/general',
+                        'navigate' => 'phone',
                     ],
                 ],
             ];
