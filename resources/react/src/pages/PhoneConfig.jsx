@@ -4,6 +4,7 @@ import { Phone, Smartphone, Globe, Shield, DatabaseZap } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { SearchableSelect } from '@/components/ui/searchable-select'
 import { InputField, MultiSelectField, SettingRow } from '@/components/ui/form-field'
 import { InternationalPhoneInput } from '@/components/ui/InternationalPhoneInput'
 import { Button } from '@/components/ui/button'
@@ -229,18 +230,14 @@ export default function PhoneConfig() {
             <>
               <div className="wsms-space-y-2">
                 <Label>{__('Default Country Code', 'wp-sms')}</Label>
-                <Select value={countryCode} onValueChange={setCountryCode}>
-                  <SelectTrigger aria-label={__('Default country code', 'wp-sms')}>
-                    <SelectValue placeholder={__('Select country code', 'wp-sms')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {countriesByDialCode && Object.entries(countriesByDialCode).map(([dialCode, label]) => (
-                      <SelectItem key={dialCode} value={dialCode}>
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <SearchableSelect
+                  value={countryCode}
+                  onValueChange={setCountryCode}
+                  options={countriesByDialCode || {}}
+                  placeholder={__('Select country code', 'wp-sms')}
+                  searchPlaceholder={__('Search countries...', 'wp-sms')}
+                  aria-label={__('Default country code', 'wp-sms')}
+                />
                 <p className="wsms-text-[12px] wsms-text-muted-foreground">
                   {__('Automatically prepend this country code to new phone numbers. Changing this will not update numbers already stored in the database.', 'wp-sms')}
                 </p>
