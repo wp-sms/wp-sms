@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React from 'react'
 import * as Icons from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
@@ -7,7 +8,6 @@ import { SettingRow, SelectField, TextareaField } from '@/components/ui/form-fie
 import { useSetting } from '@/context/SettingsContext'
 import { useAddonSettings } from '@/hooks/useAddonSettings'
 import { DynamicField } from '@/components/ui/DynamicField'
-import { __ } from '@/lib/utils'
 
 const { Webhook, Database, Bell, BarChart3, Megaphone } = Icons
 
@@ -43,27 +43,27 @@ export default function Advanced() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Webhook className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Webhooks')}
+            {__('Webhooks', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            {__('Integrate with external services via webhook notifications')}
+            {__('Integrate with external services via webhook notifications', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div data-setting-key="new_sms_webhook">
             <TextareaField
-              label={__('Outgoing SMS Webhook')}
+              label={__('Outgoing SMS Webhook', 'wp-sms')}
               error={webhookOutgoingError}
               value={webhookOutgoing}
               onChange={(e) => setWebhookOutgoing(e.target.value)}
               placeholder="https://your-app.com/webhooks/sms-sent"
               rows={2}
-              description={__('Called after each SMS is sent. Enter one URL per line.')}
+              description={__('Called after each SMS is sent. Enter one URL per line.', 'wp-sms')}
             />
           </div>
 
           <div className="wsms-space-y-2">
-            <Label htmlFor="webhookSubscriber">{__('New Subscriber Webhook')}</Label>
+            <Label htmlFor="webhookSubscriber">{__('New Subscriber Webhook', 'wp-sms')}</Label>
             <Textarea
               id="webhookSubscriber"
               value={webhookSubscriber}
@@ -72,12 +72,12 @@ export default function Advanced() {
               rows={2}
             />
             <p className="wsms-text-[12px] wsms-text-muted-foreground">
-              {__('Called when someone subscribes to your SMS newsletter.')}
+              {__('Called when someone subscribes to your SMS newsletter.', 'wp-sms')}
             </p>
           </div>
 
           <div className="wsms-space-y-2">
-            <Label htmlFor="webhookIncoming">{__('Incoming SMS Webhook')}</Label>
+            <Label htmlFor="webhookIncoming">{__('Incoming SMS Webhook', 'wp-sms')}</Label>
             <Textarea
               id="webhookIncoming"
               value={webhookIncoming}
@@ -86,7 +86,7 @@ export default function Advanced() {
               rows={2}
             />
             <p className="wsms-text-[12px] wsms-text-muted-foreground">
-              {__('Called when you receive an SMS reply. Requires Two-Way SMS add-on.')}
+              {__('Called when you receive an SMS reply. Requires Two-Way SMS add-on.', 'wp-sms')}
             </p>
           </div>
         </CardContent>
@@ -97,33 +97,33 @@ export default function Advanced() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Database className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Message Storage')}
+            {__('Message Storage', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            {__('Configure message logging and automatic cleanup')}
+            {__('Configure message logging and automatic cleanup', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <SettingRow
-            title={__('Log Sent Messages')}
-            description={__('Save all sent SMS messages in the Outbox for tracking.')}
+            title={__('Log Sent Messages', 'wp-sms')}
+            description={__('Save all sent SMS messages in the Outbox for tracking.', 'wp-sms')}
             checked={storeOutbox === '1'}
             onCheckedChange={(checked) => setStoreOutbox(checked ? '1' : '')}
           />
 
           {storeOutbox === '1' && (
             <SelectField
-              label={__('Auto-delete Sent Messages')}
+              label={__('Auto-delete Sent Messages', 'wp-sms')}
               value={outboxRetention}
               onValueChange={setOutboxRetention}
-              placeholder={__('Select retention period')}
-              description={__('Automatically remove old messages from the Outbox.')}
+              placeholder={__('Select retention period', 'wp-sms')}
+              description={__('Automatically remove old messages from the Outbox.', 'wp-sms')}
               options={[
-                { value: '30', label: __('After 30 days') },
-                { value: '90', label: __('After 90 days') },
-                { value: '180', label: __('After 180 days') },
-                { value: '365', label: __('After 365 days') },
-                { value: '0', label: __('Keep forever') },
+                { value: '30', label: __('After 30 days', 'wp-sms') },
+                { value: '90', label: __('After 90 days', 'wp-sms') },
+                { value: '180', label: __('After 180 days', 'wp-sms') },
+                { value: '365', label: __('After 365 days', 'wp-sms') },
+                { value: '0', label: __('Keep forever', 'wp-sms') },
               ]}
             />
           )}
@@ -135,23 +135,23 @@ export default function Advanced() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <BarChart3 className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Administrative Reporting')}
+            {__('Administrative Reporting', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            {__('Configure email reports about SMS performance and errors')}
+            {__('Configure email reports about SMS performance and errors', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <SettingRow
-            title={__('Weekly Statistics Email')}
-            description={__('Receive weekly SMS usage reports via email.')}
+            title={__('Weekly Statistics Email', 'wp-sms')}
+            description={__('Receive weekly SMS usage reports via email.', 'wp-sms')}
             checked={reportStats === '1'}
             onCheckedChange={(checked) => setReportStats(checked ? '1' : '')}
           />
 
           <SettingRow
-            title={__('Error Notifications')}
-            description={__('Email admin when SMS sending fails.')}
+            title={__('Error Notifications', 'wp-sms')}
+            description={__('Email admin when SMS sending fails.', 'wp-sms')}
             checked={notifyErrors === '1'}
             onCheckedChange={(checked) => setNotifyErrors(checked ? '1' : '')}
           />
@@ -163,16 +163,16 @@ export default function Advanced() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Bell className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Plugin Notifications')}
+            {__('Plugin Notifications', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            {__('Manage plugin update notices and announcements')}
+            {__('Manage plugin update notices and announcements', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <SettingRow
-            title={__('WSMS Notifications')}
-            description={__('Show update notices and announcements in the admin area.')}
+            title={__('WSMS Notifications', 'wp-sms')}
+            description={__('Show update notices and announcements in the admin area.', 'wp-sms')}
             checked={displayNotifications === '1'}
             onCheckedChange={(checked) => setDisplayNotifications(checked ? '1' : '')}
           />
@@ -184,16 +184,16 @@ export default function Advanced() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Megaphone className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Anonymous Usage Data')}
+            {__('Anonymous Usage Data', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            {__('Help improve WSMS by sharing anonymous usage statistics')}
+            {__('Help improve WSMS by sharing anonymous usage statistics', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <SettingRow
-            title={__('Share Anonymous Data')}
-            description={__('Share non-personal, anonymized data to help improve WSMS.')}
+            title={__('Share Anonymous Data', 'wp-sms')}
+            description={__('Share non-personal, anonymized data to help improve WSMS.', 'wp-sms')}
             checked={shareAnonymousData === '1'}
             onCheckedChange={(checked) => setShareAnonymousData(checked ? '1' : '')}
           />
@@ -231,7 +231,7 @@ export default function Advanced() {
       {standaloneFields.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>{__('Additional Add-on Settings')}</CardTitle>
+            <CardTitle>{__('Additional Add-on Settings', 'wp-sms')}</CardTitle>
           </CardHeader>
           <CardContent className="wsms-space-y-4">
             {standaloneFields.map((field) => (

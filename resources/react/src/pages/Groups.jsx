@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState, useCallback, useMemo } from 'react'
 import {
   FolderOpen,
@@ -20,7 +21,7 @@ import { DataTable } from '@/components/ui/data-table'
 import { QuickAddForm } from '@/components/shared/QuickAddForm'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { groupsApi } from '@/api/groupsApi'
-import { cn, __ } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 import { useDataTable } from '@/hooks/useDataTable'
 import { useFormDialog } from '@/hooks/useFormDialog'
@@ -40,7 +41,7 @@ export default function Groups() {
       await groupsApi.deleteGroup(id)
       table.removeItems([id])
     },
-    successMessage: __('Group deleted successfully'),
+    successMessage: __('Group deleted successfully', 'wp-sms'),
   })
 
   // UI state
@@ -86,7 +87,7 @@ export default function Groups() {
     setIsAddingQuick(true)
     try {
       await groupsApi.createGroup({ name })
-      toast({ title: __('Group created successfully'), variant: 'success' })
+      toast({ title: __('Group created successfully', 'wp-sms'), variant: 'success' })
       table.fetch({ page: 1 })
       // Notify other pages (e.g., Subscribers) that groups changed
       window.dispatchEvent(new CustomEvent('wpsms:groups-changed'))
@@ -113,7 +114,7 @@ export default function Groups() {
     setIsInlineEditSaving(true)
     try {
       await groupsApi.updateGroup(inlineEditId, { name: inlineEditValue.trim() })
-      toast({ title: __('Group updated successfully'), variant: 'success' })
+      toast({ title: __('Group updated successfully', 'wp-sms'), variant: 'success' })
       setInlineEditId(null)
       table.refresh()
       // Notify other pages (e.g., Subscribers) that groups changed
@@ -162,7 +163,7 @@ export default function Groups() {
     {
       id: 'id',
       accessorKey: 'id',
-      header: __('ID'),
+      header: __('ID', 'wp-sms'),
       cell: ({ row }) => (
         <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-font-mono">
           {row.id}
@@ -172,7 +173,7 @@ export default function Groups() {
     {
       id: 'name',
       accessorKey: 'name',
-      header: __('Group Name'),
+      header: __('Group Name', 'wp-sms'),
       sortable: true,
       cellClassName: 'wsms-w-full',
       cell: ({ row }) => {
@@ -187,7 +188,7 @@ export default function Groups() {
                   onChange={(e) => setInlineEditValue(e.target.value)}
                   onKeyDown={handleInlineEditKeyDown}
                   autoFocus
-                  aria-label={__('Edit group name')}
+                  aria-label={__('Edit group name', 'wp-sms')}
                   className="wsms-h-7 wsms-flex-1 wsms-min-w-0 wsms-text-[13px]"
                 />
                 <Button
@@ -196,7 +197,7 @@ export default function Groups() {
                   className="wsms-h-7 wsms-w-7 wsms-shrink-0"
                   onClick={handleInlineEditSave}
                   disabled={isInlineEditSaving}
-                  aria-label={__('Save group name')}
+                  aria-label={__('Save group name', 'wp-sms')}
                 >
                   {isInlineEditSaving ? (
                     <Loader2 className="wsms-h-3.5 wsms-w-3.5 wsms-animate-spin wsms-text-emerald-600" />
@@ -210,7 +211,7 @@ export default function Groups() {
                   className="wsms-h-7 wsms-w-7 wsms-shrink-0"
                   onClick={handleInlineEditCancel}
                   disabled={isInlineEditSaving}
-                  aria-label={__('Cancel editing')}
+                  aria-label={__('Cancel editing', 'wp-sms')}
                 >
                   <X className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
                 </Button>
@@ -230,7 +231,7 @@ export default function Groups() {
     {
       id: 'subscriber_count',
       accessorKey: 'subscriber_count',
-      header: __('Subscribers'),
+      header: __('Subscribers', 'wp-sms'),
       cell: ({ row }) => (
         <div className="wsms-flex wsms-items-center wsms-gap-2">
           <Users className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
@@ -245,12 +246,12 @@ export default function Groups() {
   // Row actions
   const rowActions = [
     {
-      label: __('Edit'),
+      label: __('Edit', 'wp-sms'),
       icon: Edit,
       onClick: handleInlineEditStart,
     },
     {
-      label: __('Delete'),
+      label: __('Delete', 'wp-sms'),
       icon: Trash2,
       onClick: handleDeleteClick,
       variant: 'destructive',
@@ -274,14 +275,14 @@ export default function Groups() {
             <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center">
               <AlertCircle className="wsms-h-12 wsms-w-12 wsms-text-destructive wsms-mb-4" />
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                {__('Failed to load groups')}
+                {__('Failed to load groups', 'wp-sms')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-4">
                 {table.error}
               </p>
               <Button onClick={() => table.fetch({ page: 1 })}>
                 <RefreshCw className="wsms-h-4 wsms-w-4 wsms-me-2" />
-                {__('Try Again')}
+                {__('Try Again', 'wp-sms')}
               </Button>
             </div>
           </CardContent>
@@ -301,21 +302,21 @@ export default function Groups() {
                 <FolderOpen className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                {__('Create your first group')}
+                {__('Create your first group', 'wp-sms')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
-                {__('Groups help you organize subscribers for targeted messaging. Segment your audience by interest, location, or any criteria that matters to your communication.')}
+                {__('Groups help you organize subscribers for targeted messaging. Segment your audience by interest, location, or any criteria that matters to your communication.', 'wp-sms')}
               </p>
 
               <div className="wsms-w-full wsms-max-w-sm">
                 <QuickAddForm
-                  placeholder={__('Enter group name...')}
-                  buttonLabel={__('Create Group')}
+                  placeholder={__('Enter group name...', 'wp-sms')}
+                  buttonLabel={__('Create Group', 'wp-sms')}
                   onSubmit={handleQuickAdd}
                   isLoading={isAddingQuick}
                   validate={(value) => {
-                    if (value.length < 2) return __('Group name must be at least 2 characters')
-                    if (value.length > 50) return __('Group name must be less than 50 characters')
+                    if (value.length < 2) return __('Group name must be at least 2 characters', 'wp-sms')
+                    if (value.length > 50) return __('Group name must be less than 50 characters', 'wp-sms')
                     return null
                   }}
                 />
@@ -324,13 +325,13 @@ export default function Groups() {
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4 wsms-mt-8 wsms-pt-6 wsms-border-t wsms-border-border wsms-w-full">
                 <div className="wsms-text-start wsms-p-3 wsms-rounded-lg wsms-bg-muted/30">
                   <Users className="wsms-h-4 wsms-w-4 wsms-text-primary wsms-mb-2" />
-                  <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">{__('Targeted Messaging')}</p>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Send SMS to specific groups only')}</p>
+                  <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">{__('Targeted Messaging', 'wp-sms')}</p>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Send SMS to specific groups only', 'wp-sms')}</p>
                 </div>
                 <div className="wsms-text-start wsms-p-3 wsms-rounded-lg wsms-bg-muted/30">
                   <LayoutGrid className="wsms-h-4 wsms-w-4 wsms-text-primary wsms-mb-2" />
-                  <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">{__('Easy Organization')}</p>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Manage subscribers efficiently')}</p>
+                  <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">{__('Easy Organization', 'wp-sms')}</p>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Manage subscribers efficiently', 'wp-sms')}</p>
                 </div>
               </div>
             </div>
@@ -352,7 +353,7 @@ export default function Groups() {
             </div>
             <div>
               <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{table.pagination.total}</p>
-              <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Groups')}</p>
+              <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Groups', 'wp-sms')}</p>
             </div>
           </div>
           <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
@@ -362,7 +363,7 @@ export default function Groups() {
             </div>
             <div>
               <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{totalSubscribers}</p>
-              <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total Subscribers')}</p>
+              <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total Subscribers', 'wp-sms')}</p>
             </div>
           </div>
         </div>
@@ -376,7 +377,7 @@ export default function Groups() {
                 'wsms-p-1.5 wsms-rounded-md wsms-transition-colors',
                 viewMode === 'list' ? 'wsms-bg-muted wsms-text-foreground' : 'wsms-text-muted-foreground hover:wsms-text-foreground'
               )}
-              aria-label={__('List view')}
+              aria-label={__('List view', 'wp-sms')}
               aria-pressed={viewMode === 'list'}
             >
               <List className="wsms-h-4 wsms-w-4" />
@@ -387,7 +388,7 @@ export default function Groups() {
                 'wsms-p-1.5 wsms-rounded-md wsms-transition-colors',
                 viewMode === 'grid' ? 'wsms-bg-muted wsms-text-foreground' : 'wsms-text-muted-foreground hover:wsms-text-foreground'
               )}
-              aria-label={__('Grid view')}
+              aria-label={__('Grid view', 'wp-sms')}
               aria-pressed={viewMode === 'grid'}
             >
               <LayoutGrid className="wsms-h-4 wsms-w-4" />
@@ -403,13 +404,13 @@ export default function Groups() {
             <Plus className="wsms-h-5 wsms-w-5 wsms-text-primary wsms-shrink-0" />
             <div className="wsms-flex-1">
               <QuickAddForm
-                placeholder={__('Enter group name to create...')}
-                buttonLabel={__('Create Group')}
+                placeholder={__('Enter group name to create...', 'wp-sms')}
+                buttonLabel={__('Create Group', 'wp-sms')}
                 onSubmit={handleQuickAdd}
                 isLoading={isAddingQuick}
                 validate={(value) => {
-                  if (value.length < 2) return __('Group name must be at least 2 characters')
-                  if (value.length > 50) return __('Group name must be less than 50 characters')
+                  if (value.length < 2) return __('Group name must be at least 2 characters', 'wp-sms')
+                  if (value.length > 50) return __('Group name must be less than 50 characters', 'wp-sms')
                   return null
                 }}
               />
@@ -456,7 +457,7 @@ export default function Groups() {
                       onChange={(e) => setInlineEditValue(e.target.value)}
                       onKeyDown={handleInlineEditKeyDown}
                       autoFocus
-                      aria-label={__('Edit group name')}
+                      aria-label={__('Edit group name', 'wp-sms')}
                       className="wsms-h-8"
                     />
                     <div className="wsms-flex wsms-gap-2">
@@ -468,7 +469,7 @@ export default function Groups() {
                         disabled={isInlineEditSaving}
                       >
                         <X className="wsms-h-3 wsms-w-3 wsms-me-1" />
-                        {__('Cancel')}
+                        {__('Cancel', 'wp-sms')}
                       </Button>
                       <Button
                         size="sm"
@@ -481,7 +482,7 @@ export default function Groups() {
                         ) : (
                           <Save className="wsms-h-3 wsms-w-3 wsms-me-1" />
                         )}
-                        {isInlineEditSaving ? __('Saving...') : __('Save')}
+                        {isInlineEditSaving ? __('Saving...', 'wp-sms') : __('Save', 'wp-sms')}
                       </Button>
                     </div>
                   </div>
@@ -571,13 +572,13 @@ export default function Groups() {
         onClose={deleteDialog.close}
         onConfirm={handleDeleteConfirm}
         isSaving={deleteDialog.isSaving}
-        title={__('Delete Group')}
-        description={`${__('Are you sure you want to delete')} "${deleteDialog.item?.name}"?`}
-        confirmLabel={__('Delete Group')}
+        title={__('Delete Group', 'wp-sms')}
+        description={`${__('Are you sure you want to delete', 'wp-sms')} "${deleteDialog.item?.name}"?`}
+        confirmLabel={__('Delete Group', 'wp-sms')}
       >
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-amber-500/10 wsms-border wsms-border-amber-500/20">
           <p className="wsms-text-[12px] wsms-text-amber-700 dark:wsms-text-amber-400">
-            {__('This will remove the group but keep all subscribers. They will become ungrouped.')}
+            {__('This will remove the group but keep all subscribers. They will become ungrouped.', 'wp-sms')}
           </p>
         </div>
       </DeleteConfirmDialog>

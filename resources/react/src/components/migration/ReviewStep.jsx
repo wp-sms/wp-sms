@@ -1,3 +1,4 @@
+import { __, _n, sprintf } from '@wordpress/i18n'
 import React, { useState } from 'react'
 import {
   ArrowRight,
@@ -8,7 +9,6 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { __, sprintf, _n } from '@/lib/utils'
 
 export default function ReviewStep({
   headlineRef,
@@ -44,20 +44,20 @@ export default function ReviewStep({
   let headline = ''
   let sub = ''
   if (isEmpty) {
-    headline = __('Nothing to check yet')
+    headline = __('Nothing to check yet', 'wp-sms')
     sub = __(
       "Looks like you don't have any stored phone numbers yet. Come back here once you have subscribers or user mobile data."
-    )
+    , 'wp-sms')
   } else if (isAlreadyMigrated) {
-    headline = __('Your numbers are already in good shape.')
+    headline = __('Your numbers are already in good shape.', 'wp-sms')
     sub = sprintf(
-      __('We checked %d records and they all use the international format. No action needed.'),
+      __('We checked %d records and they all use the international format. No action needed.', 'wp-sms'),
       totalRecords
     )
   } else {
-    headline = sprintf(__('We checked %d records'), totalRecords)
+    headline = sprintf(__('We checked %d records', 'wp-sms'), totalRecords)
     sub = sprintf(
-      __('%d numbers need the country code. Everything else is already in good shape.'),
+      __('%d numbers need the country code. Everything else is already in good shape.', 'wp-sms'),
       totalNeedFix
     )
   }
@@ -84,10 +84,10 @@ export default function ReviewStep({
                 {lastRunHadErrors
                   ? __(
                       "Your previous update had errors. Some records weren't updated. You can re-run to retry, revert to roll back, or clear the old backup if you've handled it manually."
-                    )
+                    , 'wp-sms')
                   : sprintf(
-                      __('A backup from %s exists. Applying new changes will replace it.'),
-                      backupTimestamp || __('a previous run')
+                      __('A backup from %s exists. Applying new changes will replace it.', 'wp-sms'),
+                      backupTimestamp || __('a previous run', 'wp-sms')
                     )}
               </span>
               <div className="wsms-flex wsms-flex-wrap wsms-gap-2">
@@ -96,7 +96,7 @@ export default function ReviewStep({
                   onClick={onRevertOldBackup}
                   className="wsms-text-[12px] wsms-font-medium wsms-underline wsms-text-inherit"
                 >
-                  {__('Revert the old update first?')}
+                  {__('Revert the old update first?', 'wp-sms')}
                 </button>
                 <span className="wsms-text-[12px] wsms-text-inherit/60">•</span>
                 <button
@@ -104,7 +104,7 @@ export default function ReviewStep({
                   onClick={onClearOldBackup}
                   className="wsms-text-[12px] wsms-font-medium wsms-underline wsms-text-inherit"
                 >
-                  {__('Clear old backup')}
+                  {__('Clear old backup', 'wp-sms')}
                 </button>
               </div>
             </div>
@@ -120,7 +120,7 @@ export default function ReviewStep({
                 "We're checking %d new data source since your last update.",
                 "We're checking %d new data sources since your last update.",
                 newSourcesSinceLast.length
-              ),
+              , 'wp-sms'),
               newSourcesSinceLast.length
             )}
           </AlertDescription>
@@ -132,7 +132,7 @@ export default function ReviewStep({
           <AlertDescription>
             {__(
               "This is a large update. It may take 1-2 minutes to apply. Please don't close the tab while it's running."
-            )}
+            , 'wp-sms')}
           </AlertDescription>
         </Alert>
       )}
@@ -140,9 +140,9 @@ export default function ReviewStep({
       {!isEmpty && (
         <>
           <div className="wsms-grid wsms-grid-cols-3 wsms-gap-3">
-            <StatTile value={totalRecords} label={__('Total reviewed')} tone="default" />
-            <StatTile value={totalNeedFix} label={__('Need update')} tone="warning" />
-            <StatTile value={totalAlreadyIntl} label={__('Already correct')} tone="success" />
+            <StatTile value={totalRecords} label={__('Total reviewed', 'wp-sms')} tone="default" />
+            <StatTile value={totalNeedFix} label={__('Need update', 'wp-sms')} tone="warning" />
+            <StatTile value={totalAlreadyIntl} label={__('Already correct', 'wp-sms')} tone="success" />
           </div>
 
           {!isAlreadyMigrated && (
@@ -153,7 +153,7 @@ export default function ReviewStep({
                 className="wsms-w-full wsms-flex wsms-items-center wsms-justify-between wsms-px-4 wsms-py-2.5 wsms-text-[13px] wsms-font-medium wsms-bg-muted/40 hover:wsms-bg-muted/60"
                 aria-expanded={showSources}
               >
-                <span>{__('View by source')}</span>
+                <span>{__('View by source', 'wp-sms')}</span>
                 {showSources ? (
                   <ChevronDown className="wsms-h-4 wsms-w-4" aria-hidden="true" />
                 ) : (
@@ -172,11 +172,11 @@ export default function ReviewStep({
                         <span className="wsms-font-medium wsms-text-foreground">{source.label}</span>
                         <span className="wsms-flex wsms-items-center wsms-gap-3 wsms-text-[12px]">
                           <span className="wsms-text-warning">
-                            {sprintf(__('%d need update'), source.need_fix)}
+                            {sprintf(__('%d need update', 'wp-sms'), source.need_fix)}
                           </span>
                           <span className="wsms-text-muted-foreground">•</span>
                           <span className="wsms-text-success">
-                            {sprintf(__('%d already OK'), source.already_intl)}
+                            {sprintf(__('%d already OK', 'wp-sms'), source.already_intl)}
                           </span>
                         </span>
                       </li>
@@ -195,7 +195,7 @@ export default function ReviewStep({
                 className="wsms-w-full wsms-flex wsms-items-center wsms-justify-between wsms-px-4 wsms-py-2.5 wsms-text-[13px] wsms-font-medium wsms-bg-muted/40 hover:wsms-bg-muted/60"
                 aria-expanded={showSamples}
               >
-                <span>{__('What kind of numbers need fixing?')}</span>
+                <span>{__('What kind of numbers need fixing?', 'wp-sms')}</span>
                 {showSamples ? (
                   <ChevronDown className="wsms-h-4 wsms-w-4" aria-hidden="true" />
                 ) : (
@@ -218,13 +218,13 @@ export default function ReviewStep({
             <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-text-[12px] wsms-text-muted-foreground">
               <Info className="wsms-h-3.5 wsms-w-3.5" aria-hidden="true" />
               <span>
-                {sprintf(__('Using country code %s.'), countryCode)}{' '}
+                {sprintf(__('Using country code %s.', 'wp-sms'), countryCode)}{' '}
                 <button
                   type="button"
                   onClick={onWrongCountry}
                   className="wsms-underline wsms-text-primary"
                 >
-                  {__('Wrong country?')}
+                  {__('Wrong country?', 'wp-sms')}
                 </button>
               </span>
             </div>
@@ -234,25 +234,25 @@ export default function ReviewStep({
 
       <div className="wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-pt-2">
         <Button variant="outline" onClick={onBack} disabled={loading}>
-          {__('Back')}
+          {__('Back', 'wp-sms')}
         </Button>
         {!isEmpty && !isAlreadyMigrated ? (
           <Button onClick={onNext} disabled={loading}>
             {loading ? (
               <>
                 <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1.5 wsms-animate-spin" aria-hidden="true" />
-                {__('Loading...')}
+                {__('Loading...', 'wp-sms')}
               </>
             ) : (
               <>
-                {__('Preview changes')}
+                {__('Preview changes', 'wp-sms')}
                 <ArrowRight className="wsms-h-4 wsms-w-4 wsms-ms-1.5 wsms-rtl:wsms-rotate-180" aria-hidden="true" />
               </>
             )}
           </Button>
         ) : (
           <Button onClick={onClose} disabled={loading}>
-            {__('Close')}
+            {__('Close', 'wp-sms')}
           </Button>
         )}
       </div>

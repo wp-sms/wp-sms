@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState, useEffect, useCallback } from 'react'
 import {
   ExternalLink,
@@ -9,7 +10,7 @@ import {
   Settings2,
   RefreshCw,
 } from 'lucide-react'
-import { cn, __, getWpSettings, getGatewayDisplayName, isAddonDashboardReady } from '@/lib/utils'
+import { cn, getWpSettings, getGatewayDisplayName, isAddonDashboardReady } from '@/lib/utils'
 import Logo from './Logo'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 import { smsApi } from '@/api/smsApi'
@@ -19,8 +20,8 @@ import { getNavigation } from '@/lib/pageRegistry'
 
 function getLinks() {
   return [
-    { label: __('Documentation'), href: 'https://wsms.io/docs/' },
-    { label: __('Support'), href: 'https://wsms.io/support/' },
+    { label: __('Documentation', 'wp-sms'), href: 'https://wsms.io/docs/' },
+    { label: __('Support', 'wp-sms'), href: 'https://wsms.io/support/' },
   ]
 }
 
@@ -86,17 +87,17 @@ function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
           <span className="wsms-relative wsms-inline-flex wsms-rounded-full wsms-h-2 wsms-w-2 wsms-bg-amber-500" />
         </span>
         <span className="wsms-text-[11px] wsms-font-medium wsms-text-amber-700 dark:wsms-text-amber-400">
-          {__('Gateway not configured')}
+          {__('Gateway not configured', 'wp-sms')}
         </span>
       </button>
     )
   }
 
   const statusLabel = isLoadingCredit
-    ? __('Checking gateway...')
+    ? __('Checking gateway...', 'wp-sms')
     : isConnected
-      ? __('Gateway Connected')
-      : __('Gateway not connected')
+      ? __('Gateway Connected', 'wp-sms')
+      : __('Gateway not connected', 'wp-sms')
 
   return (
     <div className={cn('wsms-rounded-md wsms-transition-all', isConnected ? 'wsms-bg-emerald-500/10' : 'wsms-bg-amber-500/10')}>
@@ -148,14 +149,14 @@ function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
         <div className="wsms-px-3 wsms-pb-2.5 wsms-space-y-2">
           {/* Gateway name */}
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-text-[11px]">
-            <span className="wsms-text-muted-foreground">{__('Gateway')}</span>
+            <span className="wsms-text-muted-foreground">{__('Gateway', 'wp-sms')}</span>
             <span className="wsms-font-medium wsms-text-foreground">{gatewayDisplayName}</span>
           </div>
 
           {/* Credit */}
           {isConnected && (
             <div className="wsms-flex wsms-items-center wsms-justify-between wsms-text-[11px]">
-              <span className="wsms-text-muted-foreground">{__('Credit')}</span>
+              <span className="wsms-text-muted-foreground">{__('Credit', 'wp-sms')}</span>
               <div className="wsms-flex wsms-items-center wsms-gap-1.5">
                 {isLoadingCredit ? (
                   <RefreshCw className="wsms-h-3 wsms-w-3 wsms-animate-spin wsms-text-muted-foreground" />
@@ -170,7 +171,7 @@ function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
                         fetchCredit()
                       }}
                       className="wsms-p-0.5 wsms-rounded hover:wsms-bg-emerald-500/20 wsms-transition-colors"
-                      title={__('Refresh credit')}
+                      title={__('Refresh credit', 'wp-sms')}
                     >
                       <RefreshCw className="wsms-h-3 wsms-w-3 wsms-text-muted-foreground hover:wsms-text-foreground" />
                     </button>
@@ -191,7 +192,7 @@ function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
             )}
           >
             <Settings2 className="wsms-h-3 wsms-w-3" />
-            {__('Configure')}
+            {__('Configure', 'wp-sms')}
           </button>
         </div>
       </div>
@@ -210,7 +211,7 @@ function WhatsNew({ version }) {
     >
       <span className="wsms-flex wsms-items-center wsms-gap-1.5">
         <Sparkles className="wsms-h-3 wsms-w-3 wsms-text-primary/60 group-hover:wsms-text-primary wsms-transition-colors" />
-        <span>{__("What's New")}</span>
+        <span>{__("What's New", 'wp-sms')}</span>
       </span>
       <span className="wsms-font-medium wsms-text-muted-foreground">v{version}</span>
     </a>
@@ -226,7 +227,7 @@ function RatePlugin() {
       rel="noopener noreferrer"
       className="wsms-group wsms-flex wsms-items-center wsms-justify-between wsms-w-full wsms-px-3 wsms-py-1.5 wsms-text-[11px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors wsms-rounded-md hover:wsms-bg-accent"
     >
-      <span>{__('Enjoying WSMS?')}</span>
+      <span>{__('Enjoying WSMS?', 'wp-sms')}</span>
       <span className="wsms-flex wsms-items-center wsms-gap-0.5">
         {[1, 2, 3, 4, 5].map((star) => (
           <Star

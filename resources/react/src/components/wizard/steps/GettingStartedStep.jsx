@@ -1,8 +1,8 @@
+import { __ } from '@wordpress/i18n'
 import React from 'react'
 import { Shield, Zap, Globe, CheckCircle } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import PhoneInput from '../components/PhoneInput'
-import { __ } from '@/lib/utils'
 
 /**
  * Getting Started step - Welcome message and admin phone number collection
@@ -15,9 +15,9 @@ export default function GettingStartedStep({
   onValidChange,
 }) {
   const features = [
-    { icon: Zap, label: __('200+ Gateways') },
-    { icon: Globe, label: __('Global Coverage') },
-    { icon: Shield, label: __('Secure & Reliable') },
+    { icon: Zap, label: __('200+ Gateways', 'wp-sms') },
+    { icon: Globe, label: __('Global Coverage', 'wp-sms') },
+    { icon: Shield, label: __('Secure & Reliable', 'wp-sms') },
   ]
 
   return (
@@ -25,10 +25,10 @@ export default function GettingStartedStep({
       {/* Header */}
       <div className="wsms-text-center wsms-mb-6">
         <h2 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-1">
-          {__('Welcome to WSMS')}
+          {__('Welcome to WSMS', 'wp-sms')}
         </h2>
         <p className="wsms-text-[12px] wsms-text-muted-foreground">
-          {__("Let's get your SMS gateway configured in just a few steps.")}
+          {__("Let's get your SMS gateway configured in just a few steps.", 'wp-sms')}
         </p>
       </div>
 
@@ -49,11 +49,11 @@ export default function GettingStartedStep({
       <Card>
         <CardHeader>
           <CardTitle>
-            {__('Your Mobile Number')}
+            {__('Your Mobile Number', 'wp-sms')}
             <span className="wsms-text-destructive wsms-ms-0.5">*</span>
           </CardTitle>
           <CardDescription>
-            {__("We'll use this for test SMS and admin notifications.")}
+            {__("We'll use this for test SMS and admin notifications.", 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -67,7 +67,7 @@ export default function GettingStartedStep({
             <div className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-mt-3 wsms-text-success">
               <CheckCircle className="wsms-h-3.5 wsms-w-3.5" />
               <span className="wsms-text-[11px] wsms-font-medium">
-                {__('Valid phone number')}
+                {__('Valid phone number', 'wp-sms')}
               </span>
             </div>
           )}

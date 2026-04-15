@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState, useRef } from 'react'
 import { Puzzle, ChevronDown, ChevronUp, ShoppingCart, Users, CreditCard, Briefcase, HeadphonesIcon, UserCircle, Mail, ClipboardList, Calendar, Layers, FileInput } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
@@ -11,7 +12,7 @@ import { useSetting, useProSetting } from '@/context/SettingsContext'
 import { useAddonSettings, useAddonFieldsForSection } from '@/hooks/useAddonSettings'
 import { AddonSection, AddonFieldsInjection } from '@/components/ui/AddonSection'
 import { DynamicField } from '@/components/ui/DynamicField'
-import { getWpSettings, __ } from '@/lib/utils'
+import { getWpSettings } from '@/lib/utils'
 
 // Get plugin status from localized data
 const getPluginStatus = (pluginKey) => {
@@ -22,10 +23,10 @@ const getPluginStatus = (pluginKey) => {
 // Status badge component
 const PluginStatusBadge = ({ status }) => {
   const variants = {
-    active: { label: __('Active'), className: 'wsms-bg-green-100 wsms-text-green-800 wsms-border-green-200' },
-    inactive: { label: __('Inactive'), className: 'wsms-bg-red-50 wsms-text-red-700 wsms-border-red-200' },
-    not_installed: { label: __('Not Installed'), className: 'wsms-bg-gray-100 wsms-text-gray-600 wsms-border-gray-200' },
-    unknown: { label: __('Unknown'), className: 'wsms-bg-gray-100 wsms-text-gray-800 wsms-border-gray-200' },
+    active: { label: __('Active', 'wp-sms'), className: 'wsms-bg-green-100 wsms-text-green-800 wsms-border-green-200' },
+    inactive: { label: __('Inactive', 'wp-sms'), className: 'wsms-bg-red-50 wsms-text-red-700 wsms-border-red-200' },
+    not_installed: { label: __('Not Installed', 'wp-sms'), className: 'wsms-bg-gray-100 wsms-text-gray-600 wsms-border-gray-200' },
+    unknown: { label: __('Unknown', 'wp-sms'), className: 'wsms-bg-gray-100 wsms-text-gray-800 wsms-border-gray-200' },
   }
 
   const variant = variants[status] || variants.unknown
@@ -125,10 +126,10 @@ const ForminatorFormSettings = ({ form }) => {
           <div className="wsms-space-y-4">
             <div className="wsms-flex wsms-items-center wsms-justify-between">
               <div>
-                <Label className="wsms-font-medium">{__('Send SMS to a number')}</Label>
+                <Label className="wsms-font-medium">{__('Send SMS to a number', 'wp-sms')}</Label>
               </div>
               <Switch
-                aria-label={__('Send SMS to a number')}
+                aria-label={__('Send SMS to a number', 'wp-sms')}
                 checked={enableForm === '1'}
                 onCheckedChange={(checked) => setEnableForm(checked ? '1' : '')}
               />
@@ -137,28 +138,28 @@ const ForminatorFormSettings = ({ form }) => {
             {enableForm === '1' && (
               <div className="wsms-space-y-4 wsms-ps-4 wsms-border-s-2 wsms-border-primary/20">
                 <div className="wsms-space-y-2">
-                  <Label>{__('Phone number(s)')}</Label>
+                  <Label>{__('Phone number(s)', 'wp-sms')}</Label>
                   <Input
                     type="text"
                     value={receiverForm}
                     onChange={(e) => setReceiverForm(e.target.value)}
                     placeholder="+1234567890, +0987654321"
-                    aria-label={__('Phone numbers')}
+                    aria-label={__('Phone numbers', 'wp-sms')}
                   />
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                    {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.')}
+                    {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms')}
                   </p>
                 </div>
 
                 <div className="wsms-space-y-2">
-                  <Label>{__('Message body')}</Label>
+                  <Label>{__('Message body', 'wp-sms')}</Label>
                   <Textarea
                     ref={messageFormRef}
                     value={messageForm}
                     onChange={(e) => setMessageForm(e.target.value)}
                     rows={3}
-                    placeholder={__('Enter your message content.')}
-                    aria-label={__('Message body')}
+                    placeholder={__('Enter your message content.', 'wp-sms')}
+                    aria-label={__('Message body', 'wp-sms')}
                   />
                   {form.variables && form.variables.length > 0 && (
                     <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -181,10 +182,10 @@ const ForminatorFormSettings = ({ form }) => {
             <div className="wsms-space-y-4 wsms-pt-4 wsms-border-t">
               <div className="wsms-flex wsms-items-center wsms-justify-between">
                 <div>
-                  <Label className="wsms-font-medium">{__('Send SMS to field')}</Label>
+                  <Label className="wsms-font-medium">{__('Send SMS to field', 'wp-sms')}</Label>
                 </div>
                 <Switch
-                  aria-label={__('Send SMS to field')}
+                  aria-label={__('Send SMS to field', 'wp-sms')}
                   checked={enableField === '1'}
                   onCheckedChange={(checked) => setEnableField(checked ? '1' : '')}
                 />
@@ -193,10 +194,10 @@ const ForminatorFormSettings = ({ form }) => {
               {enableField === '1' && (
                 <div className="wsms-space-y-4 wsms-ps-4 wsms-border-s-2 wsms-border-primary/20">
                   <div className="wsms-space-y-2">
-                    <Label>{__('A field of the form')}</Label>
+                    <Label>{__('A field of the form', 'wp-sms')}</Label>
                     <Select value={receiverField} onValueChange={setReceiverField}>
-                      <SelectTrigger aria-label={__('Form field')}>
-                        <SelectValue placeholder={__('Select a field...')} />
+                      <SelectTrigger aria-label={__('Form field', 'wp-sms')}>
+                        <SelectValue placeholder={__('Select a field...', 'wp-sms')} />
                       </SelectTrigger>
                       <SelectContent>
                         {Object.entries(form.fields).map(([slug, label]) => (
@@ -207,19 +208,19 @@ const ForminatorFormSettings = ({ form }) => {
                       </SelectContent>
                     </Select>
                     <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                      {__('Select the field of your form.')}
+                      {__('Select the field of your form.', 'wp-sms')}
                     </p>
                   </div>
 
                   <div className="wsms-space-y-2">
-                    <Label>{__('Message body')}</Label>
+                    <Label>{__('Message body', 'wp-sms')}</Label>
                     <Textarea
                       ref={messageFieldRef}
                       value={messageField}
                       onChange={(e) => setMessageField(e.target.value)}
                       rows={3}
-                      placeholder={__('Enter your message content.')}
-                      aria-label={__('Message body')}
+                      placeholder={__('Enter your message content.', 'wp-sms')}
+                      aria-label={__('Message body', 'wp-sms')}
                     />
                     {form.variables && form.variables.length > 0 && (
                       <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -303,10 +304,10 @@ const GravityFormSettings = ({ form }) => {
           <div className="wsms-space-y-4">
             <div className="wsms-flex wsms-items-center wsms-justify-between">
               <div>
-                <Label className="wsms-font-medium">{__('Send SMS to a number')}</Label>
+                <Label className="wsms-font-medium">{__('Send SMS to a number', 'wp-sms')}</Label>
               </div>
               <Switch
-                aria-label={__('Send SMS to a number')}
+                aria-label={__('Send SMS to a number', 'wp-sms')}
                 checked={enableForm === '1'}
                 onCheckedChange={(checked) => setEnableForm(checked ? '1' : '')}
               />
@@ -315,28 +316,28 @@ const GravityFormSettings = ({ form }) => {
             {enableForm === '1' && (
               <div className="wsms-space-y-4 wsms-ps-4 wsms-border-s-2 wsms-border-primary/20">
                 <div className="wsms-space-y-2">
-                  <Label>{__('Phone number(s)')}</Label>
+                  <Label>{__('Phone number(s)', 'wp-sms')}</Label>
                   <Input
                     type="text"
                     value={receiverForm}
                     onChange={(e) => setReceiverForm(e.target.value)}
                     placeholder="+1234567890, +0987654321"
-                    aria-label={__('Phone numbers')}
+                    aria-label={__('Phone numbers', 'wp-sms')}
                   />
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                    {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.')}
+                    {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms')}
                   </p>
                 </div>
 
                 <div className="wsms-space-y-2">
-                  <Label>{__('Message body')}</Label>
+                  <Label>{__('Message body', 'wp-sms')}</Label>
                   <Textarea
                     ref={messageFormRef}
                     value={messageForm}
                     onChange={(e) => setMessageForm(e.target.value)}
                     rows={3}
-                    placeholder={__('Enter your message content.')}
-                    aria-label={__('Message body')}
+                    placeholder={__('Enter your message content.', 'wp-sms')}
+                    aria-label={__('Message body', 'wp-sms')}
                   />
                   {form.variables && form.variables.length > 0 && (
                     <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -359,10 +360,10 @@ const GravityFormSettings = ({ form }) => {
             <div className="wsms-space-y-4 wsms-pt-4 wsms-border-t">
               <div className="wsms-flex wsms-items-center wsms-justify-between">
                 <div>
-                  <Label className="wsms-font-medium">{__('Send SMS to field')}</Label>
+                  <Label className="wsms-font-medium">{__('Send SMS to field', 'wp-sms')}</Label>
                 </div>
                 <Switch
-                  aria-label={__('Send SMS to field')}
+                  aria-label={__('Send SMS to field', 'wp-sms')}
                   checked={enableField === '1'}
                   onCheckedChange={(checked) => setEnableField(checked ? '1' : '')}
                 />
@@ -371,10 +372,10 @@ const GravityFormSettings = ({ form }) => {
               {enableField === '1' && (
                 <div className="wsms-space-y-4 wsms-ps-4 wsms-border-s-2 wsms-border-primary/20">
                   <div className="wsms-space-y-2">
-                    <Label>{__('A field of the form')}</Label>
+                    <Label>{__('A field of the form', 'wp-sms')}</Label>
                     <Select value={receiverField} onValueChange={setReceiverField}>
-                      <SelectTrigger aria-label={__('Form field')}>
-                        <SelectValue placeholder={__('Select a field...')} />
+                      <SelectTrigger aria-label={__('Form field', 'wp-sms')}>
+                        <SelectValue placeholder={__('Select a field...', 'wp-sms')} />
                       </SelectTrigger>
                       <SelectContent>
                         {Object.entries(form.fields).map(([id, label]) => (
@@ -385,19 +386,19 @@ const GravityFormSettings = ({ form }) => {
                       </SelectContent>
                     </Select>
                     <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                      {__('Select the field of your form.')}
+                      {__('Select the field of your form.', 'wp-sms')}
                     </p>
                   </div>
 
                   <div className="wsms-space-y-2">
-                    <Label>{__('Message body')}</Label>
+                    <Label>{__('Message body', 'wp-sms')}</Label>
                     <Textarea
                       ref={messageFieldRef}
                       value={messageField}
                       onChange={(e) => setMessageField(e.target.value)}
                       rows={3}
-                      placeholder={__('Enter your message content.')}
-                      aria-label={__('Message body')}
+                      placeholder={__('Enter your message content.', 'wp-sms')}
+                      aria-label={__('Message body', 'wp-sms')}
                     />
                     {form.variables && form.variables.length > 0 && (
                       <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -482,10 +483,10 @@ const QuformFormSettings = ({ form }) => {
           <div className="wsms-space-y-4">
             <div className="wsms-flex wsms-items-center wsms-justify-between">
               <div>
-                <Label className="wsms-font-medium">{__('Send SMS to a number')}</Label>
+                <Label className="wsms-font-medium">{__('Send SMS to a number', 'wp-sms')}</Label>
               </div>
               <Switch
-                aria-label={__('Send SMS to a number')}
+                aria-label={__('Send SMS to a number', 'wp-sms')}
                 checked={enableForm === '1'}
                 onCheckedChange={(checked) => setEnableForm(checked ? '1' : '')}
               />
@@ -494,28 +495,28 @@ const QuformFormSettings = ({ form }) => {
             {enableForm === '1' && (
               <div className="wsms-space-y-4 wsms-ps-4 wsms-border-s-2 wsms-border-primary/20">
                 <div className="wsms-space-y-2">
-                  <Label>{__('Phone number(s)')}</Label>
+                  <Label>{__('Phone number(s)', 'wp-sms')}</Label>
                   <Input
                     type="text"
                     value={receiverForm}
                     onChange={(e) => setReceiverForm(e.target.value)}
                     placeholder="+1234567890, +0987654321"
-                    aria-label={__('Phone numbers')}
+                    aria-label={__('Phone numbers', 'wp-sms')}
                   />
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                    {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.')}
+                    {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms')}
                   </p>
                 </div>
 
                 <div className="wsms-space-y-2">
-                  <Label>{__('Message body')}</Label>
+                  <Label>{__('Message body', 'wp-sms')}</Label>
                   <Textarea
                     ref={messageFormRef}
                     value={messageForm}
                     onChange={(e) => setMessageForm(e.target.value)}
                     rows={3}
-                    placeholder={__('Enter your message content.')}
-                    aria-label={__('Message body')}
+                    placeholder={__('Enter your message content.', 'wp-sms')}
+                    aria-label={__('Message body', 'wp-sms')}
                   />
                   {form.variables && form.variables.length > 0 && (
                     <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -538,10 +539,10 @@ const QuformFormSettings = ({ form }) => {
             <div className="wsms-space-y-4 wsms-pt-4 wsms-border-t">
               <div className="wsms-flex wsms-items-center wsms-justify-between">
                 <div>
-                  <Label className="wsms-font-medium">{__('Send SMS to field')}</Label>
+                  <Label className="wsms-font-medium">{__('Send SMS to field', 'wp-sms')}</Label>
                 </div>
                 <Switch
-                  aria-label={__('Send SMS to field')}
+                  aria-label={__('Send SMS to field', 'wp-sms')}
                   checked={enableField === '1'}
                   onCheckedChange={(checked) => setEnableField(checked ? '1' : '')}
                 />
@@ -550,10 +551,10 @@ const QuformFormSettings = ({ form }) => {
               {enableField === '1' && (
                 <div className="wsms-space-y-4 wsms-ps-4 wsms-border-s-2 wsms-border-primary/20">
                   <div className="wsms-space-y-2">
-                    <Label>{__('A field of the form')}</Label>
+                    <Label>{__('A field of the form', 'wp-sms')}</Label>
                     <Select value={receiverField} onValueChange={setReceiverField}>
-                      <SelectTrigger aria-label={__('Form field')}>
-                        <SelectValue placeholder={__('Select a field...')} />
+                      <SelectTrigger aria-label={__('Form field', 'wp-sms')}>
+                        <SelectValue placeholder={__('Select a field...', 'wp-sms')} />
                       </SelectTrigger>
                       <SelectContent>
                         {Object.entries(form.fields).map(([id, label]) => (
@@ -564,19 +565,19 @@ const QuformFormSettings = ({ form }) => {
                       </SelectContent>
                     </Select>
                     <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                      {__('Select the field of your form.')}
+                      {__('Select the field of your form.', 'wp-sms')}
                     </p>
                   </div>
 
                   <div className="wsms-space-y-2">
-                    <Label>{__('Message body')}</Label>
+                    <Label>{__('Message body', 'wp-sms')}</Label>
                     <Textarea
                       ref={messageFieldRef}
                       value={messageField}
                       onChange={(e) => setMessageField(e.target.value)}
                       rows={3}
-                      placeholder={__('Enter your message content.')}
-                      aria-label={__('Message body')}
+                      placeholder={__('Enter your message content.', 'wp-sms')}
+                      aria-label={__('Message body', 'wp-sms')}
                     />
                     {form.variables && form.variables.length > 0 && (
                       <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -658,10 +659,10 @@ const FluentFormSettings = ({ form }) => {
           <div className="wsms-space-y-4">
             <div className="wsms-flex wsms-items-center wsms-justify-between">
               <div>
-                <Label className="wsms-font-medium">{__('Send SMS to a number')}</Label>
+                <Label className="wsms-font-medium">{__('Send SMS to a number', 'wp-sms')}</Label>
               </div>
               <Switch
-                aria-label={__('Send SMS to a number')}
+                aria-label={__('Send SMS to a number', 'wp-sms')}
                 checked={enableForm === '1'}
                 onCheckedChange={(checked) => setEnableForm(checked ? '1' : '')}
               />
@@ -670,28 +671,28 @@ const FluentFormSettings = ({ form }) => {
             {enableForm === '1' && (
               <div className="wsms-space-y-4 wsms-ps-4 wsms-border-s-2 wsms-border-primary/20">
                 <div className="wsms-space-y-2">
-                  <Label>{__('Phone number(s)')}</Label>
+                  <Label>{__('Phone number(s)', 'wp-sms')}</Label>
                   <Input
                     type="text"
                     value={receiverForm}
                     onChange={(e) => setReceiverForm(e.target.value)}
                     placeholder="+1234567890, +0987654321"
-                    aria-label={__('Phone numbers')}
+                    aria-label={__('Phone numbers', 'wp-sms')}
                   />
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                    {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.')}
+                    {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms')}
                   </p>
                 </div>
 
                 <div className="wsms-space-y-2">
-                  <Label>{__('Message body')}</Label>
+                  <Label>{__('Message body', 'wp-sms')}</Label>
                   <Textarea
                     ref={messageFormRef}
                     value={messageForm}
                     onChange={(e) => setMessageForm(e.target.value)}
                     rows={3}
-                    placeholder={__('Enter your message content.')}
-                    aria-label={__('Message body')}
+                    placeholder={__('Enter your message content.', 'wp-sms')}
+                    aria-label={__('Message body', 'wp-sms')}
                   />
                   {form.variables && form.variables.length > 0 && (
                     <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -714,10 +715,10 @@ const FluentFormSettings = ({ form }) => {
             <div className="wsms-space-y-4 wsms-pt-4 wsms-border-t">
               <div className="wsms-flex wsms-items-center wsms-justify-between">
                 <div>
-                  <Label className="wsms-font-medium">{__('Send SMS to field')}</Label>
+                  <Label className="wsms-font-medium">{__('Send SMS to field', 'wp-sms')}</Label>
                 </div>
                 <Switch
-                  aria-label={__('Send SMS to field')}
+                  aria-label={__('Send SMS to field', 'wp-sms')}
                   checked={enableField === '1'}
                   onCheckedChange={(checked) => setEnableField(checked ? '1' : '')}
                 />
@@ -726,10 +727,10 @@ const FluentFormSettings = ({ form }) => {
               {enableField === '1' && (
                 <div className="wsms-space-y-4 wsms-ps-4 wsms-border-s-2 wsms-border-primary/20">
                   <div className="wsms-space-y-2">
-                    <Label>{__('A field of the form')}</Label>
+                    <Label>{__('A field of the form', 'wp-sms')}</Label>
                     <Select value={receiverField} onValueChange={setReceiverField}>
-                      <SelectTrigger aria-label={__('Form field')}>
-                        <SelectValue placeholder={__('Select a field...')} />
+                      <SelectTrigger aria-label={__('Form field', 'wp-sms')}>
+                        <SelectValue placeholder={__('Select a field...', 'wp-sms')} />
                       </SelectTrigger>
                       <SelectContent>
                         {Object.entries(form.fields).map(([slug, label]) => (
@@ -740,19 +741,19 @@ const FluentFormSettings = ({ form }) => {
                       </SelectContent>
                     </Select>
                     <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                      {__('Select the field of your form.')}
+                      {__('Select the field of your form.', 'wp-sms')}
                     </p>
                   </div>
 
                   <div className="wsms-space-y-2">
-                    <Label>{__('Message body')}</Label>
+                    <Label>{__('Message body', 'wp-sms')}</Label>
                     <Textarea
                       ref={messageFieldRef}
                       value={messageField}
                       onChange={(e) => setMessageField(e.target.value)}
                       rows={3}
-                      placeholder={__('Enter your message content.')}
-                      aria-label={__('Message body')}
+                      placeholder={__('Enter your message content.', 'wp-sms')}
+                      aria-label={__('Message body', 'wp-sms')}
                     />
                     {form.variables && form.variables.length > 0 && (
                       <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -867,27 +868,27 @@ export default function Integrations() {
 
   // All integrations (free + pro)
   const additionalIntegrations = [
-    { name: __('Contact Form 7'), pluginKey: 'contact-form-7', requirement: __('Free'), Icon: FileInput },
-    { name: __('Formidable Forms'), pluginKey: 'formidable', requirement: __('Free'), Icon: FileInput },
-    { name: __('Forminator'), pluginKey: 'forminator', requirement: __('Free'), Icon: FileInput },
-    { name: __('Gravity Forms'), pluginKey: 'gravity-forms', requirement: __('Requires WSMS PRO'), Icon: ClipboardList },
-    { name: __('Quform'), pluginKey: 'quform', requirement: __('Requires WSMS PRO'), Icon: ClipboardList },
-    { name: __('WooCommerce'), pluginKey: 'woocommerce', requirement: __('Requires WSMS PRO'), Icon: ShoppingCart },
-    { name: __('BuddyPress'), pluginKey: 'buddypress', requirement: __('Requires WSMS PRO'), Icon: Users },
-    { name: __('Easy Digital Downloads'), pluginKey: 'easy-digital-downloads', requirement: __('Requires WSMS PRO'), Icon: CreditCard },
-    { name: __('WP Job Manager'), pluginKey: 'wp-job-manager', requirement: __('Requires WSMS PRO'), Icon: Briefcase },
-    { name: __('Awesome Support'), pluginKey: 'awesome-support', requirement: __('Requires WSMS PRO'), Icon: HeadphonesIcon },
-    { name: __('Ultimate Member'), pluginKey: 'ultimate-member', requirement: __('Requires WSMS PRO'), Icon: UserCircle },
-    { name: __('Elementor Forms'), pluginKey: 'elementor-pro', requirement: __('Requires Elementor add-on'), Icon: Layers },
-    { name: __('Fluent CRM'), pluginKey: 'fluent-crm', requirement: __('Requires Fluent add-on'), Icon: Mail },
-    { name: __('Fluent Forms'), pluginKey: 'fluentform', requirement: __('Requires Fluent add-on'), Icon: ClipboardList },
-    { name: __('Fluent Support'), pluginKey: 'fluent-support', requirement: __('Requires Fluent add-on'), Icon: HeadphonesIcon },
-    { name: __('Paid Memberships Pro'), pluginKey: 'paid-memberships-pro', requirement: __('Requires Membership add-on'), Icon: CreditCard },
-    { name: __('Simple Membership'), pluginKey: 'simple-membership', requirement: __('Requires Membership add-on'), Icon: UserCircle },
-    { name: __('BookingPress'), pluginKey: 'bookingpress', requirement: __('Requires Booking add-on'), Icon: Calendar },
-    { name: __('WooCommerce Appointments'), pluginKey: 'woocommerce-appointments', requirement: __('Requires Booking add-on'), Icon: Calendar },
-    { name: __('WooCommerce Bookings'), pluginKey: 'woocommerce-bookings', requirement: __('Requires Booking add-on'), Icon: Calendar },
-    { name: __('Booking Calendar'), pluginKey: 'booking', requirement: __('Requires Booking add-on'), Icon: Calendar },
+    { name: __('Contact Form 7', 'wp-sms'), pluginKey: 'contact-form-7', requirement: __('Free', 'wp-sms'), Icon: FileInput },
+    { name: __('Formidable Forms', 'wp-sms'), pluginKey: 'formidable', requirement: __('Free', 'wp-sms'), Icon: FileInput },
+    { name: __('Forminator', 'wp-sms'), pluginKey: 'forminator', requirement: __('Free', 'wp-sms'), Icon: FileInput },
+    { name: __('Gravity Forms', 'wp-sms'), pluginKey: 'gravity-forms', requirement: __('Requires WSMS PRO', 'wp-sms'), Icon: ClipboardList },
+    { name: __('Quform', 'wp-sms'), pluginKey: 'quform', requirement: __('Requires WSMS PRO', 'wp-sms'), Icon: ClipboardList },
+    { name: __('WooCommerce', 'wp-sms'), pluginKey: 'woocommerce', requirement: __('Requires WSMS PRO', 'wp-sms'), Icon: ShoppingCart },
+    { name: __('BuddyPress', 'wp-sms'), pluginKey: 'buddypress', requirement: __('Requires WSMS PRO', 'wp-sms'), Icon: Users },
+    { name: __('Easy Digital Downloads', 'wp-sms'), pluginKey: 'easy-digital-downloads', requirement: __('Requires WSMS PRO', 'wp-sms'), Icon: CreditCard },
+    { name: __('WP Job Manager', 'wp-sms'), pluginKey: 'wp-job-manager', requirement: __('Requires WSMS PRO', 'wp-sms'), Icon: Briefcase },
+    { name: __('Awesome Support', 'wp-sms'), pluginKey: 'awesome-support', requirement: __('Requires WSMS PRO', 'wp-sms'), Icon: HeadphonesIcon },
+    { name: __('Ultimate Member', 'wp-sms'), pluginKey: 'ultimate-member', requirement: __('Requires WSMS PRO', 'wp-sms'), Icon: UserCircle },
+    { name: __('Elementor Forms', 'wp-sms'), pluginKey: 'elementor-pro', requirement: __('Requires Elementor add-on', 'wp-sms'), Icon: Layers },
+    { name: __('Fluent CRM', 'wp-sms'), pluginKey: 'fluent-crm', requirement: __('Requires Fluent add-on', 'wp-sms'), Icon: Mail },
+    { name: __('Fluent Forms', 'wp-sms'), pluginKey: 'fluentform', requirement: __('Requires Fluent add-on', 'wp-sms'), Icon: ClipboardList },
+    { name: __('Fluent Support', 'wp-sms'), pluginKey: 'fluent-support', requirement: __('Requires Fluent add-on', 'wp-sms'), Icon: HeadphonesIcon },
+    { name: __('Paid Memberships Pro', 'wp-sms'), pluginKey: 'paid-memberships-pro', requirement: __('Requires Membership add-on', 'wp-sms'), Icon: CreditCard },
+    { name: __('Simple Membership', 'wp-sms'), pluginKey: 'simple-membership', requirement: __('Requires Membership add-on', 'wp-sms'), Icon: UserCircle },
+    { name: __('BookingPress', 'wp-sms'), pluginKey: 'bookingpress', requirement: __('Requires Booking add-on', 'wp-sms'), Icon: Calendar },
+    { name: __('WooCommerce Appointments', 'wp-sms'), pluginKey: 'woocommerce-appointments', requirement: __('Requires Booking add-on', 'wp-sms'), Icon: Calendar },
+    { name: __('WooCommerce Bookings', 'wp-sms'), pluginKey: 'woocommerce-bookings', requirement: __('Requires Booking add-on', 'wp-sms'), Icon: Calendar },
+    { name: __('Booking Calendar', 'wp-sms'), pluginKey: 'booking', requirement: __('Requires Booking add-on', 'wp-sms'), Icon: Calendar },
   ]
 
   // Sort additional integrations: active first, inactive second, not_installed last
@@ -927,10 +928,10 @@ export default function Integrations() {
               <div>
                 <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                   <FileInput className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                  {__('Contact Form 7')}
+                  {__('Contact Form 7', 'wp-sms')}
                 </CardTitle>
                 <CardDescription className="wsms-mt-1">
-                  {__('Send SMS notifications when Contact Form 7 forms are submitted')}
+                  {__('Send SMS notifications when Contact Form 7 forms are submitted', 'wp-sms')}
                 </CardDescription>
               </div>
               {cf7Open ? (
@@ -945,13 +946,13 @@ export default function Integrations() {
               <div className="wsms-rounded-lg wsms-border wsms-p-4">
                 <div className="wsms-flex wsms-items-center wsms-justify-between">
                   <div>
-                    <h4 className="wsms-text-[13px] wsms-font-medium">{__('SMS Notification Tab')}</h4>
+                    <h4 className="wsms-text-[13px] wsms-font-medium">{__('SMS Notification Tab', 'wp-sms')}</h4>
                     <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-1">
-                      {__('Add an SMS notification settings tab to each Contact Form 7 form editor.')}
+                      {__('Add an SMS notification settings tab to each Contact Form 7 form editor.', 'wp-sms')}
                     </p>
                   </div>
                   <Switch
-                    aria-label={__('SMS Notification Tab')}
+                    aria-label={__('SMS Notification Tab', 'wp-sms')}
                     checked={cf7Metabox === '1'}
                     onCheckedChange={(checked) => setCf7Metabox(checked ? '1' : '')}
                   />
@@ -978,10 +979,10 @@ export default function Integrations() {
               <div>
                 <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                   <FileInput className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                  {__('Formidable Forms')}
+                  {__('Formidable Forms', 'wp-sms')}
                 </CardTitle>
                 <CardDescription className="wsms-mt-1">
-                  {__('Send SMS notifications when Formidable forms are submitted')}
+                  {__('Send SMS notifications when Formidable forms are submitted', 'wp-sms')}
                 </CardDescription>
               </div>
               {formidableOpen ? (
@@ -996,13 +997,13 @@ export default function Integrations() {
               <div className="wsms-rounded-lg wsms-border wsms-p-4">
                 <div className="wsms-flex wsms-items-center wsms-justify-between">
                   <div>
-                    <h4 className="wsms-text-[13px] wsms-font-medium">{__('SMS Notification Tab')}</h4>
+                    <h4 className="wsms-text-[13px] wsms-font-medium">{__('SMS Notification Tab', 'wp-sms')}</h4>
                     <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-1">
-                      {__('Add an SMS notification settings tab to each Formidable form editor.')}
+                      {__('Add an SMS notification settings tab to each Formidable form editor.', 'wp-sms')}
                     </p>
                   </div>
                   <Switch
-                    aria-label={__('SMS Notification Tab')}
+                    aria-label={__('SMS Notification Tab', 'wp-sms')}
                     checked={formidableMetabox === '1'}
                     onCheckedChange={(checked) => setFormidableMetabox(checked ? '1' : '')}
                   />
@@ -1024,10 +1025,10 @@ export default function Integrations() {
               <div>
                 <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                   <FileInput className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                  {__('Forminator')}
+                  {__('Forminator', 'wp-sms')}
                 </CardTitle>
                 <CardDescription className="wsms-mt-1">
-                  {__('Send SMS notifications when Forminator forms are submitted')}
+                  {__('Send SMS notifications when Forminator forms are submitted', 'wp-sms')}
                 </CardDescription>
               </div>
               {forminatorOpen ? (
@@ -1048,7 +1049,7 @@ export default function Integrations() {
               ) : (
                 <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                    {__('No forms found. Create a form in Forminator to configure SMS notifications.')}
+                    {__('No forms found. Create a form in Forminator to configure SMS notifications.', 'wp-sms')}
                   </p>
                 </div>
               )}
@@ -1068,10 +1069,10 @@ export default function Integrations() {
               <div>
                 <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                   <ClipboardList className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                  {__('Gravity Forms')}
+                  {__('Gravity Forms', 'wp-sms')}
                 </CardTitle>
                 <CardDescription className="wsms-mt-1">
-                  {__('Send SMS notifications when Gravity Forms are submitted')}
+                  {__('Send SMS notifications when Gravity Forms are submitted', 'wp-sms')}
                 </CardDescription>
               </div>
               {gravityFormsOpen ? (
@@ -1092,7 +1093,7 @@ export default function Integrations() {
               ) : (
                 <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                    {__('No forms found. Create a form in Gravity Forms to configure SMS notifications.')}
+                    {__('No forms found. Create a form in Gravity Forms to configure SMS notifications.', 'wp-sms')}
                   </p>
                 </div>
               )}
@@ -1112,10 +1113,10 @@ export default function Integrations() {
               <div>
                 <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                   <ClipboardList className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                  {__('Quform')}
+                  {__('Quform', 'wp-sms')}
                 </CardTitle>
                 <CardDescription className="wsms-mt-1">
-                  {__('Send SMS notifications when Quform forms are submitted')}
+                  {__('Send SMS notifications when Quform forms are submitted', 'wp-sms')}
                 </CardDescription>
               </div>
               {quformOpen ? (
@@ -1136,7 +1137,7 @@ export default function Integrations() {
               ) : (
                 <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                    {__('No forms found. Create a form in Quform to configure SMS notifications.')}
+                    {__('No forms found. Create a form in Quform to configure SMS notifications.', 'wp-sms')}
                   </p>
                 </div>
               )}
@@ -1156,10 +1157,10 @@ export default function Integrations() {
               <div>
                 <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                   <ClipboardList className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                  {__('Fluent Forms')}
+                  {__('Fluent Forms', 'wp-sms')}
                 </CardTitle>
                 <CardDescription className="wsms-mt-1">
-                  {__('Send SMS notifications when Fluent Forms are submitted')}
+                  {__('Send SMS notifications when Fluent Forms are submitted', 'wp-sms')}
                 </CardDescription>
               </div>
               {fluentFormsOpen ? (
@@ -1180,7 +1181,7 @@ export default function Integrations() {
               ) : (
                 <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                    {__('No forms found. Create a form in Fluent Forms to configure SMS notifications.')}
+                    {__('No forms found. Create a form in Fluent Forms to configure SMS notifications.', 'wp-sms')}
                   </p>
                 </div>
               )}
@@ -1204,7 +1205,7 @@ export default function Integrations() {
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <Puzzle className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              {__('Additional Settings')}
+              {__('Additional Settings', 'wp-sms')}
             </CardTitle>
           </CardHeader>
           <CardContent className="wsms-space-y-4">
@@ -1220,10 +1221,10 @@ export default function Integrations() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Puzzle className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Integrations')}
+            {__('Integrations', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            {__('All supported plugins and integrations')}
+            {__('All supported plugins and integrations', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent>

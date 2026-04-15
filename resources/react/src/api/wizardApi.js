@@ -1,4 +1,5 @@
-import { getWpSettings, __ } from '../lib/utils'
+import { __ } from '@wordpress/i18n'
+import { getWpSettings } from '../lib/utils'
 import apiClient from './client'
 
 /**
@@ -77,7 +78,7 @@ export const wizardApi = {
       recipients: {
         numbers: [adminNumber],
       },
-      message: __('This is a test message from WSMS setup wizard.'),
+      message: __('This is a test message from WSMS setup wizard.', 'wp-sms'),
     })
 
     return {

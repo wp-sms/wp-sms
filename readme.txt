@@ -4,7 +4,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 7.2.3
+Stable tag: 7.2.4
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -138,6 +138,13 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
+= v7.2.4 - 2026-03-15 =
+- **New:** Added credit balance support for the GuniSMS gateway.
+- **Fix:** Updated EaziSMSpro gateway to use the new API endpoint.
+- **Fix:** Fixed some dashboard strings that were not translatable.
+- **Fix:** Fixed the "Configure now" link in the Default Country Code admin notice not navigating to the correct settings page.
+- **Fix:** Fixed Cellsynt gateway SMS delivery failure by converting E.164 phone numbers.
+
 = v7.2.3 - 2026-03-09 =
 - **New:** Added per-page selector to all list pages (Subscribers, Outbox, Groups, Scheduled, Campaigns, Two-Way Inbox), allowing users to choose how many items to display per page.
 - **Enhancement:** Minor improvements.

@@ -1,8 +1,9 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 import Logo from './Logo'
 import { Menu, Bell, Moon, Sun, Sparkles, ExternalLink } from 'lucide-react'
-import { cn, __ } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { NotificationSidebar } from '@/components/notifications'
 import { useNotifications } from '@/hooks/useNotifications'
 import { useSavedSetting } from '@/context/SettingsContext'
@@ -36,7 +37,7 @@ function LicenseButton() {
         'wsms-rounded-md wsms-text-[12px] wsms-font-medium'
       )}>
         <Sparkles className="wsms-h-3.5 wsms-w-3.5" />
-        <span>{__('All-in-One')}</span>
+        <span>{__('All-in-One', 'wp-sms')}</span>
       </div>
     )
   }
@@ -46,7 +47,7 @@ function LicenseButton() {
     return (
       <div className="wsms-flex wsms-items-center wsms-gap-2">
         <span className="wsms-text-[12px] wsms-text-muted-foreground">
-          {__('License:')} {licensedCount}/{totalPlugins}
+          {__('License:', 'wp-sms')} {licensedCount}/{totalPlugins}
         </span>
         <a
           href={pricingUrl}
@@ -60,7 +61,7 @@ function LicenseButton() {
             'hover:wsms-bg-primary/90'
           )}
         >
-          <span>{__('Upgrade')}</span>
+          <span>{__('Upgrade', 'wp-sms')}</span>
           <ExternalLink className="wsms-h-3 wsms-w-3" />
         </a>
       </div>
@@ -82,8 +83,8 @@ function LicenseButton() {
       )}
     >
       <Sparkles className="wsms-h-3.5 wsms-w-3.5" />
-      <span className="wsms-hidden sm:wsms-inline">{__('Upgrade to All-in-One')}</span>
-      <span className="wsms-inline sm:wsms-hidden">{__('Upgrade')}</span>
+      <span className="wsms-hidden sm:wsms-inline">{__('Upgrade to All-in-One', 'wp-sms')}</span>
+      <span className="wsms-inline sm:wsms-hidden">{__('Upgrade', 'wp-sms')}</span>
       <ExternalLink className="wsms-h-3 wsms-w-3 wsms-opacity-70" />
     </a>
   )

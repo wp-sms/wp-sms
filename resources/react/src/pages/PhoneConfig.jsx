@@ -1,13 +1,15 @@
+import { __ } from '@wordpress/i18n'
 import React from 'react'
 import { Phone, Smartphone, Globe, Shield, DatabaseZap } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { SearchableSelect } from '@/components/ui/searchable-select'
 import { InputField, MultiSelectField, SettingRow } from '@/components/ui/form-field'
 import { InternationalPhoneInput } from '@/components/ui/InternationalPhoneInput'
 import { Button } from '@/components/ui/button'
 import { useSetting, useSettings } from '@/context/SettingsContext'
-import { getWpSettings, cn, __ } from '@/lib/utils'
+import { getWpSettings, cn } from '@/lib/utils'
 
 export default function PhoneConfig() {
   const { countriesByCode = {}, countriesByDialCode = {}, mobileFieldSources = [] } = getWpSettings()
@@ -53,15 +55,15 @@ export default function PhoneConfig() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Phone className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Administrator Notifications')}
+            {__('Administrator Notifications', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            {__('Receives system notifications (new users, comments, errors).')}
+            {__('Receives system notifications (new users, comments, errors).', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-space-y-2" data-setting-key="admin_mobile_number">
-            <Label htmlFor="adminPhone" className={cn(adminMobileError && 'wsms-text-destructive')}>{__('Admin Phone Number')}</Label>
+            <Label htmlFor="adminPhone" className={cn(adminMobileError && 'wsms-text-destructive')}>{__('Admin Phone Number', 'wp-sms')}</Label>
             <InternationalPhoneInput
               id="adminPhone"
               value={adminMobile}
@@ -73,7 +75,7 @@ export default function PhoneConfig() {
               <p role="alert" className="wsms-text-[12px] wsms-text-destructive">{adminMobileError}</p>
             ) : (
               <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                {__('Enter the full phone number including country code.')}
+                {__('Enter the full phone number including country code.', 'wp-sms')}
               </p>
             )}
           </div>
@@ -85,29 +87,29 @@ export default function PhoneConfig() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Smartphone className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Mobile Field Configuration')}
+            {__('Mobile Field Configuration', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            {__('Choose where to collect mobile numbers from users.')}
+            {__('Choose where to collect mobile numbers from users.', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-space-y-2">
-            <Label>{__('Collect Phone Numbers From')}</Label>
+            <Label>{__('Collect Phone Numbers From', 'wp-sms')}</Label>
             <Select value={addMobileField} onValueChange={setAddMobileField}>
-              <SelectTrigger aria-label={__('Collect phone numbers from')}>
-                <SelectValue placeholder={__('Select source')} />
+              <SelectTrigger aria-label={__('Collect phone numbers from', 'wp-sms')}>
+                <SelectValue placeholder={__('Select source', 'wp-sms')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="disable">{__("Don't collect — No mobile field")}</SelectItem>
+                <SelectItem value="disable">{__("Don't collect — No mobile field", 'wp-sms')}</SelectItem>
                 <SelectGroup>
-                  <SelectLabel>{__('WordPress')}</SelectLabel>
-                  <SelectItem value="add_mobile_field_in_profile">{__('Add field to user profiles')}</SelectItem>
+                  <SelectLabel>{__('WordPress', 'wp-sms')}</SelectLabel>
+                  <SelectItem value="add_mobile_field_in_profile">{__('Add field to user profiles', 'wp-sms')}</SelectItem>
                 </SelectGroup>
                 <SelectGroup>
-                  <SelectLabel>{__('WooCommerce')}</SelectLabel>
-                  <SelectItem value="add_mobile_field_in_wc_billing">{__('Add dedicated mobile field to billing')}</SelectItem>
-                  <SelectItem value="use_phone_field_in_wc_billing">{__('Use existing billing phone field')}</SelectItem>
+                  <SelectLabel>{__('WooCommerce', 'wp-sms')}</SelectLabel>
+                  <SelectItem value="add_mobile_field_in_wc_billing">{__('Add dedicated mobile field to billing', 'wp-sms')}</SelectItem>
+                  <SelectItem value="use_phone_field_in_wc_billing">{__('Use existing billing phone field', 'wp-sms')}</SelectItem>
                 </SelectGroup>
                 {mobileFieldSources.map((source) => (
                   source.group ? (
@@ -157,24 +159,24 @@ export default function PhoneConfig() {
           {addMobileField !== 'disable' && (
             <>
               <div className="wsms-space-y-2">
-                <Label>{__('Field Requirement')}</Label>
+                <Label>{__('Field Requirement', 'wp-sms')}</Label>
                 <Select value={optionalMobileField} onValueChange={setOptionalMobileField}>
-                  <SelectTrigger aria-label={__('Field requirement')}>
-                    <SelectValue placeholder={__('Select requirement')} />
+                  <SelectTrigger aria-label={__('Field requirement', 'wp-sms')}>
+                    <SelectValue placeholder={__('Select requirement', 'wp-sms')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="0">{__('Required — Users must enter a mobile number')}</SelectItem>
-                    <SelectItem value="optional">{__('Optional — Users can skip this field')}</SelectItem>
+                    <SelectItem value="0">{__('Required — Users must enter a mobile number', 'wp-sms')}</SelectItem>
+                    <SelectItem value="optional">{__('Optional — Users can skip this field', 'wp-sms')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <InputField
-                label={__('Placeholder Text')}
+                label={__('Placeholder Text', 'wp-sms')}
                 value={mobilePlaceholder}
                 onChange={(e) => setMobilePlaceholder(e.target.value)}
-                placeholder={__('e.g., +1 555 000 0000')}
-                description={__('Example format shown in the empty field.')}
+                placeholder={__('e.g., +1 555 000 0000', 'wp-sms')}
+                description={__('Example format shown in the empty field.', 'wp-sms')}
               />
             </>
           )}
@@ -186,16 +188,16 @@ export default function PhoneConfig() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Globe className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('International Phone Input')}
+            {__('International Phone Input', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            {__('Show a country flag selector for international phone number formatting.')}
+            {__('Show a country flag selector for international phone number formatting.', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <SettingRow
-            title={__('International Phone Input')}
-            description={__('Show a country flag selector for international phone number formatting.')}
+            title={__('International Phone Input', 'wp-sms')}
+            description={__('Show a country flag selector for international phone number formatting.', 'wp-sms')}
             checked={isInternationalEnabled}
             onCheckedChange={(checked) => setInternationalMobile(checked ? '1' : '')}
           />
@@ -203,23 +205,23 @@ export default function PhoneConfig() {
           {isInternationalEnabled && (
             <>
               <MultiSelectField
-                label={__('Limit Countries')}
+                label={__('Limit Countries', 'wp-sms')}
                 options={countriesByCode}
                 value={onlyCountries}
                 onValueChange={setOnlyCountries}
-                placeholder={__('All countries')}
-                searchPlaceholder={__('Search countries...')}
-                description={__('Only show these countries in the dropdown. Leave empty to show all.')}
+                placeholder={__('All countries', 'wp-sms')}
+                searchPlaceholder={__('Search countries...', 'wp-sms')}
+                description={__('Only show these countries in the dropdown. Leave empty to show all.', 'wp-sms')}
               />
 
               <MultiSelectField
-                label={__('Preferred Countries')}
+                label={__('Preferred Countries', 'wp-sms')}
                 options={countriesByCode}
                 value={preferredCountries}
                 onValueChange={setPreferredCountries}
-                placeholder={__('None selected')}
-                searchPlaceholder={__('Search countries...')}
-                description={__('Show these countries at the top of the dropdown for quick access.')}
+                placeholder={__('None selected', 'wp-sms')}
+                searchPlaceholder={__('Search countries...', 'wp-sms')}
+                description={__('Show these countries at the top of the dropdown for quick access.', 'wp-sms')}
               />
             </>
           )}
@@ -227,45 +229,41 @@ export default function PhoneConfig() {
           {!isInternationalEnabled && (
             <>
               <div className="wsms-space-y-2">
-                <Label>{__('Default Country Code')}</Label>
-                <Select value={countryCode} onValueChange={setCountryCode}>
-                  <SelectTrigger aria-label={__('Default country code')}>
-                    <SelectValue placeholder={__('Select country code')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {countriesByDialCode && Object.entries(countriesByDialCode).map(([dialCode, label]) => (
-                      <SelectItem key={dialCode} value={dialCode}>
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label>{__('Default Country Code', 'wp-sms')}</Label>
+                <SearchableSelect
+                  value={countryCode}
+                  onValueChange={setCountryCode}
+                  options={countriesByDialCode || {}}
+                  placeholder={__('Select country code', 'wp-sms')}
+                  searchPlaceholder={__('Search countries...', 'wp-sms')}
+                  aria-label={__('Default country code', 'wp-sms')}
+                />
                 <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                  {__('Automatically prepend this country code to new phone numbers. Changing this will not update numbers already stored in the database.')}
+                  {__('Automatically prepend this country code to new phone numbers. Changing this will not update numbers already stored in the database.', 'wp-sms')}
                 </p>
                 {(!countryCode || countryCode === '0') && (
                   <p className="wsms-text-[12px] wsms-text-destructive wsms-font-medium">
-                    {__('Please select a country code. This is required for proper phone number storage.')}
+                    {__('Please select a country code. This is required for proper phone number storage.', 'wp-sms')}
                   </p>
                 )}
               </div>
 
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
                 <InputField
-                  label={__('Minimum Digits')}
+                  label={__('Minimum Digits', 'wp-sms')}
                   type="number"
                   value={minLength}
                   onChange={(e) => setMinLength(e.target.value)}
                   placeholder="10"
-                  description={__('Minimum number of digits required (excluding country code).')}
+                  description={__('Minimum number of digits required (excluding country code).', 'wp-sms')}
                 />
                 <InputField
-                  label={__('Maximum Digits')}
+                  label={__('Maximum Digits', 'wp-sms')}
                   type="number"
                   value={maxLength}
                   onChange={(e) => setMaxLength(e.target.value)}
                   placeholder="15"
-                  description={__('Maximum number of digits allowed (excluding country code).')}
+                  description={__('Maximum number of digits allowed (excluding country code).', 'wp-sms')}
                 />
               </div>
             </>
@@ -278,10 +276,10 @@ export default function PhoneConfig() {
         <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4">
           <div>
             <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
-              {__('Phone Number Improvement')}
+              {__('Phone Number Improvement', 'wp-sms')}
             </p>
             <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-0.5">
-              {__('Review and update your phone numbers to include the country code for better delivery reliability.')}
+              {__('Review and update your phone numbers to include the country code for better delivery reliability.', 'wp-sms')}
             </p>
           </div>
           <Button
@@ -290,7 +288,7 @@ export default function PhoneConfig() {
             onClick={() => window.dispatchEvent(new CustomEvent('wpsms:open-migration-wizard'))}
           >
             <DatabaseZap className="wsms-h-4 wsms-w-4 wsms-me-1" />
-            {__('Open Update Wizard')}
+            {__('Open Update Wizard', 'wp-sms')}
           </Button>
         </div>
       </Card>
@@ -300,16 +298,16 @@ export default function PhoneConfig() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Shield className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Data Protection')}
+            {__('Data Protection', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            {__('Privacy and GDPR compliance settings.')}
+            {__('Privacy and GDPR compliance settings.', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <SettingRow
-            title={__('GDPR Compliance')}
-            description={__('Enable data export/deletion by mobile number and add SMS consent checkbox to forms.')}
+            title={__('GDPR Compliance', 'wp-sms')}
+            description={__('Enable data export/deletion by mobile number and add SMS consent checkbox to forms.', 'wp-sms')}
             checked={gdprCompliance === '1'}
             onCheckedChange={(checked) => setGdprCompliance(checked ? '1' : '')}
           />

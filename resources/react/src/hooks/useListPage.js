@@ -1,8 +1,8 @@
+import { __ } from '@wordpress/i18n'
 import { useCallback, useEffect } from 'react'
 import { useDataTable } from './useDataTable'
 import { useFilters } from './useFilters'
 import { useToast } from '@/components/ui/toaster'
-import { __ } from '@/lib/utils'
 
 /**
  * Combined hook for list pages that handles:
@@ -45,11 +45,11 @@ export function useListPage({
 
   // Default messages
   const {
-    deleteSuccess = __('Deleted successfully'),
-    deleteError = __('Failed to delete'),
-    bulkSuccess = __('Action completed successfully'),
-    bulkError = __('Action failed'),
-    noSelection = __('No items selected'),
+    deleteSuccess = __('Deleted successfully', 'wp-sms'),
+    deleteError = __('Failed to delete', 'wp-sms'),
+    bulkSuccess = __('Action completed successfully', 'wp-sms'),
+    bulkError = __('Action failed', 'wp-sms'),
+    noSelection = __('No items selected', 'wp-sms'),
   } = messages
 
   // Initialize filters with debouncing

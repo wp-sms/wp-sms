@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import { useState, useEffect, useCallback } from 'react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -7,7 +8,6 @@ import { StatusBadge } from '@/components/shared/StatusBadge'
 import { EmptyStateAction } from '@/components/ui/ux-helpers'
 import { useToast } from '@/components/ui/toaster'
 import { addonsApi } from '@/api/addonsApi'
-import { __ } from '@/lib/utils'
 import {
   Blocks,
   ExternalLink,
@@ -45,11 +45,11 @@ function AddOnCard({ addon, onLicenseChanged }) {
     setActivating(true)
     try {
       const response = await addonsApi.activateLicense(addon.slug, licenseKey.trim())
-      onLicenseChanged(response.message || __('License activated successfully.'))
+      onLicenseChanged(response.message || __('License activated successfully.', 'wp-sms'))
       setLicenseKey('')
       setShowUpdateInput(false)
     } catch (err) {
-      toast({ title: err.message || __('Failed to activate license.'), variant: 'destructive' })
+      toast({ title: err.message || __('Failed to activate license.', 'wp-sms'), variant: 'destructive' })
     } finally {
       setActivating(false)
     }
@@ -59,9 +59,9 @@ function AddOnCard({ addon, onLicenseChanged }) {
     setRemovingIndex(index)
     try {
       const response = await addonsApi.removeLicense(addon.slug)
-      onLicenseChanged(response.message || __('License removed successfully.'))
+      onLicenseChanged(response.message || __('License removed successfully.', 'wp-sms'))
     } catch (err) {
-      toast({ title: err.message || __('Failed to remove license.'), variant: 'destructive' })
+      toast({ title: err.message || __('Failed to remove license.', 'wp-sms'), variant: 'destructive' })
     } finally {
       setRemovingIndex(null)
     }
@@ -102,7 +102,7 @@ function AddOnCard({ addon, onLicenseChanged }) {
                 className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-px-1.5 wsms-py-0.5 wsms-text-[9px] wsms-font-bold wsms-uppercase wsms-rounded wsms-bg-amber-500/10 wsms-text-amber-700 hover:wsms-bg-amber-500/20 wsms-transition-colors wsms-shrink-0"
               >
                 <ArrowUpCircle className="wsms-h-2.5 wsms-w-2.5" />
-                {__('Update Available')}
+                {__('Update Available', 'wp-sms')}
               </a>
             )}
           </div>
@@ -127,7 +127,7 @@ function AddOnCard({ addon, onLicenseChanged }) {
                   <span className="wsms-font-mono wsms-truncate">{license.masked_key}</span>
                   {license.status === 'license_expired' && (
                     <span className="wsms-text-[9px] wsms-font-bold wsms-uppercase wsms-text-amber-600">
-                      {__('Expired')}
+                      {__('Expired', 'wp-sms')}
                     </span>
                   )}
                 </div>
@@ -138,7 +138,7 @@ function AddOnCard({ addon, onLicenseChanged }) {
                       setLicenseKey('')
                     }}
                     className="wsms-p-1 wsms-rounded wsms-text-muted-foreground hover:wsms-text-primary hover:wsms-bg-primary/10 wsms-transition-colors"
-                    title={__('Update license')}
+                    title={__('Update license', 'wp-sms')}
                   >
                     <Pencil className="wsms-h-3 wsms-w-3" />
                   </button>
@@ -146,7 +146,7 @@ function AddOnCard({ addon, onLicenseChanged }) {
                     onClick={() => handleRemove(index)}
                     disabled={removingIndex === index}
                     className="wsms-p-1 wsms-rounded wsms-text-muted-foreground hover:wsms-text-destructive hover:wsms-bg-destructive/10 wsms-transition-colors disabled:wsms-opacity-50"
-                    title={__('Remove license')}
+                    title={__('Remove license', 'wp-sms')}
                   >
                     {removingIndex === index ? (
                       <Loader2 className="wsms-h-3 wsms-w-3 wsms-animate-spin" />
@@ -167,8 +167,8 @@ function AddOnCard({ addon, onLicenseChanged }) {
               <Input
                 value={licenseKey}
                 onChange={(e) => setLicenseKey(e.target.value)}
-                placeholder={showUpdateInput ? __('Enter new license key') : __('Enter license key')}
-                aria-label={showUpdateInput ? __('Enter new license key') : __('Enter license key')}
+                placeholder={showUpdateInput ? __('Enter new license key', 'wp-sms') : __('Enter license key', 'wp-sms')}
+                aria-label={showUpdateInput ? __('Enter new license key', 'wp-sms') : __('Enter license key', 'wp-sms')}
                 className="!wsms-h-8 wsms-text-[12px] wsms-flex-1"
                 onKeyDown={(e) => e.key === 'Enter' && handleActivate()}
               />
@@ -181,9 +181,9 @@ function AddOnCard({ addon, onLicenseChanged }) {
                 {activating ? (
                   <Loader2 className="wsms-h-3.5 wsms-w-3.5 wsms-animate-spin" />
                 ) : showUpdateInput ? (
-                  __('Update')
+                  __('Update', 'wp-sms')
                 ) : (
-                  __('Activate')
+                  __('Activate', 'wp-sms')
                 )}
               </Button>
               {showUpdateInput && (
@@ -196,7 +196,7 @@ function AddOnCard({ addon, onLicenseChanged }) {
                     setLicenseKey('')
                   }}
                 >
-                  {__('Cancel')}
+                  {__('Cancel', 'wp-sms')}
                 </Button>
               )}
             </div>
@@ -214,7 +214,7 @@ function AddOnCard({ addon, onLicenseChanged }) {
             className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-text-primary hover:wsms-underline"
           >
             <ExternalLink className="wsms-h-3 wsms-w-3" />
-            {addon.is_installed ? __('Details') : __('Get Add-On')}
+            {addon.is_installed ? __('Details', 'wp-sms') : __('Get Add-On', 'wp-sms')}
           </a>
         )}
         {addon.documentation_url && (
@@ -225,7 +225,7 @@ function AddOnCard({ addon, onLicenseChanged }) {
             className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-text-primary hover:wsms-underline"
           >
             <BookOpen className="wsms-h-3 wsms-w-3" />
-            {__('Docs')}
+            {__('Docs', 'wp-sms')}
           </a>
         )}
         {addon.changelog_url && (
@@ -236,7 +236,7 @@ function AddOnCard({ addon, onLicenseChanged }) {
             className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors"
           >
             <FileText className="wsms-h-3 wsms-w-3" />
-            {__('Changelog')}
+            {__('Changelog', 'wp-sms')}
           </a>
         )}
       </div>
@@ -295,7 +295,7 @@ export default function AddOns() {
       const data = await addonsApi.getAll()
       setAddons(data.addons || [])
     } catch (err) {
-      setError(err.message || __('Failed to load add-ons.'))
+      setError(err.message || __('Failed to load add-ons.', 'wp-sms'))
     } finally {
       setLoading(false)
     }
@@ -319,10 +319,10 @@ export default function AddOns() {
       <Card className="wsms-border-dashed">
         <EmptyStateAction
           icon={Blocks}
-          title={__('Unable to load add-ons')}
+          title={__('Unable to load add-ons', 'wp-sms')}
           description={error}
           action={fetchAddons}
-          actionLabel={__('Retry')}
+          actionLabel={__('Retry', 'wp-sms')}
         />
       </Card>
     )
@@ -333,8 +333,8 @@ export default function AddOns() {
       <Card className="wsms-border-dashed">
         <EmptyStateAction
           icon={Blocks}
-          title={__('No add-ons available')}
-          description={__('Add-ons extend WSMS with extra features. Check back later for available add-ons.')}
+          title={__('No add-ons available', 'wp-sms')}
+          description={__('Add-ons extend WSMS with extra features. Check back later for available add-ons.', 'wp-sms')}
         />
       </Card>
     )
@@ -354,10 +354,10 @@ export default function AddOns() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Blocks className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Add-Ons')}
+            {__('Add-Ons', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            {__('Manage add-ons to extend WSMS functionality')}
+            {__('Manage add-ons to extend WSMS functionality', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent>

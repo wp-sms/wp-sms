@@ -151,13 +151,13 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 ],
             ];
 
-            $response = $this->request('GET', $this->wsdl_link . 'user/token/verify', [], $args, false);
+            $response = $this->request('GET', $this->wsdl_link . 'user/balance', [], $args, false);
 
             if (!$response->status) {
-                throw new Exception('Invalid token.');
+                throw new Exception($response->message ?? 'Failed to retrieve balance.');
             }
 
-            return 'Gunisms does not provide credit balance. Please check your Gunisms account for billing information.';
+            return $response->data->balance;
         } catch (Exception $e) {
             return new WP_Error('account-credit', $e->getMessage());
         }

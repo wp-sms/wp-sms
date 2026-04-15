@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState, useEffect, useCallback } from 'react'
 import {
   Users,
@@ -43,7 +44,7 @@ import { groupsApi } from '@/api/groupsApi'
 import { smsApi } from '@/api/smsApi'
 import { useCountryCheck } from '@/hooks/useCountryCheck'
 import { InternationalPhoneInput } from '@/components/ui/InternationalPhoneInput'
-import { cn, formatDate, getWpSettings, __, downloadCsv } from '@/lib/utils'
+import { cn, formatDate, getWpSettings, downloadCsv } from '@/lib/utils'
 import { useSetting } from '@/context/SettingsContext'
 import { useListPage } from '@/hooks/useListPage'
 import { useFormDialog } from '@/hooks/useFormDialog'
@@ -97,8 +98,8 @@ export default function Subscribers() {
     bulkActionFn: subscribersApi.bulkAction,
     initialFilters: { search: '', group_id: 'all', status: 'all', country_code: 'all' },
     messages: {
-      deleteSuccess: __('Subscriber deleted successfully'),
-      bulkSuccess: __('Subscribers updated successfully'),
+      deleteSuccess: __('Subscriber deleted successfully', 'wp-sms'),
+      bulkSuccess: __('Subscribers updated successfully', 'wp-sms'),
     },
   })
 
@@ -115,11 +116,11 @@ export default function Subscribers() {
     initialData: { name: '', mobile: '', group_id: '', status: '1' },
     validate: (data) => {
       const errors = {}
-      if (!data.mobile?.trim()) errors.mobile = __('Phone number is required')
+      if (!data.mobile?.trim()) errors.mobile = __('Phone number is required', 'wp-sms')
       return { valid: Object.keys(errors).length === 0, errors }
     },
     onSuccess: () => table.refresh(),
-    successMessage: __('Subscriber updated successfully'),
+    successMessage: __('Subscriber updated successfully', 'wp-sms'),
   })
 
   // Delete confirmation dialog using useFormDialog
@@ -128,7 +129,7 @@ export default function Subscribers() {
       await subscribersApi.deleteSubscriber(id)
       table.removeItems([id])
     },
-    successMessage: __('Subscriber deleted successfully'),
+    successMessage: __('Subscriber deleted successfully', 'wp-sms'),
   })
 
   // Handle delete click - opens confirmation dialog
@@ -239,13 +240,13 @@ export default function Subscribers() {
         group_id: groupIdParam,
         status: '1',
       })
-      toast({ title: __('Subscriber added successfully'), variant: 'success' })
+      toast({ title: __('Subscriber added successfully', 'wp-sms'), variant: 'success' })
       setQuickAddName('')
       setQuickAddPhone('')
       setQuickAddGroup(multiGroupEnabled ? [] : '')
       table.fetch({ page: 1 })
     } catch (error) {
-      toast({ title: error.message || __('Failed to add subscriber'), variant: 'destructive' })
+      toast({ title: error.message || __('Failed to add subscriber', 'wp-sms'), variant: 'destructive' })
     } finally {
       setIsAddingQuick(false)
     }
@@ -272,14 +273,14 @@ export default function Subscribers() {
         skip_duplicates: true,
       })
       toast({
-        title: __('Imported %d subscribers, skipped %d').replace('%d', result.imported).replace('%d', result.skipped),
+        title: __('Imported %d subscribers, skipped %d', 'wp-sms').replace('%d', result.imported).replace('%d', result.skipped),
         variant: 'success',
       })
       setShowImportDialog(false)
       table.fetch({ page: 1 })
     } catch (error) {
       toast({
-        title: error.message || __('Import failed'),
+        title: error.message || __('Import failed', 'wp-sms'),
         variant: 'destructive',
       })
       throw error
@@ -305,7 +306,7 @@ export default function Subscribers() {
     const { blocked } = checkCountryRestriction([quickReplyTo.mobile])
     if (blocked.length > 0) {
       toast({
-        title: __('This recipient is outside your allowed countries. You can update this in Gateway > Country Restrictions.'),
+        title: __('This recipient is outside your allowed countries. You can update this in Gateway > Country Restrictions.', 'wp-sms'),
         variant: 'destructive',
       })
       return
@@ -317,13 +318,13 @@ export default function Subscribers() {
         message: quickReplyMessage,
         recipients: { groups: [], roles: [], numbers: [quickReplyTo.mobile] },
       })
-      toast({ title: __('Message sent to %s').replace('%s', quickReplyTo.mobile), variant: 'success' })
+      toast({ title: __('Message sent to %s', 'wp-sms').replace('%s', quickReplyTo.mobile), variant: 'success' })
       setQuickReplyTo(null)
       setQuickReplyMessage('')
       // Notify Outbox page that SMS was sent
       window.dispatchEvent(new CustomEvent('wpsms:sms-sent'))
     } catch (error) {
-      toast({ title: error.message || __('Failed to send message'), variant: 'destructive' })
+      toast({ title: error.message || __('Failed to send message', 'wp-sms'), variant: 'destructive' })
     } finally {
       setIsSendingReply(false)
     }
@@ -339,7 +340,7 @@ export default function Subscribers() {
         group_id: parseInt(moveToGroupId),
       })
       toast({
-        title: __('%d subscriber(s) moved to group').replace('%d', result.affected),
+        title: __('%d subscriber(s) moved to group', 'wp-sms').replace('%d', result.affected),
         variant: 'success',
       })
       table.clearSelection()
@@ -358,7 +359,7 @@ export default function Subscribers() {
     {
       id: 'name',
       accessorKey: 'name',
-      header: __('Name'),
+      header: __('Name', 'wp-sms'),
       sortable: true,
       cell: ({ row }) => (
         <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
@@ -369,7 +370,7 @@ export default function Subscribers() {
     {
       id: 'mobile',
       accessorKey: 'mobile',
-      header: __('Phone Number'),
+      header: __('Phone Number', 'wp-sms'),
       sortable: true,
       cell: ({ row }) => (
         <span className="wsms-text-[13px] wsms-font-mono wsms-text-foreground">
@@ -380,7 +381,7 @@ export default function Subscribers() {
     {
       id: 'group',
       accessorKey: 'group_name',
-      header: __('Group'),
+      header: __('Group', 'wp-sms'),
       cell: ({ row }) => (
         <span className="wsms-text-[12px] wsms-text-muted-foreground">
           {row.group_name || '—'}
@@ -390,7 +391,7 @@ export default function Subscribers() {
     {
       id: 'custom_fields',
       accessorKey: 'custom_fields',
-      header: __('Custom Fields'),
+      header: __('Custom Fields', 'wp-sms'),
       cell: ({ row }) => {
         if (!row.custom_fields || Object.keys(row.custom_fields).length === 0) {
           return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
@@ -409,7 +410,7 @@ export default function Subscribers() {
             ))}
             {entries.length > 2 && (
               <span className="wsms-text-[10px] wsms-text-muted-foreground">
-                +{entries.length - 2} {__('more')}
+                +{entries.length - 2} {__('more', 'wp-sms')}
               </span>
             )}
           </div>
@@ -419,10 +420,10 @@ export default function Subscribers() {
     {
       id: 'status',
       accessorKey: 'status',
-      header: __('Status'),
+      header: __('Status', 'wp-sms'),
       cell: ({ row }) => (
         <StatusBadge variant={row.status === '1' ? 'active' : 'inactive'}>
-          {row.status === '1' ? __('Active') : __('Inactive')}
+          {row.status === '1' ? __('Active', 'wp-sms') : __('Inactive', 'wp-sms')}
         </StatusBadge>
       ),
     },
@@ -431,7 +432,7 @@ export default function Subscribers() {
           {
             id: 'activate_key',
             accessorKey: 'activate_key',
-            header: __('Activate Code'),
+            header: __('Activate Code', 'wp-sms'),
             cell: ({ row }) => (
               <span className="wsms-text-[12px] wsms-font-mono wsms-text-muted-foreground">
                 {row.activate_key || '—'}
@@ -443,7 +444,7 @@ export default function Subscribers() {
     {
       id: 'date',
       accessorKey: 'date',
-      header: __('Subscribed'),
+      header: __('Subscribed', 'wp-sms'),
       sortable: true,
       cell: ({ row }) => (
         <span className="wsms-text-[12px] wsms-text-muted-foreground">
@@ -456,17 +457,17 @@ export default function Subscribers() {
   // Row actions
   const rowActions = [
     {
-      label: __('Quick Reply'),
+      label: __('Quick Reply', 'wp-sms'),
       icon: MessageSquare,
       onClick: (row) => setQuickReplyTo(row),
     },
     {
-      label: __('Edit'),
+      label: __('Edit', 'wp-sms'),
       icon: Edit,
       onClick: handleEdit,
     },
     {
-      label: __('Delete'),
+      label: __('Delete', 'wp-sms'),
       icon: Trash2,
       onClick: handleDeleteClick,
       variant: 'destructive',
@@ -486,28 +487,28 @@ export default function Subscribers() {
   // Handle bulk delete with confirmation
   const handleBulkDeleteConfirm = useCallback(async () => {
     setShowBulkDeleteConfirm(false)
-    await handleBulkActionWithLoading('delete', __('Delete Selected'))
+    await handleBulkActionWithLoading('delete', __('Delete Selected', 'wp-sms'))
   }, [handleBulkAction]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Bulk actions
   const bulkActions = [
     {
-      label: __('Move to Group'),
+      label: __('Move to Group', 'wp-sms'),
       icon: FolderOpen,
       onClick: () => setShowMoveToGroup(true),
     },
     {
-      label: __('Activate Selected'),
+      label: __('Activate Selected', 'wp-sms'),
       icon: CheckCircle,
-      onClick: () => handleBulkActionWithLoading('activate', __('Activate Selected')),
+      onClick: () => handleBulkActionWithLoading('activate', __('Activate Selected', 'wp-sms')),
     },
     {
-      label: __('Deactivate Selected'),
+      label: __('Deactivate Selected', 'wp-sms'),
       icon: XCircle,
-      onClick: () => handleBulkActionWithLoading('deactivate', __('Deactivate Selected')),
+      onClick: () => handleBulkActionWithLoading('deactivate', __('Deactivate Selected', 'wp-sms')),
     },
     {
-      label: __('Delete Selected'),
+      label: __('Delete Selected', 'wp-sms'),
       icon: Trash2,
       onClick: () => setShowBulkDeleteConfirm(true),
       variant: 'destructive',
@@ -528,14 +529,14 @@ export default function Subscribers() {
             <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center">
               <AlertCircle className="wsms-h-12 wsms-w-12 wsms-text-destructive wsms-mb-4" />
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                {__('Failed to load subscribers')}
+                {__('Failed to load subscribers', 'wp-sms')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-4">
                 {table.error}
               </p>
               <Button onClick={() => table.fetch({ page: 1 })}>
                 <RefreshCw className="wsms-h-4 wsms-w-4 wsms-me-2" />
-                {__('Try Again')}
+                {__('Try Again', 'wp-sms')}
               </Button>
             </div>
           </CardContent>
@@ -558,10 +559,10 @@ export default function Subscribers() {
                 <Users className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                {__('No subscribers yet')}
+                {__('No subscribers yet', 'wp-sms')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
-                {__('Start building your SMS audience. Add subscribers manually, import from CSV, or let users subscribe through your website forms.')}
+                {__('Start building your SMS audience. Add subscribers manually, import from CSV, or let users subscribe through your website forms.', 'wp-sms')}
               </p>
 
               {/* Quick Add */}
@@ -571,8 +572,8 @@ export default function Subscribers() {
                     <InternationalPhoneInput
                       value={quickAddPhone}
                       onChange={setQuickAddPhone}
-                      placeholder={__('Phone number')}
-                      aria-label={__('Phone number')}
+                      placeholder={__('Phone number', 'wp-sms')}
+                      aria-label={__('Phone number', 'wp-sms')}
                     />
                   </div>
                   <div className={cn('wsms-shrink-0', multiGroupEnabled ? 'wsms-w-[160px]' : 'wsms-w-[120px]')}>
@@ -581,17 +582,17 @@ export default function Subscribers() {
                         options={groups.map(g => ({ value: String(g.id), label: g.name }))}
                         value={Array.isArray(quickAddGroup) ? quickAddGroup : []}
                         onValueChange={setQuickAddGroup}
-                        placeholder={__('Groups')}
-                        searchPlaceholder={__('Search groups...')}
+                        placeholder={__('Groups', 'wp-sms')}
+                        searchPlaceholder={__('Search groups...', 'wp-sms')}
                         maxDisplayItems={0}
                       />
                     ) : (
                       <Select value={quickAddGroup || 'none'} onValueChange={(v) => setQuickAddGroup(v === 'none' ? '' : v)}>
-                        <SelectTrigger aria-label={__('Select group')}>
-                          <SelectValue placeholder={__('No Group')} />
+                        <SelectTrigger aria-label={__('Select group', 'wp-sms')}>
+                          <SelectValue placeholder={__('No Group', 'wp-sms')} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="none">{__('No Group')}</SelectItem>
+                          <SelectItem value="none">{__('No Group', 'wp-sms')}</SelectItem>
                           {groups.map((group) => (
                             <SelectItem key={group.id} value={String(group.id)}>
                               {group.name}
@@ -608,7 +609,7 @@ export default function Subscribers() {
                     {isAddingQuick ? (
                       <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
                     ) : (
-                      __('Add')
+                      __('Add', 'wp-sms')
                     )}
                   </Button>
                 </div>
@@ -617,7 +618,7 @@ export default function Subscribers() {
               {/* Import option */}
               <Button variant="outline" onClick={() => setShowImportDialog(true)}>
                 <Download className="wsms-h-4 wsms-w-4 wsms-me-2" />
-                {__('Import from CSV')}
+                {__('Import from CSV', 'wp-sms')}
               </Button>
             </div>
           </CardContent>
@@ -647,7 +648,7 @@ export default function Subscribers() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -660,7 +661,7 @@ export default function Subscribers() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.active}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Active')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Active', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -673,7 +674,7 @@ export default function Subscribers() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-muted-foreground">{stats.inactive}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Inactive')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Inactive', 'wp-sms')}</p>
               </div>
             </div>
           </div>
@@ -682,11 +683,11 @@ export default function Subscribers() {
           <div className="wsms-col-span-2 lg:wsms-col-span-1 wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-mt-2 lg:wsms-mt-0">
             <Button variant="outline" onClick={() => setShowImportDialog(true)}>
               <Download className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
-              {__('Import')}
+              {__('Import', 'wp-sms')}
             </Button>
             <ExportButton
               onExport={handleExport}
-              successMessage={__('Exported %d subscribers successfully')}
+              successMessage={__('Exported %d subscribers successfully', 'wp-sms')}
             />
           </div>
         </div>
@@ -704,8 +705,8 @@ export default function Subscribers() {
                 type="text"
                 value={filters.filters.search}
                 onChange={(e) => filters.setFilter('search', e.target.value)}
-                placeholder={__('Search...')}
-                aria-label={__('Search subscribers')}
+                placeholder={__('Search...', 'wp-sms')}
+                aria-label={__('Search subscribers', 'wp-sms')}
                 className="wsms-ps-8 wsms-h-9"
               />
             </div>
@@ -713,11 +714,11 @@ export default function Subscribers() {
             {/* Filters */}
             <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-2">
               <Select value={filters.filters.group_id} onValueChange={(v) => filters.setFilter('group_id', v)}>
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label={__('Filter by group')}>
-                  <SelectValue placeholder={__('All Groups')} />
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label={__('Filter by group', 'wp-sms')}>
+                  <SelectValue placeholder={__('All Groups', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{__('All Groups')}</SelectItem>
+                  <SelectItem value="all">{__('All Groups', 'wp-sms')}</SelectItem>
                   {groups.map((group) => (
                     <SelectItem key={group.id} value={group.id.toString()}>
                       {group.name}
@@ -727,13 +728,13 @@ export default function Subscribers() {
               </Select>
 
               <Select value={filters.filters.status} onValueChange={(v) => filters.setFilter('status', v)}>
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[12px]" aria-label={__('Filter by status')}>
-                  <SelectValue placeholder={__('Status')} />
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[12px]" aria-label={__('Filter by status', 'wp-sms')}>
+                  <SelectValue placeholder={__('Status', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{__('All Status')}</SelectItem>
-                  <SelectItem value="active">{__('Active')}</SelectItem>
-                  <SelectItem value="inactive">{__('Inactive')}</SelectItem>
+                  <SelectItem value="all">{__('All Status', 'wp-sms')}</SelectItem>
+                  <SelectItem value="active">{__('Active', 'wp-sms')}</SelectItem>
+                  <SelectItem value="inactive">{__('Inactive', 'wp-sms')}</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -742,17 +743,17 @@ export default function Subscribers() {
                   <SearchableSelect
                     value={filters.filters.country_code}
                     onValueChange={(v) => filters.setFilter('country_code', v)}
-                    placeholder={__('All Countries')}
-                    searchPlaceholder={__('Search countries...')}
+                    placeholder={__('All Countries', 'wp-sms')}
+                    searchPlaceholder={__('Search countries...', 'wp-sms')}
                     options={[
-                      { value: 'all', label: __('All Countries') },
+                      { value: 'all', label: __('All Countries', 'wp-sms') },
                       ...countries
                         .filter((country, index, self) =>
                           index === self.findIndex((c) => c.code === country.code)
                         )
                         .map((country) => ({ value: country.code, label: country.name })),
                     ]}
-                    aria-label={__('Filter by country')}
+                    aria-label={__('Filter by country', 'wp-sms')}
                   />
                 </div>
               )}
@@ -765,7 +766,7 @@ export default function Subscribers() {
                 size="sm"
                 onClick={filters.resetFilters}
                 className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
-                aria-label={__('Clear all filters')}
+                aria-label={__('Clear all filters', 'wp-sms')}
               >
                 <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
               </Button>
@@ -777,7 +778,7 @@ export default function Subscribers() {
               size="sm"
               onClick={() => table.fetch({ page: 1 })}
               className="wsms-h-9 wsms-px-2.5 xl:wsms-ms-auto"
-              aria-label={__('Refresh subscribers')}
+              aria-label={__('Refresh subscribers', 'wp-sms')}
             >
               <RefreshCw
                 className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')}
@@ -792,7 +793,7 @@ export default function Subscribers() {
           {/* Row 2: Quick Add */}
           <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-3 wsms-p-3">
             <span className="wsms-text-[11px] wsms-font-medium wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide wsms-shrink-0">
-              {__('Quick Add')}
+              {__('Quick Add', 'wp-sms')}
             </span>
 
             <div className="wsms-flex wsms-flex-1 wsms-flex-wrap wsms-items-center wsms-gap-2">
@@ -800,8 +801,8 @@ export default function Subscribers() {
                 type="text"
                 value={quickAddName}
                 onChange={(e) => setQuickAddName(e.target.value)}
-                placeholder={__('Name (optional)')}
-                aria-label={__('Subscriber name')}
+                placeholder={__('Name (optional)', 'wp-sms')}
+                aria-label={__('Subscriber name', 'wp-sms')}
                 className="wsms-h-9 wsms-w-full sm:wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[140px] wsms-text-[13px]"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && quickAddPhone.trim()) {
@@ -813,8 +814,8 @@ export default function Subscribers() {
                 <InternationalPhoneInput
                   value={quickAddPhone}
                   onChange={setQuickAddPhone}
-                  placeholder={__('Phone number')}
-                  aria-label={__('Phone number')}
+                  placeholder={__('Phone number', 'wp-sms')}
+                  aria-label={__('Phone number', 'wp-sms')}
                 />
               </div>
               <div className={cn('wsms-w-full sm:wsms-shrink-0', multiGroupEnabled ? 'sm:wsms-w-[160px]' : 'sm:wsms-w-[120px]')}>
@@ -823,17 +824,17 @@ export default function Subscribers() {
                     options={groups.map(g => ({ value: String(g.id), label: g.name }))}
                     value={Array.isArray(quickAddGroup) ? quickAddGroup : []}
                     onValueChange={setQuickAddGroup}
-                    placeholder={__('Groups')}
-                    searchPlaceholder={__('Search groups...')}
+                    placeholder={__('Groups', 'wp-sms')}
+                    searchPlaceholder={__('Search groups...', 'wp-sms')}
                     maxDisplayItems={0}
                   />
                 ) : (
                   <Select value={quickAddGroup || 'none'} onValueChange={(v) => setQuickAddGroup(v === 'none' ? '' : v)}>
-                    <SelectTrigger className="wsms-h-9 wsms-text-[13px]" aria-label={__('Select group')}>
-                      <SelectValue placeholder={__('No Group')} />
+                    <SelectTrigger className="wsms-h-9 wsms-text-[13px]" aria-label={__('Select group', 'wp-sms')}>
+                      <SelectValue placeholder={__('No Group', 'wp-sms')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">{__('No Group')}</SelectItem>
+                      <SelectItem value="none">{__('No Group', 'wp-sms')}</SelectItem>
                       {groups.map((group) => (
                         <SelectItem key={group.id} value={String(group.id)}>
                           {group.name}
@@ -853,7 +854,7 @@ export default function Subscribers() {
                 ) : (
                   <UserPlus className="wsms-h-4 wsms-w-4 wsms-me-1.5" aria-hidden="true" />
                 )}
-                {__('Add')}
+                {__('Add', 'wp-sms')}
               </Button>
             </div>
           </div>
@@ -913,12 +914,12 @@ export default function Subscribers() {
                 />
               </div>
               <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium">{__('Phone Number')}</label>
+                <label className="wsms-text-[12px] wsms-font-medium">{__('Phone Number', 'wp-sms')}</label>
                 <InternationalPhoneInput
                   value={editDialog.formData.mobile}
                   onChange={(value) => editDialog.updateField('mobile', value)}
                   placeholder="+1234567890"
-                  aria-label={__('Phone number')}
+                  aria-label={__('Phone number', 'wp-sms')}
                   className={editDialog.hasError('mobile') ? 'wsms-border-destructive' : ''}
                 />
                 {editDialog.getError('mobile') && (
@@ -932,7 +933,7 @@ export default function Subscribers() {
                     value={editDialog.formData.group_id || 'none'}
                     onValueChange={(v) => editDialog.updateField('group_id', v === 'none' ? '' : v)}
                   >
-                    <SelectTrigger aria-label={__('Group')}>
+                    <SelectTrigger aria-label={__('Group', 'wp-sms')}>
                       <SelectValue placeholder="Select group" />
                     </SelectTrigger>
                     <SelectContent>
@@ -951,7 +952,7 @@ export default function Subscribers() {
                     value={editDialog.formData.status}
                     onValueChange={(v) => editDialog.updateField('status', v)}
                   >
-                    <SelectTrigger aria-label={__('Status')}>
+                    <SelectTrigger aria-label={__('Status', 'wp-sms')}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -1085,19 +1086,19 @@ export default function Subscribers() {
                 <div className="wsms-p-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-dashed wsms-text-center">
                   <FolderOpen className="wsms-h-8 wsms-w-8 wsms-text-muted-foreground wsms-mx-auto wsms-mb-2" />
                   <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground wsms-mb-1">
-                    {__('No groups available')}
+                    {__('No groups available', 'wp-sms')}
                   </p>
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                    {__('Create a group first in the Groups page to organize your subscribers.')}
+                    {__('Create a group first in the Groups page to organize your subscribers.', 'wp-sms')}
                   </p>
                 </div>
               ) : (
                 <>
                   <div className="wsms-space-y-2">
-                    <label className="wsms-text-[12px] wsms-font-medium">{__('Select Group')}</label>
+                    <label className="wsms-text-[12px] wsms-font-medium">{__('Select Group', 'wp-sms')}</label>
                     <Select value={moveToGroupId} onValueChange={setMoveToGroupId}>
-                      <SelectTrigger aria-label={__('Select group')}>
-                        <SelectValue placeholder={__('Choose a group...')} />
+                      <SelectTrigger aria-label={__('Select group', 'wp-sms')}>
+                        <SelectValue placeholder={__('Choose a group...', 'wp-sms')} />
                       </SelectTrigger>
                       <SelectContent>
                         {groups.map((group) => (
@@ -1110,7 +1111,7 @@ export default function Subscribers() {
                   </div>
                   <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/50 wsms-border wsms-border-border">
                     <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                      {__('This will move %d subscriber(s) to the selected group.').replace('%d', table.selectedIds.length)}
+                      {__('This will move %d subscriber(s) to the selected group.', 'wp-sms').replace('%d', table.selectedIds.length)}
                     </p>
                   </div>
                 </>
@@ -1125,17 +1126,17 @@ export default function Subscribers() {
                 setMoveToGroupId('')
               }}
             >
-              {groups.length === 0 ? __('Close') : __('Cancel')}
+              {groups.length === 0 ? __('Close', 'wp-sms') : __('Cancel', 'wp-sms')}
             </Button>
             {groups.length > 0 && (
               <Button onClick={handleMoveToGroup} disabled={isMovingToGroup || !moveToGroupId}>
                 {isMovingToGroup ? (
                   <>
                     <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
-                    {__('Moving...')}
+                    {__('Moving...', 'wp-sms')}
                   </>
                 ) : (
-                  __('Move to Group')
+                  __('Move to Group', 'wp-sms')
                 )}
               </Button>
             )}
@@ -1149,8 +1150,8 @@ export default function Subscribers() {
         onClose={deleteDialog.close}
         onConfirm={handleDeleteConfirm}
         isSaving={deleteDialog.isSaving}
-        title={__('Delete Subscriber')}
-        description={__('Are you sure you want to delete this subscriber?')}
+        title={__('Delete Subscriber', 'wp-sms')}
+        description={__('Are you sure you want to delete this subscriber?', 'wp-sms')}
       >
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
           <div className="wsms-space-y-1">
@@ -1171,13 +1172,13 @@ export default function Subscribers() {
         isOpen={showBulkDeleteConfirm}
         onClose={() => setShowBulkDeleteConfirm(false)}
         onConfirm={handleBulkDeleteConfirm}
-        isSaving={bulkActionLoading === __('Delete Selected')}
-        title={__('Delete Subscribers')}
-        description={__('Are you sure you want to delete the selected subscribers?')}
+        isSaving={bulkActionLoading === __('Delete Selected', 'wp-sms')}
+        title={__('Delete Subscribers', 'wp-sms')}
+        description={__('Are you sure you want to delete the selected subscribers?', 'wp-sms')}
       >
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
           <p className="wsms-text-[13px] wsms-text-foreground">
-            {__('%d subscriber(s) will be permanently deleted.').replace('%d', table.selectedIds.length)}
+            {__('%d subscriber(s) will be permanently deleted.', 'wp-sms').replace('%d', table.selectedIds.length)}
           </p>
         </div>
       </DeleteConfirmDialog>

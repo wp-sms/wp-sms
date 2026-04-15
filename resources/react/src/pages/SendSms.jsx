@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n'
 import React, { useState, useEffect, useCallback } from 'react'
 import { Send, Zap, Image, Users, Loader2, CreditCard, User, Radio, MessageSquare, Clock, Eye, CalendarClock, Repeat } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
@@ -13,7 +14,7 @@ import { Tip } from '@/components/ui/ux-helpers'
 import { smsApi } from '@/api/smsApi'
 import { useSettings } from '@/context/SettingsContext'
 import { useCountryCheck } from '@/hooks/useCountryCheck'
-import { cn, getGatewayDisplayName, __, getWpSettings } from '@/lib/utils'
+import { cn, getGatewayDisplayName, getWpSettings } from '@/lib/utils'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 
 export default function SendSms() {
@@ -185,7 +186,7 @@ export default function SendSms() {
       const hasOtherRecipients = recipients.groups?.length > 0 || recipients.roles?.length > 0 || (recipients.users?.length || 0) > 0
       if (allowed.length === 0 && !hasOtherRecipients) {
         setDialogStatus('error')
-        setDialogResultMessage(__('All recipients are outside your allowed countries. You can update this in Gateway > Country Restrictions.'))
+        setDialogResultMessage(__('All recipients are outside your allowed countries. You can update this in Gateway > Country Restrictions.', 'wp-sms'))
         return
       }
 
@@ -223,13 +224,17 @@ export default function SendSms() {
 
       setDialogStatus('success')
       if (blockedCount > 0) {
-        setDialogResultMessage(__('Message sent. %d recipient(s) skipped — their country codes don\'t match your country restriction settings.').replace('%d', blockedCount))
+        setDialogResultMessage(__('Message sent. %d recipient(s) skipped — their country codes don\'t match your country restriction settings.', 'wp-sms').replace('%d', blockedCount))
       } else {
-        setDialogResultMessage(result.message || __(`Message sent successfully to ${result.recipientCount || recipientCount} recipient(s)`))
+        setDialogResultMessage(result.message || sprintf(
+          /* translators: %d: number of recipients */
+          __('Message sent successfully to %d recipient(s)', 'wp-sms'),
+          result.recipientCount || recipientCount
+        ))
       }
     } catch (error) {
       setDialogStatus('error')
-      setDialogResultMessage(error.message || __('Failed to send message'))
+      setDialogResultMessage(error.message || __('Failed to send message', 'wp-sms'))
     } finally {
       setIsSending(false)
     }
@@ -240,12 +245,12 @@ export default function SendSms() {
       {/* Gateway not configured warning */}
       {!gatewayConfigured && (
         <Tip variant="warning">
-          <strong>{__('No SMS gateway configured.')}</strong> {__('You need to set up a gateway before you can send messages.')}{' '}
+          <strong>{__('No SMS gateway configured.', 'wp-sms')}</strong> {__('You need to set up a gateway before you can send messages.', 'wp-sms')}{' '}
           <button
             onClick={() => setCurrentPage('gateway')}
             className="wsms-underline wsms-font-medium"
           >
-            {__('Configure Gateway')}{' '}
+            {__('Configure Gateway', 'wp-sms')}{' '}
             <span className="wsms-inline-block rtl:wsms-scale-x-[-1]">{'\u2192'}</span>
           </button>
         </Tip>
@@ -260,7 +265,7 @@ export default function SendSms() {
                 <Radio className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               </div>
               <div>
-                <span className="wsms-text-[10px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">{__('Gateway')}</span>
+                <span className="wsms-text-[10px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">{__('Gateway', 'wp-sms')}</span>
                 <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground">{gatewayName}</p>
               </div>
             </div>
@@ -272,7 +277,7 @@ export default function SendSms() {
                     <CreditCard className="wsms-h-4 wsms-w-4 wsms-text-emerald-600" />
                   </div>
                   <div>
-                    <span className="wsms-text-[10px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">{__('Credit')}</span>
+                    <span className="wsms-text-[10px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">{__('Credit', 'wp-sms')}</span>
                     <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground">{credit}</p>
                   </div>
                 </div>
@@ -281,7 +286,7 @@ export default function SendSms() {
           </div>
           {gatewayValidation && (
             <div className="wsms-text-[11px] wsms-text-muted-foreground">
-              {__('Format:')} <code className="wsms-px-1.5 wsms-py-0.5 wsms-rounded-md wsms-bg-muted wsms-font-mono">{gatewayValidation}</code>
+              {__('Format:', 'wp-sms')} <code className="wsms-px-1.5 wsms-py-0.5 wsms-rounded-md wsms-bg-muted wsms-font-mono">{gatewayValidation}</code>
             </div>
           )}
         </div>
@@ -295,7 +300,7 @@ export default function SendSms() {
             <div className="wsms-flex wsms-flex-col wsms-gap-2 lg:wsms-flex-row lg:wsms-items-center lg:wsms-justify-between">
               <div className="wsms-flex wsms-items-center wsms-gap-2">
                 <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                <CardTitle className="wsms-text-sm">{__('Compose Message')}</CardTitle>
+                <CardTitle className="wsms-text-sm">{__('Compose Message', 'wp-sms')}</CardTitle>
               </div>
               {/* Sender ID inline */}
               <div className="wsms-flex wsms-items-center wsms-gap-2">
@@ -304,8 +309,8 @@ export default function SendSms() {
                   type="text"
                   value={senderId}
                   onChange={(e) => setSenderId(e.target.value)}
-                  placeholder={__('Sender ID')}
-                  aria-label={__('Sender ID')}
+                  placeholder={__('Sender ID', 'wp-sms')}
+                  aria-label={__('Sender ID', 'wp-sms')}
                   maxLength={18}
                   className="wsms-w-32 wsms-h-7 wsms-text-[12px]"
                 />
@@ -317,7 +322,7 @@ export default function SendSms() {
             <MessageComposer
               value={message}
               onChange={setMessage}
-              placeholder={__('Type your message here...')}
+              placeholder={__('Type your message here...', 'wp-sms')}
               rows={8}
               maxSegments={10}
             />
@@ -331,12 +336,12 @@ export default function SendSms() {
                     <Switch
                       checked={flashSms}
                       onCheckedChange={setFlashSms}
-                      aria-label={__('Flash SMS')}
+                      aria-label={__('Flash SMS', 'wp-sms')}
                       className="wsms-scale-90"
                     />
                     <span className="wsms-text-[12px] wsms-text-muted-foreground">
                       <Zap className="wsms-h-3 wsms-w-3 wsms-inline wsms-me-1 wsms-text-amber-500" />
-                      {__('Flash')}
+                      {__('Flash', 'wp-sms')}
                     </span>
                   </label>
                 )}
@@ -353,7 +358,7 @@ export default function SendSms() {
                     )}
                   >
                     <Image className="wsms-h-3.5 wsms-w-3.5" />
-                    {__('Media')}
+                    {__('Media', 'wp-sms')}
                   </button>
                 )}
               </div>
@@ -366,7 +371,7 @@ export default function SendSms() {
                   value={mediaUrl}
                   onChange={setMediaUrl}
                   allowedTypes={['image']}
-                  buttonText={__('Select Image')}
+                  buttonText={__('Select Image', 'wp-sms')}
                 />
               </div>
             )}
@@ -378,7 +383,7 @@ export default function SendSms() {
           <CardHeader className="wsms-border-b wsms-border-border wsms-bg-muted/20 wsms-py-3">
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <Users className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              <CardTitle className="wsms-text-sm">{__('Recipients')}</CardTitle>
+              <CardTitle className="wsms-text-sm">{__('Recipients', 'wp-sms')}</CardTitle>
               {recipientCount > 0 && (
                 <span className="wsms-ms-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary wsms-text-primary-foreground wsms-text-[11px] wsms-font-medium">
                   {isLoadingCount ? (
@@ -400,7 +405,7 @@ export default function SendSms() {
             {!gatewaySupportsBulk && recipients.groups.length > 0 && (
               <div className="wsms-mt-3 wsms-p-2.5 wsms-rounded-lg wsms-bg-amber-500/10 wsms-border wsms-border-amber-500/20">
                 <p className="wsms-text-[11px] wsms-text-amber-700 dark:wsms-text-amber-400">
-                  {__("This gateway doesn't support bulk SMS. Only the first number will receive the message.")}
+                  {__("This gateway doesn't support bulk SMS. Only the first number will receive the message.", 'wp-sms')}
                 </p>
               </div>
             )}
@@ -414,7 +419,7 @@ export default function SendSms() {
           <CardHeader className="wsms-border-b wsms-border-border wsms-bg-muted/20 wsms-py-3">
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <CalendarClock className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              <CardTitle className="wsms-text-sm">{__('Scheduling Options')}</CardTitle>
+              <CardTitle className="wsms-text-sm">{__('Scheduling Options', 'wp-sms')}</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="wsms-p-4">
@@ -425,15 +430,15 @@ export default function SendSms() {
                   <Clock className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
                   <div>
                     <label className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
-                      {__('Schedule Message')}
+                      {__('Schedule Message', 'wp-sms')}
                     </label>
                     <p className="wsms-text-[11px] wsms-text-muted-foreground">
-                      {__('Send this message at a specific date and time')}
+                      {__('Send this message at a specific date and time', 'wp-sms')}
                     </p>
                   </div>
                 </div>
                 <Switch
-                  aria-label={__('Schedule Message')}
+                  aria-label={__('Schedule Message', 'wp-sms')}
                   checked={scheduleEnabled}
                   onCheckedChange={setScheduleEnabled}
                 />
@@ -444,7 +449,7 @@ export default function SendSms() {
                 <div className="wsms-ps-7 wsms-space-y-4 wsms-border-s-2 wsms-border-primary/20 wsms-ms-2">
                   <div className="wsms-space-y-1.5">
                     <label htmlFor="schedule-date" className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">
-                      {__('Schedule Date & Time')}
+                      {__('Schedule Date & Time', 'wp-sms')}
                     </label>
                     <Input
                       id="schedule-date"
@@ -455,7 +460,7 @@ export default function SendSms() {
                       min={new Date().toISOString().slice(0, 16)}
                     />
                     <p className="wsms-text-[11px] wsms-text-muted-foreground">
-                      {__("Site's time zone")}: {window.wpSmsSettings?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone}
+                      {__("Site's time zone", 'wp-sms')}: {window.wpSmsSettings?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone}
                     </p>
                   </div>
 
@@ -465,15 +470,15 @@ export default function SendSms() {
                       <Repeat className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
                       <div>
                         <label className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
-                          {__('Repeat Message')}
+                          {__('Repeat Message', 'wp-sms')}
                         </label>
                         <p className="wsms-text-[11px] wsms-text-muted-foreground">
-                          {__('Automatically send this message on a recurring schedule')}
+                          {__('Automatically send this message on a recurring schedule', 'wp-sms')}
                         </p>
                       </div>
                     </div>
                     <Switch
-                      aria-label={__('Repeat Message')}
+                      aria-label={__('Repeat Message', 'wp-sms')}
                       checked={repeatEnabled}
                       onCheckedChange={setRepeatEnabled}
                     />
@@ -485,7 +490,7 @@ export default function SendSms() {
                       {/* Repeat Interval */}
                       <div className="wsms-space-y-1.5">
                         <label htmlFor="repeat-interval" className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">
-                          {__('Repeat Every')}
+                          {__('Repeat Every', 'wp-sms')}
                         </label>
                         <div className="wsms-flex wsms-items-center wsms-gap-2">
                           <Input
@@ -497,14 +502,14 @@ export default function SendSms() {
                             className="!wsms-w-[120px]"
                           />
                           <Select value={repeatIntervalUnit} onValueChange={setRepeatIntervalUnit}>
-                            <SelectTrigger className="!wsms-w-[120px]" aria-label={__('Repeat interval unit')}>
+                            <SelectTrigger className="!wsms-w-[120px]" aria-label={__('Repeat interval unit', 'wp-sms')}>
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="day">{__('Day(s)')}</SelectItem>
-                              <SelectItem value="week">{__('Week(s)')}</SelectItem>
-                              <SelectItem value="month">{__('Month(s)')}</SelectItem>
-                              <SelectItem value="year">{__('Year(s)')}</SelectItem>
+                              <SelectItem value="day">{__('Day(s)', 'wp-sms')}</SelectItem>
+                              <SelectItem value="week">{__('Week(s)', 'wp-sms')}</SelectItem>
+                              <SelectItem value="month">{__('Month(s)', 'wp-sms')}</SelectItem>
+                              <SelectItem value="year">{__('Year(s)', 'wp-sms')}</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -513,7 +518,7 @@ export default function SendSms() {
                       {/* End Date */}
                       <div className="wsms-space-y-1.5">
                         <label htmlFor="repeat-end-date" className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">
-                          {__('End Date')}
+                          {__('End Date', 'wp-sms')}
                         </label>
                         <div className="wsms-flex wsms-items-center wsms-gap-4">
                           <Input
@@ -533,7 +538,7 @@ export default function SendSms() {
                               className="wsms-rounded wsms-border-border wsms-text-primary focus:wsms-ring-primary"
                             />
                             <span className="wsms-text-[12px] wsms-text-foreground">
-                              {__('Repeat Forever')}
+                              {__('Repeat Forever', 'wp-sms')}
                             </span>
                           </label>
                         </div>
@@ -554,7 +559,7 @@ export default function SendSms() {
           <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-x-5 wsms-gap-y-1 wsms-text-[13px]">
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <Users className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-              <span className="wsms-text-muted-foreground">{__('Recipients:')}</span>
+              <span className="wsms-text-muted-foreground">{__('Recipients:', 'wp-sms')}</span>
               <span className="wsms-font-semibold wsms-text-foreground">
                 {isLoadingCount ? '...' : recipientCount}
               </span>
@@ -562,13 +567,13 @@ export default function SendSms() {
             <div className="wsms-w-px wsms-h-4 wsms-bg-border wsms-hidden lg:wsms-block" />
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-              <span className="wsms-text-muted-foreground">{__('Segments:')}</span>
+              <span className="wsms-text-muted-foreground">{__('Segments:', 'wp-sms')}</span>
               <span className="wsms-font-semibold wsms-text-foreground">{smsInfo.segments}</span>
             </div>
             <div className="wsms-w-px wsms-h-4 wsms-bg-border wsms-hidden lg:wsms-block" />
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <Send className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              <span className="wsms-text-muted-foreground">{__('Total:')}</span>
+              <span className="wsms-text-muted-foreground">{__('Total:', 'wp-sms')}</span>
               <span className="wsms-font-bold wsms-text-primary">{recipientCount * smsInfo.segments}</span>
             </div>
           </div>
@@ -578,21 +583,21 @@ export default function SendSms() {
             {!canSend && (
               <p className="wsms-text-[12px] wsms-text-amber-700 dark:wsms-text-amber-500">
                 {isLoadingCount
-                  ? __('Checking recipients...')
+                  ? __('Checking recipients...', 'wp-sms')
                   : !gatewayConfigured
-                    ? __('Configure gateway first')
+                    ? __('Configure gateway first', 'wp-sms')
                     : !hasMessage && !hasSelections
-                      ? __('Add message and recipients')
+                      ? __('Add message and recipients', 'wp-sms')
                       : !hasMessage
-                        ? __('Enter a message')
+                        ? __('Enter a message', 'wp-sms')
                         : !hasSelections
-                          ? __('Add recipients')
+                          ? __('Add recipients', 'wp-sms')
                           : !hasActualRecipients
-                            ? __('Selected groups/roles have no subscribers')
+                            ? __('Selected groups/roles have no subscribers', 'wp-sms')
                             : !isScheduleValid
-                              ? __('Select schedule date and time')
+                              ? __('Select schedule date and time', 'wp-sms')
                               : !isRepeatValid
-                                ? __('Select repeat end date')
+                                ? __('Select repeat end date', 'wp-sms')
                                 : null}
               </p>
             )}
@@ -606,7 +611,7 @@ export default function SendSms() {
               ) : (
                 <Eye className="wsms-h-4 wsms-w-4" />
               )}
-              {__('Review & Send')}
+              {__('Review & Send', 'wp-sms')}
             </Button>
           </div>
         </div>

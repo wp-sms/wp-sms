@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import * as React from 'react'
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import PropTypes from 'prop-types'
@@ -12,7 +13,7 @@ import {
   Inbox,
   Loader2,
 } from 'lucide-react'
-import { cn, __ } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -81,7 +82,7 @@ function EmptyState({ icon: Icon = Inbox, message }) {
       <div className="wsms-empty-state-icon">
         <Icon strokeWidth={1.5} />
       </div>
-      <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-text-center wsms-max-w-[280px]">{message || __('No items found')}</p>
+      <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-text-center wsms-max-w-[280px]">{message || __('No items found', 'wp-sms')}</p>
     </div>
   )
 }
@@ -99,7 +100,7 @@ function BulkActionsDropdown({ actions, selectedCount, onAction, loadingAction }
           {isAnyLoading ? (
             <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
           ) : (
-            <span>{__('Actions')}</span>
+            <span>{__('Actions', 'wp-sms')}</span>
           )}
           <span className="wsms-flex wsms-h-5 wsms-min-w-5 wsms-items-center wsms-justify-center wsms-rounded wsms-bg-primary/10 wsms-px-1.5 wsms-text-[11px] wsms-font-semibold wsms-text-primary">
             {selectedCount}
@@ -157,7 +158,7 @@ function RowActionsDropdown({ actions, row }) {
             ? <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
             : <MoreHorizontal className="wsms-h-4 wsms-w-4" />
           }
-          <span className="wsms-sr-only">{__('Open menu')}</span>
+          <span className="wsms-sr-only">{__('Open menu', 'wp-sms')}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" sideOffset={5}>
@@ -219,17 +220,17 @@ function Pagination({
   if (totalPages <= 1 && !onPerPageChange) return null
 
   return (
-    <nav aria-label={__('Pagination')} className="wsms-flex wsms-flex-col sm:wsms-flex-row wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-4 wsms-py-3 wsms-border-t wsms-border-border wsms-bg-muted/20">
+    <nav aria-label={__('Pagination', 'wp-sms')} className="wsms-flex wsms-flex-col sm:wsms-flex-row wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-4 wsms-py-3 wsms-border-t wsms-border-border wsms-bg-muted/20">
       <div className="wsms-flex wsms-items-center wsms-gap-4">
         <p className="wsms-text-[12px] wsms-text-muted-foreground">
-          {__('Showing')} <span className="wsms-font-medium wsms-text-foreground">{startItem}</span> {__('to')}{' '}
-          <span className="wsms-font-medium wsms-text-foreground">{endItem}</span> {__('of')}{' '}
-          <span className="wsms-font-medium wsms-text-foreground">{totalItems}</span> {__('results')}
+          {__('Showing', 'wp-sms')} <span className="wsms-font-medium wsms-text-foreground">{startItem}</span> {__('to', 'wp-sms')}{' '}
+          <span className="wsms-font-medium wsms-text-foreground">{endItem}</span> {__('of', 'wp-sms')}{' '}
+          <span className="wsms-font-medium wsms-text-foreground">{totalItems}</span> {__('results', 'wp-sms')}
         </p>
         {onPerPageChange && (
           <div className="wsms-flex wsms-items-center wsms-gap-1.5">
             <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-whitespace-nowrap">
-              {__('Per page')}
+              {__('Per page', 'wp-sms')}
             </span>
             <select
               value={perPage}
@@ -255,7 +256,7 @@ function Pagination({
             className="wsms-h-8 wsms-w-8"
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage <= 1}
-            aria-label={__('Go to previous page')}
+            aria-label={__('Go to previous page', 'wp-sms')}
           >
             <ChevronLeft className="wsms-h-4 wsms-w-4 rtl:wsms-scale-x-[-1]" />
           </Button>
@@ -267,7 +268,7 @@ function Pagination({
                 size="icon"
                 className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
                 onClick={() => onPageChange(1)}
-                aria-label={__('Go to page %s').replace('%s', '1')}
+                aria-label={__('Go to page %s', 'wp-sms').replace('%s', '1')}
                 aria-current={currentPage === 1 ? 'page' : undefined}
               >
                 1
@@ -285,7 +286,7 @@ function Pagination({
               size="icon"
               className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
               onClick={() => onPageChange(page)}
-              aria-label={__('Go to page %s').replace('%s', String(page))}
+              aria-label={__('Go to page %s', 'wp-sms').replace('%s', String(page))}
               aria-current={currentPage === page ? 'page' : undefined}
             >
               {page}
@@ -302,7 +303,7 @@ function Pagination({
                 size="icon"
                 className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
                 onClick={() => onPageChange(totalPages)}
-                aria-label={__('Go to page %s').replace('%s', String(totalPages))}
+                aria-label={__('Go to page %s', 'wp-sms').replace('%s', String(totalPages))}
                 aria-current={currentPage === totalPages ? 'page' : undefined}
               >
                 {totalPages}
@@ -316,7 +317,7 @@ function Pagination({
             className="wsms-h-8 wsms-w-8"
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage >= totalPages}
-            aria-label={__('Go to next page')}
+            aria-label={__('Go to next page', 'wp-sms')}
           >
             <ChevronRight className="wsms-h-4 wsms-w-4 rtl:wsms-scale-x-[-1]" />
           </Button>
@@ -450,7 +451,7 @@ export function DataTable({
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 className="wsms-ps-8 wsms-h-9"
-                aria-label={__('Search')}
+                aria-label={__('Search', 'wp-sms')}
               />
             </div>
           )}
@@ -464,12 +465,12 @@ export function DataTable({
             <tr className="wsms-border-b wsms-border-border wsms-bg-muted/30">
               {hasSelection && (
                 <th className="wsms-w-12 wsms-p-3 wsms-text-start">
-                  <span className="wsms-sr-only">{__('Select')}</span>
+                  <span className="wsms-sr-only">{__('Select', 'wp-sms')}</span>
                   <Checkbox
                     checked={allSelected}
                     indeterminate={someSelected}
                     onCheckedChange={handleSelectAll}
-                    aria-label={__('Select all')}
+                    aria-label={__('Select all', 'wp-sms')}
                   />
                 </th>
               )}
@@ -507,7 +508,7 @@ export function DataTable({
                   </th>
                 )
               })}
-              {rowActions && <th className="wsms-w-12 wsms-p-3"><span className="wsms-sr-only">{__('Actions')}</span></th>}
+              {rowActions && <th className="wsms-w-12 wsms-p-3"><span className="wsms-sr-only">{__('Actions', 'wp-sms')}</span></th>}
             </tr>
           </thead>
           <tbody>
@@ -544,7 +545,7 @@ export function DataTable({
                         <Checkbox
                           checked={isSelected}
                           onCheckedChange={(checked) => handleSelectRow(rowId, checked)}
-                          aria-label={__('Select row %s').replace('%s', rowIndex + 1)}
+                          aria-label={__('Select row %s', 'wp-sms').replace('%s', rowIndex + 1)}
                         />
                       </td>
                     )}

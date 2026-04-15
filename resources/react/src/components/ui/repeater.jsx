@@ -1,6 +1,7 @@
+import { __ } from '@wordpress/i18n'
 import * as React from 'react'
 import { Plus, Trash2, ChevronUp, ChevronDown } from 'lucide-react'
-import { cn, __ } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { Button } from './button'
 import { Input } from './input'
 import { Textarea } from './textarea'
@@ -268,7 +269,7 @@ function RepeaterField({ field, fieldId, value, onChange, disabled }) {
           className="wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-card wsms-px-3 wsms-text-[13px] wsms-text-foreground wsms-shadow-sm hover:wsms-border-primary/50 focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20 focus:wsms-border-primary disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50 disabled:wsms-bg-muted"
           style={{ minWidth: '100%' }}
         >
-          <option value="">{placeholder || __('Select...')}</option>
+          <option value="">{placeholder || __('Select...', 'wp-sms')}</option>
           {options?.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
@@ -283,7 +284,7 @@ function RepeaterField({ field, fieldId, value, onChange, disabled }) {
           value={value}
           onChange={onChange}
           disabled={disabled}
-          buttonText={buttonText || __('Select Image')}
+          buttonText={buttonText || __('Select Image', 'wp-sms')}
           allowedTypes={['image']}
         />
       )

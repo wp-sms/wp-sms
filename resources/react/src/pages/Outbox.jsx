@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n'
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import {
   Inbox,
@@ -36,7 +37,7 @@ import {
 } from '@/components/ui/dialog'
 import { outboxApi } from '@/api/outboxApi'
 import { smsApi } from '@/api/smsApi'
-import { cn, formatDate, __, downloadCsv } from '@/lib/utils'
+import { cn, formatDate, downloadCsv } from '@/lib/utils'
 import { useListPage } from '@/hooks/useListPage'
 import { useCountryCheck } from '@/hooks/useCountryCheck'
 import { useFormDialog } from '@/hooks/useFormDialog'
@@ -57,8 +58,8 @@ export default function Outbox() {
     bulkActionFn: outboxApi.bulkAction,
     initialFilters: { search: '', status: 'all', date_from: '', date_to: '' },
     messages: {
-      deleteSuccess: __('Message deleted successfully'),
-      bulkSuccess: __('Action completed successfully'),
+      deleteSuccess: __('Message deleted successfully', 'wp-sms'),
+      bulkSuccess: __('Action completed successfully', 'wp-sms'),
     },
   })
 
@@ -68,7 +69,7 @@ export default function Outbox() {
       await outboxApi.deleteMessage(id)
       table.removeItems([id])
     },
-    successMessage: __('Message deleted successfully'),
+    successMessage: __('Message deleted successfully', 'wp-sms'),
   })
 
   // Handle delete click - opens confirmation dialog
@@ -150,7 +151,7 @@ export default function Outbox() {
         const { blocked } = checkCountryRestriction(recipient)
         if (blocked.length > 0) {
           toast({
-            title: __('Cannot resend. %d %s outside your allowed countries. You can update this in Gateway > Country Restrictions.').replace('%d', blocked.length).replace('%s', blocked.length === 1 ? __('recipient is') : __('recipients are')),
+            title: __('Cannot resend. %d %s outside your allowed countries. You can update this in Gateway > Country Restrictions.', 'wp-sms').replace('%d', blocked.length).replace('%s', blocked.length === 1 ? __('recipient is', 'wp-sms') : __('recipients are', 'wp-sms')),
             variant: 'destructive',
           })
           return
@@ -159,10 +160,10 @@ export default function Outbox() {
       setActionLoading(id)
       try {
         await outboxApi.resendMessage(id)
-        toast({ title: __('Message resent successfully'), variant: 'success' })
+        toast({ title: __('Message resent successfully', 'wp-sms'), variant: 'success' })
         table.refresh()
       } catch (error) {
-        toast({ title: error.message || __('Failed to resend message'), variant: 'destructive' })
+        toast({ title: error.message || __('Failed to resend message', 'wp-sms'), variant: 'destructive' })
       } finally {
         setActionLoading(null)
       }
@@ -179,13 +180,17 @@ export default function Outbox() {
       try {
         const result = await outboxApi.bulkAction(action, table.selectedIds)
         toast({
-          title: __(`${result.affected} message(s) ${action === 'delete' ? 'deleted' : 'resent'} successfully`),
+          title: action === 'delete'
+            /* translators: %d: number of messages deleted */
+            ? sprintf(__('%d message(s) deleted successfully', 'wp-sms'), result.affected)
+            /* translators: %d: number of messages resent */
+            : sprintf(__('%d message(s) resent successfully', 'wp-sms'), result.affected),
           variant: 'success',
         })
         table.clearSelection()
         table.fetch({ page: 1 })
       } catch (error) {
-        toast({ title: error.message || __('Bulk action failed'), variant: 'destructive' })
+        toast({ title: error.message || __('Bulk action failed', 'wp-sms'), variant: 'destructive' })
       } finally {
         setBulkActionLoading(null)
       }
@@ -209,7 +214,7 @@ export default function Outbox() {
     const { allowed, blocked } = checkCountryRestriction(quickReplyTo)
     if (allowed.length === 0) {
       toast({
-        title: __('All recipients are outside your allowed countries. You can update this in Gateway > Country Restrictions.'),
+        title: __('All recipients are outside your allowed countries. You can update this in Gateway > Country Restrictions.', 'wp-sms'),
         variant: 'destructive',
       })
       return
@@ -223,17 +228,17 @@ export default function Outbox() {
       })
       if (blocked.length > 0) {
         toast({
-              title: __('Reply sent to %d1 recipient(s). %d2 skipped — their country codes don\'t match your country restriction settings.').replace('%d1', allowed.length).replace('%d2', blocked.length),
+              title: __('Reply sent to %d1 recipient(s). %d2 skipped — their country codes don\'t match your country restriction settings.', 'wp-sms').replace('%d1', allowed.length).replace('%d2', blocked.length),
           variant: 'warning',
         })
       } else {
-        toast({ title: __('Reply sent successfully'), variant: 'success' })
+        toast({ title: __('Reply sent successfully', 'wp-sms'), variant: 'success' })
       }
       setQuickReplyTo(null)
       setQuickReplyMessage('')
       table.refresh()
     } catch (error) {
-      toast({ title: error.message || __('Failed to send reply'), variant: 'destructive' })
+      toast({ title: error.message || __('Failed to send reply', 'wp-sms'), variant: 'destructive' })
     } finally {
       setIsSendingReply(false)
     }
@@ -258,14 +263,14 @@ export default function Outbox() {
   // Handle bulk delete with confirmation
   const handleBulkDeleteConfirm = useCallback(async () => {
     setShowBulkDeleteConfirm(false)
-    await handleOutboxBulkAction('delete', __('Delete Selected'))
+    await handleOutboxBulkAction('delete', __('Delete Selected', 'wp-sms'))
   }, [handleOutboxBulkAction])
 
   const bulkActions = useMemo(
     () =>
       getOutboxBulkActions({
         onDelete: () => setShowBulkDeleteConfirm(true),
-        onResend: () => handleOutboxBulkAction('resend', __('Resend Selected')),
+        onResend: () => handleOutboxBulkAction('resend', __('Resend Selected', 'wp-sms')),
       }),
     [handleOutboxBulkAction]
   )
@@ -291,14 +296,14 @@ export default function Outbox() {
             <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center">
               <AlertCircle className="wsms-h-12 wsms-w-12 wsms-text-destructive wsms-mb-4" />
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                {__('Failed to load messages')}
+                {__('Failed to load messages', 'wp-sms')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-4">
                 {table.error}
               </p>
               <Button onClick={() => table.fetch({ page: 1 })}>
                 <RefreshCw className="wsms-h-4 wsms-w-4 wsms-me-2" />
-                {__('Try Again')}
+                {__('Try Again', 'wp-sms')}
               </Button>
             </div>
           </CardContent>
@@ -325,20 +330,20 @@ export default function Outbox() {
                 <Inbox className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                {__('No messages yet')}
+                {__('No messages yet', 'wp-sms')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
-                {__('When you send SMS messages, they will appear here. You can track delivery status, resend failed messages, and export your history.')}
+                {__('When you send SMS messages, they will appear here. You can track delivery status, resend failed messages, and export your history.', 'wp-sms')}
               </p>
               <Tip variant="info">
-                {__('Go to')}{' '}
+                {__('Go to', 'wp-sms')}{' '}
                 <button
                   onClick={() => setCurrentPage('send-sms')}
                   className="wsms-underline wsms-font-semibold hover:wsms-text-primary wsms-transition-colors"
                 >
-                  {__('Send SMS')}
+                  {__('Send SMS', 'wp-sms')}
                 </button>{' '}
-                {__('to send your first message!')}
+                {__('to send your first message!', 'wp-sms')}
               </Tip>
             </div>
           </CardContent>
@@ -361,8 +366,8 @@ export default function Outbox() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-hidden xl:wsms-block">{__('Total Messages')}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground xl:wsms-hidden">{__('Total')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-hidden xl:wsms-block">{__('Total Messages', 'wp-sms')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground xl:wsms-hidden">{__('Total', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -375,7 +380,7 @@ export default function Outbox() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.success}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Sent')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Sent', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -388,7 +393,7 @@ export default function Outbox() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-destructive">{stats.failed}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Failed')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Failed', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -433,8 +438,8 @@ export default function Outbox() {
                 >
                   {successRate}%
                 </p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-hidden xl:wsms-block">{__('Success Rate')}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground xl:wsms-hidden">{__('Rate')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-hidden xl:wsms-block">{__('Success Rate', 'wp-sms')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground xl:wsms-hidden">{__('Rate', 'wp-sms')}</p>
               </div>
             </div>
           </div>
@@ -443,7 +448,7 @@ export default function Outbox() {
           <div className="wsms-col-span-2 xl:wsms-col-span-1 wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-mt-2 xl:wsms-mt-0">
             <ExportButton
               onExport={handleExport}
-              successMessage={__('Exported %d messages successfully')}
+              successMessage={__('Exported %d messages successfully', 'wp-sms')}
             />
           </div>
         </div>
@@ -464,9 +469,9 @@ export default function Outbox() {
                 type="text"
                 value={filters.filters.search}
                 onChange={(e) => filters.setFilter('search', e.target.value)}
-                placeholder={__('Search messages...')}
+                placeholder={__('Search messages...', 'wp-sms')}
                 className="wsms-ps-8 wsms-h-9"
-                aria-label={__('Search messages')}
+                aria-label={__('Search messages', 'wp-sms')}
               />
             </div>
 
@@ -475,13 +480,13 @@ export default function Outbox() {
               value={filters.filters.status}
               onValueChange={(value) => filters.setFilter('status', value)}
             >
-              <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[12px]" aria-label={__('Filter by status')}>
+              <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[12px]" aria-label={__('Filter by status', 'wp-sms')}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{__('All Status')}</SelectItem>
-                <SelectItem value="success">{__('Sent')}</SelectItem>
-                <SelectItem value="failed">{__('Failed')}</SelectItem>
+                <SelectItem value="all">{__('All Status', 'wp-sms')}</SelectItem>
+                <SelectItem value="success">{__('Sent', 'wp-sms')}</SelectItem>
+                <SelectItem value="failed">{__('Failed', 'wp-sms')}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -500,7 +505,7 @@ export default function Outbox() {
                 size="sm"
                 onClick={() => filters.resetFilters()}
                 className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
-                aria-label={__('Clear all filters')}
+                aria-label={__('Clear all filters', 'wp-sms')}
               >
                 <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
               </Button>
@@ -512,7 +517,7 @@ export default function Outbox() {
               size="sm"
               onClick={() => table.fetch({ page: 1 })}
               className="wsms-h-9 wsms-px-2.5 xl:wsms-ms-auto"
-              aria-label={__('Refresh messages')}
+              aria-label={__('Refresh messages', 'wp-sms')}
             >
               <RefreshCw
                 className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')}
@@ -553,7 +558,7 @@ export default function Outbox() {
             rowActions={rowActions}
             bulkActions={bulkActions}
             bulkActionLoading={bulkActionLoading}
-            emptyMessage={__('No messages match your filters')}
+            emptyMessage={__('No messages match your filters', 'wp-sms')}
             emptyIcon={Inbox}
           />
         </CardContent>
@@ -565,10 +570,10 @@ export default function Outbox() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
-              {__('Message Details')}
+              {__('Message Details', 'wp-sms')}
             </DialogTitle>
             <DialogDescription>
-              {__('Sent on')} {viewMessage && (viewMessage.date_formatted || formatDate(viewMessage.date, { hour: '2-digit', minute: '2-digit' }))}
+              {__('Sent on', 'wp-sms')} {viewMessage && (viewMessage.date_formatted || formatDate(viewMessage.date, { hour: '2-digit', minute: '2-digit' }))}
             </DialogDescription>
           </DialogHeader>
           <DialogBody>
@@ -577,21 +582,21 @@ export default function Outbox() {
                 {/* Status and Recipients Row */}
                 <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-p-4 wsms-rounded-lg wsms-bg-muted/30">
                   <div className="wsms-flex-1">
-                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Status')}</p>
+                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Status', 'wp-sms')}</p>
                     <StatusBadge variant={viewMessage.status === 'success' ? 'success' : 'failed'}>
-                      {viewMessage.status === 'success' ? __('Sent') : __('Failed')}
+                      {viewMessage.status === 'success' ? __('Sent', 'wp-sms') : __('Failed', 'wp-sms')}
                     </StatusBadge>
                   </div>
                   <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
                   <div className="wsms-flex-1">
-                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Recipients')}</p>
+                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Recipients', 'wp-sms')}</p>
                     <p className="wsms-text-[13px] wsms-font-medium">{viewMessage.recipient_count}</p>
                   </div>
                   {viewMessage.sender && (
                     <>
                       <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
                       <div className="wsms-flex-1">
-                        <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Sender')}</p>
+                        <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Sender', 'wp-sms')}</p>
                         <p className="wsms-text-[13px] wsms-font-medium">{viewMessage.sender}</p>
                       </div>
                     </>
@@ -600,7 +605,7 @@ export default function Outbox() {
 
                 {/* Recipient(s) */}
                 <div>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Recipient(s)')}</p>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Recipient(s)', 'wp-sms')}</p>
                   <p className="wsms-text-[13px] wsms-break-all wsms-font-mono wsms-p-2 wsms-rounded wsms-bg-muted/30">
                     {viewMessage.recipient}
                   </p>
@@ -608,7 +613,7 @@ export default function Outbox() {
 
                 {/* Message */}
                 <div>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Message')}</p>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Message', 'wp-sms')}</p>
                   <div className="wsms-p-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
                     <p className="wsms-text-[13px] wsms-whitespace-pre-wrap">{viewMessage.message}</p>
                   </div>
@@ -619,7 +624,7 @@ export default function Outbox() {
                   <div>
                     <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1 wsms-flex wsms-items-center wsms-gap-1">
                       <Image className="wsms-h-3 wsms-w-3" aria-hidden="true" />
-                      {__('Media')}
+                      {__('Media', 'wp-sms')}
                     </p>
                     <div className="wsms-flex wsms-flex-wrap wsms-gap-2">
                       {viewMessage.media.map((url, idx) => (
@@ -645,7 +650,7 @@ export default function Outbox() {
                 {viewMessage.response && (
                   <div>
                     <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">
-                      {__('Gateway Response')}
+                      {__('Gateway Response', 'wp-sms')}
                     </p>
                     <pre className="wsms-text-[11px] wsms-text-muted-foreground wsms-font-mono wsms-p-3 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border wsms-overflow-x-auto wsms-whitespace-pre-wrap wsms-break-words wsms-max-h-[200px] wsms-overflow-y-auto">
                       {viewMessage.response}
@@ -657,7 +662,7 @@ export default function Outbox() {
           </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={() => setViewMessage(null)}>
-              {__('Close')}
+              {__('Close', 'wp-sms')}
             </Button>
             <Button onClick={() => handleResend(viewMessage?.id, viewMessage?.recipient)} disabled={actionLoading === viewMessage?.id}>
               {actionLoading === viewMessage?.id ? (
@@ -665,7 +670,7 @@ export default function Outbox() {
               ) : (
                 <Send className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
               )}
-              {__('Resend')}
+              {__('Resend', 'wp-sms')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -677,15 +682,15 @@ export default function Outbox() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
-              {__('Quick Reply')}
+              {__('Quick Reply', 'wp-sms')}
             </DialogTitle>
-            <DialogDescription>{__('Send a quick reply to the recipient(s)')}</DialogDescription>
+            <DialogDescription>{__('Send a quick reply to the recipient(s)', 'wp-sms')}</DialogDescription>
           </DialogHeader>
           <DialogBody>
             <div className="wsms-space-y-4">
               <div className="wsms-space-y-2">
                 <label htmlFor="quick-reply-to" className="wsms-text-[12px] wsms-font-medium">
-                  {__('To')}
+                  {__('To', 'wp-sms')}
                 </label>
                 <Input
                   id="quick-reply-to"
@@ -696,13 +701,13 @@ export default function Outbox() {
               </div>
               <div className="wsms-space-y-2">
                 <label htmlFor="quick-reply-message" className="wsms-text-[12px] wsms-font-medium">
-                  {__('Message')}
+                  {__('Message', 'wp-sms')}
                 </label>
                 <textarea
                   id="quick-reply-message"
                   value={quickReplyMessage}
                   onChange={(e) => setQuickReplyMessage(e.target.value)}
-                  placeholder={__('Type your reply message...')}
+                  placeholder={__('Type your reply message...', 'wp-sms')}
                   rows={4}
                   className="wsms-flex wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-px-3 wsms-py-2 wsms-text-sm wsms-ring-offset-background placeholder:wsms-text-muted-foreground focus-visible:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-ring focus-visible:wsms-ring-offset-2"
                 />
@@ -711,18 +716,18 @@ export default function Outbox() {
           </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={() => setQuickReplyTo(null)}>
-              {__('Cancel')}
+              {__('Cancel', 'wp-sms')}
             </Button>
             <Button onClick={handleQuickReply} disabled={isSendingReply || !quickReplyMessage.trim()}>
               {isSendingReply ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" aria-hidden="true" />
-                  {__('Sending...')}
+                  {__('Sending...', 'wp-sms')}
                 </>
               ) : (
                 <>
                   <Send className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
-                  {__('Send Reply')}
+                  {__('Send Reply', 'wp-sms')}
                 </>
               )}
             </Button>
@@ -736,13 +741,13 @@ export default function Outbox() {
         onClose={deleteDialog.close}
         onConfirm={handleDeleteConfirm}
         isSaving={deleteDialog.isSaving}
-        title={__('Delete Message')}
-        description={__('Are you sure you want to delete this message?')}
+        title={__('Delete Message', 'wp-sms')}
+        description={__('Are you sure you want to delete this message?', 'wp-sms')}
       >
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border wsms-overflow-hidden">
           <div className="wsms-space-y-2">
             <div className="wsms-flex wsms-items-start wsms-gap-2">
-              <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-shrink-0">{__('To')}:</span>
+              <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-shrink-0">{__('To', 'wp-sms')}:</span>
               <span className="wsms-text-[13px] wsms-font-mono wsms-text-foreground wsms-break-all wsms-line-clamp-2">
                 {deleteDialog.item?.recipient}
               </span>
@@ -761,13 +766,13 @@ export default function Outbox() {
         isOpen={showBulkDeleteConfirm}
         onClose={() => setShowBulkDeleteConfirm(false)}
         onConfirm={handleBulkDeleteConfirm}
-        isSaving={bulkActionLoading === __('Delete Selected')}
-        title={__('Delete Messages')}
-        description={__('Are you sure you want to delete the selected messages?')}
+        isSaving={bulkActionLoading === __('Delete Selected', 'wp-sms')}
+        title={__('Delete Messages', 'wp-sms')}
+        description={__('Are you sure you want to delete the selected messages?', 'wp-sms')}
       >
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
           <p className="wsms-text-[13px] wsms-text-foreground">
-            {__('%d message(s) will be permanently deleted.').replace('%d', table.selectedIds.length)}
+            {__('%d message(s) will be permanently deleted.', 'wp-sms').replace('%d', table.selectedIds.length)}
           </p>
         </div>
       </DeleteConfirmDialog>

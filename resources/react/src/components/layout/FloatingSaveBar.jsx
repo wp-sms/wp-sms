@@ -1,9 +1,9 @@
+import { __ } from '@wordpress/i18n'
 import React, { useEffect, useCallback, useRef } from 'react'
 import { Save, X, Loader2 } from 'lucide-react'
 import { Button } from '../ui/button'
 import { useSettings, FIELD_PAGE_MAP } from '@/context/SettingsContext'
 import { useToast } from '../ui/toaster'
-import { __ } from '@/lib/utils'
 
 export default function FloatingSaveBar() {
   const { hasChanges, isSaving, saveSettings, resetChanges, setCurrentPage } = useSettings()
@@ -16,13 +16,13 @@ export default function FloatingSaveBar() {
 
     if (result.success) {
       toast({
-        title: __('Settings saved'),
+        title: __('Settings saved', 'wp-sms'),
         variant: 'success',
       })
     } else {
       toast({
-        title: __('Error saving settings'),
-        description: result.error || __('Please try again.'),
+        title: __('Error saving settings', 'wp-sms'),
+        description: result.error || __('Please try again.', 'wp-sms'),
         variant: 'destructive',
       })
 
@@ -142,7 +142,7 @@ export default function FloatingSaveBar() {
   const handleDiscard = () => {
     resetChanges()
     toast({
-      title: __('Changes discarded'),
+      title: __('Changes discarded', 'wp-sms'),
     })
   }
 
@@ -163,7 +163,7 @@ export default function FloatingSaveBar() {
           aria-atomic="true"
         >
           <span className="wsms-text-[13px] wsms-text-muted-foreground">
-            {__('You have unsaved changes')}
+            {__('You have unsaved changes', 'wp-sms')}
           </span>
         </div>
 
@@ -175,7 +175,7 @@ export default function FloatingSaveBar() {
             disabled={isSaving}
           >
             <X className="wsms-h-4 wsms-w-4 wsms-me-1" aria-hidden="true" />
-            {__('Discard')}
+            {__('Discard', 'wp-sms')}
           </Button>
 
           <Button
@@ -187,12 +187,12 @@ export default function FloatingSaveBar() {
             {isSaving ? (
               <>
                 <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1 wsms-animate-spin" aria-hidden="true" />
-                {__('Saving...')}
+                {__('Saving...', 'wp-sms')}
               </>
             ) : (
               <>
                 <Save className="wsms-h-4 wsms-w-4 wsms-me-1" aria-hidden="true" />
-                {__('Save Changes')}
+                {__('Save Changes', 'wp-sms')}
               </>
             )}
           </Button>

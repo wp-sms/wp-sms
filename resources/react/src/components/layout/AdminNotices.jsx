@@ -1,8 +1,9 @@
+import { __ } from '@wordpress/i18n'
 import React, { memo, useCallback, useState, useMemo } from 'react'
 import { AlertTriangle, Info, X, ExternalLink, Check, Loader2 } from 'lucide-react'
 import { useAdminNotices } from '@/hooks/useAdminNotices'
 import { useSettings } from '@/context/SettingsContext'
-import { cn, __ } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 
 /**
  * Variant styles following the Tip / NotificationCard design language:
@@ -134,9 +135,9 @@ function NoticeItem({ notice, onDismiss, onAction, onRemove, onInlineLink, onNav
                     <Check className="wsms-h-3 wsms-w-3" />
                   )}
                   {actionState === 'error'
-                    ? __('Failed, try again')
+                    ? __('Failed, try again', 'wp-sms')
                     : actionState === 'success'
-                      ? __('Enabled')
+                      ? __('Enabled', 'wp-sms')
                       : action.label}
                 </button>
               )
@@ -150,7 +151,7 @@ function NoticeItem({ notice, onDismiss, onAction, onRemove, onInlineLink, onNav
           type="button"
           onClick={handleDismiss}
           className="wsms-shrink-0 wsms-p-1 wsms-rounded wsms-text-muted-foreground hover:wsms-text-foreground hover:wsms-bg-foreground/5 wsms-transition-colors"
-          aria-label={__('Dismiss')}
+          aria-label={__('Dismiss', 'wp-sms')}
         >
           <X className="wsms-h-3.5 wsms-w-3.5" />
         </button>
@@ -206,9 +207,11 @@ const AdminNotices = memo(function AdminNotices() {
       } else if (target === 'migration-wizard') {
         // Dispatch global event for the migration wizard modal
         window.dispatchEvent(new CustomEvent('wpsms:open-migration-wizard'))
+      } else {
+        setCurrentPage(target)
       }
     },
-    []
+    [setCurrentPage]
   )
 
   if (!hasNotices || visibleNotices.length === 0) return null

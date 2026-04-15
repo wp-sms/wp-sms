@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   Dialog,
@@ -12,7 +13,7 @@ import { Button } from '@/components/ui/button'
 import WizardStepper from '@/components/wizard/WizardStepper'
 import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog'
 import { Phone, Flag, ClipboardCheck, Eye, Play, CheckCircle2 } from 'lucide-react'
-import { __, sprintf, getWpSettings } from '@/lib/utils'
+import { getWpSettings } from '@/lib/utils'
 import { adminNoticesApi } from '@/api/adminNoticesApi'
 import { useToast } from '@/components/ui/toaster'
 
@@ -38,12 +39,12 @@ const STEP = {
 }
 
 const ALL_STEPS_META = [
-  { id: STEP.INTRO, label: __('Intro'), icon: Phone },
-  { id: STEP.COUNTRY, label: __('Country'), icon: Flag, conditional: true },
-  { id: STEP.REVIEW, label: __('Review'), icon: ClipboardCheck },
-  { id: STEP.PREVIEW, label: __('Preview'), icon: Eye },
-  { id: STEP.EXECUTE, label: __('Apply'), icon: Play },
-  { id: STEP.DONE, label: __('Done'), icon: CheckCircle2 },
+  { id: STEP.INTRO, label: __('Intro', 'wp-sms'), icon: Phone },
+  { id: STEP.COUNTRY, label: __('Country', 'wp-sms'), icon: Flag, conditional: true },
+  { id: STEP.REVIEW, label: __('Review', 'wp-sms'), icon: ClipboardCheck },
+  { id: STEP.PREVIEW, label: __('Preview', 'wp-sms'), icon: Eye },
+  { id: STEP.EXECUTE, label: __('Apply', 'wp-sms'), icon: Play },
+  { id: STEP.DONE, label: __('Done', 'wp-sms'), icon: CheckCircle2 },
 ]
 
 /**
@@ -71,14 +72,14 @@ async function migrationAjax(subAction, extraParams = {}) {
   // Special-case 403 (nonce expired) — we want a distinct error code so the UI
   // can show a reload-page affordance instead of a generic error.
   if (response.status === 403) {
-    const err = new Error(__('Your session has expired. Please reload the page to continue.'))
+    const err = new Error(__('Your session has expired. Please reload the page to continue.', 'wp-sms'))
     err.code = 'nonce_expired'
     throw err
   }
 
   const contentType = response.headers.get('content-type') || ''
   if (!contentType.includes('application/json')) {
-    const err = new Error(__('Server returned an invalid response.'))
+    const err = new Error(__('Server returned an invalid response.', 'wp-sms'))
     err.code = 'invalid_response'
     err.status = response.status
     throw err
@@ -86,7 +87,7 @@ async function migrationAjax(subAction, extraParams = {}) {
 
   const data = await response.json()
   if (!data.success) {
-    const err = new Error(data.data?.message || data.data || __('An error occurred.'))
+    const err = new Error(data.data?.message || data.data || __('An error occurred.', 'wp-sms'))
     err.code = data.data?.code || 'unknown'
     err.status = response.status
     err.payload = data.data
@@ -230,7 +231,7 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
         setError(
           __(
             "We couldn't confirm the update finished. The change may or may not have been applied."
-          )
+          , 'wp-sms')
         )
       }
     } finally {
@@ -274,7 +275,7 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
         setError(
           __(
             "We couldn't confirm the update finished. Please refresh this page and run the check again."
-          )
+          , 'wp-sms')
         )
         setStep(STEP.REVIEW)
         return
@@ -323,9 +324,9 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
       handleOpenChange(false)
       toast({
         variant: 'success',
-        title: __('Restored'),
+        title: __('Restored', 'wp-sms'),
         description: sprintf(
-          __('%d numbers restored to their original format.'),
+          __('%d numbers restored to their original format.', 'wp-sms'),
           data.total_reverted || 0
         ),
       })
@@ -349,8 +350,8 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
       )
       toast({
         variant: 'success',
-        title: __('Cleared'),
-        description: __('The old backup was cleared.'),
+        title: __('Cleared', 'wp-sms'),
+        description: __('The old backup was cleared.', 'wp-sms'),
       })
     } catch (err) {
       setError(err.message)
@@ -419,9 +420,9 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
           }}
         >
           <DialogHeader>
-            <DialogTitle>{__('Phone number check')}</DialogTitle>
+            <DialogTitle>{__('Phone number check', 'wp-sms')}</DialogTitle>
             <DialogDescription>
-              {__('Get your numbers ready for reliable SMS delivery.')}
+              {__('Get your numbers ready for reliable SMS delivery.', 'wp-sms')}
             </DialogDescription>
           </DialogHeader>
 
@@ -446,7 +447,7 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
                           if (step === STEP.EXECUTE) setStep(STEP.REVIEW)
                         }}
                       >
-                        {__('Dismiss')}
+                        {__('Dismiss', 'wp-sms')}
                       </Button>
                     </div>
                   </div>
@@ -459,7 +460,7 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
                 <AlertDescription>
                   {__(
                     "Another administrator started this update a few seconds ago. We'll check on it."
-                  )}
+                  , 'wp-sms')}
                 </AlertDescription>
               </Alert>
             )}
@@ -540,15 +541,15 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
         onClose={() => setRevertOpen(false)}
         onConfirm={handleRevert}
         isSaving={revertBusy}
-        title={__('Undo this update?')}
+        title={__('Undo this update?', 'wp-sms')}
         description={sprintf(
           __(
             "We'll restore all %1$d numbers to their original format using the backup from %2$s. This replaces the current values — any changes made to those numbers since the update will be overwritten."
-          ),
+          , 'wp-sms'),
           executeData?.total_migrated || scanData?.total_need_fix || 0,
-          executeData?.backup_timestamp || scanData?.backup_timestamp || __('the previous run')
+          executeData?.backup_timestamp || scanData?.backup_timestamp || __('the previous run', 'wp-sms')
         )}
-        confirmLabel={__('Yes, undo')}
+        confirmLabel={__('Yes, undo', 'wp-sms')}
       />
     </>
   )

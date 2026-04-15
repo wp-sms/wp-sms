@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import {
   RotateCcw,
@@ -33,7 +34,7 @@ import { DataTable } from '@/components/ui/data-table'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { AddonUpdateRequired } from '@/components/shared/AddonUpdateRequired'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
-import { __, cn, isAddonDashboardReady } from '@/lib/utils'
+import { cn, isAddonDashboardReady } from '@/lib/utils'
 import { useSettings } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
 import { woocommerceProApi } from '@/api/woocommerceProApi'
@@ -42,22 +43,22 @@ import { woocommerceProApi } from '@/api/woocommerceProApi'
 function SmsStatusBadge({ status, time }) {
   const statusConfig = {
     unscheduled: {
-      label: __('Not Scheduled'),
+      label: __('Not Scheduled', 'wp-sms'),
       icon: AlertCircle,
       className: 'wsms-bg-gray-100 wsms-text-gray-600',
     },
     not_sent: {
-      label: __('Not Sent'),
+      label: __('Not Sent', 'wp-sms'),
       icon: XCircle,
       className: 'wsms-bg-gray-100 wsms-text-gray-600',
     },
     in_queue: {
-      label: __('In Queue'),
+      label: __('In Queue', 'wp-sms'),
       icon: Clock,
       className: 'wsms-bg-blue-100 wsms-text-blue-700',
     },
     sent: {
-      label: __('Sent'),
+      label: __('Sent', 'wp-sms'),
       icon: CheckCircle,
       className: 'wsms-bg-emerald-100 wsms-text-emerald-700',
     },
@@ -85,14 +86,14 @@ const cartColumns = [
   {
     id: 'customer',
     accessorKey: 'cart_owner',
-    header: __('Customer'),
+    header: __('Customer', 'wp-sms'),
     cell: ({ row }) => (
       <div className="wsms-flex wsms-items-center wsms-gap-2">
         <div className="wsms-flex wsms-h-8 wsms-w-8 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary/10">
           <User className="wsms-h-4 wsms-w-4 wsms-text-primary" />
         </div>
         <span className="wsms-text-[13px] wsms-font-medium">
-          {row.cart_owner || __('Guest')}
+          {row.cart_owner || __('Guest', 'wp-sms')}
         </span>
       </div>
     ),
@@ -100,7 +101,7 @@ const cartColumns = [
   {
     id: 'phone',
     accessorKey: 'phone_number',
-    header: __('Phone'),
+    header: __('Phone', 'wp-sms'),
     cell: ({ row }) => (
       <div className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[13px] wsms-text-muted-foreground">
         <Phone className="wsms-h-3.5 wsms-w-3.5" />
@@ -111,7 +112,7 @@ const cartColumns = [
   {
     id: 'cart_total',
     accessorKey: 'cart_total',
-    header: __('Cart Total'),
+    header: __('Cart Total', 'wp-sms'),
     cell: ({ row }) => (
       <span
         className="wsms-text-[13px] wsms-font-medium"
@@ -122,24 +123,24 @@ const cartColumns = [
   {
     id: 'recovered',
     accessorKey: 'is_recovered',
-    header: __('Recovered'),
+    header: __('Recovered', 'wp-sms'),
     cell: ({ row }) =>
       row.is_recovered === 'Yes' ? (
         <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-emerald-600 wsms-text-[12px]">
           <CheckCircle className="wsms-h-3.5 wsms-w-3.5" />
-          {__('Yes')}
+          {__('Yes', 'wp-sms')}
         </span>
       ) : (
         <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-muted-foreground wsms-text-[12px]">
           <XCircle className="wsms-h-3.5 wsms-w-3.5" />
-          {__('No')}
+          {__('No', 'wp-sms')}
         </span>
       ),
   },
   {
     id: 'sms_status',
     accessorKey: 'sms_status',
-    header: __('SMS Status'),
+    header: __('SMS Status', 'wp-sms'),
     cell: ({ row }) => (
       <SmsStatusBadge
         status={row.sms_status?.status}
@@ -153,7 +154,7 @@ const cartColumns = [
 function getCartRowActions({ onDelete }) {
   return [
     {
-      label: __('Delete'),
+      label: __('Delete', 'wp-sms'),
       icon: Trash2,
       onClick: onDelete,
       variant: 'destructive',
@@ -205,8 +206,8 @@ export default function CartAbandonment() {
     } catch (error) {
       console.error('Failed to fetch cart data:', error)
       toast({
-        title: __('Error'),
-        description: error.message || __('Failed to load cart abandonment data'),
+        title: __('Error', 'wp-sms'),
+        description: error.message || __('Failed to load cart abandonment data', 'wp-sms'),
         variant: 'destructive',
       })
     } finally {
@@ -229,7 +230,7 @@ export default function CartAbandonment() {
     try {
       await woocommerceProApi.deleteCart(deleteTarget.customer_id, deleteTarget.cart_hash)
       toast({
-        title: __('Cart deleted successfully'),
+        title: __('Cart deleted successfully', 'wp-sms'),
         variant: 'success',
       })
       setCarts((prev) =>
@@ -241,7 +242,7 @@ export default function CartAbandonment() {
       )
     } catch (error) {
       toast({
-        title: error.message || __('Failed to delete cart'),
+        title: error.message || __('Failed to delete cart', 'wp-sms'),
         variant: 'destructive',
       })
     } finally {
@@ -284,18 +285,18 @@ export default function CartAbandonment() {
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <RotateCcw className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              {__('Cart Abandonment')}
+              {__('Cart Abandonment', 'wp-sms')}
             </CardTitle>
             <CardDescription>
-              {__('Recover abandoned carts with automated SMS reminders.')}
+              {__('Recover abandoned carts with automated SMS reminders.', 'wp-sms')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
               <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
-              <h3 className="wsms-font-medium wsms-mb-2">{__('WooCommerce Pro Add-on Required')}</h3>
+              <h3 className="wsms-font-medium wsms-mb-2">{__('WooCommerce Pro Add-on Required', 'wp-sms')}</h3>
               <p className="wsms-text-sm wsms-text-muted-foreground wsms-mb-4">
-                {__('Install and activate the WSMS WooCommerce Pro add-on to access Cart Abandonment features.')}
+                {__('Install and activate the WSMS WooCommerce Pro add-on to access Cart Abandonment features.', 'wp-sms')}
               </p>
               <Button variant="outline" asChild>
                 <a
@@ -303,7 +304,7 @@ export default function CartAbandonment() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {__('Learn More')}
+                  {__('Learn More', 'wp-sms')}
                   <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
                 </a>
               </Button>
@@ -337,7 +338,7 @@ export default function CartAbandonment() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.recoverableCarts}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Recoverable')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Recoverable', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -350,7 +351,7 @@ export default function CartAbandonment() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-emerald-500">{stats.recoveredCarts}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Recovered')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Recovered', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -363,7 +364,7 @@ export default function CartAbandonment() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground" dangerouslySetInnerHTML={{ __html: stats.recoverableRevenue }} />
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Recoverable Revenue')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Recoverable Revenue', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -376,7 +377,7 @@ export default function CartAbandonment() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-green-500" dangerouslySetInnerHTML={{ __html: stats.recoveredRevenue }} />
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Recovered Revenue')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Recovered Revenue', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -389,7 +390,7 @@ export default function CartAbandonment() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.sentSMS}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Sent SMS')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Sent SMS', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -402,7 +403,7 @@ export default function CartAbandonment() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.followingSMS}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Following SMS')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Following SMS', 'wp-sms')}</p>
               </div>
             </div>
         </div>
@@ -417,8 +418,8 @@ export default function CartAbandonment() {
               <Search className="wsms-absolute wsms-start-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" aria-hidden="true" />
               <Input
                 type="text"
-                placeholder={__('Search by phone...')}
-                aria-label={__('Search abandoned carts')}
+                placeholder={__('Search by phone...', 'wp-sms')}
+                aria-label={__('Search abandoned carts', 'wp-sms')}
                 value={filters.search}
                 onChange={(e) => handleFilterChange('search', e.target.value)}
                 className="wsms-ps-8 wsms-h-9"
@@ -431,13 +432,13 @@ export default function CartAbandonment() {
                 value={filters.type}
                 onValueChange={(value) => handleFilterChange('type', value)}
               >
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[12px]" aria-label={__('Filter by type')}>
-                  <SelectValue placeholder={__('All Carts')} />
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[12px]" aria-label={__('Filter by type', 'wp-sms')}>
+                  <SelectValue placeholder={__('All Carts', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="allCarts">{__('All Carts')}</SelectItem>
-                  <SelectItem value="abandonedCarts">{__('Abandoned Only')}</SelectItem>
-                  <SelectItem value="recoveredCarts">{__('Recovered Only')}</SelectItem>
+                  <SelectItem value="allCarts">{__('All Carts', 'wp-sms')}</SelectItem>
+                  <SelectItem value="abandonedCarts">{__('Abandoned Only', 'wp-sms')}</SelectItem>
+                  <SelectItem value="recoveredCarts">{__('Recovered Only', 'wp-sms')}</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -445,15 +446,15 @@ export default function CartAbandonment() {
                 value={filters.duration}
                 onValueChange={(value) => handleFilterChange('duration', value)}
               >
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[130px] wsms-text-[12px]" aria-label={__('Filter by duration')}>
-                  <SelectValue placeholder={__('All Time')} />
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[130px] wsms-text-[12px]" aria-label={__('Filter by duration', 'wp-sms')}>
+                  <SelectValue placeholder={__('All Time', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{__('All Time')}</SelectItem>
-                  <SelectItem value="today">{__('Today')}</SelectItem>
-                  <SelectItem value="yesterday">{__('Yesterday')}</SelectItem>
-                  <SelectItem value="lastWeek">{__('Last Week')}</SelectItem>
-                  <SelectItem value="lastMonth">{__('Last Month')}</SelectItem>
+                  <SelectItem value="all">{__('All Time', 'wp-sms')}</SelectItem>
+                  <SelectItem value="today">{__('Today', 'wp-sms')}</SelectItem>
+                  <SelectItem value="yesterday">{__('Yesterday', 'wp-sms')}</SelectItem>
+                  <SelectItem value="lastWeek">{__('Last Week', 'wp-sms')}</SelectItem>
+                  <SelectItem value="lastMonth">{__('Last Month', 'wp-sms')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -466,7 +467,7 @@ export default function CartAbandonment() {
               onClick={fetchData}
               disabled={isLoading}
               className="wsms-h-9 wsms-px-2.5 xl:wsms-ms-auto"
-              aria-label={__('Refresh')}
+              aria-label={__('Refresh', 'wp-sms')}
             >
               <RefreshCw
                 className={cn('wsms-h-4 wsms-w-4', isLoading && 'wsms-animate-spin')}
@@ -486,7 +487,7 @@ export default function CartAbandonment() {
             loading={isLoading}
             rowActions={rowActions}
             getRowId={getRowId}
-            emptyMessage={__('No abandoned carts found')}
+            emptyMessage={__('No abandoned carts found', 'wp-sms')}
             emptyIcon={ShoppingCart}
           />
         </CardContent>
@@ -498,15 +499,15 @@ export default function CartAbandonment() {
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleDeleteConfirm}
         isSaving={isDeleting}
-        title={__('Delete Abandoned Cart')}
-        description={__('Are you sure you want to delete this abandoned cart record? This action cannot be undone.')}
+        title={__('Delete Abandoned Cart', 'wp-sms')}
+        description={__('Are you sure you want to delete this abandoned cart record? This action cannot be undone.', 'wp-sms')}
       >
         {deleteTarget && (
           <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <User className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
               <span className="wsms-text-[13px] wsms-font-medium">
-                {deleteTarget.cart_owner || __('Guest')}
+                {deleteTarget.cart_owner || __('Guest', 'wp-sms')}
               </span>
               {deleteTarget.phone_number && (
                 <span className="wsms-text-[12px] wsms-text-muted-foreground">

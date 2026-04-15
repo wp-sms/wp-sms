@@ -1,17 +1,18 @@
+import { __ } from '@wordpress/i18n'
 import React from 'react'
 import { Check, Phone, Radio, Settings, Send, Crown, PartyPopper } from 'lucide-react'
-import { cn, __ } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 
 /**
  * Step configuration with icons and labels
  */
 const STEPS = [
-  { id: 'getting-started', label: __('Getting Started'), icon: Phone },
-  { id: 'sms-gateway', label: __('SMS Gateway'), icon: Radio },
-  { id: 'configuration', label: __('Configuration'), icon: Settings },
-  { id: 'test-setup', label: __('Test Setup'), icon: Send },
-  { id: 'all-in-one', label: __('All-in-One'), icon: Crown, conditional: true },
-  { id: 'ready', label: __('Ready'), icon: PartyPopper },
+  { id: 'getting-started', label: __('Getting Started', 'wp-sms'), icon: Phone },
+  { id: 'sms-gateway', label: __('SMS Gateway', 'wp-sms'), icon: Radio },
+  { id: 'configuration', label: __('Configuration', 'wp-sms'), icon: Settings },
+  { id: 'test-setup', label: __('Test Setup', 'wp-sms'), icon: Send },
+  { id: 'all-in-one', label: __('All-in-One', 'wp-sms'), icon: Crown, conditional: true },
+  { id: 'ready', label: __('Ready', 'wp-sms'), icon: PartyPopper },
 ]
 
 /**

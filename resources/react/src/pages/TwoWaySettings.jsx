@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState } from 'react'
 import {
   Settings,
@@ -23,7 +24,7 @@ import { AddonUpdateRequired } from '@/components/shared/AddonUpdateRequired'
 import { SettingRow, SelectField } from '@/components/ui/form-field'
 import { Tip } from '@/components/ui/ux-helpers'
 import { useSettings } from '@/context/SettingsContext'
-import { getWpSettings, buildRestUrl, __, cn, isAddonDashboardReady } from '@/lib/utils'
+import { getWpSettings, buildRestUrl, cn, isAddonDashboardReady } from '@/lib/utils'
 import { useToast } from '@/components/ui/toaster'
 
 export default function TwoWaySettings() {
@@ -45,7 +46,7 @@ export default function TwoWaySettings() {
 
   // Settings values
   const smsForwardEnabled = getAddonSetting('two-way', 'notif_new_inbox_message', false)
-  const smsForwardTemplate = getAddonSetting('two-way', 'notif_new_inbox_message_template', __('New SMS from %sender_number%: %sms_content%'))
+  const smsForwardTemplate = getAddonSetting('two-way', 'notif_new_inbox_message_template', __('New SMS from %sender_number%: %sms_content%', 'wp-sms'))
   const emailForwardEnabled = getAddonSetting('two-way', 'email_new_inbox_message', false)
   const storeMessages = getAddonSetting('two-way', 'store_inbox_messages', true)
   const retentionDays = getAddonSetting('two-way', 'inbox_retention_days', '90')
@@ -61,15 +62,15 @@ export default function TwoWaySettings() {
       await navigator.clipboard.writeText(webhookUrl)
       setCopied(true)
       toast({
-        title: __('Copied'),
-        description: __('Webhook URL copied to clipboard'),
+        title: __('Copied', 'wp-sms'),
+        description: __('Webhook URL copied to clipboard', 'wp-sms'),
         variant: 'success',
       })
       setTimeout(() => setCopied(false), 2000)
     } catch (error) {
       toast({
-        title: __('Error'),
-        description: __('Failed to copy URL'),
+        title: __('Error', 'wp-sms'),
+        description: __('Failed to copy URL', 'wp-sms'),
         variant: 'destructive',
       })
     }
@@ -88,18 +89,18 @@ export default function TwoWaySettings() {
 
       if (response.ok) {
         toast({
-          title: __('Success'),
-          description: __('Webhook token has been reset. Refreshing...'),
+          title: __('Success', 'wp-sms'),
+          description: __('Webhook token has been reset. Refreshing...', 'wp-sms'),
           variant: 'success',
         })
         setTimeout(() => window.location.reload(), 1500)
       } else {
-        throw new Error(__('Failed to reset token'))
+        throw new Error(__('Failed to reset token', 'wp-sms'))
       }
     } catch (error) {
       toast({
-        title: __('Error'),
-        description: error.message || __('Failed to reset webhook token'),
+        title: __('Error', 'wp-sms'),
+        description: error.message || __('Failed to reset webhook token', 'wp-sms'),
         variant: 'destructive',
       })
     } finally {
@@ -123,17 +124,17 @@ export default function TwoWaySettings() {
 
       if (response.ok && data.success) {
         toast({
-          title: __('Success'),
-          description: __('Webhook registered successfully with your gateway.'),
+          title: __('Success', 'wp-sms'),
+          description: __('Webhook registered successfully with your gateway.', 'wp-sms'),
           variant: 'success',
         })
       } else {
-        throw new Error(data.message || __('Failed to register webhook'))
+        throw new Error(data.message || __('Failed to register webhook', 'wp-sms'))
       }
     } catch (error) {
       toast({
-        title: __('Error'),
-        description: error.message || __('Failed to register webhook'),
+        title: __('Error', 'wp-sms'),
+        description: error.message || __('Failed to register webhook', 'wp-sms'),
         variant: 'destructive',
       })
     } finally {
@@ -149,18 +150,18 @@ export default function TwoWaySettings() {
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <Settings className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              {__('Two-Way SMS Settings')}
+              {__('Two-Way SMS Settings', 'wp-sms')}
             </CardTitle>
             <CardDescription>
-              {__('Configure your two-way SMS settings and webhook')}
+              {__('Configure your two-way SMS settings and webhook', 'wp-sms')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
               <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
-              <h3 className="wsms-font-medium wsms-mb-2">{__('Two-Way SMS Add-on Required')}</h3>
+              <h3 className="wsms-font-medium wsms-mb-2">{__('Two-Way SMS Add-on Required', 'wp-sms')}</h3>
               <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-4">
-                {__('Install and activate the WSMS Two-Way add-on to configure these settings.')}
+                {__('Install and activate the WSMS Two-Way add-on to configure these settings.', 'wp-sms')}
               </p>
               <Button variant="outline" asChild>
                 <a
@@ -168,7 +169,7 @@ export default function TwoWaySettings() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {__('Learn More')}
+                  {__('Learn More', 'wp-sms')}
                   <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
                 </a>
               </Button>
@@ -190,10 +191,10 @@ export default function TwoWaySettings() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Link2 className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Gateway Connection')}
+            {__('Gateway Connection', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            {__('Webhook configuration for receiving incoming SMS messages')}
+            {__('Webhook configuration for receiving incoming SMS messages', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
@@ -217,10 +218,10 @@ export default function TwoWaySettings() {
               </div>
               <div>
                 <p className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
-                  {webhookSupported ? __('Connected Gateway') : __('Gateway Status')}
+                  {webhookSupported ? __('Connected Gateway', 'wp-sms') : __('Gateway Status', 'wp-sms')}
                 </p>
                 <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground">
-                  {currentGateway || __('No Gateway Selected')}
+                  {currentGateway || __('No Gateway Selected', 'wp-sms')}
                 </p>
               </div>
             </div>
@@ -232,16 +233,16 @@ export default function TwoWaySettings() {
                   webhookSupported ? "wsms-text-success" : "wsms-text-muted-foreground/50"
                 )}>
                   {webhookSupported ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                  {__('Two-Way SMS')}
+                  {__('Two-Way SMS', 'wp-sms')}
                 </span>
                 {!webhookSupported && currentGateway && (
                   <span className="wsms-text-[11px] wsms-text-muted-foreground">
-                    — {__('This gateway does not support incoming messages')}
+                    — {__('This gateway does not support incoming messages', 'wp-sms')}
                   </span>
                 )}
                 {!webhookSupported && !currentGateway && (
                   <span className="wsms-text-[11px] wsms-text-muted-foreground">
-                    — {__('Configure a gateway in Gateway settings first')}
+                    — {__('Configure a gateway in Gateway settings first', 'wp-sms')}
                   </span>
                 )}
               </div>
@@ -252,10 +253,10 @@ export default function TwoWaySettings() {
           {webhookSupported && (
             <div className="wsms-space-y-3">
               <div className="wsms-flex wsms-items-center wsms-justify-between">
-                <Label className="wsms-text-sm wsms-font-medium">{__('Webhook URL')}</Label>
+                <Label className="wsms-text-sm wsms-font-medium">{__('Webhook URL', 'wp-sms')}</Label>
                 {registerType && (
                   <span className="wsms-text-xs wsms-text-muted-foreground">
-                    {registerType === 'api' ? __('Automatic registration') : __('Manual setup required')}
+                    {registerType === 'api' ? __('Automatic registration', 'wp-sms') : __('Manual setup required', 'wp-sms')}
                   </span>
                 )}
               </div>
@@ -264,7 +265,7 @@ export default function TwoWaySettings() {
                 <Input
                   value={webhookUrl}
                   readOnly
-                  aria-label={__('Webhook URL')}
+                  aria-label={__('Webhook URL', 'wp-sms')}
                   className="wsms-font-mono wsms-text-xs wsms-bg-muted/50"
                 />
                 <Button
@@ -272,7 +273,7 @@ export default function TwoWaySettings() {
                   size="icon"
                   onClick={handleCopyUrl}
                   disabled={!webhookUrl}
-                  title={__('Copy URL')}
+                  title={__('Copy URL', 'wp-sms')}
                 >
                   {copied ? (
                     <Check className="wsms-h-4 wsms-w-4 wsms-text-success" />
@@ -286,7 +287,7 @@ export default function TwoWaySettings() {
                     size="icon"
                     onClick={handleResetToken}
                     disabled={isResetting}
-                    title={__('Reset Token')}
+                    title={__('Reset Token', 'wp-sms')}
                   >
                     {isResetting ? (
                       <RefreshCw className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
@@ -309,12 +310,12 @@ export default function TwoWaySettings() {
                     {isRegistering ? (
                       <>
                         <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
-                        {__('Registering...')}
+                        {__('Registering...', 'wp-sms')}
                       </>
                     ) : (
                       <>
                         <ArrowRight className="wsms-h-4 wsms-w-4 wsms-me-2 rtl:wsms-scale-x-[-1]" />
-                        {__('Register Webhook')}
+                        {__('Register Webhook', 'wp-sms')}
                       </>
                     )}
                   </Button>
@@ -326,7 +327,7 @@ export default function TwoWaySettings() {
 
               {registerType === 'panel' && (
                 <Tip variant="info">
-                  {__('Copy this URL and add it to your gateway\'s webhook settings.')}{' '}
+                  {__('Copy this URL and add it to your gateway\'s webhook settings.', 'wp-sms')}{' '}
                   {panelUrl && (
                     <a
                       href={panelUrl}
@@ -334,7 +335,7 @@ export default function TwoWaySettings() {
                       rel="noopener noreferrer"
                       className="wsms-text-primary hover:wsms-underline wsms-inline-flex wsms-items-center wsms-gap-1"
                     >
-                      {__('Open Gateway Panel')}
+                      {__('Open Gateway Panel', 'wp-sms')}
                       <ExternalLink className="wsms-h-3 wsms-w-3" />
                     </a>
                   )}
@@ -350,37 +351,37 @@ export default function TwoWaySettings() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Bell className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Admin Notifications')}
+            {__('Admin Notifications', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            {__('Choose how you want to be notified when new SMS messages arrive')}
+            {__('Choose how you want to be notified when new SMS messages arrive', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <SettingRow
-            title={__('Forward to SMS')}
-            description={__('Send a copy of incoming messages to your admin mobile number')}
+            title={__('Forward to SMS', 'wp-sms')}
+            description={__('Send a copy of incoming messages to your admin mobile number', 'wp-sms')}
             checked={smsForwardEnabled === true}
             onCheckedChange={(checked) => updateAddonSetting('two-way', 'notif_new_inbox_message', checked)}
           />
           {smsForwardEnabled && (
             <div className="wsms-space-y-2">
               <Label htmlFor="sms-template" className="wsms-text-[13px] wsms-font-medium">
-                {__('Message Template')}
+                {__('Message Template', 'wp-sms')}
               </Label>
               <TemplateTextarea
                 id="sms-template"
                 value={smsForwardTemplate || ''}
                 onChange={(value) => updateAddonSetting('two-way', 'notif_new_inbox_message_template', value)}
                 rows={2}
-                placeholder={__('New SMS from %sender_number%: %sms_content%')}
+                placeholder={__('New SMS from %sender_number%: %sms_content%', 'wp-sms')}
                 variables={['%sender_number%', '%sms_content%', '%site_name%', '%user_name%', '%subscriber_name%']}
               />
             </div>
           )}
           <SettingRow
-            title={__('Forward to Email')}
-            description={__('Send incoming messages to your WordPress admin email')}
+            title={__('Forward to Email', 'wp-sms')}
+            description={__('Send incoming messages to your WordPress admin email', 'wp-sms')}
             checked={emailForwardEnabled === true}
             onCheckedChange={(checked) => updateAddonSetting('two-way', 'email_new_inbox_message', checked)}
           />
@@ -392,32 +393,32 @@ export default function TwoWaySettings() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Database className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Message Storage')}
+            {__('Message Storage', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            {__('Control how incoming messages are stored in your database')}
+            {__('Control how incoming messages are stored in your database', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <SettingRow
-            title={__('Save Messages to Inbox')}
-            description={__('Store incoming SMS messages for viewing and replying later')}
+            title={__('Save Messages to Inbox', 'wp-sms')}
+            description={__('Store incoming SMS messages for viewing and replying later', 'wp-sms')}
             checked={storeMessages === true}
             onCheckedChange={(checked) => updateAddonSetting('two-way', 'store_inbox_messages', checked)}
           />
           {storeMessages && (
             <SelectField
-              label={__('Auto-Delete After')}
+              label={__('Auto-Delete After', 'wp-sms')}
               value={String(retentionDays)}
               onValueChange={(value) => updateAddonSetting('two-way', 'inbox_retention_days', value)}
-              placeholder={__('Select period')}
-              description={__('Automatically remove old messages to save database space')}
+              placeholder={__('Select period', 'wp-sms')}
+              description={__('Automatically remove old messages to save database space', 'wp-sms')}
               options={[
-                { value: '30', label: __('30 days') },
-                { value: '90', label: __('90 days') },
-                { value: '180', label: __('180 days') },
-                { value: '365', label: __('1 year') },
-                { value: '0', label: __('Keep forever') },
+                { value: '30', label: __('30 days', 'wp-sms') },
+                { value: '90', label: __('90 days', 'wp-sms') },
+                { value: '180', label: __('180 days', 'wp-sms') },
+                { value: '365', label: __('1 year', 'wp-sms') },
+                { value: '0', label: __('Keep forever', 'wp-sms') },
               ]}
             />
           )}

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import {
   CalendarClock,
@@ -41,7 +42,7 @@ import {
 } from '@/components/ui/dialog'
 import { scheduledApi } from '@/api/scheduledApi'
 import { repeatingApi } from '@/api/repeatingApi'
-import { cn, formatDate, __, downloadCsv, getWpSettings, isAddonDashboardReady } from '@/lib/utils'
+import { cn, formatDate, downloadCsv, getWpSettings, isAddonDashboardReady } from '@/lib/utils'
 import { useListPage } from '@/hooks/useListPage'
 import { useFormDialog } from '@/hooks/useFormDialog'
 import { useToast } from '@/components/ui/toaster'
@@ -70,8 +71,8 @@ function ScheduledSmsTab() {
     bulkActionFn: scheduledApi.bulkAction,
     initialFilters: { search: '', status: 'all', date_from: '', date_to: '' },
     messages: {
-      deleteSuccess: __('Scheduled message deleted successfully'),
-      bulkSuccess: __('Action completed successfully'),
+      deleteSuccess: __('Scheduled message deleted successfully', 'wp-sms'),
+      bulkSuccess: __('Action completed successfully', 'wp-sms'),
     },
   })
 
@@ -103,7 +104,7 @@ function ScheduledSmsTab() {
       await scheduledApi.deleteMessage(id)
       table.removeItems([id])
     },
-    successMessage: __('Scheduled message deleted successfully'),
+    successMessage: __('Scheduled message deleted successfully', 'wp-sms'),
   })
 
   // Edit dialog using useFormDialog
@@ -117,7 +118,7 @@ function ScheduledSmsTab() {
     },
     initialData: { date: '', sender: '', message: '' },
     onSuccess: () => table.refresh(),
-    successMessage: __('Scheduled message updated successfully'),
+    successMessage: __('Scheduled message updated successfully', 'wp-sms'),
   })
 
   // Handle edit click
@@ -166,10 +167,10 @@ function ScheduledSmsTab() {
       setActionLoading(id)
       try {
         await scheduledApi.sendNow(id)
-        toast({ title: __('Message sent successfully'), variant: 'success' })
+        toast({ title: __('Message sent successfully', 'wp-sms'), variant: 'success' })
         table.refresh()
       } catch (error) {
-        toast({ title: error.message || __('Failed to send message'), variant: 'destructive' })
+        toast({ title: error.message || __('Failed to send message', 'wp-sms'), variant: 'destructive' })
       } finally {
         setActionLoading(null)
       }
@@ -186,13 +187,13 @@ function ScheduledSmsTab() {
       try {
         const result = await scheduledApi.bulkAction(action, table.selectedIds)
         toast({
-          title: __('%d message(s) processed successfully').replace('%d', result.affected),
+          title: __('%d message(s) processed successfully', 'wp-sms').replace('%d', result.affected),
           variant: 'success',
         })
         table.clearSelection()
         table.fetch({ page: 1 })
       } catch (error) {
-        toast({ title: error.message || __('Bulk action failed'), variant: 'destructive' })
+        toast({ title: error.message || __('Bulk action failed', 'wp-sms'), variant: 'destructive' })
       } finally {
         setBulkActionLoading(null)
       }
@@ -203,7 +204,7 @@ function ScheduledSmsTab() {
   // Handle bulk delete confirm
   const handleBulkDeleteConfirm = useCallback(async () => {
     setShowBulkDeleteConfirm(false)
-    await handleBulkAction('delete', __('Delete Selected'))
+    await handleBulkAction('delete', __('Delete Selected', 'wp-sms'))
   }, [handleBulkAction])
 
   // Handle export
@@ -233,7 +234,7 @@ function ScheduledSmsTab() {
     () =>
       getScheduledBulkActions({
         onDelete: () => setShowBulkDeleteConfirm(true),
-        onSendAll: () => handleBulkAction('send', __('Send Selected Now')),
+        onSendAll: () => handleBulkAction('send', __('Send Selected Now', 'wp-sms')),
       }),
     [handleBulkAction]
   )
@@ -255,14 +256,14 @@ function ScheduledSmsTab() {
             <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center">
               <AlertCircle className="wsms-h-12 wsms-w-12 wsms-text-destructive wsms-mb-4" />
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                {__('Failed to load scheduled messages')}
+                {__('Failed to load scheduled messages', 'wp-sms')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-4">
                 {table.error}
               </p>
               <Button onClick={() => table.fetch({ page: 1 })}>
                 <RefreshCw className="wsms-h-4 wsms-w-4 wsms-me-2" />
-                {__('Try Again')}
+                {__('Try Again', 'wp-sms')}
               </Button>
             </div>
           </CardContent>
@@ -289,10 +290,10 @@ function ScheduledSmsTab() {
                 <CalendarClock className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                {__('No scheduled messages')}
+                {__('No scheduled messages', 'wp-sms')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
-                {__('Schedule SMS messages to be sent at a specific date and time. They will appear here until they are sent.')}
+                {__('Schedule SMS messages to be sent at a specific date and time. They will appear here until they are sent.', 'wp-sms')}
               </p>
             </div>
           </CardContent>
@@ -314,7 +315,7 @@ function ScheduledSmsTab() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -327,7 +328,7 @@ function ScheduledSmsTab() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-amber-600 dark:wsms-text-amber-400">{stats.pending}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Pending')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Pending', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -340,7 +341,7 @@ function ScheduledSmsTab() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.sent}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Sent')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Sent', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -355,7 +356,7 @@ function ScheduledSmsTab() {
                   </div>
                   <div>
                     <p className="wsms-text-xl wsms-font-bold wsms-text-destructive">{stats.failed}</p>
-                    <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Failed')}</p>
+                    <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Failed', 'wp-sms')}</p>
                   </div>
                 </div>
               </>
@@ -366,7 +367,7 @@ function ScheduledSmsTab() {
           <div className="wsms-col-span-2 xl:wsms-col-span-1 wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-mt-2 xl:wsms-mt-0">
             <ExportButton
               onExport={handleExport}
-              successMessage={__('Exported %d scheduled messages successfully')}
+              successMessage={__('Exported %d scheduled messages successfully', 'wp-sms')}
             />
           </div>
         </div>
@@ -386,9 +387,9 @@ function ScheduledSmsTab() {
                 type="text"
                 value={filters.filters.search}
                 onChange={(e) => filters.setFilter('search', e.target.value)}
-                placeholder={__('Search messages...')}
+                placeholder={__('Search messages...', 'wp-sms')}
                 className="wsms-ps-8 wsms-h-9"
-                aria-label={__('Search scheduled messages')}
+                aria-label={__('Search scheduled messages', 'wp-sms')}
               />
             </div>
 
@@ -397,14 +398,14 @@ function ScheduledSmsTab() {
               value={filters.filters.status}
               onValueChange={(value) => filters.setFilter('status', value)}
             >
-              <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label={__('Filter by status')}>
+              <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label={__('Filter by status', 'wp-sms')}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{__('All Status')}</SelectItem>
-                <SelectItem value="pending">{__('Pending')}</SelectItem>
-                <SelectItem value="sent">{__('Sent')}</SelectItem>
-                <SelectItem value="failed">{__('Failed')}</SelectItem>
+                <SelectItem value="all">{__('All Status', 'wp-sms')}</SelectItem>
+                <SelectItem value="pending">{__('Pending', 'wp-sms')}</SelectItem>
+                <SelectItem value="sent">{__('Sent', 'wp-sms')}</SelectItem>
+                <SelectItem value="failed">{__('Failed', 'wp-sms')}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -423,7 +424,7 @@ function ScheduledSmsTab() {
                 size="sm"
                 onClick={() => filters.resetFilters()}
                 className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
-                aria-label={__('Clear all filters')}
+                aria-label={__('Clear all filters', 'wp-sms')}
               >
                 <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
               </Button>
@@ -435,7 +436,7 @@ function ScheduledSmsTab() {
               size="sm"
               onClick={() => table.fetch({ page: 1 })}
               className="wsms-h-9 wsms-px-2.5 xl:wsms-ms-auto"
-              aria-label={__('Refresh messages')}
+              aria-label={__('Refresh messages', 'wp-sms')}
             >
               <RefreshCw
                 className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')}
@@ -476,7 +477,7 @@ function ScheduledSmsTab() {
             rowActions={rowActions}
             bulkActions={bulkActions}
             bulkActionLoading={bulkActionLoading}
-            emptyMessage={__('No scheduled messages match your filters')}
+            emptyMessage={__('No scheduled messages match your filters', 'wp-sms')}
             emptyIcon={CalendarClock}
           />
         </CardContent>
@@ -488,10 +489,10 @@ function ScheduledSmsTab() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <CalendarClock className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
-              {__('Scheduled Message Details')}
+              {__('Scheduled Message Details', 'wp-sms')}
             </DialogTitle>
             <DialogDescription>
-              {__('Scheduled for')} {viewMessage && (viewMessage.date_formatted || formatDate(viewMessage.date, { hour: '2-digit', minute: '2-digit' }))}
+              {__('Scheduled for', 'wp-sms')} {viewMessage && (viewMessage.date_formatted || formatDate(viewMessage.date, { hour: '2-digit', minute: '2-digit' }))}
             </DialogDescription>
           </DialogHeader>
           <DialogBody>
@@ -500,21 +501,21 @@ function ScheduledSmsTab() {
                 {/* Status and Info Row */}
                 <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-p-4 wsms-rounded-lg wsms-bg-muted/30">
                   <div className="wsms-flex-1">
-                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Status')}</p>
+                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Status', 'wp-sms')}</p>
                     <StatusBadge variant={viewMessage.status === 'sent' ? 'success' : viewMessage.status === 'failed' ? 'failed' : 'warning'}>
-                      {viewMessage.status === 'sent' ? __('Sent') : viewMessage.status === 'failed' ? __('Failed') : __('Pending')}
+                      {viewMessage.status === 'sent' ? __('Sent', 'wp-sms') : viewMessage.status === 'failed' ? __('Failed', 'wp-sms') : __('Pending', 'wp-sms')}
                     </StatusBadge>
                   </div>
                   <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
                   <div className="wsms-flex-1">
-                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Recipients')}</p>
+                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Recipients', 'wp-sms')}</p>
                     <p className="wsms-text-[13px] wsms-font-medium">{viewMessage.recipient_count || 1}</p>
                   </div>
                   {viewMessage.sender && (
                     <>
                       <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
                       <div className="wsms-flex-1">
-                        <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Sender')}</p>
+                        <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Sender', 'wp-sms')}</p>
                         <p className="wsms-text-[13px] wsms-font-medium">{viewMessage.sender}</p>
                       </div>
                     </>
@@ -523,7 +524,7 @@ function ScheduledSmsTab() {
 
                 {/* Recipient(s) */}
                 <div>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Recipient(s)')}</p>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Recipient(s)', 'wp-sms')}</p>
                   <p className="wsms-text-[13px] wsms-break-all wsms-font-mono wsms-p-2 wsms-rounded wsms-bg-muted/30">
                     {viewMessage.recipient}
                   </p>
@@ -531,7 +532,7 @@ function ScheduledSmsTab() {
 
                 {/* Message */}
                 <div>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Message')}</p>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Message', 'wp-sms')}</p>
                   <div className="wsms-p-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
                     <p className="wsms-text-[13px] wsms-whitespace-pre-wrap">{viewMessage.message}</p>
                   </div>
@@ -542,7 +543,7 @@ function ScheduledSmsTab() {
                   <div>
                     <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1 wsms-flex wsms-items-center wsms-gap-1">
                       <Image className="wsms-h-3 wsms-w-3" aria-hidden="true" />
-                      {__('Media')}
+                      {__('Media', 'wp-sms')}
                     </p>
                     <div className="wsms-flex wsms-flex-wrap wsms-gap-2">
                       {viewMessage.media.map((url, idx) => (
@@ -568,12 +569,12 @@ function ScheduledSmsTab() {
           </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={() => setViewMessage(null)}>
-              {__('Close')}
+              {__('Close', 'wp-sms')}
             </Button>
             {viewMessage?.status === 'pending' && (
               <Button onClick={() => { handleSendNow(viewMessage?.id); setViewMessage(null) }}>
                 <Send className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
-                {__('Send Now')}
+                {__('Send Now', 'wp-sms')}
               </Button>
             )}
           </DialogFooter>
@@ -586,13 +587,13 @@ function ScheduledSmsTab() {
         onClose={deleteDialog.close}
         onConfirm={handleDeleteConfirm}
         isSaving={deleteDialog.isSaving}
-        title={__('Delete Scheduled Message')}
-        description={__('Are you sure you want to delete this scheduled message?')}
+        title={__('Delete Scheduled Message', 'wp-sms')}
+        description={__('Are you sure you want to delete this scheduled message?', 'wp-sms')}
       >
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border wsms-overflow-hidden">
           <div className="wsms-space-y-2">
             <div className="wsms-flex wsms-items-start wsms-gap-2">
-              <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-shrink-0">{__('To')}:</span>
+              <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-shrink-0">{__('To', 'wp-sms')}:</span>
               <span className="wsms-text-[13px] wsms-font-mono wsms-text-foreground wsms-break-all wsms-line-clamp-2">
                 {deleteDialog.item?.recipient}
               </span>
@@ -611,13 +612,13 @@ function ScheduledSmsTab() {
         isOpen={showBulkDeleteConfirm}
         onClose={() => setShowBulkDeleteConfirm(false)}
         onConfirm={handleBulkDeleteConfirm}
-        isSaving={bulkActionLoading === __('Delete Selected')}
-        title={__('Delete Scheduled Messages')}
-        description={__('Are you sure you want to delete the selected scheduled messages?')}
+        isSaving={bulkActionLoading === __('Delete Selected', 'wp-sms')}
+        title={__('Delete Scheduled Messages', 'wp-sms')}
+        description={__('Are you sure you want to delete the selected scheduled messages?', 'wp-sms')}
       >
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
           <p className="wsms-text-[13px] wsms-text-foreground">
-            {__('%d message(s) will be permanently deleted.').replace('%d', table.selectedIds.length)}
+            {__('%d message(s) will be permanently deleted.', 'wp-sms').replace('%d', table.selectedIds.length)}
           </p>
         </div>
       </DeleteConfirmDialog>
@@ -628,13 +629,13 @@ function ScheduledSmsTab() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <CalendarClock className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
-              {__('Edit Scheduled Message')}
+              {__('Edit Scheduled Message', 'wp-sms')}
             </DialogTitle>
           </DialogHeader>
           <DialogBody>
             <div className="wsms-space-y-4">
               <div>
-                <Label htmlFor="edit-scheduled-date">{__('Scheduled Date')}</Label>
+                <Label htmlFor="edit-scheduled-date">{__('Scheduled Date', 'wp-sms')}</Label>
                 <Input
                   id="edit-scheduled-date"
                   type="datetime-local"
@@ -643,11 +644,11 @@ function ScheduledSmsTab() {
                   className="wsms-mt-1.5"
                 />
                 <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mt-1.5">
-                  {__("Site's time zone")}: {window.wpSmsSettings?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone}
+                  {__("Site's time zone", 'wp-sms')}: {window.wpSmsSettings?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone}
                 </p>
               </div>
               <div>
-                <Label htmlFor="edit-scheduled-sender">{__('Sender')}</Label>
+                <Label htmlFor="edit-scheduled-sender">{__('Sender', 'wp-sms')}</Label>
                 <Input
                   id="edit-scheduled-sender"
                   type="text"
@@ -657,7 +658,7 @@ function ScheduledSmsTab() {
                 />
               </div>
               <div>
-                <Label htmlFor="edit-scheduled-message">{__('Message')}</Label>
+                <Label htmlFor="edit-scheduled-message">{__('Message', 'wp-sms')}</Label>
                 <Textarea
                   id="edit-scheduled-message"
                   value={editDialog.formData.message || ''}
@@ -670,16 +671,16 @@ function ScheduledSmsTab() {
           </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={editDialog.close} disabled={editDialog.isSaving}>
-              {__('Cancel')}
+              {__('Cancel', 'wp-sms')}
             </Button>
             <Button onClick={editDialog.save} disabled={editDialog.isSaving}>
               {editDialog.isSaving ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" aria-hidden="true" />
-                  {__('Saving...')}
+                  {__('Saving...', 'wp-sms')}
                 </>
               ) : (
-                __('Save Changes')
+                __('Save Changes', 'wp-sms')
               )}
             </Button>
           </DialogFooter>
@@ -703,8 +704,8 @@ function RepeatingSmsTab() {
     bulkActionFn: repeatingApi.bulkAction,
     initialFilters: { search: '', status: 'all' },
     messages: {
-      deleteSuccess: __('Repeating message deleted successfully'),
-      bulkSuccess: __('Action completed successfully'),
+      deleteSuccess: __('Repeating message deleted successfully', 'wp-sms'),
+      bulkSuccess: __('Action completed successfully', 'wp-sms'),
     },
   })
 
@@ -736,7 +737,7 @@ function RepeatingSmsTab() {
       await repeatingApi.deleteMessage(id)
       table.removeItems([id])
     },
-    successMessage: __('Repeating message deleted successfully'),
+    successMessage: __('Repeating message deleted successfully', 'wp-sms'),
   })
 
   // Edit dialog
@@ -755,7 +756,7 @@ function RepeatingSmsTab() {
     },
     initialData: { sender: '', message: '', ends_at: '', repeat_forever: false },
     onSuccess: () => table.refresh(),
-    successMessage: __('Repeating message updated successfully'),
+    successMessage: __('Repeating message updated successfully', 'wp-sms'),
   })
 
   // Handle edit click
@@ -804,17 +805,17 @@ function RepeatingSmsTab() {
     setShowBulkDeleteConfirm(false)
     if (table.selectedIds.length === 0) return
 
-    setBulkActionLoading(__('Delete Selected'))
+    setBulkActionLoading(__('Delete Selected', 'wp-sms'))
     try {
       const result = await repeatingApi.bulkAction('delete', table.selectedIds)
       toast({
-        title: __('%d message(s) deleted successfully').replace('%d', result.affected),
+        title: __('%d message(s) deleted successfully', 'wp-sms').replace('%d', result.affected),
         variant: 'success',
       })
       table.clearSelection()
       table.fetch({ page: 1 })
     } catch (error) {
-      toast({ title: error.message || __('Bulk action failed'), variant: 'destructive' })
+      toast({ title: error.message || __('Bulk action failed', 'wp-sms'), variant: 'destructive' })
     } finally {
       setBulkActionLoading(null)
     }
@@ -865,14 +866,14 @@ function RepeatingSmsTab() {
             <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center">
               <AlertCircle className="wsms-h-12 wsms-w-12 wsms-text-destructive wsms-mb-4" />
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                {__('Failed to load repeating messages')}
+                {__('Failed to load repeating messages', 'wp-sms')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-4">
                 {table.error}
               </p>
               <Button onClick={() => table.fetch({ page: 1 })}>
                 <RefreshCw className="wsms-h-4 wsms-w-4 wsms-me-2" />
-                {__('Try Again')}
+                {__('Try Again', 'wp-sms')}
               </Button>
             </div>
           </CardContent>
@@ -897,10 +898,10 @@ function RepeatingSmsTab() {
                 <Repeat className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                {__('No repeating messages')}
+                {__('No repeating messages', 'wp-sms')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
-                {__('Create recurring SMS messages that are sent automatically at regular intervals. Perfect for reminders, notifications, and scheduled updates.')}
+                {__('Create recurring SMS messages that are sent automatically at regular intervals. Perfect for reminders, notifications, and scheduled updates.', 'wp-sms')}
               </p>
             </div>
           </CardContent>
@@ -922,7 +923,7 @@ function RepeatingSmsTab() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -935,7 +936,7 @@ function RepeatingSmsTab() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.active}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Active')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Active', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -948,7 +949,7 @@ function RepeatingSmsTab() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-muted-foreground">{stats.ended}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Ended')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Ended', 'wp-sms')}</p>
               </div>
             </div>
           </div>
@@ -957,7 +958,7 @@ function RepeatingSmsTab() {
           <div className="wsms-col-span-2 xl:wsms-col-span-1 wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-mt-2 xl:wsms-mt-0">
             <ExportButton
               onExport={handleExport}
-              successMessage={__('Exported %d repeating messages successfully')}
+              successMessage={__('Exported %d repeating messages successfully', 'wp-sms')}
             />
           </div>
         </div>
@@ -977,9 +978,9 @@ function RepeatingSmsTab() {
                 type="text"
                 value={filters.filters.search}
                 onChange={(e) => filters.setFilter('search', e.target.value)}
-                placeholder={__('Search messages...')}
+                placeholder={__('Search messages...', 'wp-sms')}
                 className="wsms-ps-8 wsms-h-9"
-                aria-label={__('Search repeating messages')}
+                aria-label={__('Search repeating messages', 'wp-sms')}
               />
             </div>
 
@@ -988,13 +989,13 @@ function RepeatingSmsTab() {
               value={filters.filters.status}
               onValueChange={(value) => filters.setFilter('status', value)}
             >
-              <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label={__('Filter by status')}>
+              <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label={__('Filter by status', 'wp-sms')}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{__('All Status')}</SelectItem>
-                <SelectItem value="active">{__('Active')}</SelectItem>
-                <SelectItem value="ended">{__('Ended')}</SelectItem>
+                <SelectItem value="all">{__('All Status', 'wp-sms')}</SelectItem>
+                <SelectItem value="active">{__('Active', 'wp-sms')}</SelectItem>
+                <SelectItem value="ended">{__('Ended', 'wp-sms')}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -1005,7 +1006,7 @@ function RepeatingSmsTab() {
                 size="sm"
                 onClick={() => filters.resetFilters()}
                 className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
-                aria-label={__('Clear all filters')}
+                aria-label={__('Clear all filters', 'wp-sms')}
               >
                 <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
               </Button>
@@ -1017,7 +1018,7 @@ function RepeatingSmsTab() {
               size="sm"
               onClick={() => table.fetch({ page: 1 })}
               className="wsms-h-9 wsms-px-2.5 xl:wsms-ms-auto"
-              aria-label={__('Refresh messages')}
+              aria-label={__('Refresh messages', 'wp-sms')}
             >
               <RefreshCw
                 className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')}
@@ -1058,7 +1059,7 @@ function RepeatingSmsTab() {
             rowActions={rowActions}
             bulkActions={bulkActions}
             bulkActionLoading={bulkActionLoading}
-            emptyMessage={__('No repeating messages match your filters')}
+            emptyMessage={__('No repeating messages match your filters', 'wp-sms')}
             emptyIcon={Repeat}
           />
         </CardContent>
@@ -1070,7 +1071,7 @@ function RepeatingSmsTab() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <Repeat className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
-              {__('Repeating Message Details')}
+              {__('Repeating Message Details', 'wp-sms')}
             </DialogTitle>
             <DialogDescription>
               {viewMessage && repeatingApi.formatInterval(viewMessage.interval, viewMessage.interval_unit)}
@@ -1082,14 +1083,14 @@ function RepeatingSmsTab() {
                 {/* Status and Info Row */}
                 <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-p-4 wsms-rounded-lg wsms-bg-muted/30">
                   <div className="wsms-flex-1">
-                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Status')}</p>
+                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Status', 'wp-sms')}</p>
                     <StatusBadge variant={viewMessage.status === 'active' ? 'success' : 'default'}>
-                      {viewMessage.status === 'active' ? __('Active') : __('Ended')}
+                      {viewMessage.status === 'active' ? __('Active', 'wp-sms') : __('Ended', 'wp-sms')}
                     </StatusBadge>
                   </div>
                   <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
                   <div className="wsms-flex-1">
-                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Sent')}</p>
+                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Sent', 'wp-sms')}</p>
                     <p className="wsms-text-[13px] wsms-font-medium">
                       {viewMessage.occurrences_sent || 0}
                       {viewMessage.max_occurrences ? ` / ${viewMessage.max_occurrences}` : ''}
@@ -1099,7 +1100,7 @@ function RepeatingSmsTab() {
                     <>
                       <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
                       <div className="wsms-flex-1">
-                        <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Next')}</p>
+                        <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Next', 'wp-sms')}</p>
                         <p className="wsms-text-[13px] wsms-font-medium">
                           {viewMessage.next_occurrence_formatted || formatDate(viewMessage.next_occurrence, { hour: '2-digit', minute: '2-digit' })}
                         </p>
@@ -1110,7 +1111,7 @@ function RepeatingSmsTab() {
 
                 {/* Recipient(s) */}
                 <div>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Recipient(s)')}</p>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Recipient(s)', 'wp-sms')}</p>
                   <p className="wsms-text-[13px] wsms-break-all wsms-font-mono wsms-p-2 wsms-rounded wsms-bg-muted/30">
                     {viewMessage.recipient}
                   </p>
@@ -1118,7 +1119,7 @@ function RepeatingSmsTab() {
 
                 {/* Message */}
                 <div>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Message')}</p>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Message', 'wp-sms')}</p>
                   <div className="wsms-p-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
                     <p className="wsms-text-[13px] wsms-whitespace-pre-wrap">{viewMessage.message}</p>
                   </div>
@@ -1129,7 +1130,7 @@ function RepeatingSmsTab() {
                   <div>
                     <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1 wsms-flex wsms-items-center wsms-gap-1">
                       <Image className="wsms-h-3 wsms-w-3" aria-hidden="true" />
-                      {__('Media')}
+                      {__('Media', 'wp-sms')}
                     </p>
                     <div className="wsms-flex wsms-flex-wrap wsms-gap-2">
                       {viewMessage.media.map((url, idx) => (
@@ -1155,7 +1156,7 @@ function RepeatingSmsTab() {
           </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={() => setViewMessage(null)}>
-              {__('Close')}
+              {__('Close', 'wp-sms')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1167,13 +1168,13 @@ function RepeatingSmsTab() {
         onClose={deleteDialog.close}
         onConfirm={handleDeleteConfirm}
         isSaving={deleteDialog.isSaving}
-        title={__('Delete Repeating Message')}
-        description={__('Are you sure you want to delete this repeating message? This will stop all future occurrences.')}
+        title={__('Delete Repeating Message', 'wp-sms')}
+        description={__('Are you sure you want to delete this repeating message? This will stop all future occurrences.', 'wp-sms')}
       >
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border wsms-overflow-hidden">
           <div className="wsms-space-y-2">
             <div className="wsms-flex wsms-items-start wsms-gap-2">
-              <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-shrink-0">{__('To')}:</span>
+              <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-shrink-0">{__('To', 'wp-sms')}:</span>
               <span className="wsms-text-[13px] wsms-font-mono wsms-text-foreground wsms-break-all wsms-line-clamp-2">
                 {deleteDialog.item?.recipient}
               </span>
@@ -1192,13 +1193,13 @@ function RepeatingSmsTab() {
         isOpen={showBulkDeleteConfirm}
         onClose={() => setShowBulkDeleteConfirm(false)}
         onConfirm={handleBulkDeleteConfirm}
-        isSaving={bulkActionLoading === __('Delete Selected')}
-        title={__('Delete Repeating Messages')}
-        description={__('Are you sure you want to delete the selected repeating messages?')}
+        isSaving={bulkActionLoading === __('Delete Selected', 'wp-sms')}
+        title={__('Delete Repeating Messages', 'wp-sms')}
+        description={__('Are you sure you want to delete the selected repeating messages?', 'wp-sms')}
       >
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
           <p className="wsms-text-[13px] wsms-text-foreground">
-            {__('%d message(s) will be permanently deleted.').replace('%d', table.selectedIds.length)}
+            {__('%d message(s) will be permanently deleted.', 'wp-sms').replace('%d', table.selectedIds.length)}
           </p>
         </div>
       </DeleteConfirmDialog>
@@ -1209,13 +1210,13 @@ function RepeatingSmsTab() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <Repeat className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
-              {__('Edit Repeating Message')}
+              {__('Edit Repeating Message', 'wp-sms')}
             </DialogTitle>
           </DialogHeader>
           <DialogBody>
             <div className="wsms-space-y-4">
               <div>
-                <Label htmlFor="edit-repeating-sender">{__('Sender')}</Label>
+                <Label htmlFor="edit-repeating-sender">{__('Sender', 'wp-sms')}</Label>
                 <Input
                   id="edit-repeating-sender"
                   type="text"
@@ -1225,7 +1226,7 @@ function RepeatingSmsTab() {
                 />
               </div>
               <div>
-                <Label htmlFor="edit-repeating-message">{__('Message')}</Label>
+                <Label htmlFor="edit-repeating-message">{__('Message', 'wp-sms')}</Label>
                 <Textarea
                   id="edit-repeating-message"
                   value={editDialog.formData.message || ''}
@@ -1248,11 +1249,11 @@ function RepeatingSmsTab() {
                     }}
                     className="wsms-rounded wsms-border-border"
                   />
-                  <Label htmlFor="edit-repeating-forever" className="wsms-mb-0">{__('Repeat Forever')}</Label>
+                  <Label htmlFor="edit-repeating-forever" className="wsms-mb-0">{__('Repeat Forever', 'wp-sms')}</Label>
                 </div>
                 {!editDialog.formData.repeat_forever && (
                   <div>
-                    <Label htmlFor="edit-repeating-ends-at">{__('End on')}</Label>
+                    <Label htmlFor="edit-repeating-ends-at">{__('End on', 'wp-sms')}</Label>
                     <Input
                       id="edit-repeating-ends-at"
                       type="datetime-local"
@@ -1261,7 +1262,7 @@ function RepeatingSmsTab() {
                       className="wsms-mt-1.5"
                     />
                     <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mt-1.5">
-                      {__("Site's time zone")}: {window.wpSmsSettings?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone}
+                      {__("Site's time zone", 'wp-sms')}: {window.wpSmsSettings?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone}
                     </p>
                   </div>
                 )}
@@ -1270,16 +1271,16 @@ function RepeatingSmsTab() {
           </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={editDialog.close} disabled={editDialog.isSaving}>
-              {__('Cancel')}
+              {__('Cancel', 'wp-sms')}
             </Button>
             <Button onClick={editDialog.save} disabled={editDialog.isSaving}>
               {editDialog.isSaving ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" aria-hidden="true" />
-                  {__('Saving...')}
+                  {__('Saving...', 'wp-sms')}
                 </>
               ) : (
-                __('Save Changes')
+                __('Save Changes', 'wp-sms')
               )}
             </Button>
           </DialogFooter>
@@ -1309,14 +1310,14 @@ export default function Scheduled() {
                 <CalendarClock className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                {__('WSMS Pro Required')}
+                {__('WSMS Pro Required', 'wp-sms')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
-                {__('Schedule SMS messages for later delivery or create recurring messages with WSMS Pro. Perfect for reminders, notifications, and automated campaigns.')}
+                {__('Schedule SMS messages for later delivery or create recurring messages with WSMS Pro. Perfect for reminders, notifications, and automated campaigns.', 'wp-sms')}
               </p>
               <Button variant="outline" asChild>
                 <a href="https://wsms.io/buy/" target="_blank" rel="noopener noreferrer">
-                  {__('Learn More')}
+                  {__('Learn More', 'wp-sms')}
                   <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
                 </a>
               </Button>
@@ -1337,11 +1338,11 @@ export default function Scheduled() {
         <TabsList className="wsms-grid wsms-w-full wsms-grid-cols-2 wsms-max-w-[400px]">
           <TabsTrigger value="scheduled" className="wsms-flex wsms-items-center wsms-gap-2">
             <CalendarClock className="wsms-h-4 wsms-w-4" />
-            {__('Scheduled SMS')}
+            {__('Scheduled SMS', 'wp-sms')}
           </TabsTrigger>
           <TabsTrigger value="repeating" className="wsms-flex wsms-items-center wsms-gap-2">
             <Repeat className="wsms-h-4 wsms-w-4" />
-            {__('Repeating SMS')}
+            {__('Repeating SMS', 'wp-sms')}
           </TabsTrigger>
         </TabsList>
 

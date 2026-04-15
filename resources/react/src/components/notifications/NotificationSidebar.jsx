@@ -1,6 +1,7 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState, useEffect, useRef } from 'react'
 import { X, Loader2, Bell, Trash2 } from 'lucide-react'
-import { cn, __ } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { NotificationCard } from './NotificationCard'
 import { EmptyState } from './EmptyState'
 
@@ -244,7 +245,7 @@ export function NotificationSidebar({
         <div className="wsms-flex wsms-items-center wsms-justify-between wsms-px-5 wsms-py-1 wsms-border-b wsms-border-border/50 wsms-bg-card/50">
           <div
             role="tablist"
-            aria-label={__('Notification tabs')}
+            aria-label={__('Notification tabs', 'wp-sms')}
             className="wsms-flex wsms-gap-5"
             onKeyDown={(e) => {
               if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
@@ -279,7 +280,7 @@ export function NotificationSidebar({
           {activeTab === 'inbox' && inboxNotifications.length > 1 && (
             <button
               onClick={onDismissAll}
-              aria-label={__('Clear all %s notifications').replace('%s', String(inboxNotifications.length))}
+              aria-label={__('Clear all %s notifications', 'wp-sms').replace('%s', String(inboxNotifications.length))}
               className={cn(
                 'wsms-flex wsms-items-center wsms-gap-1.5 wsms-px-2.5 wsms-py-1.5',
                 'wsms-text-xs wsms-font-medium wsms-text-muted-foreground wsms-rounded-md',

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState, useMemo, useRef, useEffect } from 'react'
 import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap, BookOpen, ExternalLink, XCircle, RotateCcw, Code, Unplug, Wallet, Star, Globe, Wrench } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
@@ -9,7 +10,7 @@ import { SearchableSelect } from '@/components/ui/searchable-select'
 import { Tip, CollapsibleSection, HelpLink, SectionDivider } from '@/components/ui/ux-helpers'
 import { useSettings, useSetting } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
-import { getWpSettings, cn, getGatewayDisplayName, getGatewayLogo, __, countryCodeToFlag } from '@/lib/utils'
+import { getWpSettings, cn, getGatewayDisplayName, getGatewayLogo, countryCodeToFlag } from '@/lib/utils'
 import { GatewayCard, GatewayCardMinimal, PremiumSearchResults, MoreGatewaysNotice } from '@/components/GatewayCard'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 
@@ -276,7 +277,7 @@ export default function Gateway() {
       {/* Helpful tip for new users */}
       {!gatewayName && (
         <Tip>
-          <strong>{__('Need help choosing a gateway?')}</strong> {__('Consider factors like coverage area, pricing, and API features. Most gateways offer free trial credits to test before committing.')}
+          <strong>{__('Need help choosing a gateway?', 'wp-sms')}</strong> {__('Consider factors like coverage area, pricing, and API features. Most gateways offer free trial credits to test before committing.', 'wp-sms')}
         </Tip>
       )}
 
@@ -285,9 +286,9 @@ export default function Gateway() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Radio className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('SMS Gateway')}
+            {__('SMS Gateway', 'wp-sms')}
           </CardTitle>
-          <CardDescription>{__('Select your SMS service provider. Configure credentials below after selecting.')}</CardDescription>
+          <CardDescription>{__('Select your SMS service provider. Configure credentials below after selecting.', 'wp-sms')}</CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           {/* Search and Region Filter */}
@@ -295,8 +296,8 @@ export default function Gateway() {
             <div className="wsms-relative wsms-flex-1">
               <Search className="wsms-absolute wsms-start-3 wsms-top-1/2 wsms-h-4 wsms-w-4 wsms--translate-y-1/2 wsms-text-muted-foreground" />
               <Input
-                placeholder={__('Search gateways...')}
-                aria-label={__('Search gateways')}
+                placeholder={__('Search gateways...', 'wp-sms')}
+                aria-label={__('Search gateways', 'wp-sms')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="wsms-ps-9"
@@ -307,10 +308,10 @@ export default function Gateway() {
               <SearchableSelect
                 value={selectedRegion}
                 onValueChange={setSelectedRegion}
-                placeholder={__('All Regions')}
-                searchPlaceholder={__('Search regions...')}
+                placeholder={__('All Regions', 'wp-sms')}
+                searchPlaceholder={__('Search regions...', 'wp-sms')}
                 options={[
-                  { value: 'all', label: __('All Regions') },
+                  { value: 'all', label: __('All Regions', 'wp-sms') },
                   ...regionOptions,
                 ]}
                 triggerClassName="wsms-capitalize"
@@ -323,7 +324,7 @@ export default function Gateway() {
             {registryLoading ? (
               <div className="wsms-flex wsms-items-center wsms-justify-center wsms-py-12 wsms-text-muted-foreground">
                 <Loader2 className="wsms-h-5 wsms-w-5 wsms-animate-spin wsms-me-2" />
-                <span className="wsms-text-[12px]">{__('Loading gateways...')}</span>
+                <span className="wsms-text-[12px]">{__('Loading gateways...', 'wp-sms')}</span>
               </div>
             ) : (
               <>
@@ -343,7 +344,7 @@ export default function Gateway() {
                     {countryGroups.ungrouped.length > 0 && (
                       <div>
                         <p className="wsms-mb-2 wsms-text-[12px] wsms-font-semibold wsms-text-foreground">
-                          {__('Other')}
+                          {__('Other', 'wp-sms')}
                         </p>
                         <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
                           {countryGroups.ungrouped.map(renderGatewayButton)}
@@ -359,7 +360,7 @@ export default function Gateway() {
                       <div>
                         <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
                           <Star className="wsms-h-3 wsms-w-3 wsms-text-amber-500" />
-                          {__('Recommended')}
+                          {__('Recommended', 'wp-sms')}
                         </p>
                         <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
                           {recommended.map(renderGatewayButton)}
@@ -372,7 +373,7 @@ export default function Gateway() {
                       <div>
                         <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
                           <Wrench className="wsms-h-3 wsms-w-3 wsms-text-muted-foreground" />
-                          {__('Development')}
+                          {__('Development', 'wp-sms')}
                         </p>
                         <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
                           {regionGroups.testList.map(renderGatewayButton)}
@@ -385,7 +386,7 @@ export default function Gateway() {
                       <div>
                         <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
                           <Globe className="wsms-h-3 wsms-w-3 wsms-text-muted-foreground" />
-                          {__('Global')}
+                          {__('Global', 'wp-sms')}
                         </p>
                         <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
                           {regionGroups.globalList.map(renderGatewayButton)}
@@ -415,7 +416,7 @@ export default function Gateway() {
                       <div className="wsms-mb-4">
                         <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
                           <Star className="wsms-h-3 wsms-w-3 wsms-text-amber-500" />
-                          {__('Recommended')}
+                          {__('Recommended', 'wp-sms')}
                         </p>
                         <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
                           {recommended.map(renderGatewayButton)}
@@ -428,7 +429,7 @@ export default function Gateway() {
                       <div>
                         {recommended.length > 0 && (
                           <p className="wsms-mb-2 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
-                            {__('All Gateways')}
+                            {__('All Gateways', 'wp-sms')}
                           </p>
                         )}
                         <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
@@ -481,7 +482,7 @@ export default function Gateway() {
                     </div>
                     <div>
                       <p className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
-                        {__('Selected Gateway')}
+                        {__('Selected Gateway', 'wp-sms')}
                       </p>
                       <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground">
                         {displayName(gatewayName)}
@@ -499,7 +500,7 @@ export default function Gateway() {
                           className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-text-primary hover:wsms-text-primary/80"
                         >
                           <ExternalLink className="wsms-h-3 wsms-w-3" />
-                          {__('Visit Website')}
+                          {__('Visit Website', 'wp-sms')}
                         </a>
                       )}
                     </div>
@@ -507,7 +508,7 @@ export default function Gateway() {
                   {pendingGateway ? (
                     <div className="wsms-flex wsms-items-center wsms-gap-2">
                       <span className="wsms-text-[12px] wsms-text-muted-foreground">
-                        {__('Switch to')} <strong className="wsms-text-foreground">{displayName(pendingGateway)}</strong>?
+                        {__('Switch to', 'wp-sms')} <strong className="wsms-text-foreground">{displayName(pendingGateway)}</strong>?
                       </span>
                       <button
                         onClick={() => {
@@ -516,18 +517,18 @@ export default function Gateway() {
                         }}
                         className="wsms-rounded-md wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-bg-primary wsms-text-primary-foreground wsms-transition-colors hover:wsms-bg-primary/90"
                       >
-                        {__('Switch')}
+                        {__('Switch', 'wp-sms')}
                       </button>
                       <button
                         onClick={() => setPendingGateway(null)}
                         className="wsms-rounded-md wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-border wsms-border-border wsms-bg-background wsms-transition-colors hover:wsms-bg-accent"
                       >
-                        {__('Cancel')}
+                        {__('Cancel', 'wp-sms')}
                       </button>
                     </div>
                   ) : showDisconnectConfirm ? (
                     <div className="wsms-flex wsms-items-center wsms-gap-2">
-                      <span className="wsms-text-[12px] wsms-text-muted-foreground">{__('Are you sure?')}</span>
+                      <span className="wsms-text-[12px] wsms-text-muted-foreground">{__('Are you sure?', 'wp-sms')}</span>
                       <button
                         onClick={() => {
                           setGatewayName('')
@@ -535,13 +536,13 @@ export default function Gateway() {
                         }}
                         className="wsms-rounded-md wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-bg-destructive wsms-text-destructive-foreground wsms-transition-colors hover:wsms-bg-destructive/90"
                       >
-                        {__('Disconnect')}
+                        {__('Disconnect', 'wp-sms')}
                       </button>
                       <button
                         onClick={() => setShowDisconnectConfirm(false)}
                         className="wsms-rounded-md wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-border wsms-border-border wsms-bg-background wsms-transition-colors hover:wsms-bg-accent"
                       >
-                        {__('Cancel')}
+                        {__('Cancel', 'wp-sms')}
                       </button>
                     </div>
                   ) : (
@@ -550,7 +551,7 @@ export default function Gateway() {
                       className="wsms-flex rtl:wsms-flex-row-reverse wsms-items-center wsms-gap-1.5 wsms-rounded-md wsms-px-3 wsms-py-1.5 wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground wsms-transition-colors hover:wsms-bg-destructive/10 hover:wsms-text-destructive"
                     >
                       <Unplug className="wsms-h-3.5 wsms-w-3.5" />
-                      {__('Disconnect')}
+                      {__('Disconnect', 'wp-sms')}
                     </button>
                   )}
                 </div>
@@ -558,12 +559,12 @@ export default function Gateway() {
                 <div className="wsms-border-t wsms-border-primary/20 wsms-px-3 wsms-py-2 wsms-bg-primary/[0.02]">
                   {hasUnsavedGatewayChange ? (
                     <p className="wsms-text-[11px] wsms-text-amber-600 dark:wsms-text-amber-400">
-                      {__('Save your changes to see capabilities and configure credentials for this gateway.')}
+                      {__('Save your changes to see capabilities and configure credentials for this gateway.', 'wp-sms')}
                     </p>
                   ) : (
                     <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-flex-wrap">
                       <span className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
-                        {__('Capabilities:')}
+                        {__('Capabilities:', 'wp-sms')}
                       </span>
                       <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-flex-wrap">
                         <span className={cn(
@@ -571,28 +572,28 @@ export default function Gateway() {
                           gatewayCapabilities.flash === 'enable' ? "wsms-text-success" : "wsms-text-muted-foreground/50"
                         )}>
                           {gatewayCapabilities.flash === 'enable' ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                          {__('Flash SMS')}
+                          {__('Flash SMS', 'wp-sms')}
                         </span>
                         <span className={cn(
                           "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
                           gatewayCapabilities.bulk_send !== false ? "wsms-text-success" : "wsms-text-muted-foreground/50"
                         )}>
                           {gatewayCapabilities.bulk_send !== false ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                          {__('Bulk Send')}
+                          {__('Bulk Send', 'wp-sms')}
                         </span>
                         <span className={cn(
                           "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
                           gatewayCapabilities.supportMedia === true ? "wsms-text-success" : "wsms-text-muted-foreground/50"
                         )}>
                           {gatewayCapabilities.supportMedia === true ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                          {__('MMS')}
+                          {__('MMS', 'wp-sms')}
                         </span>
                         <span className={cn(
                           "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
                           gatewayCapabilities.supportIncoming === true ? "wsms-text-success" : "wsms-text-muted-foreground/50"
                         )}>
                           {gatewayCapabilities.supportIncoming === true ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                          {__('Incoming SMS')}
+                          {__('Incoming SMS', 'wp-sms')}
                         </span>
                       </div>
                     </div>
@@ -606,10 +607,10 @@ export default function Gateway() {
                 </div>
                 <div>
                   <p className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
-                    {__('No Gateway Selected')}
+                    {__('No Gateway Selected', 'wp-sms')}
                   </p>
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                    {__('Choose a provider from the list above')}
+                    {__('Choose a provider from the list above', 'wp-sms')}
                   </p>
                 </div>
               </div>
@@ -627,9 +628,9 @@ export default function Gateway() {
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <BookOpen className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              {__('Gateway Guide')}
+              {__('Gateway Guide', 'wp-sms')}
             </CardTitle>
-            <CardDescription>{__('Setup instructions for')} {displayName(gatewayName)}</CardDescription>
+            <CardDescription>{__('Setup instructions for', 'wp-sms')} {displayName(gatewayName)}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="wsms-space-y-3">
@@ -647,7 +648,7 @@ export default function Gateway() {
                   className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[13px] wsms-text-primary hover:wsms-text-primary/80 wsms-font-medium"
                 >
                   <ExternalLink className="wsms-h-3.5 wsms-w-3.5" />
-                  {__('View Full Documentation')}
+                  {__('View Full Documentation', 'wp-sms')}
                 </a>
               )}
             </div>
@@ -661,9 +662,9 @@ export default function Gateway() {
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <Shield className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              {__('Credentials')}
+              {__('Credentials', 'wp-sms')}
             </CardTitle>
-            <CardDescription>{__('API credentials for')} {displayName(gatewayName)}</CardDescription>
+            <CardDescription>{__('API credentials for', 'wp-sms')} {displayName(gatewayName)}</CardDescription>
           </CardHeader>
           <CardContent className="wsms-space-y-4">
             <div className="wsms-grid wsms-grid-cols-1 wsms-gap-4 md:wsms-grid-cols-2">
@@ -730,17 +731,17 @@ export default function Gateway() {
                   {testing ? (
                     <>
                       <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1 wsms-animate-spin" />
-                      {__('Testing...')}
+                      {__('Testing...', 'wp-sms')}
                     </>
                   ) : (
                     <>
                       <Send className="wsms-h-4 wsms-w-4 wsms-me-1" />
-                      {__('Test Connection')}
+                      {__('Test Connection', 'wp-sms')}
                     </>
                   )}
                 </Button>
                 <span className="wsms-text-[12px] wsms-text-muted-foreground">
-                  {__('Verify your credentials are working')}
+                  {__('Verify your credentials are working', 'wp-sms')}
                 </span>
               </div>
             </div>
@@ -748,14 +749,14 @@ export default function Gateway() {
             {/* Raw API Response */}
             {connectionTested && rawResponse && (
               <CollapsibleSection
-                title={__('API Response')}
-                description={__('Raw response from the gateway for debugging')}
+                title={__('API Response', 'wp-sms')}
+                description={__('Raw response from the gateway for debugging', 'wp-sms')}
                 defaultOpen={false}
               >
                 <div className="wsms-rounded-lg wsms-bg-muted wsms-p-3 wsms-font-mono wsms-text-[12px] wsms-overflow-x-auto">
                   <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-mb-2 wsms-text-muted-foreground">
                     <Code className="wsms-h-3.5 wsms-w-3.5" />
-                    <span>{__('Gateway Response:')}</span>
+                    <span>{__('Gateway Response:', 'wp-sms')}</span>
                   </div>
                   <pre className="wsms-whitespace-pre-wrap wsms-break-all wsms-text-foreground">
                     {rawResponse}
@@ -772,57 +773,57 @@ export default function Gateway() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Zap className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Delivery Settings')}
+            {__('Delivery Settings', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            {__('Configure how messages are processed and delivered')}
+            {__('Configure how messages are processed and delivered', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <SelectField
-            label={__('Delivery Method')}
-            description={__('Select the dispatch method for SMS messages: instant send via API, delayed send at set times, or batch send for large recipient lists. For lists exceeding 20 recipients, batch sending is automatically selected.')}
+            label={__('Delivery Method', 'wp-sms')}
+            description={__('Select the dispatch method for SMS messages: instant send via API, delayed send at set times, or batch send for large recipient lists. For lists exceeding 20 recipients, batch sending is automatically selected.', 'wp-sms')}
             value={deliveryMethod}
             onValueChange={setDeliveryMethod}
-            placeholder={__('Select method')}
+            placeholder={__('Select method', 'wp-sms')}
             options={[
-              { value: 'api_direct_send', label: __('Send SMS Instantly: Activates immediate dispatch of messages via API upon request.') },
-              { value: 'api_async_send', label: __('Scheduled SMS Delivery: Configures API to send messages at predetermined times.') },
-              { value: 'api_queued_send', label: __('Batch SMS Queue: Lines up messages for grouped sending, enhancing efficiency for bulk dispatch.') },
+              { value: 'api_direct_send', label: __('Send SMS Instantly: Activates immediate dispatch of messages via API upon request.', 'wp-sms') },
+              { value: 'api_async_send', label: __('Scheduled SMS Delivery: Configures API to send messages at predetermined times.', 'wp-sms') },
+              { value: 'api_queued_send', label: __('Batch SMS Queue: Lines up messages for grouped sending, enhancing efficiency for bulk dispatch.', 'wp-sms') },
             ]}
           />
 
           {deliveryMethod === 'api_queued_send' && (
             <Tip variant="info">
-              {__('Queue mode requires a cron job to process messages. Configure WP-Cron or set up a real cron job for reliable delivery.')}
+              {__('Queue mode requires a cron job to process messages. Configure WP-Cron or set up a real cron job for reliable delivery.', 'wp-sms')}
             </Tip>
           )}
 
-          <SectionDivider>{__('Message Formatting')}</SectionDivider>
+          <SectionDivider>{__('Message Formatting', 'wp-sms')}</SectionDivider>
 
           <div className="wsms-divide-y wsms-divide-border wsms-rounded-lg wsms-border wsms-border-border wsms-overflow-hidden">
             <SwitchField
-              label={__('Enable Unicode')}
-              description={__('Required for non-Latin characters (Arabic, Chinese, emoji). May reduce characters per SMS.')}
+              label={__('Enable Unicode', 'wp-sms')}
+              description={__('Required for non-Latin characters (Arabic, Chinese, emoji). May reduce characters per SMS.', 'wp-sms')}
               checked={sendUnicode === '1'}
               onCheckedChange={(checked) => setSendUnicode(checked ? '1' : '')}
               className="wsms-px-4"
             />
             <SwitchField
-              label={__('Auto-format Numbers')}
-              description={__('Automatically remove spaces and special characters from phone numbers before sending.')}
+              label={__('Auto-format Numbers', 'wp-sms')}
+              description={__('Automatically remove spaces and special characters from phone numbers before sending.', 'wp-sms')}
               checked={cleanNumbers === '1'}
               onCheckedChange={(checked) => setCleanNumbers(checked ? '1' : '')}
               className="wsms-px-4"
             />
           </div>
 
-          <SectionDivider>{__('Country Restrictions')}</SectionDivider>
+          <SectionDivider>{__('Country Restrictions', 'wp-sms')}</SectionDivider>
 
           <div className="wsms-rounded-lg wsms-border wsms-border-border">
             <SwitchField
-              label={__('Restrict to Specific Countries')}
-              description={__('Only send SMS to phone numbers from selected countries.')}
+              label={__('Restrict to Specific Countries', 'wp-sms')}
+              description={__('Only send SMS to phone numbers from selected countries.', 'wp-sms')}
               checked={localNumbersOnly === '1'}
               onCheckedChange={(checked) => setLocalNumbersOnly(checked ? '1' : '')}
               className="wsms-px-4"
@@ -831,13 +832,13 @@ export default function Gateway() {
 
           {localNumbersOnly === '1' && (
             <MultiSelectField
-              label={__('Allowed Countries')}
+              label={__('Allowed Countries', 'wp-sms')}
               options={countriesByDialCode}
               value={localNumbersCountries}
               onValueChange={setLocalNumbersCountries}
-              placeholder={__('Select countries...')}
-              searchPlaceholder={__('Search countries...')}
-              description={__('SMS will only be sent to numbers from these countries.')}
+              placeholder={__('Select countries...', 'wp-sms')}
+              searchPlaceholder={__('Search countries...', 'wp-sms')}
+              description={__('SMS will only be sent to numbers from these countries.', 'wp-sms')}
             />
           )}
         </CardContent>
@@ -848,21 +849,21 @@ export default function Gateway() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Wallet className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Credit Display')}
+            {__('Credit Display', 'wp-sms')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="wsms-divide-y wsms-divide-border wsms-rounded-lg wsms-border wsms-border-border wsms-overflow-hidden">
             <SwitchField
-              label={__('Show Credit in Menu')}
-              description={__('Display your SMS credit balance in the WordPress admin menu bar.')}
+              label={__('Show Credit in Menu', 'wp-sms')}
+              description={__('Display your SMS credit balance in the WordPress admin menu bar.', 'wp-sms')}
               checked={creditInMenu === '1'}
               onCheckedChange={(checked) => setCreditInMenu(checked ? '1' : '')}
               className="wsms-px-4"
             />
             <SwitchField
-              label={__('Show Credit on Send Page')}
-              description={__('Display your remaining SMS credits when composing messages.')}
+              label={__('Show Credit on Send Page', 'wp-sms')}
+              description={__('Display your remaining SMS credits when composing messages.', 'wp-sms')}
               checked={creditInSendSms === '1'}
               onCheckedChange={(checked) => setCreditInSendSms(checked ? '1' : '')}
               className="wsms-px-4"
@@ -876,10 +877,10 @@ export default function Gateway() {
         <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4">
           <div>
             <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
-              {__('Setup Wizard')}
+              {__('Setup Wizard', 'wp-sms')}
             </p>
             <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-0.5">
-              {__('Re-run the guided setup to update your gateway configuration')}
+              {__('Re-run the guided setup to update your gateway configuration', 'wp-sms')}
             </p>
           </div>
           <Button
@@ -888,7 +889,7 @@ export default function Gateway() {
             onClick={() => window.wpSmsOpenWizard?.()}
           >
             <RotateCcw className="wsms-h-4 wsms-w-4 wsms-me-1" />
-            {__('Re-run Wizard')}
+            {__('Re-run Wizard', 'wp-sms')}
           </Button>
         </div>
       </Card>

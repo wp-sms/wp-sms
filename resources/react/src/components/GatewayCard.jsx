@@ -1,6 +1,7 @@
+import { __ } from '@wordpress/i18n'
 import React from 'react'
 import { CheckCircle, Lock } from 'lucide-react'
-import { cn, __, getGatewayLogo } from '@/lib/utils'
+import { cn, getGatewayLogo } from '@/lib/utils'
 
 /**
  * Full gateway card — used when API data is available (logo, features, premium badge)
@@ -102,7 +103,7 @@ export function GatewayCardPro({ gateway }) {
         )}
       </div>
       <span className="wsms-shrink-0 wsms-rounded wsms-bg-muted wsms-px-1.5 wsms-py-0.5 wsms-text-[9px] wsms-font-medium wsms-uppercase wsms-text-muted-foreground">
-        {__('Pro')}
+        {__('Pro', 'wp-sms')}
       </span>
     </a>
   )
@@ -115,7 +116,7 @@ export function PremiumSearchResults({ gateways, searchQuery }) {
   if (gateways.length === 0) {
     return (
       <p className="wsms-py-8 wsms-text-center wsms-text-[12px] wsms-text-muted-foreground">
-        {searchQuery ? __('No gateways found matching') + ` "${searchQuery}".` : __('No gateways found.')}
+        {searchQuery ? __('No gateways found matching', 'wp-sms') + ` "${searchQuery}".` : __('No gateways found.', 'wp-sms')}
       </p>
     )
   }
@@ -124,7 +125,7 @@ export function PremiumSearchResults({ gateways, searchQuery }) {
     <div className="wsms-space-y-4">
       {/** Keep arrow direction correct in RTL */}
       <p className="wsms-text-center wsms-text-[12px] wsms-text-muted-foreground">
-        {__('These gateways are available with the Pro add-on:')}
+        {__('These gateways are available with the Pro add-on:', 'wp-sms')}
       </p>
       <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
         {gateways.slice(0, 8).map((g) => (
@@ -138,7 +139,7 @@ export function PremiumSearchResults({ gateways, searchQuery }) {
           rel="noopener noreferrer"
           className="wsms-font-medium wsms-text-primary hover:wsms-text-primary/80"
         >
-          {__('View all gateways')}{' '}
+          {__('View all gateways', 'wp-sms')}{' '}
           <span className="wsms-inline-block rtl:wsms-scale-x-[-1]">{'\u2192'}</span>
         </a>
       </p>
@@ -156,8 +157,8 @@ export function MoreGatewaysNotice({ premiumCount, searchQuery }) {
     <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border wsms-px-4 wsms-py-2.5">
       <p className="wsms-text-[12px] wsms-text-muted-foreground">
         {searchQuery
-          ? __("Can't find your gateway?") + ` ` + __('We support') + ` ${premiumCount}+ ` + __('additional gateways.')
-          : __('Looking for more gateways?') + ` ` + __('We support') + ` ${premiumCount}+ ` + __('additional gateways with the Pro add-on.')
+          ? __("Can't find your gateway?", 'wp-sms') + ` ` + __('We support', 'wp-sms') + ` ${premiumCount}+ ` + __('additional gateways.', 'wp-sms')
+          : __('Looking for more gateways?', 'wp-sms') + ` ` + __('We support', 'wp-sms') + ` ${premiumCount}+ ` + __('additional gateways with the Pro add-on.', 'wp-sms')
         }
       </p>
       <a
@@ -166,7 +167,7 @@ export function MoreGatewaysNotice({ premiumCount, searchQuery }) {
         rel="noopener noreferrer"
         className="wsms-shrink-0 wsms-text-[12px] wsms-font-medium wsms-text-primary hover:wsms-text-primary/80"
       >
-        {__('View all gateways')}{' '}
+        {__('View all gateways', 'wp-sms')}{' '}
         <span className="wsms-inline-block rtl:wsms-scale-x-[-1]">{'\u2192'}</span>
       </a>
     </div>

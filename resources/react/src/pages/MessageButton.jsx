@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { MessageSquare, Palette, Users, Link, Eye, Layout, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -7,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Repeater } from '@/components/ui/repeater'
 import { InputField, SelectField, SettingRow } from '@/components/ui/form-field'
 import { useSetting, useSettings } from '@/context/SettingsContext'
-import { __, getWpSettings } from '@/lib/utils'
+import { getWpSettings } from '@/lib/utils'
 
 /**
  * Generate contact link based on type
@@ -206,13 +207,13 @@ export default function MessageButton() {
       button.appendChild(buttonTitle)
     }
     if (buttonTitle) {
-      buttonTitle.textContent = buttonText || __('Chat with us')
+      buttonTitle.textContent = buttonText || __('Chat with us', 'wp-sms')
     }
 
     // Update header title
     const headerTitle = chatbox.querySelector('.wpsms-chatbox__header h2')
     if (headerTitle) {
-      headerTitle.textContent = chatboxTitle || __('Chat with Us!')
+      headerTitle.textContent = chatboxTitle || __('Chat with Us!', 'wp-sms')
     }
 
     const header = chatbox.querySelector('.wpsms-chatbox__header')
@@ -285,7 +286,7 @@ export default function MessageButton() {
     if (footerTextEl) {
       // Preserve any existing link
       const existingLink = footerTextEl.querySelector('a')
-      footerTextEl.textContent = footerText || __('Chat with us on WhatsApp for instant support!')
+      footerTextEl.textContent = footerText || __('Chat with us on WhatsApp for instant support!', 'wp-sms')
 
       // Add footer link if present
       if (footerLinkUrl && footerLinkTitle) {
@@ -311,9 +312,9 @@ export default function MessageButton() {
       members.forEach(member => {
         if (!member.member_name && !member.member_role) return
 
-        const memberName = member.member_name || __('Emily Brown')
-        const memberRole = member.member_role || __('Marketing Manager')
-        const memberAvailability = member.member_availability || __('Available 10AM-5PM PST')
+        const memberName = member.member_name || __('Emily Brown', 'wp-sms')
+        const memberRole = member.member_role || __('Marketing Manager', 'wp-sms')
+        const memberAvailability = member.member_availability || __('Available 10AM-5PM PST', 'wp-sms')
         const memberPhoto = member.member_photo || getDefaultAvatarUrl()
         const contactType = member.member_contact_type || 'whatsapp'
         const contactValue = member.member_contact_value || '+1122334455'
@@ -355,7 +356,7 @@ export default function MessageButton() {
         if (container) {
           const articlesEl = document.createElement('div')
           articlesEl.className = 'wpsms-chatbox__articles'
-          articlesEl.innerHTML = `<ul><li class="wpsms-chatbox__articles-header">${linksTitle || __('Quick Links')}</li></ul>`
+          articlesEl.innerHTML = `<ul><li class="wpsms-chatbox__articles-header">${linksTitle || __('Quick Links', 'wp-sms')}</li></ul>`
           container.appendChild(articlesEl)
         }
       } else {
@@ -363,7 +364,7 @@ export default function MessageButton() {
         articlesContainer.style.display = ''
         const ul = articlesContainer.querySelector('ul')
         if (ul) {
-          ul.innerHTML = `<li class="wpsms-chatbox__articles-header">${linksTitle || __('Quick Links')}</li>`
+          ul.innerHTML = `<li class="wpsms-chatbox__articles-header">${linksTitle || __('Quick Links', 'wp-sms')}</li>`
 
           const links = Array.isArray(chatboxLinks) ? chatboxLinks : []
           links.forEach(link => {
@@ -435,10 +436,10 @@ export default function MessageButton() {
             <div>
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                 <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                {__('Message Button Configuration')}
+                {__('Message Button Configuration', 'wp-sms')}
               </CardTitle>
               <CardDescription>
-                {__('Display a floating message button on your website for quick communication')}
+                {__('Display a floating message button on your website for quick communication', 'wp-sms')}
               </CardDescription>
             </div>
             <Button
@@ -448,25 +449,25 @@ export default function MessageButton() {
               className="wsms-flex wsms-items-center wsms-gap-1.5"
             >
               <Eye className="wsms-h-4 wsms-w-4" />
-              {__('Preview')}
+              {__('Preview', 'wp-sms')}
             </Button>
           </div>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <SettingRow
-            title={__('Enable Message Button')}
-            description={__('Show a floating chat button on your website for visitor inquiries.')}
+            title={__('Enable Message Button', 'wp-sms')}
+            description={__('Show a floating chat button on your website for visitor inquiries.', 'wp-sms')}
             checked={isEnabled}
             onCheckedChange={(checked) => setMessageButton(checked ? '1' : '')}
           />
 
           {isEnabled && (
             <InputField
-              label={__('Chat Window Title')}
+              label={__('Chat Window Title', 'wp-sms')}
               value={chatboxTitle}
               onChange={(e) => setChatboxTitle(e.target.value)}
-              placeholder={__('How can we help?')}
-              description={__('Heading shown when the chat window opens.')}
+              placeholder={__('How can we help?', 'wp-sms')}
+              description={__('Heading shown when the chat window opens.', 'wp-sms')}
             />
           )}
         </CardContent>
@@ -479,56 +480,56 @@ export default function MessageButton() {
             <CardHeader>
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                 <Layout className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                {__('Button Appearance')}
+                {__('Button Appearance', 'wp-sms')}
               </CardTitle>
               <CardDescription>
-                {__('Customize how the message button looks and where it appears')}
+                {__('Customize how the message button looks and where it appears', 'wp-sms')}
               </CardDescription>
             </CardHeader>
             <CardContent className="wsms-space-y-4">
               <InputField
-                label={__('Button Label')}
+                label={__('Button Label', 'wp-sms')}
                 value={buttonText}
                 onChange={(e) => setButtonText(e.target.value)}
-                placeholder={__('Chat with us')}
-                description={__('Text shown on the floating button.')}
+                placeholder={__('Chat with us', 'wp-sms')}
+                description={__('Text shown on the floating button.', 'wp-sms')}
               />
 
               <SelectField
-                label={__('Button Style')}
+                label={__('Button Style', 'wp-sms')}
                 value={buttonStyle || 'icon_text'}
                 onValueChange={setButtonStyle}
-                placeholder={__('Select style')}
-                description={__('Choose how the floating button appears.')}
+                placeholder={__('Select style', 'wp-sms')}
+                description={__('Choose how the floating button appears.', 'wp-sms')}
                 options={[
-                  { value: 'icon_text', label: __('Icon & Text') },
-                  { value: 'icon_only', label: __('Icon Only') },
-                  { value: 'text_only', label: __('Text Only') },
+                  { value: 'icon_text', label: __('Icon & Text', 'wp-sms') },
+                  { value: 'icon_only', label: __('Icon Only', 'wp-sms') },
+                  { value: 'text_only', label: __('Text Only', 'wp-sms') },
                 ]}
               />
 
               <SelectField
-                label={__('Button Position')}
+                label={__('Button Position', 'wp-sms')}
                 value={buttonPosition}
                 onValueChange={setButtonPosition}
-                placeholder={__('Select position')}
-                description={__('Where the button appears on screen.')}
+                placeholder={__('Select position', 'wp-sms')}
+                description={__('Where the button appears on screen.', 'wp-sms')}
                 options={[
-                  { value: 'bottom_right', label: __('Bottom Right') },
-                  { value: 'bottom_left', label: __('Bottom Left') },
+                  { value: 'bottom_right', label: __('Bottom Right', 'wp-sms') },
+                  { value: 'bottom_left', label: __('Bottom Left', 'wp-sms') },
                 ]}
               />
 
               <SelectField
-                label={__('Open Animation')}
+                label={__('Open Animation', 'wp-sms')}
                 value={animationEffect || 'none'}
                 onValueChange={(val) => setAnimationEffect(val === 'none' ? '' : val)}
-                placeholder={__('Select animation')}
-                description={__('How the chat window appears when opened.')}
+                placeholder={__('Select animation', 'wp-sms')}
+                description={__('How the chat window appears when opened.', 'wp-sms')}
                 options={[
-                  { value: 'none', label: __('None') },
-                  { value: 'fade', label: __('Fade In') },
-                  { value: 'slide', label: __('Slide Up') },
+                  { value: 'none', label: __('None', 'wp-sms') },
+                  { value: 'fade', label: __('Fade In', 'wp-sms') },
+                  { value: 'slide', label: __('Slide Up', 'wp-sms') },
                 ]}
               />
             </CardContent>
@@ -539,16 +540,16 @@ export default function MessageButton() {
             <CardHeader>
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                 <Palette className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                {__('Colors')}
+                {__('Colors', 'wp-sms')}
               </CardTitle>
               <CardDescription>
-                {__('Customize the chatbox color scheme')}
+                {__('Customize the chatbox color scheme', 'wp-sms')}
               </CardDescription>
             </CardHeader>
             <CardContent className="wsms-space-y-4">
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
                 <div className="wsms-space-y-2">
-                  <Label htmlFor="chatboxColor">{__('Primary Color')}</Label>
+                  <Label htmlFor="chatboxColor">{__('Primary Color', 'wp-sms')}</Label>
                   <div className="wsms-flex wsms-gap-2">
                     <Input
                       id="chatboxColor"
@@ -561,16 +562,16 @@ export default function MessageButton() {
                       value={chatboxColor}
                       onChange={(e) => setChatboxColor(e.target.value)}
                       placeholder="#c2410c"
-                      aria-label={__('Primary color hex value')}
+                      aria-label={__('Primary color hex value', 'wp-sms')}
                     />
                   </div>
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                    {__('Background color for the button and chat header.')}
+                    {__('Background color for the button and chat header.', 'wp-sms')}
                   </p>
                 </div>
 
                 <div className="wsms-space-y-2">
-                  <Label htmlFor="chatboxTextColor">{__('Text Color')}</Label>
+                  <Label htmlFor="chatboxTextColor">{__('Text Color', 'wp-sms')}</Label>
                   <div className="wsms-flex wsms-gap-2">
                     <Input
                       id="chatboxTextColor"
@@ -583,11 +584,11 @@ export default function MessageButton() {
                       value={chatboxTextColor}
                       onChange={(e) => setChatboxTextColor(e.target.value)}
                       placeholder="#ffffff"
-                      aria-label={__('Text color hex value')}
+                      aria-label={__('Text color hex value', 'wp-sms')}
                     />
                   </div>
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                    {__('Text color for the button and header.')}
+                    {__('Text color for the button and header.', 'wp-sms')}
                   </p>
                 </div>
               </div>
@@ -599,23 +600,23 @@ export default function MessageButton() {
             <CardHeader>
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                 <FileText className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                {__('Footer Settings')}
+                {__('Footer Settings', 'wp-sms')}
               </CardTitle>
               <CardDescription>
-                {__('Customize the chatbox footer area')}
+                {__('Customize the chatbox footer area', 'wp-sms')}
               </CardDescription>
             </CardHeader>
             <CardContent className="wsms-space-y-4">
               <InputField
-                label={__('Footer Message')}
+                label={__('Footer Message', 'wp-sms')}
                 value={footerText}
                 onChange={(e) => setFooterText(e.target.value)}
-                placeholder={__('We typically reply within minutes')}
-                description={__('Optional message shown at the bottom of the chat window.')}
+                placeholder={__('We typically reply within minutes', 'wp-sms')}
+                description={__('Optional message shown at the bottom of the chat window.', 'wp-sms')}
               />
 
               <div className="wsms-space-y-2">
-                <Label htmlFor="footerTextColor">{__('Footer Text Color')}</Label>
+                <Label htmlFor="footerTextColor">{__('Footer Text Color', 'wp-sms')}</Label>
                 <div className="wsms-flex wsms-gap-2">
                   <Input
                     id="footerTextColor"
@@ -628,20 +629,20 @@ export default function MessageButton() {
                     value={footerTextColor}
                     onChange={(e) => setFooterTextColor(e.target.value)}
                     placeholder="#666666"
-                    aria-label={__('Footer text color hex value')}
+                    aria-label={__('Footer text color hex value', 'wp-sms')}
                   />
                 </div>
               </div>
 
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
                 <InputField
-                  label={__('Footer Link Text')}
+                  label={__('Footer Link Text', 'wp-sms')}
                   value={footerLinkTitle}
                   onChange={(e) => setFooterLinkTitle(e.target.value)}
-                  placeholder={__('View FAQ')}
+                  placeholder={__('View FAQ', 'wp-sms')}
                 />
                 <InputField
-                  label={__('Footer Link URL')}
+                  label={__('Footer Link URL', 'wp-sms')}
                   value={footerLinkUrl}
                   onChange={(e) => setFooterLinkUrl(e.target.value)}
                   placeholder="https://yoursite.com/help"
@@ -649,8 +650,8 @@ export default function MessageButton() {
               </div>
 
               <SettingRow
-                title={__('Hide WSMS Branding')}
-                description={__('Remove the "Powered by WSMS" text from the footer.')}
+                title={__('Hide WSMS Branding', 'wp-sms')}
+                description={__('Remove the "Powered by WSMS" text from the footer.', 'wp-sms')}
                 checked={disableLogo === '1'}
                 onCheckedChange={(checked) => setDisableLogo(checked ? '1' : '')}
               />
@@ -662,10 +663,10 @@ export default function MessageButton() {
             <CardHeader>
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                 <Users className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                {__('Support Team')}
+                {__('Support Team', 'wp-sms')}
               </CardTitle>
               <CardDescription>
-                {__('Add team members that visitors can contact directly.')}
+                {__('Add team members that visitors can contact directly.', 'wp-sms')}
               </CardDescription>
             </CardHeader>
             <CardContent className="wsms-space-y-4">
@@ -673,22 +674,22 @@ export default function MessageButton() {
                 value={teamMembers}
                 onValueChange={setTeamMembers}
                 fields={[
-                  { name: 'member_name', label: __('Name'), type: 'text', placeholder: __('Jane Smith') },
-                  { name: 'member_role', label: __('Role'), type: 'text', placeholder: __('Customer Support') },
-                  { name: 'member_contact_type', label: __('Contact Type'), type: 'select', placeholder: __('Select...'), options: [
+                  { name: 'member_name', label: __('Name', 'wp-sms'), type: 'text', placeholder: __('Jane Smith', 'wp-sms') },
+                  { name: 'member_role', label: __('Role', 'wp-sms'), type: 'text', placeholder: __('Customer Support', 'wp-sms') },
+                  { name: 'member_contact_type', label: __('Contact Type', 'wp-sms'), type: 'select', placeholder: __('Select...', 'wp-sms'), options: [
                     { value: 'whatsapp', label: 'WhatsApp' },
                     { value: 'telegram', label: 'Telegram' },
                     { value: 'sms', label: 'SMS' },
-                    { value: 'phone', label: __('Phone Call') },
-                    { value: 'email', label: __('Email') },
+                    { value: 'phone', label: __('Phone Call', 'wp-sms') },
+                    { value: 'email', label: __('Email', 'wp-sms') },
                   ]},
-                  { name: 'member_contact_value', label: __('Contact Value'), type: 'text', placeholder: '+1 555 123 4567' },
-                  { name: 'member_availability', label: __('Availability'), type: 'text', placeholder: __('Available 9AM-5PM') },
-                  { name: 'member_photo', label: __('Avatar'), type: 'media', buttonText: __('Select Avatar') },
+                  { name: 'member_contact_value', label: __('Contact Value', 'wp-sms'), type: 'text', placeholder: '+1 555 123 4567' },
+                  { name: 'member_availability', label: __('Availability', 'wp-sms'), type: 'text', placeholder: __('Available 9AM-5PM', 'wp-sms') },
+                  { name: 'member_photo', label: __('Avatar', 'wp-sms'), type: 'media', buttonText: __('Select Avatar', 'wp-sms') },
                 ]}
-                addLabel={__('Add Team Member')}
+                addLabel={__('Add Team Member', 'wp-sms')}
                 maxItems={5}
-                emptyMessage={__('No team members added yet.')}
+                emptyMessage={__('No team members added yet.', 'wp-sms')}
               />
             </CardContent>
           </Card>
@@ -698,16 +699,16 @@ export default function MessageButton() {
             <CardHeader>
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                 <Link className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                {__('Quick Links')}
+                {__('Quick Links', 'wp-sms')}
               </CardTitle>
               <CardDescription>
-                {__('Add helpful resource links to the chatbox')}
+                {__('Add helpful resource links to the chatbox', 'wp-sms')}
               </CardDescription>
             </CardHeader>
             <CardContent className="wsms-space-y-4">
               <SettingRow
-                title={__('Show Quick Links')}
-                description={__('Display helpful links in the chat window.')}
+                title={__('Show Quick Links', 'wp-sms')}
+                description={__('Display helpful links in the chat window.', 'wp-sms')}
                 checked={linksEnabled === '1'}
                 onCheckedChange={(checked) => setLinksEnabled(checked ? '1' : '')}
               />
@@ -715,24 +716,24 @@ export default function MessageButton() {
               {linksEnabled === '1' && (
                 <>
                   <InputField
-                    label={__('Links Section Title')}
+                    label={__('Links Section Title', 'wp-sms')}
                     value={linksTitle}
                     onChange={(e) => setLinksTitle(e.target.value)}
-                    placeholder={__('Helpful Resources')}
+                    placeholder={__('Helpful Resources', 'wp-sms')}
                   />
 
                   <div className="wsms-space-y-2">
-                    <Label>{__('Resource Links')}</Label>
+                    <Label>{__('Resource Links', 'wp-sms')}</Label>
                     <Repeater
                       value={chatboxLinks}
                       onValueChange={setChatboxLinks}
                       fields={[
-                        { name: 'chatbox_link_title', label: __('Title'), type: 'text', placeholder: __('FAQ') },
-                        { name: 'chatbox_link_url', label: __('URL'), type: 'url', placeholder: 'https://example.com/faq' },
+                        { name: 'chatbox_link_title', label: __('Title', 'wp-sms'), type: 'text', placeholder: __('FAQ', 'wp-sms') },
+                        { name: 'chatbox_link_url', label: __('URL', 'wp-sms'), type: 'url', placeholder: 'https://example.com/faq' },
                       ]}
-                      addLabel={__('Add Link')}
+                      addLabel={__('Add Link', 'wp-sms')}
                       maxItems={10}
-                      emptyMessage={__('No links added. Add links to help visitors find answers quickly.')}
+                      emptyMessage={__('No links added. Add links to help visitors find answers quickly.', 'wp-sms')}
                     />
                   </div>
                 </>
