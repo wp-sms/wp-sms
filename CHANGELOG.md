@@ -1,3 +1,6 @@
+v7.2.5 - 2026-04-**
+- **Fix:** Fixed Quform integration where individual field placeholder chips no longer appeared in the Message body, caused by structural elements being skipped when collecting form fields.
+
 v7.2.4 - 2026-03-15
 - **New:** Added credit balance support for the GuniSMS gateway.
 - **Fix:** Updated EaziSMSpro gateway to use the new API endpoint.
