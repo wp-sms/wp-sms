@@ -374,10 +374,11 @@ class AdminController extends Controller
         $builtinIds = ['google', 'github', 'telegram', 'line'];
 
         return array_map(fn($p) => [
-            'id'       => $p->getId(),
-            'name'     => $p->getName(),
-            'icon_svg' => $p->getIconSvg(),
-            'builtin'  => in_array($p->getId(), $builtinIds, true),
+            'id'           => $p->getId(),
+            'name'         => $p->getName(),
+            'icon_svg'     => $p->getIconSvg(),
+            'builtin'      => in_array($p->getId(), $builtinIds, true),
+            'callback_url' => RestRoute::url('auth/social/callback/' . $p->getId()),
         ], $this->socialAuthManager->getAllProviders());
     }
 

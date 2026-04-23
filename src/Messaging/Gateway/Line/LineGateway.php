@@ -11,6 +11,7 @@ use WSms\Messaging\Contracts\SupportsInboundMessage;
 use WSms\Messaging\Contracts\SupportsOptOutDetection;
 use WSms\Messaging\Contracts\TestConnectionResult;
 use WSms\Messaging\Gateway\UsesGatewayApi;
+use WSms\Rest\RestRoute;
 use WP_REST_Request;
 
 defined('ABSPATH') || exit;
@@ -190,7 +191,7 @@ class LineGateway implements GatewayInterface, SupportsInboundMessage, SupportsO
 
     public function getInboundCallbackUrl(): string
     {
-        return rest_url('wsms/v1/line/webhook');
+        return RestRoute::url('line/webhook');
     }
 
     // SupportsOptOutDetection

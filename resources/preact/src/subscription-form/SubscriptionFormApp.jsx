@@ -5,6 +5,7 @@ import { OtpInput } from '../components/OtpInput';
 import { PhoneInput } from '../components/PhoneInput';
 import { useFormCaptcha } from '../hooks/useFormCaptcha';
 import { useResendCooldown } from '../hooks/useResendCooldown';
+import { api } from '../../../shared/rest-client';
 
 const STATE = { FORM: 'form', SUBMITTING: 'submitting', VERIFY: 'verify', SUCCESS: 'success' };
 const INPUT_TYPES = { email: 'email' };
@@ -32,23 +33,18 @@ export function SubscriptionFormApp({ config }) {
     const [verifying, setVerifying] = useState(false);
     const [cooldown, resetCooldown] = useResendCooldown(0);
 
-    const { fields, buttonText, successMessage, redirectUrl, restUrl, nonce, captcha, consent } = config;
+    const { fields, buttonText, successMessage, redirectUrl, captcha, consent } = config;
     const slug = config.slug;
     const submittingRef = useRef(false);
     const cap = useFormCaptcha(captcha, 'subscribe');
 
     const apiCall = useCallback(async (endpoint, body, extraHeaders = {}) => {
-        const res = await fetch(`${restUrl}subscribe/${slug}${endpoint}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-WP-Nonce': nonce,
-                ...extraHeaders,
-            },
-            body: JSON.stringify(body),
-        });
-        return res.json();
-    }, [restUrl, slug, nonce]);
+        try {
+            return await api.post(`subscribe/${slug}${endpoint}`, body, { headers: extraHeaders });
+        } catch (err) {
+            return err && typeof err === 'object' ? err : { success: false };
+        }
+    }, [slug]);
 
     const handleSubmit = useCallback(async (e) => {
         e.preventDefault();

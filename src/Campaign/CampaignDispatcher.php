@@ -15,6 +15,7 @@ use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Queue\Contracts\QueueInterface;
 use WSms\Queue\Job\ProcessCampaignBatchJob;
 use WSms\Queue\Job\ScheduleCampaignRecurrenceJob;
+use WSms\Rest\RestRoute;
 
 defined('ABSPATH') || exit;
 
@@ -126,7 +127,6 @@ class CampaignDispatcher
         // Compute opt-out config (email campaigns use per-recipient signed links)
         $compliance = $campaign->getCompliance() ?? [];
         $isEmailCampaign = $campaign->getChannel() === 'email' && $this->emailHeaderComposer !== null;
-        $unsubBaseUrl = $isEmailCampaign ? rest_url('wsms/v1/email/unsubscribe') : '';
         $optOutSuffix = '';
         if (!$isEmailCampaign && !empty($compliance['append_opt_out']) && !empty($compliance['opt_out_text'])) {
             $optOutSuffix = "\n\n" . $compliance['opt_out_text'];
@@ -172,7 +172,7 @@ class CampaignDispatcher
             $meta = ['subject' => $campaign->getSubject()];
             if ($isEmailCampaign) {
                 $token = $this->emailHeaderComposer->getTokenService()->generate($recipientAddress, $campaignId);
-                $unsubUrl = $unsubBaseUrl . '?token=' . urlencode($token);
+                $unsubUrl = RestRoute::url('email/unsubscribe', ['token' => $token]);
                 $unsubHeaders = $this->emailHeaderComposer->composeHeaders($recipientAddress, $campaignId);
                 $meta['headers'] = array_merge(['Content-Type: text/html; charset=UTF-8'], $unsubHeaders);
 

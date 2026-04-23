@@ -2,6 +2,7 @@ import { http, HttpResponse } from 'msw';
 import type { AuthSettings } from '@/lib/api';
 import { DEFAULTS } from '@/lib/constants';
 import { deepMerge } from '@/lib/utils';
+import { verb } from './verb';
 
 const BASE_URL = 'https://example.com/wp-json/wsms/v1';
 
@@ -58,7 +59,7 @@ export const handlers = [
     });
   }),
 
-  http.put(`${BASE_URL}/auth/admin/settings`, async ({ request }) => {
+  ...verb('PUT', `${BASE_URL}/auth/admin/settings`, async ({ request }) => {
     const body = (await request.json()) as Partial<AuthSettings>;
     mockSettings = deepMerge(mockSettings as Required<AuthSettings>, body) as AuthSettings;
     return HttpResponse.json({
@@ -91,7 +92,7 @@ export const handlers = [
     });
   }),
 
-  http.delete(`${BASE_URL}/auth/admin/logs`, () => {
+  ...verb('DELETE', `${BASE_URL}/auth/admin/logs`, () => {
     return HttpResponse.json({
       success: true,
       deleted: mockLogs.length,
@@ -99,7 +100,7 @@ export const handlers = [
     });
   }),
 
-  http.delete(`${BASE_URL}/auth/admin/users/:id/mfa`, () => {
+  ...verb('DELETE', `${BASE_URL}/auth/admin/users/:id/mfa`, () => {
     return HttpResponse.json({
       success: true,
       message: 'All MFA factors have been disabled for this user.',

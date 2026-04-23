@@ -11,14 +11,10 @@ export function PhoneInput({ value = '', onChange, disabled, autoFocus = false, 
         || window.wsmsMessagingButtonConfig?.phoneInput
         || {};
 
-    const restUrl = config.restUrl
-        || window.wsmsAuth?.restUrl
-        || window.wsmsMessagingButtonConfig?.restUrl;
-
     // Only use geoIpLookup when the backend couldn't detect country (e.g. cached page)
     const geoIpLookup = useMemo(
-        () => config.hasGeoCountry ? undefined : createGeoIpLookup(restUrl),
-        [config.hasGeoCountry, restUrl],
+        () => config.hasGeoCountry ? undefined : createGeoIpLookup(),
+        [config.hasGeoCountry],
     );
 
     const containerRef = useCallback((node) => {

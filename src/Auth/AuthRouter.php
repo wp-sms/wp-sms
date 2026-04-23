@@ -139,7 +139,7 @@ class AuthRouter
         wp_enqueue_script(
             'wsms-auth',
             $baseUrl . 'app.js',
-            ['wsms-vendor'],
+            ['wsms-vendor', 'wp-api-fetch'],
             $version,
             true,
         );
@@ -156,8 +156,6 @@ class AuthRouter
         }
 
         wp_localize_script('wsms-auth', 'wsmsAuth', [
-            'restUrl'          => rest_url('wsms/v1/'),
-            'nonce'            => wp_create_nonce('wp_rest'),
             'baseUrl'          => '/' . ltrim($this->getBaseUrl(), '/'),
             'isLoggedIn'       => is_user_logged_in(),
             'route'            => get_query_var('wsms_auth_route', ''),

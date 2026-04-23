@@ -523,7 +523,7 @@ class IntegrationController extends Controller
                 $endpoints[] = [
                     'id'         => $id,
                     'label'      => $entry['label'] ?? '',
-                    'url'        => rest_url('wsms/v1/webhook/' . $id),
+                    'url'        => RestRoute::url('webhook/' . $id),
                     'created_at' => $entry['created_at'] ?? '',
                 ];
             }

@@ -12,6 +12,7 @@ use WSms\Integration\Telegram\Triggers\ChannelPostTrigger;
 use WSms\Integration\Telegram\Triggers\CommandReceivedTrigger;
 use WSms\Integration\Telegram\Triggers\MemberJoinedTrigger;
 use WSms\Integration\Telegram\Triggers\MessageReceivedTrigger;
+use WSms\Rest\RestRoute;
 use WSms\Telegram\TelegramBotClient;
 
 defined('ABSPATH') || exit;
@@ -87,7 +88,7 @@ class TelegramIntegration implements IntegrationInterface
 
         $webhookSecret = bin2hex(random_bytes(32));
 
-        if (!$client->setWebhook(rest_url('wsms/v1/telegram/webhook'), $webhookSecret)) {
+        if (!$client->setWebhook(RestRoute::url('telegram/webhook'), $webhookSecret)) {
             throw new \RuntimeException(__('Webhook setup failed.', 'wp-sms'));
         }
 

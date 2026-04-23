@@ -147,7 +147,7 @@ class TelegramController extends Controller
 
             // Generate webhook secret.
             $webhookSecret = bin2hex(random_bytes(32));
-            $webhookUrl = rest_url(self::NAMESPACE . '/telegram/webhook');
+            $webhookUrl = RestRoute::url('telegram/webhook');
 
             $webhookSet = $client->setWebhook($webhookUrl, $webhookSecret);
 

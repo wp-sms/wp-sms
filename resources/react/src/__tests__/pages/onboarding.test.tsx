@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { server } from '../mocks/server';
+import { verb } from '../mocks/verb';
 import { OnboardingWizard } from '@/pages/onboarding';
 import type { OnboardingState, OnboardingStatus } from '@/lib/api';
 import { toast } from 'sonner';
@@ -68,7 +69,7 @@ function installOnboardingHandlers(initial: OnboardingState) {
     http.get(`${BASE_URL}/onboarding`, () =>
       HttpResponse.json({ success: true, data: { state: store, checklist: [] } }),
     ),
-    http.put(`${BASE_URL}/onboarding`, async ({ request }) => {
+    ...verb('PUT', `${BASE_URL}/onboarding`, async ({ request }) => {
       const body = (await request.json()) as Partial<OnboardingState>;
       putSpy(body);
       store = { ...store, ...body };
@@ -179,7 +180,7 @@ describe('OnboardingWizard — completion handlers await PUT before navigating',
       http.get(`${BASE_URL}/onboarding`, () =>
         HttpResponse.json({ success: true, data: { state: store, checklist: [] } }),
       ),
-      http.put(`${BASE_URL}/onboarding`, async ({ request }) => {
+      ...verb('PUT', `${BASE_URL}/onboarding`, async ({ request }) => {
         const body = (await request.json()) as Partial<OnboardingState>;
         putSpy(body);
         store = { ...store, ...body };
@@ -276,7 +277,7 @@ describe('OnboardingWizard — completion handlers error path', () => {
       http.get(`${BASE_URL}/onboarding`, () =>
         HttpResponse.json({ success: true, data: { state: store, checklist: [] } }),
       ),
-      http.put(`${BASE_URL}/onboarding`, async ({ request }) => {
+      ...verb('PUT', `${BASE_URL}/onboarding`, async ({ request }) => {
         const body = (await request.json()) as Partial<OnboardingState>;
         putSpy(body);
         return HttpResponse.json(
@@ -354,7 +355,7 @@ describe('OnboardingWizard — completion handlers error path', () => {
       http.get(`${BASE_URL}/onboarding`, () =>
         HttpResponse.json({ success: true, data: { state: store, checklist: [] } }),
       ),
-      http.put(`${BASE_URL}/onboarding`, async ({ request }) => {
+      ...verb('PUT', `${BASE_URL}/onboarding`, async ({ request }) => {
         const body = (await request.json()) as Partial<OnboardingState>;
         putSpy(body);
         store = { ...store, ...body };

@@ -89,7 +89,7 @@ class SubscriptionFormRenderer
         wp_enqueue_script(
             'wsms-subscription-form',
             $baseUrl . 'subscription-form.js',
-            ['wsms-vendor'],
+            ['wsms-vendor', 'wp-api-fetch'],
             $version,
             true,
         );
@@ -117,8 +117,6 @@ class SubscriptionFormRenderer
             'optinChannel'   => $form->getOptInChannel(),
             'successMessage' => $form->getSuccessMessage(),
             'redirectUrl'    => $form->getRedirectUrl(),
-            'restUrl'        => rest_url('wsms/v1/'),
-            'nonce'          => wp_create_nonce('wp_rest'),
         ];
 
         if ($primaryColor) {
@@ -140,9 +138,7 @@ class SubscriptionFormRenderer
             }
         }
 
-        $phoneInputConfig = $this->restrictionSettings->getPhoneInputDisplayConfig();
-        $phoneInputConfig['restUrl'] = rest_url('wsms/v1/');
-        $config['phoneInput'] = $phoneInputConfig;
+        $config['phoneInput'] = $this->restrictionSettings->getPhoneInputDisplayConfig();
 
         $captchaConfig = $this->captchaGuard->getPublicConfig();
         if ($captchaConfig) {

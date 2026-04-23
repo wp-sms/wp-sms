@@ -39,6 +39,7 @@ export function createAuthConfig({ entry, name, fileName, emptyOutDir = true, as
                     'lite-phone-input/preact',
                     'lite-phone-input/vanilla',
                     '@wordpress/i18n',
+                    '@wordpress/api-fetch',
                 ],
                 output: {
                     assetFileNames,
@@ -49,6 +50,7 @@ export function createAuthConfig({ entry, name, fileName, emptyOutDir = true, as
                         '@preact/signals': 'WsmsVendor.signals',
                         'input-otp': 'WsmsVendor.inputOtp',
                         '@wordpress/i18n': 'wp.i18n',
+                        '@wordpress/api-fetch': 'wp.apiFetch',
                     },
                 },
             },

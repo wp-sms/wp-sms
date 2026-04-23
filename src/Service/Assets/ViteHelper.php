@@ -25,7 +25,7 @@ class ViteHelper
         wp_enqueue_script(
             $handle,
             $distUrl . 'main.js',
-            ['wp-i18n'],
+            ['wp-i18n', 'wp-api-fetch'],
             WP_SMS_VERSION,
             true,
         );

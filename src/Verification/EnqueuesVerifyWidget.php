@@ -25,20 +25,19 @@ trait EnqueuesVerifyWidget
         $version = WP_SMS_VERSION;
 
         wp_enqueue_style('wsms-verify-widget', $baseUrl . 'verify-widget-style.css', [], $version);
-        wp_enqueue_script('wsms-verify-widget', $baseUrl . 'verify-widget.js', ['wsms-vendor'], $version, true);
+        wp_enqueue_script('wsms-verify-widget', $baseUrl . 'verify-widget.js', ['wsms-vendor', 'wp-api-fetch'], $version, true);
 
         wp_set_script_translations('wsms-verify-widget', 'wp-sms', WP_SMS_DIR . 'public/languages');
 
-        $config = [
-            'restUrl' => rest_url('wsms/v1/'),
-            'nonce'   => wp_create_nonce('wp_rest'),
-        ];
+        $config = [];
 
         if ($primaryColor) {
             $config['primaryColor'] = $primaryColor;
         }
 
-        wp_localize_script('wsms-verify-widget', 'wsmsVerifyConfig', $config);
+        if ($config) {
+            wp_localize_script('wsms-verify-widget', 'wsmsVerifyConfig', $config);
+        }
 
         wp_register_script(
             'wsms-verify-mounter',

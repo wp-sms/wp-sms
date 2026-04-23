@@ -122,7 +122,7 @@ class EmailUnsubscribeController extends Controller
     private function renderConfirmationPage(string $token): string
     {
         $siteName = esc_html(get_bloginfo('name'));
-        $actionUrl = esc_url(rest_url('wsms/v1/email/unsubscribe') . '?token=' . urlencode($token));
+        $actionUrl = esc_url(RestRoute::url('email/unsubscribe', ['token' => $token]));
 
         $body = '<h1>Unsubscribe from ' . $siteName . '</h1>'
             . '<p>Click the button below to confirm you want to unsubscribe from our emails.</p>'

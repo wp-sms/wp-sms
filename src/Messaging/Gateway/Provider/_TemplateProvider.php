@@ -22,6 +22,7 @@ use WSms\Messaging\Contracts\StatusUpdate;
 use WSms\Messaging\Contracts\SupportsStatusCallback;
 use WSms\Messaging\Gateway\AbstractProvider;
 use WSms\Messaging\Contracts\TestConnectionResult;
+use WSms\Rest\RestRoute;
 
 defined('ABSPATH') || exit;
 
@@ -326,7 +327,7 @@ class _TemplateProvider extends AbstractProvider implements SupportsStatusCallba
      */
     public function getStatusCallbackUrl(): string
     {
-        return rest_url('wsms/v1/callbacks/' . $this->getId() . '/status');
+        return RestRoute::url('callbacks/' . $this->getId() . '/status');
     }
 
     /**

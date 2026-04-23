@@ -57,7 +57,7 @@ class MessagingButtonRenderer
         wp_enqueue_script(
             'wsms-messaging-button',
             $baseUrl . 'messaging-button.js',
-            ['wsms-vendor'],
+            ['wsms-vendor', 'wp-api-fetch'],
             $version,
             true,
         );
@@ -67,8 +67,6 @@ class MessagingButtonRenderer
         $branding = $this->brandingRepo->all();
 
         $scriptData = [
-            'restUrl' => rest_url('wsms/v1/'),
-            'nonce' => wp_create_nonce('wp_rest'),
             'config' => $this->settings->getPublicConfig(),
             'centralPrimaryColor' => $branding['primary_color'],
             'centralColorMode' => $branding['color_mode'],

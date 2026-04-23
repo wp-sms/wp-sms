@@ -103,7 +103,7 @@ class AuthShortcode
         wp_enqueue_script(
             'wsms-auth',
             $baseUrl . 'app.js',
-            ['wsms-vendor'],
+            ['wsms-vendor', 'wp-api-fetch'],
             $version,
             true,
         );
@@ -111,8 +111,6 @@ class AuthShortcode
         wp_set_script_translations('wsms-auth', 'wp-sms', WP_SMS_DIR . 'public/languages');
 
         wp_localize_script('wsms-auth', 'wsmsAuth', [
-            'restUrl'    => rest_url('wsms/v1/'),
-            'nonce'      => wp_create_nonce('wp_rest'),
             'baseUrl'    => '/' . ltrim($this->getBaseUrl(), '/'),
             'isLoggedIn' => is_user_logged_in(),
             'branding'   => $this->brandingRepo->all(),

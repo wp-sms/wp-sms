@@ -16,9 +16,12 @@ export default defineConfig({
         sourcemap: false,
         cssCodeSplit: false,
         rolldownOptions: {
-            external: ['lite-phone-input/vanilla', 'lite-phone-input/styles'],
+            external: ['lite-phone-input/vanilla', 'lite-phone-input/styles', '@wordpress/api-fetch'],
             output: {
                 assetFileNames: 'cf7-phone[extname]',
+                globals: {
+                    '@wordpress/api-fetch': 'wp.apiFetch',
+                },
             },
         },
     },

@@ -32,6 +32,7 @@ interface MergedSocialMethod {
   label: string;
   comingSoon: boolean;
   iconSvg?: string;
+  callbackUrl?: string;
 }
 
 function makeSvgIcon(svg: string): React.ComponentType<React.SVGProps<SVGSVGElement>> {
@@ -110,12 +111,18 @@ export function Channels({ settings, onUpdate, embedded, socialProviders = [], m
     // Built-in: keep hardcoded order. If a "comingSoon" provider is now registered, promote it.
     const result: MergedSocialMethod[] = SOCIAL_METHODS
       .filter(m => !m.comingSoon || !apiMap.has(m.id))
-      .map(m => ({ id: m.id, label: m.label, comingSoon: m.comingSoon, iconSvg: apiMap.get(m.id)?.icon_svg }));
+      .map(m => ({
+        id: m.id,
+        label: m.label,
+        comingSoon: m.comingSoon,
+        iconSvg: apiMap.get(m.id)?.icon_svg,
+        callbackUrl: apiMap.get(m.id)?.callback_url,
+      }));
 
     // Add-on providers not in hardcoded list
     for (const p of socialProviders) {
       if (!builtinIds.has(p.id)) {
-        result.push({ id: p.id, label: p.name, comingSoon: false, iconSvg: p.icon_svg });
+        result.push({ id: p.id, label: p.name, comingSoon: false, iconSvg: p.icon_svg, callbackUrl: p.callback_url });
       }
     }
     return result;
@@ -444,6 +451,7 @@ export function Channels({ settings, onUpdate, embedded, socialProviders = [], m
             onOpenChange={(open) => { if (!open) setEditingSocial(null); }}
             providerId={editingSocial}
             providerLabel={editingProviderMeta?.label ?? editingSocial}
+            callbackUrl={editingProviderMeta?.callbackUrl ?? ''}
             icon={SOCIAL_ICONS[editingSocial] ?? svgIconCache.get(editingSocial) ?? GoogleIcon}
             settings={socialSettings[editingSocial] ?? {}}
             onUpdate={(partial) => {

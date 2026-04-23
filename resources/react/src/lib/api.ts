@@ -1,8 +1,6 @@
 declare global {
   interface Window {
     wpSmsSettings: {
-      restUrl: string;
-      nonce: string;
       version: string;
       adminUrl: string;
       isPremium: boolean;
@@ -101,17 +99,12 @@ export interface OnboardingResponse {
   };
 }
 
-export interface ApiError {
-  status: number;
-  error?: string;
-  message?: string;
-}
-
 export interface SocialProviderMeta {
   id: string;
   name: string;
   icon_svg: string;
   builtin: boolean;
+  callback_url: string;
 }
 
 export interface MfaChannelMeta {
@@ -434,8 +427,6 @@ export interface LogEntry {
 }
 
 const FALLBACK_CONFIG: Window['wpSmsSettings'] = {
-  restUrl: '',
-  nonce: '',
   version: '',
   adminUrl: '',
   isPremium: false,
@@ -475,132 +466,9 @@ export function getConfig() {
   return window.wpSmsSettings ?? FALLBACK_CONFIG;
 }
 
-function buildApiUrl(restUrl: string, endpoint: string): string {
-  const url = new URL(`${restUrl}${endpoint.replace(/^\//, '')}`);
-  url.searchParams.set('_locale', 'user');
-  return url.toString();
-}
-
-/**
- * Step-up re-auth gate: when the server returns HTTP 403 with
- * `error: 'fresh_auth_required'` the handler registered via
- * {@link setFreshAuthHandler} is invoked. If it resolves truthy we replay the
- * original request once; otherwise the original ApiError is propagated.
- *
- * The handler is typically wired in the top-level auth UI shell, which opens
- * a StepUpChallenge modal and resolves when the user finishes it.
- */
-type FreshAuthHandler = (info: FreshAuthGateInfo) => Promise<boolean>;
-
-export interface FreshAuthGateInfo {
-  step_up_methods: string[];
-  current_freshness_age: number | null;
-}
-
-let freshAuthHandler: FreshAuthHandler | null = null;
-let pendingStepUp: Promise<boolean> | null = null;
-
-export function setFreshAuthHandler(handler: FreshAuthHandler | null): void {
-  freshAuthHandler = handler;
-}
-
-function isFreshAuthError(res: Response, data: unknown): data is { error: 'fresh_auth_required'; data?: FreshAuthGateInfo } {
-  return (
-    res.status === 403 &&
-    typeof data === 'object' &&
-    data !== null &&
-    (data as { error?: string }).error === 'fresh_auth_required'
-  );
-}
-
-async function runOneStepUp(info: FreshAuthGateInfo): Promise<boolean> {
-  if (!freshAuthHandler) return false;
-
-  // Deduplicate concurrent gate triggers — one modal at a time even if
-  // multiple requests fail in parallel. A thrown handler maps to "step up
-  // declined" so the singleton always resolves and never gets stuck.
-  if (pendingStepUp === null) {
-    pendingStepUp = Promise.resolve()
-      .then(() => freshAuthHandler!(info))
-      .catch(() => false)
-      .finally(() => {
-        pendingStepUp = null;
-      });
-  }
-
-  return pendingStepUp;
-}
-
-async function request<T>(method: string, endpoint: string, body?: unknown, signal?: AbortSignal): Promise<T> {
-  const { restUrl, nonce } = getConfig();
-
-  const opts: RequestInit = {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'X-WP-Nonce': nonce,
-    },
-    credentials: 'same-origin',
-    signal,
-  };
-
-  if (body) {
-    opts.body = JSON.stringify(body);
-  }
-
-  const url = buildApiUrl(restUrl, endpoint);
-  const res = await fetch(url, opts);
-  const data = await res.json();
-
-  if (!res.ok) {
-    if (isFreshAuthError(res, data)) {
-      const info: FreshAuthGateInfo = {
-        step_up_methods: (data.data?.step_up_methods ?? []) as string[],
-        current_freshness_age: (data.data?.current_freshness_age ?? null) as number | null,
-      };
-      const ok = await runOneStepUp(info);
-      if (ok) {
-        // Replay once — same opts, fresh fetch.
-        const replay = await fetch(url, opts);
-        const replayData = await replay.json();
-        if (!replay.ok) {
-          throw { status: replay.status, ...replayData } as ApiError;
-        }
-        return replayData as T;
-      }
-    }
-    throw { status: res.status, ...data } as ApiError;
-  }
-
-  return data as T;
-}
-
-interface RequestOptions {
-  signal?: AbortSignal;
-}
-
-export const api = {
-  get: <T>(url: string, opts?: RequestOptions) => request<T>('GET', url, undefined, opts?.signal),
-  post: <T>(url: string, body: unknown, opts?: RequestOptions) => request<T>('POST', url, body, opts?.signal),
-  put: <T>(url: string, body: unknown, opts?: RequestOptions) => request<T>('PUT', url, body, opts?.signal),
-  del: <T>(url: string, opts?: RequestOptions) => request<T>('DELETE', url, undefined, opts?.signal),
-  upload: <T>(url: string, formData: FormData, opts?: RequestOptions) => uploadFormData<T>(url, formData, opts?.signal),
-};
-
-async function uploadFormData<T>(endpoint: string, formData: FormData, signal?: AbortSignal): Promise<T> {
-  const { restUrl, nonce } = getConfig();
-  const res = await fetch(buildApiUrl(restUrl, endpoint), {
-    method: 'POST',
-    headers: { 'Accept': 'application/json', 'X-WP-Nonce': nonce },
-    credentials: 'same-origin',
-    body: formData,
-    signal,
-  });
-  const data = await res.json();
-  if (!res.ok) throw { status: res.status, ...data } as ApiError;
-  return data as T;
-}
+import { api, setFreshAuthHandler } from '../../../shared/rest-client';
+export { api, setFreshAuthHandler };
+export type { ApiError, FreshAuthGateInfo, RequestOptions } from '../../../shared/rest-client';
 
 export async function getMetaKeys(): Promise<MetaKeyInfo[]> {
   const res = await api.get<{ success: boolean; meta_keys: MetaKeyInfo[] }>('auth/admin/meta-keys');

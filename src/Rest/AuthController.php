@@ -271,7 +271,7 @@ class AuthController extends Controller
                 'id'            => $p->getId(),
                 'name'          => $p->getName(),
                 'icon'          => $p->getIconSvg(),
-                'authorize_url' => rest_url('wsms/v1/auth/social/authorize/' . $p->getId()),
+                'authorize_url' => RestRoute::url('auth/social/authorize/' . $p->getId()),
             ];
         }
         if (!empty($socialProviders)) {

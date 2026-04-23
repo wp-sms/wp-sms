@@ -13,6 +13,7 @@ use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Contracts\StatusUpdate;
 use WSms\Messaging\Contracts\SupportsInboundMessage;
 use WSms\Messaging\Contracts\SupportsDynamicOptions;
+use WSms\Rest\RestRoute;
 use WSms\Messaging\Contracts\SupportsOptOutDetection;
 use WSms\Messaging\Contracts\SupportsStatusCallback;
 use WSms\Messaging\Contracts\SupportsTemplateFetch;
@@ -268,7 +269,7 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
 
     public function getStatusCallbackUrl(): string
     {
-        return rest_url('wsms/v1/callbacks/twilio/status');
+        return RestRoute::url('callbacks/twilio/status');
     }
 
     public function getCredit(): ?string
@@ -378,7 +379,7 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
 
     public function getInboundCallbackUrl(): string
     {
-        return rest_url('wsms/v1/callbacks/twilio/inbound');
+        return RestRoute::url('callbacks/twilio/inbound');
     }
 
     // --- SupportsOptOutDetection ---

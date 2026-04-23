@@ -68,8 +68,6 @@ class AssetManager
         $currentUser = wp_get_current_user();
 
         $data = [
-            'restUrl'           => rest_url('wsms/v1/'),
-            'nonce'             => wp_create_nonce('wp_rest'),
             'version'           => WP_SMS_VERSION,
             'adminUrl'          => admin_url(),
             'isPremium'         => defined('WP_SMS_PREMIUM_FILE'),

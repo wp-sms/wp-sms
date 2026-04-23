@@ -101,14 +101,9 @@ class UserProfileSection
         wp_enqueue_script(
             'wsms-admin-user-profile',
             WP_SMS_URL . 'public/js/wsms-admin-user-profile.js',
-            [],
+            ['wp-api-fetch'],
             WP_SMS_VERSION,
             true,
         );
-
-        wp_localize_script('wsms-admin-user-profile', 'wsmsUserProfile', [
-            'restUrl' => rest_url('wsms/v1/auth/admin/users/'),
-            'nonce'   => wp_create_nonce('wp_rest'),
-        ]);
     }
 }

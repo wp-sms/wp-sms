@@ -2,6 +2,7 @@
 
 namespace WSms\Messaging\Email;
 
+use WSms\Rest\RestRoute;
 use WSms\Support\SigningKey;
 
 defined('ABSPATH') || exit;
@@ -75,7 +76,7 @@ class UnsubscribeTokenService
     {
         $token = $this->generate($email, $campaignId);
 
-        return rest_url('wsms/v1/email/unsubscribe') . '?token=' . urlencode($token);
+        return RestRoute::url('email/unsubscribe', ['token' => $token]);
     }
 
     private function base64UrlEncode(string $data): string

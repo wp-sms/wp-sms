@@ -9,7 +9,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { ExternalLink } from 'lucide-react';
-import { getConfig } from '@/lib/api';
 import type { SocialProviderSettings } from '@/lib/api';
 
 interface ProviderHelp {
@@ -95,6 +94,7 @@ interface SocialSettingsPanelProps {
   onOpenChange: (open: boolean) => void;
   providerId: string;
   providerLabel: string;
+  callbackUrl: string;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   settings: SocialProviderSettings;
   onUpdate: (partial: Partial<SocialProviderSettings>) => void;
@@ -105,12 +105,12 @@ export function SocialSettingsPanel({
   onOpenChange,
   providerId,
   providerLabel,
+  callbackUrl,
   icon: Icon,
   settings,
   onUpdate,
 }: SocialSettingsPanelProps) {
   const help = PROVIDER_HELP[providerId] ?? DEFAULT_HELP;
-  const callbackUrl = `${getConfig().restUrl}auth/social/callback/${providerId}`;
 
   function interpolate(text: string) {
     return text.replace('{callback_url}', callbackUrl);

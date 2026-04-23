@@ -3,6 +3,7 @@ import { render, screen, within, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { server } from '../mocks/server';
+import { verb } from '../mocks/verb';
 import { ConfirmProvider } from '@/components/confirm-provider';
 import { Webhooks } from '@/pages/messaging/webhooks';
 
@@ -91,7 +92,7 @@ function setupHandlers(webhooks = mockWebhooks) {
         },
       }, { status: 201 });
     }),
-    http.delete(`${BASE_URL}/outbound-webhooks/:id`, () => {
+    ...verb('DELETE', `${BASE_URL}/outbound-webhooks/:id`, () => {
       return HttpResponse.json({ success: true });
     }),
     http.post(`${BASE_URL}/outbound-webhooks/:id/toggle`, ({ params }) => {

@@ -31,11 +31,12 @@ export default defineConfig({
         },
         cssCodeSplit: false,
         rolldownOptions: {
-            external: ['@wordpress/i18n'],
+            external: ['@wordpress/i18n', '@wordpress/api-fetch'],
             output: {
                 assetFileNames: 'main[extname]',
                 globals: {
                     '@wordpress/i18n': 'wp.i18n',
+                    '@wordpress/api-fetch': 'wp.apiFetch',
                 },
             },
         },

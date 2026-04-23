@@ -1,101 +1,47 @@
-let { restUrl, nonce } = window.wsmsAuth || {};
+import { __ } from '@wordpress/i18n';
+import { api as sharedApi, setFreshAuthHandler } from '../../../shared/rest-client';
 
-const SESSION_EXPIRED = SESSION_EXPIRED;
+const SESSION_EXPIRED = () => __('Your session has expired. Please sign in again.', 'wp-sms');
 
 /**
- * Step-up re-auth gate handler. Consumers (e.g. Profile.jsx) register a
- * handler that opens a modal and returns true on successful step-up; we
- * replay the original request once.
+ * Map shared-client errors to the shape the Preact UI expects.
+ *
+ * - `rest_cookie_invalid_nonce` → `{ code: 'nonce_expired', message: SESSION_EXPIRED }`
+ *   so the auth UI can prompt re-auth instead of showing the raw WP message.
+ * - Parse failures (non-JSON body) → `{ code: 'parse_error' }` with a generic
+ *   message, mirroring the previous try/catch behavior.
+ *
+ * Step-up re-auth (`fresh_auth_required`) is handled transparently in the
+ * shared client via `setFreshAuthHandler`.
  */
-let freshAuthHandler = null;
-let pendingStepUp = null;
-
-export function setFreshAuthHandler(handler) {
-    freshAuthHandler = handler;
-}
-
-function runOneStepUp(info) {
-    if (!freshAuthHandler) return Promise.resolve(false);
-    // A thrown handler maps to "step up declined" so the singleton always
-    // resolves and never gets stuck mid-flight.
-    if (pendingStepUp === null) {
-        pendingStepUp = Promise.resolve()
-            .then(() => freshAuthHandler(info))
-            .catch(() => false)
-            .finally(() => {
-                pendingStepUp = null;
-            });
+function adaptError(error) {
+    if (error?.code === 'rest_cookie_invalid_nonce') {
+        return { status: 403, code: 'nonce_expired', message: SESSION_EXPIRED() };
     }
-    return pendingStepUp;
-}
-
-async function doFetch(method, endpoint, body, extraHeaders) {
-    const isFormData = body instanceof FormData;
-    const headers = { 'X-WP-Nonce': nonce, ...extraHeaders };
-    if (!isFormData) headers['Content-Type'] = 'application/json';
-
-    const opts = {
-        method,
-        headers,
-        credentials: 'same-origin',
+    if (error && typeof error === 'object') {
+        return error;
+    }
+    return {
+        status: 0,
+        code: 'parse_error',
+        message: __('The server returned an unexpected response. Please try again.', 'wp-sms'),
     };
-    if (body) opts.body = isFormData ? body : JSON.stringify(body);
+}
 
-    const res = await fetch(`${restUrl}${endpoint.replace(/^\//, '')}`, opts);
-
-    let data;
+async function wrap(promise) {
     try {
-        data = await res.json();
-    } catch {
-        throw {
-            status: res.status,
-            code: 'parse_error',
-            message: res.status === 403
-                ? SESSION_EXPIRED
-                : 'The server returned an unexpected response. Please try again.',
-        };
+        return await promise;
+    } catch (error) {
+        throw adaptError(error);
     }
-
-    return { res, data };
 }
 
-async function request(method, endpoint, body = null, extraHeaders = {}) {
-    const { res, data } = await doFetch(method, endpoint, body, extraHeaders);
-
-    if (!res.ok) {
-        if (res.status === 403 && data?.code === 'rest_cookie_invalid_nonce') {
-            throw { status: 403, code: 'nonce_expired', message: SESSION_EXPIRED };
-        }
-
-        if (res.status === 403 && (data?.code === 'fresh_auth_required' || data?.error === 'fresh_auth_required')) {
-            const info = {
-                step_up_methods: data?.data?.step_up_methods ?? [],
-                current_freshness_age: data?.data?.current_freshness_age ?? null,
-            };
-            const ok = await runOneStepUp(info);
-            if (ok) {
-                const replay = await doFetch(method, endpoint, body, extraHeaders);
-                if (!replay.res.ok) {
-                    throw { status: replay.res.status, ...replay.data };
-                }
-                return replay.data;
-            }
-        }
-
-        throw { status: res.status, ...data };
-    }
-    return data;
-}
-
-/** Allow external code to update the nonce (e.g. after a heartbeat refresh). */
-export function setNonce(newNonce) {
-    nonce = newNonce;
-}
+export { setFreshAuthHandler };
 
 export const api = {
-    get: (url, headers) => request('GET', url, null, headers),
-    post: (url, body, headers) => request('POST', url, body, headers),
-    put: (url, body, headers) => request('PUT', url, body, headers),
-    del: (url, body, headers) => request('DELETE', url, body, headers),
-    upload: (url, formData) => request('POST', url, formData),
+    get: (url, headers) => wrap(sharedApi.get(url, { headers })),
+    post: (url, body, headers) => wrap(sharedApi.post(url, body, { headers })),
+    put: (url, body, headers) => wrap(sharedApi.put(url, body, { headers })),
+    del: (url, body, headers) => wrap(sharedApi.del(url, body, { headers })),
+    upload: (url, formData) => wrap(sharedApi.upload(url, formData)),
 };

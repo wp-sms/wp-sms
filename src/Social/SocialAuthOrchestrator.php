@@ -14,6 +14,7 @@ use WSms\Auth\PolicyEngine;
 use WSms\Auth\ValueObjects\AuthResult;
 use WSms\Enums\AuthErrorCode;
 use WSms\Enums\EventType;
+use WSms\Rest\RestRoute;
 use WSms\Mfa\Channels\LineChannel;
 use WSms\Mfa\Channels\TelegramChannel;
 use WSms\Support\PhoneValidator;
@@ -535,7 +536,7 @@ class SocialAuthOrchestrator
 
     private function getCallbackUrl(string $providerId): string
     {
-        return rest_url('wsms/v1/auth/social/callback/' . $providerId);
+        return RestRoute::url('auth/social/callback/' . $providerId);
     }
 
     /**

@@ -3,31 +3,14 @@ import { useState, useCallback, useEffect, useRef } from 'preact/hooks';
 import { __, sprintf } from '@wordpress/i18n';
 import { OtpInput } from './components/OtpInput';
 import { useResendCooldown } from './hooks/useResendCooldown';
+import { api } from '../../shared/rest-client';
 import './styles/verify-widget.css';
 
-const { restUrl, nonce, primaryColor } = window.wsmsVerifyConfig || {};
+const { primaryColor } = window.wsmsVerifyConfig || {};
 
-async function apiPost(endpoint, body, sessionToken) {
-    const headers = {
-        'Content-Type': 'application/json',
-        'X-WP-Nonce': nonce,
-    };
-    if (sessionToken) {
-        headers['X-Verification-Session'] = sessionToken;
-    }
-
-    const res = await fetch(`${restUrl}${endpoint}`, {
-        method: 'POST',
-        headers,
-        credentials: 'same-origin',
-        body: JSON.stringify(body),
-        signal: AbortSignal.timeout(15000),
-    });
-
-    let data;
-    try { data = await res.json(); } catch { data = { message: __('Server error. Please try again.', 'wp-sms') }; }
-    if (!res.ok) throw data;
-    return data;
+function apiPost(endpoint, body, sessionToken) {
+    const headers = sessionToken ? { 'X-Verification-Session': sessionToken } : undefined;
+    return api.post(endpoint, body, { headers, signal: AbortSignal.timeout(15000) });
 }
 
 function CheckIcon() {

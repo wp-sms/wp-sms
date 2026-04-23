@@ -13,7 +13,7 @@ function destroyPhoneInputs(root) {
 
 function initPhoneInputs(root = document) {
   const config = window.wsmsCf7PhoneConfig || {};
-  const geoIpLookup = config.hasGeoCountry ? undefined : createGeoIpLookup(config.restUrl);
+  const geoIpLookup = config.hasGeoCountry ? undefined : createGeoIpLookup();
 
   root.querySelectorAll('.wsms-phone-container').forEach((container) => {
     if (container._wsmsPhone) return;

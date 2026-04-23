@@ -9,6 +9,7 @@ use WSms\Messaging\Contracts\SupportsOptOutDetection;
 use WSms\Messaging\Contracts\SupportsStatusCallback;
 use WSms\Messaging\Contracts\TestConnectionResult;
 use WSms\Messaging\Gateway\AbstractProvider;
+use WSms\Rest\RestRoute;
 
 defined('ABSPATH') || exit;
 
@@ -242,7 +243,7 @@ class MailtrapGateway extends AbstractProvider implements SupportsStatusCallback
 
     public function getStatusCallbackUrl(): string
     {
-        return rest_url('wsms/v1/callbacks/mailtrap/status');
+        return RestRoute::url('callbacks/mailtrap/status');
     }
 
     // --- Internal ---

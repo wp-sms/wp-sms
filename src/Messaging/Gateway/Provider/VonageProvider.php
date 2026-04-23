@@ -9,6 +9,7 @@ use WSms\Messaging\Contracts\SupportsDynamicOptions;
 use WSms\Messaging\Contracts\SupportsStatusCallback;
 use WSms\Messaging\Gateway\AbstractProvider;
 use WSms\Messaging\Contracts\TestConnectionResult;
+use WSms\Rest\RestRoute;
 
 defined('ABSPATH') || exit;
 
@@ -125,7 +126,7 @@ class VonageProvider extends AbstractProvider implements SupportsDynamicOptions,
 
     public function getStatusCallbackUrl(): string
     {
-        return rest_url('wsms/v1/callbacks/' . $this->getId() . '/status') . '?token=' . $this->callbackToken();
+        return RestRoute::url('callbacks/' . $this->getId() . '/status', ['token' => $this->callbackToken()]);
     }
 
     public function validateStatusCallback(\WP_REST_Request $request): bool
