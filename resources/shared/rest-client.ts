@@ -18,13 +18,12 @@
  */
 
 import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
 
 const NAMESPACE = 'wsms/v1';
-const INSTALLED_FLAG = '__wsmsMiddlewaresInstalled';
+let installed = false;
 
-type ApiFetchWithFlag = typeof apiFetch & { [INSTALLED_FLAG]?: boolean };
-
-export interface ApiFetchOptions {
+interface ApiFetchOptions {
   path?: string;
   url?: string;
   method?: string;
@@ -72,22 +71,19 @@ function runOneStepUp(info: FreshAuthGateInfo): Promise<boolean> {
 }
 
 function install(): void {
-  const instance = apiFetch as ApiFetchWithFlag;
-  if (instance[INSTALLED_FLAG]) return;
-  instance[INSTALLED_FLAG] = true;
+  if (installed) return;
+  installed = true;
 
-  // Namespace + locale. Runs before wp-core root/nonce middlewares because
-  // apiFetch.use() pushes to the front of the chain.
+  // Prepend the WSMS namespace to any relative path. api-fetch's built-in
+  // userLocaleMiddleware handles `_locale=user`, and WP core's inline script
+  // installs rootURL + nonce middlewares, so we only own the namespace.
   apiFetch.use((options, next) => {
-    let path = options.path;
+    const path = options.path;
     if (path && !/^https?:\/\//.test(path)) {
-      path = path.replace(/^\//, '');
-      if (!path.startsWith(`${NAMESPACE}/`)) {
-        path = `${NAMESPACE}/${path}`;
+      const clean = path.replace(/^\//, '');
+      if (!clean.startsWith(`${NAMESPACE}/`)) {
+        return next({ ...options, path: `${NAMESPACE}/${clean}` });
       }
-      const sep = path.includes('?') ? '&' : '?';
-      path = `${path}${sep}_locale=user`;
-      return next({ ...options, path });
     }
     return next(options);
   });
@@ -120,6 +116,13 @@ function isFreshAuthError(error: unknown): boolean {
 function normalizeError(raw: unknown): ApiError {
   if (raw && typeof raw === 'object') {
     const body = raw as Record<string, unknown>;
+    if (body.code === 'rest_cookie_invalid_nonce') {
+      return {
+        status: 403,
+        code: 'nonce_expired',
+        message: __('Your session has expired. Please sign in again.', 'wp-sms'),
+      };
+    }
     const data = body.data as { status?: number } | undefined;
     const status = typeof data?.status === 'number' ? data.status : 0;
     return { status, ...body } as ApiError;

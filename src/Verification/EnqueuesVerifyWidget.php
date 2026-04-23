@@ -35,9 +35,7 @@ trait EnqueuesVerifyWidget
             $config['primaryColor'] = $primaryColor;
         }
 
-        if ($config) {
-            wp_localize_script('wsms-verify-widget', 'wsmsVerifyConfig', $config);
-        }
+        wp_localize_script('wsms-verify-widget', 'wsmsVerifyConfig', $config);
 
         wp_register_script(
             'wsms-verify-mounter',

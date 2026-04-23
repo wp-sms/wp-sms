@@ -426,44 +426,8 @@ export interface LogEntry {
   user_display: { display_name: string; email: string } | null;
 }
 
-const FALLBACK_CONFIG: Window['wpSmsSettings'] = {
-  version: '',
-  adminUrl: '',
-  isPremium: false,
-  roles: {},
-  timezone: 'UTC',
-  area: 'unified',
-  phoneInput: { displayMode: 'international' },
-  currentUserHasMfa: false,
-  currentUserRoles: [],
-  capabilities: {
-    is_admin: true,
-    wsms_view_dashboard: true,
-    wsms_view_audience: true,
-    wsms_manage_audience: true,
-    wsms_view_campaigns: true,
-    wsms_manage_campaigns: true,
-    wsms_view_automation: true,
-    wsms_manage_automation: true,
-    wsms_view_channels: true,
-    wsms_manage_channels: true,
-    wsms_view_identity: true,
-    wsms_manage_identity: true,
-    wsms_view_monitoring: true,
-    wsms_manage_monitoring: true,
-    wsms_manage_settings: true,
-  },
-  hasExtensions: false,
-  pluginUrl: '',
-  isRtl: false,
-  onboarding: null,
-  locale: 'en_US',
-  detectedIntegrations: [],
-  detectedMigrations: [],
-};
-
 export function getConfig() {
-  return window.wpSmsSettings ?? FALLBACK_CONFIG;
+  return window.wpSmsSettings;
 }
 
 import { api, setFreshAuthHandler } from '../../../shared/rest-client';
