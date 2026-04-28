@@ -2,6 +2,8 @@
 
 namespace WSms\Tests\Unit\Messaging\Gateway\Provider;
 
+use WSms\Messaging\Catalog\TemplateMapping;
+use WSms\Messaging\Catalog\VariableStyle;
 use WSms\Messaging\Gateway\AbstractProvider;
 use WSms\Messaging\Gateway\Provider\PlivoProvider;
 use WSms\Messaging\Message\Message;
@@ -215,6 +217,103 @@ class PlivoProviderTest extends AbstractProviderTestCase
         $this->assertSame('invalid number', $result->error);
         $this->assertSame('api-err', $result->meta['plivo_api_id']);
     }
+
+    public function testSendCapturesPlivoErrorCodeFromBody(): void
+    {
+        $this->configure();
+        $this->mockHttpPost(['error' => 'opted out', 'error_code' => 200, 'api_id' => 'api-x'], 400);
+
+        $result = $this->createProvider()->send($this->createMessage());
+
+        $this->assertFalse($result->success);
+        $this->assertSame('200', $result->meta['plivo_error_code']);
+    }
+
+    // --- SupportsOptOutDetection ---
+
+    public function testIsOptOutErrorTrueForPlivoCode200(): void
+    {
+        $result = \WSms\Messaging\Contracts\DeliveryResult::failed('opted out', ['plivo_error_code' => '200']);
+        $this->assertTrue($this->createProvider()->isOptOutError($result));
+    }
+
+    public function testIsOptOutErrorFalseForOtherCodes(): void
+    {
+        $result = \WSms\Messaging\Contracts\DeliveryResult::failed('bad number', ['plivo_error_code' => '400']);
+        $this->assertFalse($this->createProvider()->isOptOutError($result));
+    }
+
+    public function testIsOptOutErrorFalseWhenNoErrorCode(): void
+    {
+        $result = \WSms\Messaging\Contracts\DeliveryResult::failed('boom');
+        $this->assertFalse($this->createProvider()->isOptOutError($result));
+    }
+
+    // --- SupportsTemplates ---
+
+    public function testRequiresTemplateForChannelReturnsFalse(): void
+    {
+        $p = $this->createProvider();
+        $this->assertFalse($p->requiresTemplateForChannel('whatsapp'));
+        $this->assertFalse($p->requiresTemplateForChannel('sms'));
+    }
+
+    public function testVariableStyleIsPositional(): void
+    {
+        $this->assertSame(VariableStyle::Positional, $this->createProvider()->getVariableStyle());
+    }
+
+    public function testBuildTemplatePayloadFormatsBodyComponents(): void
+    {
+        $mapping = new TemplateMapping(
+            templateType: 'otp',
+            providerTemplateId: 'auth_otp_v1',
+            gatewayId: 'plivo',
+            language: 'en_US',
+            variableMap: ['otp_code' => '1'],
+        );
+
+        $payload = $this->createProvider()->buildTemplatePayload($mapping, ['1' => '482916']);
+
+        $this->assertSame('auth_otp_v1', $payload['template']['name']);
+        $this->assertSame('en_US', $payload['template']['language']);
+        $this->assertSame('body', $payload['template']['components'][0]['type']);
+        $this->assertSame([['type' => 'text', 'text' => '482916']], $payload['template']['components'][0]['parameters']);
+    }
+
+    public function testBuildTemplatePayloadOrdersParametersByPosition(): void
+    {
+        $mapping = new TemplateMapping(
+            templateType: 'welcome',
+            providerTemplateId: 'tpl_welcome',
+            gatewayId: 'plivo',
+            language: 'en',
+            variableMap: [],
+        );
+
+        $payload = $this->createProvider()->buildTemplatePayload($mapping, ['2' => 'Bob', '1' => 'Alice', '3' => 'Acme']);
+        $values = array_column($payload['template']['components'][0]['parameters'], 'text');
+        $this->assertSame(['Alice', 'Bob', 'Acme'], $values);
+    }
+
+    public function testWhatsappSendWithTemplateModeMetaUsesBuiltPayload(): void
+    {
+        $this->configure();
+        $this->mockHttpPost(['api_id' => 'api-tpl', 'message_uuid' => ['uuid-tpl-1']]);
+
+        $this->createProvider()->send($this->createMessage('whatsapp', '+15559876543', '', [
+            'template_mode'        => true,
+            'provider_template_id' => 'auth_otp_v1',
+            'template_language'    => 'en_US',
+            'template_variables'   => ['1' => '999111'],
+        ]));
+
+        $body = json_decode($GLOBALS['_test_wp_remote_post_last_args']['body'], true);
+        $this->assertSame('auth_otp_v1', $body['template']['name']);
+        $this->assertSame('en_US', $body['template']['language']);
+        $this->assertSame('999111', $body['template']['components'][0]['parameters'][0]['text']);
+    }
+
 
     // --- Send: WhatsApp ---
 

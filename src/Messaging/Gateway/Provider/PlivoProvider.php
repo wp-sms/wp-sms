@@ -2,13 +2,18 @@
 
 namespace WSms\Messaging\Gateway\Provider;
 
+use WSms\Messaging\Catalog\TemplateCatalogManager;
+use WSms\Messaging\Catalog\TemplateMapping;
+use WSms\Messaging\Catalog\VariableStyle;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\InboundMessage;
 use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Contracts\StatusUpdate;
 use WSms\Messaging\Contracts\SupportsDynamicOptions;
 use WSms\Messaging\Contracts\SupportsInboundMessage;
+use WSms\Messaging\Contracts\SupportsOptOutDetection;
 use WSms\Messaging\Contracts\SupportsStatusCallback;
+use WSms\Messaging\Contracts\SupportsTemplates;
 use WSms\Messaging\Contracts\TestConnectionResult;
 use WSms\Messaging\Gateway\AbstractProvider;
 use WSms\Rest\RestRoute;
@@ -18,12 +23,21 @@ defined('ABSPATH') || exit;
 class PlivoProvider extends AbstractProvider implements
     SupportsStatusCallback,
     SupportsInboundMessage,
-    SupportsDynamicOptions
+    SupportsDynamicOptions,
+    SupportsOptOutDetection,
+    SupportsTemplates
 {
     /** Flip to true once the gateway clears end-to-end manual verification. */
     public const TESTED = false;
 
     private const API_BASE = 'https://api.plivo.com/v1/Account';
+
+    private ?TemplateCatalogManager $catalogManager = null;
+
+    public function setCatalogManager(TemplateCatalogManager $manager): void
+    {
+        $this->catalogManager = $manager;
+    }
 
     public function getId(): string
     {
@@ -104,7 +118,11 @@ class PlivoProvider extends AbstractProvider implements
 
         if ($channel === 'whatsapp') {
             $body['type'] = 'whatsapp';
-            if (!empty($meta['template'])) {
+
+            $templatePayload = $this->resolveTemplatePayload($meta);
+            if ($templatePayload !== null) {
+                $body = array_merge($body, $templatePayload);
+            } elseif (!empty($meta['template'])) {
                 $body['template'] = $meta['template'];
             }
         } elseif (!empty($mediaUrls)) {
@@ -144,8 +162,9 @@ class PlivoProvider extends AbstractProvider implements
         return DeliveryResult::failed(
             $data['error'] ?? $data['message'] ?? "HTTP {$result['code']}",
             meta: array_filter([
-                'plivo_api_id' => $data['api_id'] ?? null,
-                'plivo_code'   => $result['code'] ?: null,
+                'plivo_api_id'    => $data['api_id'] ?? null,
+                'plivo_error_code' => isset($data['error_code']) ? (string) $data['error_code'] : null,
+                'plivo_code'      => $result['code'] ?: null,
             ]),
         );
     }
@@ -331,6 +350,77 @@ class PlivoProvider extends AbstractProvider implements
 
             return $options;
         });
+    }
+
+    // --- SupportsOptOutDetection ---
+
+    public function isOptOutError(DeliveryResult $result): bool
+    {
+        // Plivo error code 200 = "Recipient on do-not-call list / opted out".
+        // Captured from response body's error_code (DLR callbacks deliver the same code).
+        $code = $result->meta['plivo_error_code'] ?? null;
+        return $code === '200';
+    }
+
+    // --- SupportsTemplates ---
+
+    public function requiresTemplateForChannel(string $channel): bool
+    {
+        // WhatsApp business-initiated messages require approved templates;
+        // user-initiated 24-hour-window replies don't, so don't force-fail.
+        return false;
+    }
+
+    public function getVariableStyle(): VariableStyle
+    {
+        return VariableStyle::Positional;
+    }
+
+    public function buildTemplatePayload(TemplateMapping $mapping, array $resolvedVariables): array
+    {
+        ksort($resolvedVariables, SORT_NATURAL);
+
+        $bodyParameters = [];
+        foreach ($resolvedVariables as $value) {
+            $bodyParameters[] = ['type' => 'text', 'text' => (string) $value];
+        }
+
+        return [
+            'template' => array_filter([
+                'name'       => $mapping->providerTemplateId,
+                'language'   => $mapping->language ?: null,
+                'components' => [
+                    ['type' => 'body', 'parameters' => $bodyParameters],
+                ],
+            ]),
+        ];
+    }
+
+    private function resolveTemplatePayload(array $meta): ?array
+    {
+        // Direct template mode (flow builder picked a template explicitly).
+        if (!empty($meta['template_mode']) && !empty($meta['provider_template_id'])) {
+            $mapping = new TemplateMapping(
+                templateType: '',
+                providerTemplateId: (string) $meta['provider_template_id'],
+                gatewayId: $this->getId(),
+                language: (string) ($meta['template_language'] ?? 'en'),
+                variableMap: [],
+            );
+            return $this->buildTemplatePayload($mapping, $meta['template_variables'] ?? []);
+        }
+
+        // Catalog-resolved (system OTP / well-known template type).
+        $templateType = $meta['template_type'] ?? null;
+        if ($templateType && $this->catalogManager) {
+            $mapping = $this->catalogManager->resolveMapping($templateType, $this->getId());
+            if ($mapping) {
+                $resolved = $mapping->resolveVariables($meta['template_variables'] ?? []);
+                return $this->buildTemplatePayload($mapping, $resolved);
+            }
+        }
+
+        return null;
     }
 
     // --- Internal ---
