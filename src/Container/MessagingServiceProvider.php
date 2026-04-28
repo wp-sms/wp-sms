@@ -9,6 +9,7 @@ use WSms\Messaging\Email\UnsubscribeTokenService;
 use WSms\Messaging\Gateway\Email\MailtrapGateway;
 use WSms\Messaging\Gateway\Email\WpMailGateway;
 use WSms\Messaging\Gateway\GatewayRegistry;
+use WSms\Messaging\Gateway\Provider\AfricasTalkingProvider;
 use WSms\Messaging\Gateway\Provider\KavenegarProvider;
 use WSms\Messaging\Gateway\Provider\NetGsmProvider;
 use WSms\Messaging\Gateway\Provider\OvhProvider;
@@ -31,12 +32,13 @@ class MessagingServiceProvider implements ServiceProvider
 {
     /** @var array<string, class-string> Provider ID => class name for deferred registration */
     private const PROVIDERS = [
-        'twilio'    => TwilioProvider::class,
-        'vonage'    => VonageProvider::class,
-        'kavenegar' => KavenegarProvider::class,
-        'ovh'       => OvhProvider::class,
-        'netgsm'    => NetGsmProvider::class,
-        'smsir'     => SmsIrProvider::class,
+        'twilio'         => TwilioProvider::class,
+        'vonage'         => VonageProvider::class,
+        'kavenegar'      => KavenegarProvider::class,
+        'ovh'            => OvhProvider::class,
+        'netgsm'         => NetGsmProvider::class,
+        'smsir'          => SmsIrProvider::class,
+        'africastalking' => AfricasTalkingProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
