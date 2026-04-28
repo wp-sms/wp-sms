@@ -2,13 +2,18 @@
 
 namespace WSms\Messaging\Gateway\Provider;
 
+use WSms\Messaging\Catalog\TemplateCatalogManager;
+use WSms\Messaging\Catalog\TemplateMapping;
+use WSms\Messaging\Catalog\VariableStyle;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\InboundMessage;
 use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Contracts\StatusUpdate;
+use WSms\Messaging\Contracts\SupportsDynamicOptions;
 use WSms\Messaging\Contracts\SupportsInboundMessage;
 use WSms\Messaging\Contracts\SupportsOptOutDetection;
 use WSms\Messaging\Contracts\SupportsStatusCallback;
+use WSms\Messaging\Contracts\SupportsTemplates;
 use WSms\Messaging\Contracts\TestConnectionResult;
 use WSms\Messaging\Gateway\AbstractProvider;
 use WSms\Rest\RestRoute;
@@ -29,10 +34,21 @@ defined('ABSPATH') || exit;
 class SinchProvider extends AbstractProvider implements
     SupportsStatusCallback,
     SupportsInboundMessage,
-    SupportsOptOutDetection
+    SupportsOptOutDetection,
+    SupportsDynamicOptions,
+    SupportsTemplates
 {
     /** Flip to true once the gateway clears end-to-end manual verification. */
     public const TESTED = false;
+
+    private const NUMBERS_API = 'https://numbers.api.sinch.com';
+
+    private ?TemplateCatalogManager $catalogManager = null;
+
+    public function setCatalogManager(TemplateCatalogManager $manager): void
+    {
+        $this->catalogManager = $manager;
+    }
 
     public function getId(): string
     {
@@ -78,8 +94,9 @@ class SinchProvider extends AbstractProvider implements
                         'type'        => 'string',
                         'label'       => __('Default Originator', 'wp-sms'),
                         'required'    => false,
-                        'description' => __('Sender ID or virtual number. Optional if a default is set on the service plan.', 'wp-sms'),
+                        'description' => __('Sender ID or virtual number. Optional if a default is set on the service plan. Dropdown auto-populates if Conversations API credentials are configured.', 'wp-sms'),
                         'placeholder' => '+15551234567',
+                        'dynamic'     => true,
                     ],
                     'callback_secret' => [
                         'type'        => 'secret',
@@ -294,6 +311,11 @@ class SinchProvider extends AbstractProvider implements
 
     private function buildConversationMessagePayload(MessageInterface $message, array $meta): array
     {
+        $templatePayload = $this->resolveTemplatePayload($meta, $message->getChannel());
+        if ($templatePayload !== null) {
+            return $templatePayload;
+        }
+
         if (!empty($meta['template'])) {
             return ['template_message' => $meta['template']];
         }
@@ -309,6 +331,31 @@ class SinchProvider extends AbstractProvider implements
         }
 
         return ['text_message' => ['text' => $message->getBody()]];
+    }
+
+    private function resolveTemplatePayload(array $meta, string $channel): ?array
+    {
+        if (!empty($meta['template_mode']) && !empty($meta['provider_template_id'])) {
+            $mapping = new TemplateMapping(
+                templateType: '',
+                providerTemplateId: (string) $meta['provider_template_id'],
+                gatewayId: $this->getId(),
+                language: (string) ($meta['template_language'] ?? 'en_US'),
+                variableMap: [],
+            );
+            return $this->buildTemplatePayload($mapping, $meta['template_variables'] ?? []);
+        }
+
+        $templateType = $meta['template_type'] ?? null;
+        if ($templateType && $this->catalogManager) {
+            $mapping = $this->catalogManager->resolveMapping($templateType, $this->getId());
+            if ($mapping) {
+                $resolved = $mapping->resolveVariables($meta['template_variables'] ?? []);
+                return $this->buildTemplatePayload($mapping, $resolved);
+            }
+        }
+
+        return null;
     }
 
     public function getCredit(): ?string
@@ -564,6 +611,93 @@ class SinchProvider extends AbstractProvider implements
                 'media_urls'      => $mediaUrls ?: null,
             ]),
         )];
+    }
+
+    // --- SupportsTemplates ---
+
+    public function requiresTemplateForChannel(string $channel): bool
+    {
+        // Conversations API allows both text and template; only force-fail if the
+        // user has wired a template_type but no mapping resolves — handled upstream.
+        return false;
+    }
+
+    public function getVariableStyle(): VariableStyle
+    {
+        // Conversations omni-template uses positional/named placeholders depending on
+        // channel; positional ({{1}},{{2}}) is the lowest common denominator.
+        return VariableStyle::Positional;
+    }
+
+    public function buildTemplatePayload(TemplateMapping $mapping, array $resolvedVariables): array
+    {
+        ksort($resolvedVariables, SORT_NATURAL);
+
+        return [
+            'template_message' => [
+                'omni_template' => array_filter([
+                    'template_id'   => $mapping->providerTemplateId,
+                    'language_code' => $mapping->language ?: null,
+                    'parameters'    => array_map('strval', $resolvedVariables),
+                ]),
+            ],
+        ];
+    }
+
+    // --- SupportsDynamicOptions ---
+
+    public function getConfigOptions(string $fieldKey, string $section, array $config, array $context = []): array
+    {
+        if ($fieldKey !== 'from' || $section !== 'sms') {
+            return [];
+        }
+
+        return $this->withConfig($config, function () {
+            // Numbers API uses Conversations-style auth (Project ID + Access Key).
+            // Borrow from whichever Conversations channel has them configured.
+            foreach (['whatsapp', 'rcs'] as $channel) {
+                $projectId = $this->getChannelConfig($channel, 'project_id');
+                $keyId = $this->getChannelConfig($channel, 'access_key_id');
+                $keySecret = $this->getChannelConfig($channel, 'access_key_secret');
+                if ($projectId && $keyId && $keySecret) {
+                    return $this->fetchSinchNumbers($projectId, $keyId, $keySecret);
+                }
+            }
+            // No Conversations creds configured — admin types the from number manually.
+            return [];
+        });
+    }
+
+    /**
+     * @return array<int, array{value: string, label: string}>
+     */
+    private function fetchSinchNumbers(string $projectId, string $keyId, string $keySecret): array
+    {
+        $url = self::NUMBERS_API . "/v1/projects/{$projectId}/activeNumbers?capability=SMS&pageSize=50";
+        $data = $this->fetchJsonOrFail($url, [
+            'headers' => [
+                'Authorization' => 'Basic ' . base64_encode("{$keyId}:{$keySecret}"),
+                'Accept'        => 'application/json',
+            ],
+        ]);
+
+        $options = [];
+        foreach ($data['activeNumbers'] ?? [] as $number) {
+            $phone = $number['phoneNumber'] ?? '';
+            if (!$phone) {
+                continue;
+            }
+            $name = $number['displayName'] ?? '';
+            $region = $number['regionCode'] ?? '';
+            $caps = implode('/', $number['capability'] ?? []);
+
+            $detailParts = array_filter([$region, $caps, $name && $name !== $phone ? $name : null]);
+            $label = $detailParts ? "{$phone} (" . implode(' — ', $detailParts) . ')' : $phone;
+
+            $options[] = ['value' => $phone, 'label' => $label];
+        }
+
+        return $options;
     }
 
     // --- SupportsOptOutDetection ---

@@ -2,6 +2,8 @@
 
 namespace WSms\Tests\Unit\Messaging\Gateway\Provider;
 
+use WSms\Messaging\Catalog\TemplateMapping;
+use WSms\Messaging\Catalog\VariableStyle;
 use WSms\Messaging\Gateway\AbstractProvider;
 use WSms\Messaging\Gateway\Provider\SinchProvider;
 use WSms\Messaging\Message\Message;
@@ -592,6 +594,171 @@ class SinchProviderTest extends AbstractProviderTestCase
         $this->configureSms(['callback_secret' => self::CALLBACK_SECRET]);
         $request = $this->buildRequest('POST', '/x', [], [], '{}');
         $this->assertFalse($this->createProvider()->validateStatusCallback($request));
+    }
+
+    // --- SupportsTemplates ---
+
+    public function testRequiresTemplateForChannelReturnsFalse(): void
+    {
+        $p = $this->createProvider();
+        $this->assertFalse($p->requiresTemplateForChannel('whatsapp'));
+        $this->assertFalse($p->requiresTemplateForChannel('rcs'));
+    }
+
+    public function testVariableStyleIsPositional(): void
+    {
+        $this->assertSame(VariableStyle::Positional, $this->createProvider()->getVariableStyle());
+    }
+
+    public function testBuildTemplatePayloadProducesOmniTemplate(): void
+    {
+        $mapping = new TemplateMapping(
+            templateType: 'otp',
+            providerTemplateId: 'tpl_auth_001',
+            gatewayId: 'sinch',
+            language: 'en_US',
+            variableMap: ['otp_code' => '1'],
+        );
+
+        $payload = $this->createProvider()->buildTemplatePayload($mapping, ['1' => '482916']);
+
+        $this->assertSame('tpl_auth_001', $payload['template_message']['omni_template']['template_id']);
+        $this->assertSame('en_US', $payload['template_message']['omni_template']['language_code']);
+        $this->assertSame(['1' => '482916'], $payload['template_message']['omni_template']['parameters']);
+    }
+
+    public function testBuildTemplatePayloadOrdersParametersByPosition(): void
+    {
+        $mapping = new TemplateMapping(
+            templateType: 'welcome',
+            providerTemplateId: 'tpl_welcome',
+            gatewayId: 'sinch',
+            language: 'en',
+            variableMap: [],
+        );
+
+        $payload = $this->createProvider()->buildTemplatePayload($mapping, ['2' => 'Bob', '1' => 'Alice', '3' => 'Acme']);
+        $this->assertSame(['1' => 'Alice', '2' => 'Bob', '3' => 'Acme'], $payload['template_message']['omni_template']['parameters']);
+    }
+
+    public function testWhatsappSendWithTemplateModeMetaProducesOmniTemplateMessage(): void
+    {
+        $this->configureWhatsapp();
+        $this->mockHttpPost(['message_id' => 'msg-tpl-1'], 200);
+
+        $this->createProvider()->send($this->createMessage('whatsapp', '+15559876543', '', [
+            'template_mode'        => true,
+            'provider_template_id' => 'tpl_auth_001',
+            'template_language'    => 'en_US',
+            'template_variables'   => ['1' => '999111'],
+        ]));
+
+        $body = json_decode($GLOBALS['_test_wp_remote_post_last_args']['body'], true);
+        $this->assertSame('tpl_auth_001', $body['message']['template_message']['omni_template']['template_id']);
+        $this->assertSame('999111', $body['message']['template_message']['omni_template']['parameters']['1']);
+    }
+
+    // --- SupportsDynamicOptions ---
+
+    public function testGetConfigOptionsReturnsEmptyForNonSmsField(): void
+    {
+        $this->assertSame([], $this->createProvider()->getConfigOptions('from', 'whatsapp', []));
+        $this->assertSame([], $this->createProvider()->getConfigOptions('something_else', 'sms', []));
+    }
+
+    public function testGetConfigOptionsReturnsEmptyWithoutConversationsCreds(): void
+    {
+        $config = [
+            'shared'   => ['region' => 'us'],
+            'channels' => [
+                'sms' => ['service_plan_id' => self::SPI, 'api_token' => self::API_TOKEN],
+            ],
+        ];
+
+        $this->assertSame([], $this->createProvider()->getConfigOptions('from', 'sms', $config));
+    }
+
+    public function testGetConfigOptionsFetchesActiveNumbersWhenConversationsCredsPresent(): void
+    {
+        $capturedUrl = null;
+        $capturedArgs = null;
+        $GLOBALS['_test_wp_remote_get'] = function (string $url, array $args) use (&$capturedUrl, &$capturedArgs) {
+            $capturedUrl = $url;
+            $capturedArgs = $args;
+            return [
+                'body' => json_encode([
+                    'activeNumbers' => [
+                        ['phoneNumber' => '+12025550100', 'displayName' => 'Sales', 'regionCode' => 'US', 'capability' => ['SMS', 'VOICE']],
+                        ['phoneNumber' => '+447700900100', 'displayName' => '+447700900100', 'regionCode' => 'GB', 'capability' => ['SMS']],
+                    ],
+                ]),
+                'response' => ['code' => 200],
+            ];
+        };
+
+        $config = [
+            'shared'   => ['region' => 'us'],
+            'channels' => [
+                'sms'      => ['service_plan_id' => self::SPI, 'api_token' => self::API_TOKEN],
+                'whatsapp' => [
+                    'project_id'        => self::PROJECT_ID,
+                    'access_key_id'     => self::KEY_ID,
+                    'access_key_secret' => self::KEY_SECRET,
+                    'app_id'            => self::WA_APP_ID,
+                    'webhook_secret'    => self::WA_WEBHOOK_SECRET,
+                ],
+            ],
+        ];
+
+        $options = $this->createProvider()->getConfigOptions('from', 'sms', $config);
+
+        $this->assertCount(2, $options);
+        $this->assertSame('+12025550100', $options[0]['value']);
+        $this->assertStringContainsString('US', $options[0]['label']);
+        $this->assertStringContainsString('SMS', $options[0]['label']);
+        $this->assertStringContainsString('Sales', $options[0]['label']);
+        $this->assertSame('+447700900100', $options[1]['value']);
+        $this->assertStringNotContainsString(' — +447700900100', $options[1]['label']);
+
+        $this->assertSame(
+            'https://numbers.api.sinch.com/v1/projects/' . self::PROJECT_ID . '/activeNumbers?capability=SMS&pageSize=50',
+            $capturedUrl,
+        );
+        $expectedAuth = 'Basic ' . base64_encode(self::KEY_ID . ':' . self::KEY_SECRET);
+        $this->assertSame($expectedAuth, $capturedArgs['headers']['Authorization']);
+    }
+
+    public function testGetConfigOptionsFallsBackToRcsCredsWhenNoWhatsapp(): void
+    {
+        $GLOBALS['_test_wp_remote_get'] = function () {
+            return [
+                'body'     => json_encode(['activeNumbers' => []]),
+                'response' => ['code' => 200],
+            ];
+        };
+
+        $config = [
+            'shared'   => ['region' => 'us'],
+            'channels' => [
+                'sms' => ['service_plan_id' => self::SPI, 'api_token' => self::API_TOKEN],
+                'rcs' => [
+                    'project_id'        => self::PROJECT_ID,
+                    'access_key_id'     => self::KEY_ID,
+                    'access_key_secret' => self::KEY_SECRET,
+                    'app_id'            => self::RCS_APP_ID,
+                    'webhook_secret'    => self::RCS_WEBHOOK_SECRET,
+                ],
+            ],
+        ];
+
+        // Should not throw — credentials borrowed from rcs channel.
+        $this->assertSame([], $this->createProvider()->getConfigOptions('from', 'sms', $config));
+    }
+
+    public function testSmsFromFieldIsMarkedDynamic(): void
+    {
+        $schema = $this->createProvider()->getConfigSchema();
+        $this->assertTrue($schema['channels']['sms']['from']['dynamic'] ?? false);
     }
 
     // --- Opt-out detection ---
