@@ -10,6 +10,7 @@ use WSms\Messaging\Gateway\Email\MailtrapGateway;
 use WSms\Messaging\Gateway\Email\WpMailGateway;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\Gateway\Provider\AfricasTalkingProvider;
+use WSms\Messaging\Gateway\Provider\InfobipProvider;
 use WSms\Messaging\Gateway\Provider\KavenegarProvider;
 use WSms\Messaging\Gateway\Provider\LabsMobileProvider;
 use WSms\Messaging\Gateway\Provider\NetGsmProvider;
@@ -45,6 +46,7 @@ class MessagingServiceProvider implements ServiceProvider
         'africastalking' => AfricasTalkingProvider::class,
         'sinch'          => SinchProvider::class,
         'labsmobile'     => LabsMobileProvider::class,
+        'infobip'        => InfobipProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
@@ -130,7 +132,7 @@ class MessagingServiceProvider implements ServiceProvider
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
         // Providers implementing SupportsTemplates get the catalog manager injected
-        $templateProviders = ['twilio', 'kavenegar', 'smsir', 'plivo', 'sinch'];
+        $templateProviders = ['twilio', 'kavenegar', 'smsir', 'plivo', 'sinch', 'infobip'];
 
         foreach (self::PROVIDERS as $id => $class) {
             if (in_array($id, $templateProviders, true)) {

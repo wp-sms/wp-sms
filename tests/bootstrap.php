@@ -536,6 +536,11 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
             if (count($args) === 3) {
                 return $args[2] . '?' . $args[0] . '=' . $args[1];
             }
+            if (count($args) === 2 && is_array($args[0])) {
+                $url = (string) $args[1];
+                $separator = str_contains($url, '?') ? '&' : '?';
+                return $url . $separator . http_build_query($args[0]);
+            }
             return '';
         }
     }
