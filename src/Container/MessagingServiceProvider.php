@@ -11,6 +11,7 @@ use WSms\Messaging\Gateway\Email\WpMailGateway;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\Gateway\Provider\AfricasTalkingProvider;
 use WSms\Messaging\Gateway\Provider\KavenegarProvider;
+use WSms\Messaging\Gateway\Provider\LabsMobileProvider;
 use WSms\Messaging\Gateway\Provider\NetGsmProvider;
 use WSms\Messaging\Gateway\Provider\OvhProvider;
 use WSms\Messaging\Gateway\Provider\PlivoProvider;
@@ -43,6 +44,7 @@ class MessagingServiceProvider implements ServiceProvider
         'plivo'          => PlivoProvider::class,
         'africastalking' => AfricasTalkingProvider::class,
         'sinch'          => SinchProvider::class,
+        'labsmobile'     => LabsMobileProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
