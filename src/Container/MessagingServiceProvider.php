@@ -13,6 +13,7 @@ use WSms\Messaging\Gateway\Provider\AfricasTalkingProvider;
 use WSms\Messaging\Gateway\Provider\KavenegarProvider;
 use WSms\Messaging\Gateway\Provider\NetGsmProvider;
 use WSms\Messaging\Gateway\Provider\OvhProvider;
+use WSms\Messaging\Gateway\Provider\PlivoProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
 use WSms\Messaging\Gateway\Provider\SmsIrProvider;
 use WSms\Messaging\Gateway\Provider\VonageProvider;
@@ -38,6 +39,7 @@ class MessagingServiceProvider implements ServiceProvider
         'ovh'            => OvhProvider::class,
         'netgsm'         => NetGsmProvider::class,
         'smsir'          => SmsIrProvider::class,
+        'plivo'          => PlivoProvider::class,
         'africastalking' => AfricasTalkingProvider::class,
     ];
 
