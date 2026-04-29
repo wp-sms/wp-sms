@@ -17,6 +17,7 @@ use WSms\Messaging\Gateway\Provider\InfobipProvider;
 use WSms\Messaging\Gateway\Provider\KavenegarProvider;
 use WSms\Messaging\Gateway\Provider\LabsMobileProvider;
 use WSms\Messaging\Gateway\Provider\NetGsmProvider;
+use WSms\Messaging\Gateway\Provider\OctopushProvider;
 use WSms\Messaging\Gateway\Provider\OvhProvider;
 use WSms\Messaging\Gateway\Provider\PlivoProvider;
 use WSms\Messaging\Gateway\Provider\SinchProvider;
@@ -44,6 +45,7 @@ class MessagingServiceProvider implements ServiceProvider
         'twilio'         => TwilioProvider::class,
         'vonage'         => VonageProvider::class,
         'kavenegar'      => KavenegarProvider::class,
+        'octopush'       => OctopushProvider::class,
         'ovh'            => OvhProvider::class,
         'netgsm'         => NetGsmProvider::class,
         'smsir'          => SmsIrProvider::class,
