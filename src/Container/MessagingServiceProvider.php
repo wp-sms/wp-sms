@@ -11,6 +11,7 @@ use WSms\Messaging\Gateway\Email\WpMailGateway;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\Gateway\Provider\AfricasTalkingProvider;
 use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
+use WSms\Messaging\Gateway\Provider\GunismsProvider;
 use WSms\Messaging\Gateway\Provider\InfobipProvider;
 use WSms\Messaging\Gateway\Provider\KavenegarProvider;
 use WSms\Messaging\Gateway\Provider\LabsMobileProvider;
@@ -49,6 +50,7 @@ class MessagingServiceProvider implements ServiceProvider
         'labsmobile'     => LabsMobileProvider::class,
         'infobip'        => InfobipProvider::class,
         'gatewayapi'     => GatewayApiProvider::class,
+        'gunisms'        => GunismsProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
