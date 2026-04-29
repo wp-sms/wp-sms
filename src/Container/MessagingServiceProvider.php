@@ -17,6 +17,7 @@ use WSms\Messaging\Gateway\Provider\GunismsProvider;
 use WSms\Messaging\Gateway\Provider\InfobipProvider;
 use WSms\Messaging\Gateway\Provider\KavenegarProvider;
 use WSms\Messaging\Gateway\Provider\LabsMobileProvider;
+use WSms\Messaging\Gateway\Provider\MittoProvider;
 use WSms\Messaging\Gateway\Provider\NetGsmProvider;
 use WSms\Messaging\Gateway\Provider\OctopushProvider;
 use WSms\Messaging\Gateway\Provider\OvhProvider;
@@ -61,6 +62,7 @@ class MessagingServiceProvider implements ServiceProvider
         'smsglobal'      => SmsGlobalProvider::class,
         'smsapi'         => SmsApiProvider::class,
         'easysendsms'    => EasySendSmsProvider::class,
+        'mitto'          => MittoProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
