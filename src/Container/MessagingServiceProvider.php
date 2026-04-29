@@ -25,6 +25,7 @@ use WSms\Messaging\Gateway\Provider\PlivoProvider;
 use WSms\Messaging\Gateway\Provider\SinchProvider;
 use WSms\Messaging\Gateway\Provider\SmsApiProvider;
 use WSms\Messaging\Gateway\Provider\SmsGlobalProvider;
+use WSms\Messaging\Gateway\Provider\SmstoProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
 use WSms\Messaging\Gateway\Provider\SmsIrProvider;
 use WSms\Messaging\Gateway\Provider\VonageProvider;
@@ -63,6 +64,7 @@ class MessagingServiceProvider implements ServiceProvider
         'smsapi'         => SmsApiProvider::class,
         'easysendsms'    => EasySendSmsProvider::class,
         'mitto'          => MittoProvider::class,
+        'smsto'          => SmstoProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
