@@ -40,6 +40,7 @@ use WSms\Messaging\Gateway\Provider\TextanywhereProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
 use WSms\Messaging\Gateway\Provider\SmsIrProvider;
 use WSms\Messaging\Gateway\Provider\UnifonicProvider;
+use WSms\Messaging\Gateway\Provider\VerimorProvider;
 use WSms\Messaging\Gateway\Provider\VonageProvider;
 use WSms\Messaging\Gateway\Provider\WaliProvider;
 use WSms\Messaging\Gateway\Line\LineGateway;
@@ -91,6 +92,7 @@ class MessagingServiceProvider implements ServiceProvider
         'textanywhere'   => TextanywhereProvider::class,
         'suresms'        => SureSmsProvider::class,
         'oxemis'         => OxemisProvider::class,
+        'verimor'        => VerimorProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
