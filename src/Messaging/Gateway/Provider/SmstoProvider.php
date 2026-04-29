@@ -37,7 +37,7 @@ class SmstoProvider extends AbstractProvider implements
     SupportsOptOutDetection
 {
     /** Flip to true once the gateway clears end-to-end manual verification. */
-    public const TESTED = false;
+    public const TESTED = true;
 
     private const API_BASE = 'https://api.sms.to';
     private const AUTH_BASE = 'https://auth.sms.to';

@@ -73,9 +73,9 @@ class SmstoProviderTest extends AbstractProviderTestCase
         $this->assertSame(['sms', 'viber'], $p->getSupportedChannels());
     }
 
-    public function testTestedFlagIsFalseUntilManuallyVerified(): void
+    public function testTestedFlagIsTrueAfterManualVerification(): void
     {
-        $this->assertFalse(SmstoProvider::TESTED);
+        $this->assertTrue(SmstoProvider::TESTED);
     }
 
     public function testConfigSchemaShape(): void
