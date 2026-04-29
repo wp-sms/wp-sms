@@ -15,6 +15,7 @@ use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\EasySendSmsProvider;
 use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
 use WSms\Messaging\Gateway\Provider\GunismsProvider;
+use WSms\Messaging\Gateway\Provider\HelloSmsProvider;
 use WSms\Messaging\Gateway\Provider\InfobipProvider;
 use WSms\Messaging\Gateway\Provider\KavenegarProvider;
 use WSms\Messaging\Gateway\Provider\LabsMobileProvider;
@@ -67,6 +68,7 @@ class MessagingServiceProvider implements ServiceProvider
         'mitto'          => MittoProvider::class,
         'smsto'          => SmstoProvider::class,
         'bulkgate'       => BulkgateProvider::class,
+        'hellosms'       => HelloSmsProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
