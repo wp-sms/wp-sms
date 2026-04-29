@@ -38,6 +38,7 @@ class SmscProviderTest extends AbstractProviderTestCase
                     'viber'    => ['from' => self::VIBER_FROM],
                     'whatsapp' => ['bot_number' => self::WA_BOT],
                     'telegram' => ['bot_handle' => ''],
+                    'email'    => ['from_email' => 'noreply@example.com', 'from_name' => 'WSms'],
                 ], $channelOverrides),
             ],
         ];
@@ -67,7 +68,7 @@ class SmscProviderTest extends AbstractProviderTestCase
     {
         $p = $this->createProvider();
         $this->assertSame('smsc', $p->getId());
-        $this->assertSame(['sms', 'viber', 'whatsapp', 'telegram'], $p->getSupportedChannels());
+        $this->assertSame(['sms', 'viber', 'whatsapp', 'telegram', 'email'], $p->getSupportedChannels());
     }
 
     public function testConfigSchemaShape(): void
@@ -87,6 +88,9 @@ class SmscProviderTest extends AbstractProviderTestCase
         $this->assertTrue($schema['channels']['viber']['from']['required']);
         $this->assertTrue($schema['channels']['whatsapp']['bot_number']['required']);
         $this->assertFalse($schema['channels']['telegram']['bot_handle']['required'] ?? false);
+
+        $this->assertTrue($schema['channels']['email']['from_email']['required']);
+        $this->assertFalse($schema['channels']['email']['from_name']['required'] ?? false);
     }
 
     // --- Send: SMS ---
@@ -247,6 +251,61 @@ class SmscProviderTest extends AbstractProviderTestCase
 
         $body = $GLOBALS['_test_wp_remote_post_last_args']['body'];
         $this->assertSame('@my_bot', $body['bot']);
+    }
+
+    // --- Send: Email ---
+
+    public function testSendEmailAddsMailFlagAndSubjectAndFromName(): void
+    {
+        $this->configure();
+        $this->mockHttpPost(['id' => 'em-1', 'cnt' => 1]);
+
+        $msg = new Message('email', 'recipient@example.com', '<p>Hello</p>', null, ['subject' => 'Hi there']);
+        $this->createProvider()->send($msg);
+
+        $body = $GLOBALS['_test_wp_remote_post_last_args']['body'];
+        $this->assertSame(1, $body['mail']);
+        $this->assertSame('Hi there', $body['subj']);
+        $this->assertSame('WSms <noreply@example.com>', $body['sender']);
+        // Recipient passes through unchanged — no "+" stripping for email.
+        $this->assertSame('recipient@example.com', $body['phones']);
+        $this->assertSame('<p>Hello</p>', $body['mes']);
+    }
+
+    public function testSendEmailWithoutFromNameUsesBareAddress(): void
+    {
+        $this->configure(channelOverrides: ['email' => ['from_email' => 'noreply@example.com', 'from_name' => '']]);
+        $this->mockHttpPost(['id' => 'em-2', 'cnt' => 1]);
+
+        $msg = new Message('email', 'r@example.com', 'Body', null, ['subject' => 'Subj']);
+        $this->createProvider()->send($msg);
+
+        $body = $GLOBALS['_test_wp_remote_post_last_args']['body'];
+        $this->assertSame('noreply@example.com', $body['sender']);
+    }
+
+    public function testSendEmailFailsWhenFromEmailMissing(): void
+    {
+        $this->configure(channelOverrides: ['email' => ['from_email' => '', 'from_name' => 'WSms']]);
+
+        $msg = new Message('email', 'r@example.com', 'Body', null, ['subject' => 'X']);
+        $result = $this->createProvider()->send($msg);
+
+        $this->assertFalse($result->success);
+        $this->assertStringContainsString('From Email', $result->error);
+    }
+
+    public function testSendEmailHandlesCommaSeparatedRecipientsWithoutMangling(): void
+    {
+        $this->configure();
+        $this->mockHttpPost(['id' => 'em-3', 'cnt' => 2]);
+
+        // Email recipients must NOT be passed through normalizePhones (which strips '+').
+        $msg = new Message('email', 'a@example.com,b@example.com', 'Body', null, ['subject' => 'Hi']);
+        $this->createProvider()->send($msg);
+
+        $body = $GLOBALS['_test_wp_remote_post_last_args']['body'];
+        $this->assertSame('a@example.com,b@example.com', $body['phones']);
     }
 
     // --- Send: error handling ---
@@ -590,7 +649,7 @@ class SmscProviderTest extends AbstractProviderTestCase
     public function testRequiresTemplateForChannelIsAlwaysFalse(): void
     {
         $p = $this->createProvider();
-        foreach (['sms', 'viber', 'whatsapp', 'telegram'] as $channel) {
+        foreach (['sms', 'viber', 'whatsapp', 'telegram', 'email'] as $channel) {
             $this->assertFalse($p->requiresTemplateForChannel($channel));
         }
     }

@@ -71,7 +71,7 @@ class SmscProvider extends AbstractProvider implements
 
     public function getSupportedChannels(): array
     {
-        return ['sms', 'viber', 'whatsapp', 'telegram'];
+        return ['sms', 'viber', 'whatsapp', 'telegram', 'email'];
     }
 
     public function getConfigSchema(): array
@@ -138,6 +138,22 @@ class SmscProvider extends AbstractProvider implements
                         'description' => __('Leave blank to route through SMSC\'s shared Telegram bot. To use your own bot, enter its @username after registering it in your SMSC dashboard.', 'wp-sms'),
                     ],
                 ],
+                'email' => [
+                    'from_email' => [
+                        'type'        => 'string',
+                        'label'       => __('From Email', 'wp-sms'),
+                        'required'    => true,
+                        'placeholder' => 'noreply@yourdomain.com',
+                        'description' => __('Sender address. Must be configured and verified in your SMSC dashboard under Settings → Email senders.', 'wp-sms'),
+                    ],
+                    'from_name' => [
+                        'type'        => 'string',
+                        'label'       => __('From Name', 'wp-sms'),
+                        'required'    => false,
+                        'placeholder' => 'Your Site Name',
+                        'description' => __('Display name shown in the recipient\'s inbox. Optional.', 'wp-sms'),
+                    ],
+                ],
             ],
         ];
     }
@@ -155,16 +171,17 @@ class SmscProvider extends AbstractProvider implements
         $meta    = $message->getMeta();
 
         $params = $this->baseQuery();
-        $params['phones'] = $this->normalizePhones($message->getRecipient());
+        // Email recipients are passed through as-is (comma-separated addresses);
+        // every other channel uses bare-digit MSISDNs.
+        $params['phones'] = $channel === 'email'
+            ? $message->getRecipient()
+            : $this->normalizePhones($message->getRecipient());
         $params['mes']    = $message->getBody();
 
         // Channel routing — SMSC uses flags on a single send.php endpoint.
         // TODO(voice): SMSC supports send.php?call=1&voice=m|w (IVR delivery);
         //   defer until WSMS adds 'voice' to recognized channels.
-        // TODO(email): SMSC supports send.php?mail=1&subj=... (email delivery
-        //   from the SMS account), but WSMS routes email through
-        //   WpMailGateway/MailtrapGateway, not gateway provider classes.
-        $channelResult = $this->applyChannelToggle($params, $channel);
+        $channelResult = $this->applyChannelToggle($params, $channel, $message);
         if ($channelResult instanceof DeliveryResult) {
             return $channelResult;
         }
@@ -562,7 +579,7 @@ class SmscProvider extends AbstractProvider implements
      * @param array<string, mixed> $params
      * @return null|DeliveryResult
      */
-    private function applyChannelToggle(array &$params, string $channel): ?DeliveryResult
+    private function applyChannelToggle(array &$params, string $channel, MessageInterface $message): ?DeliveryResult
     {
         switch ($channel) {
             case 'sms':
@@ -596,6 +613,19 @@ class SmscProvider extends AbstractProvider implements
                 } else {
                     $params['tg'] = 1;
                 }
+                return null;
+
+            case 'email':
+                $fromEmail = (string) $this->getChannelConfig('email', 'from_email', '');
+                if ($fromEmail === '') {
+                    return DeliveryResult::failed(__('SMSC From Email is not configured', 'wp-sms'));
+                }
+                $fromName = (string) $this->getChannelConfig('email', 'from_name', '');
+                $params['mail']   = 1;
+                $params['sender'] = $fromName !== ''
+                    ? sprintf('%s <%s>', $fromName, $fromEmail)
+                    : $fromEmail;
+                $params['subj']   = (string) ($message->getMeta()['subject'] ?? '');
                 return null;
         }
 
