@@ -21,6 +21,7 @@ use WSms\Messaging\Gateway\Provider\InfobipProvider;
 use WSms\Messaging\Gateway\Provider\KavenegarProvider;
 use WSms\Messaging\Gateway\Provider\LabsMobileProvider;
 use WSms\Messaging\Gateway\Provider\MittoProvider;
+use WSms\Messaging\Gateway\Provider\MsegatProvider;
 use WSms\Messaging\Gateway\Provider\MtargetProvider;
 use WSms\Messaging\Gateway\Provider\NetGsmProvider;
 use WSms\Messaging\Gateway\Provider\OctopushProvider;
@@ -30,6 +31,7 @@ use WSms\Messaging\Gateway\Provider\SinchProvider;
 use WSms\Messaging\Gateway\Provider\SmsApiProvider;
 use WSms\Messaging\Gateway\Provider\SmscProvider;
 use WSms\Messaging\Gateway\Provider\SmsGlobalProvider;
+use WSms\Messaging\Gateway\Provider\SmshostingProvider;
 use WSms\Messaging\Gateway\Provider\SmstoProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
 use WSms\Messaging\Gateway\Provider\SmsIrProvider;
@@ -75,10 +77,12 @@ class MessagingServiceProvider implements ServiceProvider
         'bulkgate'       => BulkgateProvider::class,
         'hellosms'       => HelloSmsProvider::class,
         'unifonic'       => UnifonicProvider::class,
+        'msegat'         => MsegatProvider::class,
         'wali'           => WaliProvider::class,
         'mtarget'        => MtargetProvider::class,
         'fast2sms'       => Fast2SmsProvider::class,
         'smsc'           => SmscProvider::class,
+        'smshosting'     => SmshostingProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
