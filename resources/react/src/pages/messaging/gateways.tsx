@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
-import { Search, Star, ChevronRight, Radio, Smartphone, Mail, MessageSquare, MessageCircle, Send, Check } from 'lucide-react';
+import { Search, Star, ChevronRight, Radio, Smartphone, Mail, MessageSquare, MessageCircle, MessageCircleMore, MessagesSquare, Send, Image, Phone, Check } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 import { getGatewayColor, getGatewayInitial } from '@/lib/gateway-visuals';
 import type { Gateway } from '@/lib/api';
@@ -117,6 +117,10 @@ const CHANNEL_ICONS: Record<string, React.ReactNode> = {
   whatsapp: <MessageSquare className="h-4 w-4" />,
   telegram: <Send className="h-4 w-4" />,
   line: <MessageCircle className="h-4 w-4" />,
+  viber: <MessageCircleMore className="h-4 w-4" />,
+  mms: <Image className="h-4 w-4" />,
+  rcs: <MessagesSquare className="h-4 w-4" />,
+  voice: <Phone className="h-4 w-4" />,
 };
 
 export function Gateways({ embedded }: { embedded?: boolean } = {}) {
