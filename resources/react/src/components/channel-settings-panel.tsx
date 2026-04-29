@@ -92,7 +92,7 @@ function ChannelContent({
     : 'email';
   const isWhatsApp = deliveryChannel === 'whatsapp';
   const configuredGateways = gateways.filter(
-    (g) => g.is_configured && g.supported_channels.includes(deliveryChannel),
+    (g) => g.configured_channels.includes(deliveryChannel),
   );
 
   return (
@@ -176,7 +176,7 @@ function ChannelContent({
               className="space-y-2"
             >
               {channelConfig.deliveryChannels.map((dc) => {
-                const hasGateway = dc.available && gateways.some((g) => g.is_configured && g.supported_channels.includes(dc.value));
+                const hasGateway = dc.available && gateways.some((g) => g.configured_channels.includes(dc.value));
                 const enabled = dc.available && hasGateway;
                 return (
                   <label

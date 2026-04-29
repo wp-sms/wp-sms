@@ -27,7 +27,7 @@ export function ConfigStep({ goals, authEnabled, onAuthEnabledChange, channels, 
   const { detectedIntegrations } = getConfig();
   const hasAuth = goals.includes('auth');
   const hasCampaigns = goals.includes('campaigns') || goals.includes('notifications');
-  const hasSmsGateway = gateways.some(g => g.is_configured && g.supported_channels.includes('sms'));
+  const hasSmsGateway = gateways.some(g => g.configured_channels.includes('sms'));
   const enabledCount = Object.values(channels).filter(Boolean).length;
 
   const handleChannelToggle = (key: keyof ChannelToggles, value: boolean) => {

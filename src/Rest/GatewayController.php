@@ -118,15 +118,22 @@ class GatewayController extends Controller
                     }
                 }
 
+                $supportedChannels = $gateway->getSupportedChannels();
+                $configuredChannels = array_values(array_filter(
+                    $supportedChannels,
+                    fn(string $ch) => $gateway->isConfiguredForChannel($ch),
+                ));
+
                 $gateways[] = [
-                    'id'                 => $id,
-                    'name'               => $gateway->getName(),
-                    'supported_channels' => $gateway->getSupportedChannels(),
-                    'config_schema'      => $gateway->getConfigSchema(),
-                    'is_configured'      => $gateway->isConfigured(),
-                    'config'             => $configs[$id] ?? [],
-                    'metadata'           => $metadata,
-                    'features'           => $gateway->getFeatures(),
+                    'id'                  => $id,
+                    'name'                => $gateway->getName(),
+                    'supported_channels'  => $supportedChannels,
+                    'configured_channels' => $configuredChannels,
+                    'config_schema'       => $gateway->getConfigSchema(),
+                    'is_configured'       => $gateway->isConfigured(),
+                    'config'              => $configs[$id] ?? [],
+                    'metadata'            => $metadata,
+                    'features'            => $gateway->getFeatures(),
                 ];
             }
 

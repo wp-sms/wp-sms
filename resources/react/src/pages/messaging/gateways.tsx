@@ -84,9 +84,14 @@ function GatewayCard({ gateway, getCredit, onConfigure }: {
       <CardContent className="space-y-3">
         <div className="flex flex-wrap gap-1.5">
           {gateway.supported_channels.map((ch) => {
-            const isDefault = gateway.config?.is_default?.[ch];
+            const isConfigured = gateway.configured_channels.includes(ch);
+            const isDefault = isConfigured && Boolean(gateway.config?.is_default?.[ch]);
             return (
-              <Badge key={ch} variant={isDefault ? "default" : "outline"}>
+              <Badge
+                key={ch}
+                variant={isDefault ? "default" : "outline"}
+                className={!isConfigured ? "opacity-50" : undefined}
+              >
                 {isDefault && <Star className="h-3 w-3" />}
                 {channelLabel(ch)}
               </Badge>
@@ -173,7 +178,7 @@ export function Gateways({ embedded }: { embedded?: boolean } = {}) {
 
     for (const ch of allChannels) {
       if (channelDefaults[ch]) continue;
-      const supporting = gateways.filter(g => g.supported_channels.includes(ch) && g.is_configured);
+      const supporting = gateways.filter(g => g.configured_channels.includes(ch));
       if (supporting.length !== 1) continue;
 
       const g = supporting[0];
@@ -294,7 +299,7 @@ export function Gateways({ embedded }: { embedded?: boolean } = {}) {
           </DrawerHeader>
           <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-4">
             {allChannels.filter(ch => ch !== 'webhook').map((ch) => {
-              const supportingGateways = gateways.filter((g) => g.supported_channels.includes(ch) && g.is_configured);
+              const supportingGateways = gateways.filter((g) => g.configured_channels.includes(ch));
               return (
                 <div key={ch} className="flex items-center gap-3">
                   <div className="flex items-center gap-2 w-28 shrink-0">

@@ -344,7 +344,7 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
 
   const channelGateways = useMemo(() => {
     if (!draft.channel) return [];
-    return gateways.filter((g) => g.is_configured && g.supported_channels.includes(draft.channel));
+    return gateways.filter((g) => g.configured_channels.includes(draft.channel));
   }, [draft.channel, gateways]);
 
   // Auto-select gateway when only one option

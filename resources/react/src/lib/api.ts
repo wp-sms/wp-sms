@@ -684,6 +684,7 @@ export interface Gateway {
   id: string;
   name: string;
   supported_channels: string[];
+  configured_channels: string[];
   config_schema: GatewayConfigSchema;
   is_configured: boolean;
   config: GatewayConfig;

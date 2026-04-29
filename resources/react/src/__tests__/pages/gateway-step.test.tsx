@@ -24,6 +24,7 @@ function makeGateway(overrides: Partial<Gateway> = {}): Gateway {
     id: 'twilio',
     name: 'Twilio',
     supported_channels: ['sms'],
+    configured_channels: [],
     is_configured: false,
     config: { shared: { api_key: '' }, channels: {}, is_default: {} },
     config_schema: {
