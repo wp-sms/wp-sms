@@ -32,6 +32,7 @@ use WSms\Messaging\Gateway\Provider\TwilioProvider;
 use WSms\Messaging\Gateway\Provider\SmsIrProvider;
 use WSms\Messaging\Gateway\Provider\UnifonicProvider;
 use WSms\Messaging\Gateway\Provider\VonageProvider;
+use WSms\Messaging\Gateway\Provider\WaliProvider;
 use WSms\Messaging\Gateway\Line\LineGateway;
 use WSms\Messaging\Gateway\Telegram\TelegramGateway;
 use WSms\Messaging\Gateway\TestGateway;
@@ -71,6 +72,7 @@ class MessagingServiceProvider implements ServiceProvider
         'bulkgate'       => BulkgateProvider::class,
         'hellosms'       => HelloSmsProvider::class,
         'unifonic'       => UnifonicProvider::class,
+        'wali'           => WaliProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
