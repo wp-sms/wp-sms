@@ -23,19 +23,19 @@ class TemplateCatalogController extends Controller
 
     public function registerRoutes(): void
     {
-        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/templates', [
+        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z0-9_]+)/templates', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleFetchTemplates'],
             'permission_callback' => $this->canViewSection('channels'),
         ]);
 
-        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/templates/refresh', [
+        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z0-9_]+)/templates/refresh', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleRefreshTemplates'],
             'permission_callback' => $this->canManageSection('channels'),
         ]);
 
-        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/templates/manual', [
+        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z0-9_]+)/templates/manual', [
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'handleCreateManualTemplate'],
@@ -51,7 +51,7 @@ class TemplateCatalogController extends Controller
             ],
         ]);
 
-        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/templates/manual/(?P<tid>[a-zA-Z0-9_\-]+)', [
+        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z0-9_]+)/templates/manual/(?P<tid>[a-zA-Z0-9_\-]+)', [
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'handleUpdateManualTemplate'],

@@ -49,7 +49,7 @@ class GatewayController extends Controller
             ],
         ]);
 
-        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/test', [
+        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z0-9_]+)/test', [
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'testSend'],
@@ -62,7 +62,7 @@ class GatewayController extends Controller
             ],
         ]);
 
-        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/test-connection', [
+        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z0-9_]+)/test-connection', [
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'testConnection'],
@@ -70,7 +70,7 @@ class GatewayController extends Controller
             ],
         ]);
 
-        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/credit', [
+        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z0-9_]+)/credit', [
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'getCredit'],
@@ -78,7 +78,7 @@ class GatewayController extends Controller
             ],
         ]);
 
-        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/config-options/(?P<section>[a-z_]+)/(?P<field>[a-z_]+)', [
+        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z0-9_]+)/config-options/(?P<section>[a-z_]+)/(?P<field>[a-z_]+)', [
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'configOptions'],

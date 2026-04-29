@@ -31,7 +31,7 @@ class GatewayCallbackController extends Controller
 
     public function registerRoutes(): void
     {
-        register_rest_route(self::NAMESPACE, '/callbacks/(?P<gateway_id>[a-z_]+)/status', [
+        register_rest_route(self::NAMESPACE, '/callbacks/(?P<gateway_id>[a-z0-9_]+)/status', [
             [
                 'methods'             => ['POST', 'GET'],
                 'callback'            => [$this, 'handleStatusCallback'],
@@ -39,7 +39,7 @@ class GatewayCallbackController extends Controller
             ],
         ]);
 
-        register_rest_route(self::NAMESPACE, '/callbacks/(?P<gateway_id>[a-z_]+)/inbound', [
+        register_rest_route(self::NAMESPACE, '/callbacks/(?P<gateway_id>[a-z0-9_]+)/inbound', [
             [
                 'methods'             => ['POST', 'GET'],
                 'callback'            => [$this, 'handleInboundCallback'],
