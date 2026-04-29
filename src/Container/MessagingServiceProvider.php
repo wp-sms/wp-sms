@@ -26,6 +26,7 @@ use WSms\Messaging\Gateway\Provider\MtargetProvider;
 use WSms\Messaging\Gateway\Provider\NetGsmProvider;
 use WSms\Messaging\Gateway\Provider\OctopushProvider;
 use WSms\Messaging\Gateway\Provider\OvhProvider;
+use WSms\Messaging\Gateway\Provider\OxemisProvider;
 use WSms\Messaging\Gateway\Provider\PlivoProvider;
 use WSms\Messaging\Gateway\Provider\SinchProvider;
 use WSms\Messaging\Gateway\Provider\SmsApiProvider;
@@ -87,6 +88,7 @@ class MessagingServiceProvider implements ServiceProvider
         'smshosting'     => SmshostingProvider::class,
         'textanywhere'   => TextanywhereProvider::class,
         'suresms'        => SureSmsProvider::class,
+        'oxemis'         => OxemisProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
