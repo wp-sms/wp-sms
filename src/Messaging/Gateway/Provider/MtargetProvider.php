@@ -74,7 +74,7 @@ class MtargetProvider extends AbstractProvider implements
                         'label'       => __('Sender ID', 'wp-sms'),
                         'required'    => true,
                         'description' => __('Up to 11 alphanumeric characters. Must be pre-approved by mtarget for your destination country.', 'wp-sms'),
-                        'placeholder' => 'WSMS',
+                        'placeholder' => 'MyBrand',
                     ],
                 ],
             ],
