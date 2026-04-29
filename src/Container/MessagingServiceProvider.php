@@ -11,6 +11,7 @@ use WSms\Messaging\Gateway\Email\WpMailGateway;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\Gateway\Provider\AfricasTalkingProvider;
 use WSms\Messaging\Gateway\Provider\AspSmsProvider;
+use WSms\Messaging\Gateway\Provider\EasySendSmsProvider;
 use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
 use WSms\Messaging\Gateway\Provider\GunismsProvider;
 use WSms\Messaging\Gateway\Provider\InfobipProvider;
@@ -59,6 +60,7 @@ class MessagingServiceProvider implements ServiceProvider
         'aspsms'         => AspSmsProvider::class,
         'smsglobal'      => SmsGlobalProvider::class,
         'smsapi'         => SmsApiProvider::class,
+        'easysendsms'    => EasySendSmsProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
