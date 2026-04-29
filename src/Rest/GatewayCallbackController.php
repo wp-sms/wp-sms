@@ -6,6 +6,7 @@ use WSms\Auth\RateLimiter;
 use WSms\Campaign\CampaignRepository;
 use WSms\Contact\StatusPropagator;
 use WSms\Log\Contracts\MessageLoggerInterface;
+use WSms\Messaging\Contracts\SupportsCustomCallbackResponse;
 use WSms\Messaging\Contracts\SupportsInboundMessage;
 use WSms\Messaging\Contracts\SupportsStatusCallback;
 use WSms\Messaging\Gateway\GatewayRegistry;
@@ -105,6 +106,8 @@ class GatewayCallbackController extends Controller
                 }
             }
 
+            $this->scheduleCustomCallbackBody($gateway, 'status', $request);
+
             return $this->ok();
         });
     }
@@ -152,7 +155,38 @@ class GatewayCallbackController extends Controller
                 $this->optOutManager->processInboundMessage($message, $gatewayId);
             }
 
+            $this->scheduleCustomCallbackBody($gateway, 'inbound', $request);
+
             return $this->ok();
         });
+    }
+
+    /**
+     * Some providers (e.g. SMSAPI) require the webhook receiver to reply with a
+     * specific plain-text body — not WSMS's default JSON envelope. When the
+     * gateway opts in via SupportsCustomCallbackResponse, hook the WP REST
+     * server's pre-serve filter to emit that body and short-circuit the JSON
+     * encoding for this single response.
+     */
+    private function scheduleCustomCallbackBody(mixed $gateway, string $type, \WP_REST_Request $request): void
+    {
+        if (!$gateway instanceof SupportsCustomCallbackResponse) {
+            return;
+        }
+        $body = $gateway->getCallbackResponseBody($type, $request);
+        if ($body === null) {
+            return;
+        }
+
+        add_filter('rest_pre_serve_request', static function ($served) use ($body) {
+            if ($served) {
+                return $served;
+            }
+            if (!headers_sent()) {
+                @header('Content-Type: text/plain; charset=utf-8');
+            }
+            echo $body;
+            return true;
+        }, 10, 1);
     }
 }

@@ -20,6 +20,7 @@ use WSms\Messaging\Gateway\Provider\NetGsmProvider;
 use WSms\Messaging\Gateway\Provider\OvhProvider;
 use WSms\Messaging\Gateway\Provider\PlivoProvider;
 use WSms\Messaging\Gateway\Provider\SinchProvider;
+use WSms\Messaging\Gateway\Provider\SmsApiProvider;
 use WSms\Messaging\Gateway\Provider\SmsGlobalProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
 use WSms\Messaging\Gateway\Provider\SmsIrProvider;
@@ -55,6 +56,7 @@ class MessagingServiceProvider implements ServiceProvider
         'gunisms'        => GunismsProvider::class,
         'aspsms'         => AspSmsProvider::class,
         'smsglobal'      => SmsGlobalProvider::class,
+        'smsapi'         => SmsApiProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
@@ -140,7 +142,7 @@ class MessagingServiceProvider implements ServiceProvider
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
         // Providers implementing SupportsTemplates get the catalog manager injected
-        $templateProviders = ['twilio', 'kavenegar', 'smsir', 'plivo', 'sinch', 'infobip'];
+        $templateProviders = ['twilio', 'kavenegar', 'smsir', 'plivo', 'sinch', 'infobip', 'smsapi'];
 
         foreach (self::PROVIDERS as $id => $class) {
             if (in_array($id, $templateProviders, true)) {
