@@ -33,6 +33,7 @@ use WSms\Messaging\Gateway\Provider\SmscProvider;
 use WSms\Messaging\Gateway\Provider\SmsGlobalProvider;
 use WSms\Messaging\Gateway\Provider\SmshostingProvider;
 use WSms\Messaging\Gateway\Provider\SmstoProvider;
+use WSms\Messaging\Gateway\Provider\SureSmsProvider;
 use WSms\Messaging\Gateway\Provider\TextanywhereProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
 use WSms\Messaging\Gateway\Provider\SmsIrProvider;
@@ -85,6 +86,7 @@ class MessagingServiceProvider implements ServiceProvider
         'smsc'           => SmscProvider::class,
         'smshosting'     => SmshostingProvider::class,
         'textanywhere'   => TextanywhereProvider::class,
+        'suresms'        => SureSmsProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
