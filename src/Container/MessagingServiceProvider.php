@@ -28,6 +28,7 @@ use WSms\Messaging\Gateway\Provider\OvhProvider;
 use WSms\Messaging\Gateway\Provider\PlivoProvider;
 use WSms\Messaging\Gateway\Provider\SinchProvider;
 use WSms\Messaging\Gateway\Provider\SmsApiProvider;
+use WSms\Messaging\Gateway\Provider\SmscProvider;
 use WSms\Messaging\Gateway\Provider\SmsGlobalProvider;
 use WSms\Messaging\Gateway\Provider\SmstoProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
@@ -77,6 +78,7 @@ class MessagingServiceProvider implements ServiceProvider
         'wali'           => WaliProvider::class,
         'mtarget'        => MtargetProvider::class,
         'fast2sms'       => Fast2SmsProvider::class,
+        'smsc'           => SmscProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
@@ -162,7 +164,7 @@ class MessagingServiceProvider implements ServiceProvider
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
         // Providers implementing SupportsTemplates get the catalog manager injected
-        $templateProviders = ['twilio', 'kavenegar', 'smsir', 'plivo', 'sinch', 'infobip', 'smsapi', 'fast2sms'];
+        $templateProviders = ['twilio', 'kavenegar', 'smsir', 'plivo', 'sinch', 'infobip', 'smsapi', 'fast2sms', 'smsc'];
 
         foreach (self::PROVIDERS as $id => $class) {
             if (in_array($id, $templateProviders, true)) {
