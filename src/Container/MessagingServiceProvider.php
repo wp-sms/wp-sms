@@ -12,6 +12,7 @@ use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\Gateway\Provider\AfricasTalkingProvider;
 use WSms\Messaging\Gateway\Provider\AspSmsProvider;
 use WSms\Messaging\Gateway\Provider\BulkgateProvider;
+use WSms\Messaging\Gateway\Provider\CellsyntProvider;
 use WSms\Messaging\Gateway\Provider\EasySendSmsProvider;
 use WSms\Messaging\Gateway\Provider\Fast2SmsProvider;
 use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
@@ -78,6 +79,7 @@ class MessagingServiceProvider implements ServiceProvider
         'mitto'          => MittoProvider::class,
         'smsto'          => SmstoProvider::class,
         'bulkgate'       => BulkgateProvider::class,
+        'cellsynt'       => CellsyntProvider::class,
         'hellosms'       => HelloSmsProvider::class,
         'unifonic'       => UnifonicProvider::class,
         'msegat'         => MsegatProvider::class,
