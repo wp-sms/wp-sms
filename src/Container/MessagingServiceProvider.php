@@ -11,6 +11,7 @@ use WSms\Messaging\Gateway\Email\WpMailGateway;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\Gateway\Provider\AfricasTalkingProvider;
 use WSms\Messaging\Gateway\Provider\AspSmsProvider;
+use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\EasySendSmsProvider;
 use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
 use WSms\Messaging\Gateway\Provider\GunismsProvider;
@@ -65,6 +66,7 @@ class MessagingServiceProvider implements ServiceProvider
         'easysendsms'    => EasySendSmsProvider::class,
         'mitto'          => MittoProvider::class,
         'smsto'          => SmstoProvider::class,
+        'bulkgate'       => BulkgateProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
