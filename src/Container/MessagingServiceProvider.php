@@ -10,6 +10,7 @@ use WSms\Messaging\Gateway\Email\MailtrapGateway;
 use WSms\Messaging\Gateway\Email\WpMailGateway;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\Gateway\Provider\AfricasTalkingProvider;
+use WSms\Messaging\Gateway\Provider\AspSmsProvider;
 use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
 use WSms\Messaging\Gateway\Provider\GunismsProvider;
 use WSms\Messaging\Gateway\Provider\InfobipProvider;
@@ -51,6 +52,7 @@ class MessagingServiceProvider implements ServiceProvider
         'infobip'        => InfobipProvider::class,
         'gatewayapi'     => GatewayApiProvider::class,
         'gunisms'        => GunismsProvider::class,
+        'aspsms'         => AspSmsProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
