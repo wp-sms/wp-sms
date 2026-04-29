@@ -33,6 +33,7 @@ use WSms\Messaging\Gateway\Provider\SmscProvider;
 use WSms\Messaging\Gateway\Provider\SmsGlobalProvider;
 use WSms\Messaging\Gateway\Provider\SmshostingProvider;
 use WSms\Messaging\Gateway\Provider\SmstoProvider;
+use WSms\Messaging\Gateway\Provider\TextanywhereProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
 use WSms\Messaging\Gateway\Provider\SmsIrProvider;
 use WSms\Messaging\Gateway\Provider\UnifonicProvider;
@@ -83,6 +84,7 @@ class MessagingServiceProvider implements ServiceProvider
         'fast2sms'       => Fast2SmsProvider::class,
         'smsc'           => SmscProvider::class,
         'smshosting'     => SmshostingProvider::class,
+        'textanywhere'   => TextanywhereProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
