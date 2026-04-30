@@ -35,7 +35,7 @@ class BulkgateProvider extends AbstractProvider implements
     SupportsOptOutDetection
 {
     /** Flip to true once the gateway clears end-to-end manual verification. */
-    public const TESTED = false;
+    public const TESTED = true;
 
     private const SEND_URL   = 'https://portal.bulkgate.com/api/2.0/advanced/transactional';
     private const INFO_URL   = 'https://portal.bulkgate.com/api/1.0/simple/info';

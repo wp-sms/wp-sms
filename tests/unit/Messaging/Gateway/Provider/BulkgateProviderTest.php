@@ -59,9 +59,9 @@ class BulkgateProviderTest extends AbstractProviderTestCase
         $this->assertSame(['sms', 'viber', 'rcs', 'whatsapp'], $p->getSupportedChannels());
     }
 
-    public function testTestedFlagIsFalseUntilManuallyVerified(): void
+    public function testTestedFlagIsTrueAfterManualVerification(): void
     {
-        $this->assertFalse(BulkgateProvider::TESTED);
+        $this->assertTrue(BulkgateProvider::TESTED);
     }
 
     public function testConfigSchemaShape(): void
