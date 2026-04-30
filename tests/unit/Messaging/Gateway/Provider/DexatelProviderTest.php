@@ -207,12 +207,22 @@ class DexatelProviderTest extends AbstractProviderTestCase
 
     // --- getCredit ---
 
-    public function testGetCreditReturnsBalanceFromAccountEndpoint(): void
+    public function testGetCreditReturnsBalanceFromAccountsListShape(): void
     {
+        // /v1/accounts may return data as an array of accounts.
         $this->configure();
-        $this->mockHttpGet(['data' => ['balance' => '125.50', 'currency' => 'USD']]);
+        $this->mockHttpGet(['data' => [['balance' => '125.50', 'currency' => 'USD']]]);
 
         $this->assertSame('125.50 USD', $this->createProvider()->getCredit());
+    }
+
+    public function testGetCreditReturnsBalanceFromSingleAccountShape(): void
+    {
+        // ...or it may return data as a single account object.
+        $this->configure();
+        $this->mockHttpGet(['data' => ['balance' => '7.25', 'currency' => 'EUR']]);
+
+        $this->assertSame('7.25 EUR', $this->createProvider()->getCredit());
     }
 
     public function testGetCreditReturnsNullOnError(): void

@@ -164,7 +164,7 @@ class DexatelProvider extends AbstractProvider implements
             return null;
         }
 
-        $result = $this->httpGet(self::API_BASE . '/v1/account', [
+        $result = $this->httpGet(self::API_BASE . '/v1/accounts', [
             'headers' => ['X-Dexatel-Key' => $apiKey, 'Accept' => 'application/json'],
         ]);
 
@@ -173,8 +173,16 @@ class DexatelProvider extends AbstractProvider implements
         }
 
         $data = json_decode($result['body'], true);
-        $balance  = $data['data']['balance']  ?? null;
-        $currency = $data['data']['currency'] ?? '';
+
+        // /v1/accounts may return either a list ({"data": [{...}]}) or a single
+        // object ({"data": {...}}); accept both.
+        $account = $data['data'][0] ?? $data['data'] ?? null;
+        if (!is_array($account)) {
+            return null;
+        }
+
+        $balance  = $account['balance']  ?? null;
+        $currency = $account['currency'] ?? '';
 
         if ($balance === null) {
             return null;
