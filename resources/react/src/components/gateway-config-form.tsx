@@ -144,9 +144,15 @@ function ConfigField({ fieldKey, field, value, onChange }: {
   );
 }
 
-function isFieldVisible(field: GatewayConfigField, values: Record<string, unknown>): boolean {
+function isFieldVisible(
+  field: GatewayConfigField,
+  values: Record<string, unknown>,
+  sectionSchema: Record<string, GatewayConfigField>,
+): boolean {
   if (!field.show_if) return true;
-  return values[field.show_if.field] === field.show_if.equals;
+  const depField = sectionSchema[field.show_if.field];
+  const current = values[field.show_if.field] ?? depField?.default;
+  return current === field.show_if.equals;
 }
 
 export function GatewayConfigForm({ gatewayId, schema, values, supportedChannels, onChange }: GatewayConfigFormProps) {
@@ -179,7 +185,7 @@ export function GatewayConfigForm({ gatewayId, schema, values, supportedChannels
         <div className="space-y-4">
           <h4 className="text-sm font-medium">{__('Credentials', 'wp-sms')}</h4>
           {Object.entries(schema.shared)
-            .filter(([, field]) => isFieldVisible(field, shared))
+            .filter(([, field]) => isFieldVisible(field, shared, schema.shared))
             .map(([key, field]) => (
               <ConfigField
                 key={key}
@@ -196,7 +202,7 @@ export function GatewayConfigForm({ gatewayId, schema, values, supportedChannels
         <div key={channel} className="space-y-4">
           <h4 className="text-sm font-medium">{channelLabel(channel)} {__('Settings', 'wp-sms')}</h4>
           {Object.entries(schema.channels[channel])
-            .filter(([, field]) => isFieldVisible(field, channels[channel] ?? {}))
+            .filter(([, field]) => isFieldVisible(field, channels[channel] ?? {}, schema.channels[channel]))
             .map(([key, field]) =>
               field.dynamic ? (
                 <DynamicConfigField
