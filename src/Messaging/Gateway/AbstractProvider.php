@@ -40,13 +40,9 @@ abstract class AbstractProvider implements GatewayInterface
     {
         $schema = $this->getConfigSchema();
         $shared = $config['shared'] ?? [];
-        $sharedSchema = $schema['shared'] ?? [];
 
-        foreach ($sharedSchema as $key => $field) {
-            if (!empty($field['required'])
-                && $this->isFieldVisible($field, $shared, $sharedSchema)
-                && empty($shared[$key])
-            ) {
+        foreach ($schema['shared'] ?? [] as $key => $field) {
+            if (!empty($field['required']) && empty($shared[$key])) {
                 return false;
             }
         }
@@ -62,15 +58,10 @@ abstract class AbstractProvider implements GatewayInterface
         }
 
         $schema = $this->getConfigSchema();
-        $shared = $config['shared'] ?? [];
-        $sharedSchema = $schema['shared'] ?? [];
 
-        // Check all required shared fields (skip those hidden by an unmet show_if)
-        foreach ($sharedSchema as $key => $field) {
-            if (!empty($field['required'])
-                && $this->isFieldVisible($field, $shared, $sharedSchema)
-                && empty($shared[$key])
-            ) {
+        // Check all required shared fields
+        foreach ($schema['shared'] ?? [] as $key => $field) {
+            if (!empty($field['required']) && empty($config['shared'][$key])) {
                 return false;
             }
         }
@@ -102,15 +93,10 @@ abstract class AbstractProvider implements GatewayInterface
         }
 
         $schema = $this->getConfigSchema();
-        $shared = $config['shared'] ?? [];
-        $sharedSchema = $schema['shared'] ?? [];
 
-        // Check shared required fields (skip those hidden by an unmet show_if)
-        foreach ($sharedSchema as $key => $field) {
-            if (!empty($field['required'])
-                && $this->isFieldVisible($field, $shared, $sharedSchema)
-                && empty($shared[$key])
-            ) {
+        // Check shared required fields
+        foreach ($schema['shared'] ?? [] as $key => $field) {
+            if (!empty($field['required']) && empty($config['shared'][$key])) {
                 return false;
             }
         }
@@ -302,41 +288,11 @@ abstract class AbstractProvider implements GatewayInterface
         $channelConfig = $channel ? ($config['channels'][$channel] ?? []) : [];
 
         foreach ($channelSchema as $key => $field) {
-            if (!empty($field['required'])
-                && $this->isFieldVisible($field, $channelConfig, $channelSchema)
-                && empty($channelConfig[$key])
-            ) {
+            if (!empty($field['required']) && empty($channelConfig[$key])) {
                 return false;
             }
         }
 
         return true;
-    }
-
-    /**
-     * Whether a config field should be considered active given the current values.
-     *
-     * Mirrors the dashboard's show_if logic so backend validation matches the form
-     * the user sees: a hidden field is not required, even if its schema says so.
-     * Falls back to the dependency field's default when no value is saved yet.
-     *
-     * @param array $field         The field schema entry being checked.
-     * @param array $sectionValues Saved values for the same section (shared or one channel).
-     * @param array $sectionSchema Full schema for the same section.
-     */
-    protected function isFieldVisible(array $field, array $sectionValues, array $sectionSchema): bool
-    {
-        if (empty($field['show_if']) || !is_array($field['show_if'])) {
-            return true;
-        }
-        $depKey = $field['show_if']['field'] ?? null;
-        if ($depKey === null) {
-            return true;
-        }
-        $expected = $field['show_if']['equals'] ?? null;
-        $depDefault = $sectionSchema[$depKey]['default'] ?? null;
-        $current = $sectionValues[$depKey] ?? $depDefault;
-
-        return $current === $expected;
     }
 }
