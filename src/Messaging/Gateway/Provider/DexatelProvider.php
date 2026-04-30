@@ -159,36 +159,11 @@ class DexatelProvider extends AbstractProvider implements
 
     public function getCredit(): ?string
     {
-        $apiKey = $this->getSharedConfig('api_key');
-        if (!$apiKey) {
-            return null;
-        }
-
-        $result = $this->httpGet(self::API_BASE . '/v1/accounts', [
-            'headers' => ['X-Dexatel-Key' => $apiKey, 'Accept' => 'application/json'],
-        ]);
-
-        if ($result instanceof DeliveryResult || $result['code'] < 200 || $result['code'] >= 300) {
-            return null;
-        }
-
-        $data = json_decode($result['body'], true);
-
-        // /v1/accounts may return either a list ({"data": [{...}]}) or a single
-        // object ({"data": {...}}); accept both.
-        $account = $data['data'][0] ?? $data['data'] ?? null;
-        if (!is_array($account)) {
-            return null;
-        }
-
-        $balance  = $account['balance']  ?? null;
-        $currency = $account['currency'] ?? '';
-
-        if ($balance === null) {
-            return null;
-        }
-
-        return trim((string) $balance . ' ' . $currency);
+        // Dexatel's REST API does not expose balance to API-key callers.
+        // /v1/accounts has no balance field; /v1/payments and /v1/payments/balance
+        // exist but return 403 for API-key auth. Operators check the balance in
+        // the Dexatel dashboard.
+        return null;
     }
 
     public function testConnection(): TestConnectionResult

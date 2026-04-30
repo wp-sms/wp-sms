@@ -207,35 +207,12 @@ class DexatelProviderTest extends AbstractProviderTestCase
 
     // --- getCredit ---
 
-    public function testGetCreditReturnsBalanceFromAccountsListShape(): void
+    public function testGetCreditAlwaysReturnsNull(): void
     {
-        // /v1/accounts may return data as an array of accounts.
+        // Dexatel's REST API does not expose balance to API-key callers; the
+        // provider returns null without making any HTTP call so admins check
+        // the Dexatel dashboard for balance.
         $this->configure();
-        $this->mockHttpGet(['data' => [['balance' => '125.50', 'currency' => 'USD']]]);
-
-        $this->assertSame('125.50 USD', $this->createProvider()->getCredit());
-    }
-
-    public function testGetCreditReturnsBalanceFromSingleAccountShape(): void
-    {
-        // ...or it may return data as a single account object.
-        $this->configure();
-        $this->mockHttpGet(['data' => ['balance' => '7.25', 'currency' => 'EUR']]);
-
-        $this->assertSame('7.25 EUR', $this->createProvider()->getCredit());
-    }
-
-    public function testGetCreditReturnsNullOnError(): void
-    {
-        $this->configure();
-        $this->mockHttpGet(['error' => 'unauth'], 401);
-
-        $this->assertNull($this->createProvider()->getCredit());
-    }
-
-    public function testGetCreditReturnsNullWhenApiKeyMissing(): void
-    {
-        $GLOBALS['_test_options']['wsms_gateway_configs'] = ['dexatel' => ['shared' => []]];
         $this->assertNull($this->createProvider()->getCredit());
     }
 
