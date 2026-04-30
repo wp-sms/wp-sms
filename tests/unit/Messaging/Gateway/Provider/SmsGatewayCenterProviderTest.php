@@ -105,6 +105,73 @@ class SmsGatewayCenterProviderTest extends AbstractProviderTestCase
         $this->assertArrayHasKey('webhook_token', $schema['shared']);
     }
 
+    public function testIsConfiguredAcceptsCredentialsWithoutApiKey(): void
+    {
+        $GLOBALS['_test_options']['wsms_gateway_configs'] = [
+            'smsgatewaycenter' => [
+                'shared' => [
+                    'auth_method' => 'credentials',
+                    'user_id'     => self::USER_ID,
+                    'password'    => self::PASSWORD,
+                ],
+                'channels' => ['sms' => ['sender_id' => self::SENDER_ID]],
+            ],
+        ];
+
+        $this->assertTrue($this->createProvider()->isConfigured());
+    }
+
+    public function testIsConfiguredAcceptsApiKeyWithoutUserIdPassword(): void
+    {
+        $this->configureWithApiKey();
+        $this->assertTrue($this->createProvider()->isConfigured());
+    }
+
+    public function testIsConfiguredFalseWhenSelectedAuthMethodIncomplete(): void
+    {
+        $GLOBALS['_test_options']['wsms_gateway_configs'] = [
+            'smsgatewaycenter' => [
+                'shared'   => ['auth_method' => 'credentials', 'user_id' => self::USER_ID],
+                'channels' => ['sms' => ['sender_id' => self::SENDER_ID]],
+            ],
+        ];
+
+        $this->assertFalse($this->createProvider()->isConfigured());
+    }
+
+    public function testValidateConfigSkipsHiddenRequiredFields(): void
+    {
+        $p = $this->createProvider();
+
+        $this->assertTrue($p->validateConfig([
+            'shared' => [
+                'auth_method' => 'credentials',
+                'user_id'     => 'u',
+                'password'    => 'p',
+            ],
+        ]));
+
+        $this->assertTrue($p->validateConfig([
+            'shared' => [
+                'auth_method' => 'api_key',
+                'api_key'     => 'k',
+            ],
+        ]));
+    }
+
+    public function testValidateConfigUsesDefaultAuthMethodForVisibility(): void
+    {
+        // Without an explicit auth_method the field's default ('api_key') drives
+        // show_if: api_key is treated as visible/required while user_id and
+        // password are correctly hidden and not required.
+        $p = $this->createProvider();
+
+        $this->assertTrue($p->validateConfig([
+            'shared' => ['auth_method' => 'api_key', 'api_key' => 'k'],
+        ]));
+        $this->assertFalse($p->validateConfig(['shared' => ['auth_method' => 'api_key']]));
+    }
+
     // --- Send: SMS with API key auth ---
 
     public function testSendSmsWithApiKeyPostsFormEncodedBodyAndApikeyHeader(): void
