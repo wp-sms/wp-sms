@@ -642,6 +642,7 @@ export interface GatewayConfigField {
   options?: { value: string; label: string }[];
   dynamic?: boolean;
   depends_on?: string[];
+  show_if?: { field: string; equals: string | number | boolean };
 }
 
 export interface GatewayConfigSchema {
