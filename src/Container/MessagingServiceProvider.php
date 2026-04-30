@@ -42,7 +42,7 @@ use WSms\Messaging\Gateway\Provider\SmshostingProvider;
 use WSms\Messaging\Gateway\Provider\SmstoProvider;
 use WSms\Messaging\Gateway\Provider\SpotHitProvider;
 use WSms\Messaging\Gateway\Provider\SureSmsProvider;
-use WSms\Messaging\Gateway\Provider\TextanywhereProvider;
+use WSms\Messaging\Gateway\Provider\TextAnywhereProvider;
 use WSms\Messaging\Gateway\Provider\TextplodeProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
 use WSms\Messaging\Gateway\Provider\SmsIrProvider;
@@ -98,7 +98,7 @@ class MessagingServiceProvider implements ServiceProvider
         'smsc'           => SmscProvider::class,
         'spothit'        => SpotHitProvider::class,
         'smshosting'     => SmshostingProvider::class,
-        'textanywhere'   => TextanywhereProvider::class,
+        'textanywhere'   => TextAnywhereProvider::class,
         'suresms'        => SureSmsProvider::class,
         'oxemis'         => OxemisProvider::class,
         'verimor'        => VerimorProvider::class,
