@@ -26,6 +26,7 @@ use WSms\Messaging\Gateway\Provider\MsegatProvider;
 use WSms\Messaging\Gateway\Provider\MtargetProvider;
 use WSms\Messaging\Gateway\Provider\NetGsmProvider;
 use WSms\Messaging\Gateway\Provider\OctopushProvider;
+use WSms\Messaging\Gateway\Provider\OurSmsProvider;
 use WSms\Messaging\Gateway\Provider\OvhProvider;
 use WSms\Messaging\Gateway\Provider\OxemisProvider;
 use WSms\Messaging\Gateway\Provider\PlivoProvider;
@@ -97,6 +98,7 @@ class MessagingServiceProvider implements ServiceProvider
         'oxemis'         => OxemisProvider::class,
         'verimor'        => VerimorProvider::class,
         'smsgatewayhub'  => SmsGatewayHubProvider::class,
+        'oursms'         => OurSmsProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
