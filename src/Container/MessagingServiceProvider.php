@@ -15,6 +15,7 @@ use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\CellsyntProvider;
 use WSms\Messaging\Gateway\Provider\EasySendSmsProvider;
 use WSms\Messaging\Gateway\Provider\Fast2SmsProvider;
+use WSms\Messaging\Gateway\Provider\FortyTwoProvider;
 use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
 use WSms\Messaging\Gateway\Provider\GunismsProvider;
 use WSms\Messaging\Gateway\Provider\HelloSmsProvider;
@@ -99,6 +100,7 @@ class MessagingServiceProvider implements ServiceProvider
         'verimor'        => VerimorProvider::class,
         'smsgatewayhub'  => SmsGatewayHubProvider::class,
         'oursms'         => OurSmsProvider::class,
+        'fortytwo'       => FortyTwoProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
