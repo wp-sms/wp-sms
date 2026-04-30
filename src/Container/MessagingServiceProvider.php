@@ -42,6 +42,7 @@ use WSms\Messaging\Gateway\Provider\SmsGlobalProvider;
 use WSms\Messaging\Gateway\Provider\SmshostingProvider;
 use WSms\Messaging\Gateway\Provider\SmspointProvider;
 use WSms\Messaging\Gateway\Provider\SmstoProvider;
+use WSms\Messaging\Gateway\Provider\SpiriusProvider;
 use WSms\Messaging\Gateway\Provider\SpotHitProvider;
 use WSms\Messaging\Gateway\Provider\SureSmsProvider;
 use WSms\Messaging\Gateway\Provider\TextAnywhereProvider;
@@ -111,6 +112,7 @@ class MessagingServiceProvider implements ServiceProvider
         'textplode'      => TextplodeProvider::class,
         'smses'          => SmsesProvider::class,
         'smspoint'       => SmspointProvider::class,
+        'spirius'        => SpiriusProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
