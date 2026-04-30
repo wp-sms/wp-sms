@@ -13,6 +13,7 @@ use WSms\Messaging\Gateway\Provider\AfricasTalkingProvider;
 use WSms\Messaging\Gateway\Provider\AspSmsProvider;
 use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\CellsyntProvider;
+use WSms\Messaging\Gateway\Provider\DexatelProvider;
 use WSms\Messaging\Gateway\Provider\EasySendSmsProvider;
 use WSms\Messaging\Gateway\Provider\Fast2SmsProvider;
 use WSms\Messaging\Gateway\Provider\FortyTwoProvider;
@@ -85,6 +86,7 @@ class MessagingServiceProvider implements ServiceProvider
         'smsto'          => SmstoProvider::class,
         'bulkgate'       => BulkgateProvider::class,
         'cellsynt'       => CellsyntProvider::class,
+        'dexatel'        => DexatelProvider::class,
         'hellosms'       => HelloSmsProvider::class,
         'unifonic'       => UnifonicProvider::class,
         'msegat'         => MsegatProvider::class,
