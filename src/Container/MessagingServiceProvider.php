@@ -35,6 +35,7 @@ use WSms\Messaging\Gateway\Provider\PlivoProvider;
 use WSms\Messaging\Gateway\Provider\SinchProvider;
 use WSms\Messaging\Gateway\Provider\SmsApiProvider;
 use WSms\Messaging\Gateway\Provider\SmscProvider;
+use WSms\Messaging\Gateway\Provider\SmsesProvider;
 use WSms\Messaging\Gateway\Provider\SmsGatewayCenterProvider;
 use WSms\Messaging\Gateway\Provider\SmsGatewayHubProvider;
 use WSms\Messaging\Gateway\Provider\SmsGlobalProvider;
@@ -107,6 +108,7 @@ class MessagingServiceProvider implements ServiceProvider
         'oursms'         => OurSmsProvider::class,
         'fortytwo'       => FortyTwoProvider::class,
         'textplode'      => TextplodeProvider::class,
+        'smses'          => SmsesProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
