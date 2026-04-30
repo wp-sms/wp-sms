@@ -42,6 +42,7 @@ use WSms\Messaging\Gateway\Provider\SmstoProvider;
 use WSms\Messaging\Gateway\Provider\SpotHitProvider;
 use WSms\Messaging\Gateway\Provider\SureSmsProvider;
 use WSms\Messaging\Gateway\Provider\TextanywhereProvider;
+use WSms\Messaging\Gateway\Provider\TextplodeProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
 use WSms\Messaging\Gateway\Provider\SmsIrProvider;
 use WSms\Messaging\Gateway\Provider\UnifonicProvider;
@@ -103,6 +104,7 @@ class MessagingServiceProvider implements ServiceProvider
         'smsgatewayhub'  => SmsGatewayHubProvider::class,
         'oursms'         => OurSmsProvider::class,
         'fortytwo'       => FortyTwoProvider::class,
+        'textplode'      => TextplodeProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
