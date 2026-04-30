@@ -35,6 +35,7 @@ use WSms\Messaging\Gateway\Provider\SmscProvider;
 use WSms\Messaging\Gateway\Provider\SmsGlobalProvider;
 use WSms\Messaging\Gateway\Provider\SmshostingProvider;
 use WSms\Messaging\Gateway\Provider\SmstoProvider;
+use WSms\Messaging\Gateway\Provider\SpotHitProvider;
 use WSms\Messaging\Gateway\Provider\SureSmsProvider;
 use WSms\Messaging\Gateway\Provider\TextanywhereProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
@@ -88,6 +89,7 @@ class MessagingServiceProvider implements ServiceProvider
         'mtarget'        => MtargetProvider::class,
         'fast2sms'       => Fast2SmsProvider::class,
         'smsc'           => SmscProvider::class,
+        'spothit'        => SpotHitProvider::class,
         'smshosting'     => SmshostingProvider::class,
         'textanywhere'   => TextanywhereProvider::class,
         'suresms'        => SureSmsProvider::class,
