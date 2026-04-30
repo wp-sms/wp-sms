@@ -84,15 +84,57 @@ class SmspointProviderTest extends AbstractProviderTestCase
         $this->assertNull($result->providerId);
     }
 
-    public function testSendReturnsFailedOnSuccessFalseWithErrorMessage(): void
+    public function testSendReturnsFailedOnLegacySuccessFalseWithErrorMessage(): void
     {
         $this->configure();
-        $this->mockHttpPost(['success' => false, 'errorMessage' => "Token hasn't been provided"]);
+        // The published README documents this shape; live API uses RFC 7807
+        // problem-details, but we keep this fallback for resilience.
+        $GLOBALS['_test_wp_remote_post'] = [
+            'body'     => json_encode(['success' => false, 'errorMessage' => "Token hasn't been provided"]),
+            'response' => ['code' => 400],
+        ];
 
         $result = $this->createProvider()->send($this->createMessage());
 
         $this->assertFalse($result->success);
         $this->assertSame("Token hasn't been provided", $result->error);
+    }
+
+    public function testSendSurfacesRfc7807ViolationProblem(): void
+    {
+        $this->configure();
+        $this->mockHttpPost([
+            'type'       => 'ViolationProblem',
+            'title'      => 'Constraint Violation',
+            'status'     => 422,
+            'instance'   => '/api/v1/sms/send [POST]',
+            'violations' => [
+                ['field' => 'phone', 'message' => 'must match "^[+|0]{0,2}[0-9]{9,11}$"'],
+            ],
+        ], 422);
+
+        $result = $this->createProvider()->send($this->createMessage());
+
+        $this->assertFalse($result->success);
+        $this->assertStringContainsString('phone', $result->error);
+        $this->assertStringContainsString('^[+|0]{0,2}[0-9]{9,11}$', $result->error);
+    }
+
+    public function testSendSurfacesRfc7807CommonProblemDetail(): void
+    {
+        $this->configure();
+        $this->mockHttpPost([
+            'type'     => 'CommonProblem',
+            'title'    => 'Bad Request',
+            'status'   => 400,
+            'detail'   => 'UNKNOWN_API_TOKEN',
+            'instance' => '/api/v1/sms/send [POST]',
+        ], 400);
+
+        $result = $this->createProvider()->send($this->createMessage());
+
+        $this->assertFalse($result->success);
+        $this->assertStringContainsString('UNKNOWN_API_TOKEN', $result->error);
     }
 
     public function testSendStripsLeadingPlusFromRecipient(): void
@@ -167,15 +209,33 @@ class SmspointProviderTest extends AbstractProviderTestCase
         $this->assertStringContainsString('not configured', $result->error);
     }
 
-    public function testSendFallsBackToHttpCodeWhenResponseHasNoErrorMessage(): void
+    public function testSendFallsBackToHttpCodeWhenResponseHasNoStructuredError(): void
     {
         $this->configure();
-        $this->mockHttpPost(['success' => false], 502);
+        $GLOBALS['_test_wp_remote_post'] = [
+            'body'     => '<html>Bad Gateway</html>',
+            'response' => ['code' => 502],
+        ];
 
         $result = $this->createProvider()->send($this->createMessage());
 
         $this->assertFalse($result->success);
         $this->assertStringContainsString('502', $result->error);
+    }
+
+    public function testSendTreats2xxAsSuccessEvenWithEmptyBody(): void
+    {
+        // The live API may return 200 or 201 with a non-{success:true} body.
+        // Anything in the 2xx range without an explicit {success:false} is success.
+        $this->configure();
+        $GLOBALS['_test_wp_remote_post'] = [
+            'body'     => '',
+            'response' => ['code' => 200],
+        ];
+
+        $result = $this->createProvider()->send($this->createMessage());
+
+        $this->assertTrue($result->success);
     }
 
     // --- Inherited defaults (the registry's features.{test_connection,delivery_receipt}=false relies on these) ---

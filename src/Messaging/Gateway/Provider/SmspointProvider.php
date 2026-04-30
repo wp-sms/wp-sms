@@ -14,9 +14,14 @@ defined('ABSPATH') || exit;
  * Auth: X-Auth-Token header carrying a UUID generated/regenerated in the
  * SMSpoint panel.
  * Send: POST https://app.smspoint.de/public/api/v1/sms/send
- *       body { senderName, body, phone } — phone without leading "+".
- *       Response { "success": true } or { "success": false, "errorMessage": "..." }
- *       (HTTP 200 in both cases; no message ID returned).
+ *       body { senderName, body, phone } — phone without leading "+",
+ *       constrained to the API regex ^[+|0]{0,2}[0-9]{9,11}$ (max 11 digits).
+ *       Live API responses are RFC 7807 problem-details: HTTP 2xx on
+ *       success (legacy README also shows {"success": true}); HTTP 400
+ *       CommonProblem with detail=MISSING_API_TOKEN / UNKNOWN_API_TOKEN
+ *       on auth failures; HTTP 422 ViolationProblem with violations[]
+ *       on field-validation failures. No message ID is returned on
+ *       success.
  *
  * Capabilities the provider does NOT publicly document and which are therefore
  * intentionally absent: balance lookup, test-connection endpoint, DLR webhook
@@ -59,7 +64,7 @@ class SmspointProvider extends AbstractProvider
                         'type'        => 'string',
                         'label'       => __('Sender Name', 'wp-sms'),
                         'required'    => true,
-                        'description' => __('Alphanumeric sender ID — max 11 characters.', 'wp-sms'),
+                        'description' => __('Up to 13 ASCII characters — alphanumeric or numeric.', 'wp-sms'),
                         'placeholder' => 'Company ABC',
                     ],
                 ],
@@ -96,15 +101,45 @@ class SmspointProvider extends AbstractProvider
         }
 
         $data = json_decode($result['body'], true);
+        $code = $result['code'];
 
-        if (is_array($data) && ($data['success'] ?? false) === true) {
+        if ($code >= 200 && $code < 300 && (!is_array($data) || ($data['success'] ?? true) !== false)) {
             return DeliveryResult::sent();
         }
 
-        $errorMessage = is_array($data) ? ($data['errorMessage'] ?? null) : null;
+        return DeliveryResult::failed($this->formatError($data, $code));
+    }
 
-        return DeliveryResult::failed(
-            $errorMessage ?? sprintf(__('SMSpoint send failed (HTTP %d)', 'wp-sms'), $result['code']),
-        );
+    /**
+     * Format an API error from either the legacy {success,errorMessage} shape
+     * or the live RFC 7807 problem-details shape (ViolationProblem for 422
+     * field validation, CommonProblem for 400 with a `detail` slug like
+     * UNKNOWN_API_TOKEN).
+     */
+    private function formatError(mixed $data, int $code): string
+    {
+        if (!is_array($data)) {
+            return sprintf(__('SMSpoint send failed (HTTP %d)', 'wp-sms'), $code);
+        }
+
+        if (!empty($data['violations']) && is_array($data['violations'])) {
+            $parts = [];
+            foreach ($data['violations'] as $v) {
+                $field = $v['field'] ?? '';
+                $msg = $v['message'] ?? '';
+                $parts[] = $field !== '' ? sprintf('%s: %s', $field, $msg) : $msg;
+            }
+            return sprintf(__('SMSpoint validation error — %s', 'wp-sms'), implode('; ', array_filter($parts)));
+        }
+
+        if (!empty($data['detail'])) {
+            return sprintf(__('SMSpoint error — %s', 'wp-sms'), $data['detail']);
+        }
+
+        if (!empty($data['errorMessage'])) {
+            return (string) $data['errorMessage'];
+        }
+
+        return sprintf(__('SMSpoint send failed (HTTP %d)', 'wp-sms'), $code);
     }
 }
