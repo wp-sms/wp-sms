@@ -12,8 +12,6 @@ use WSms\Tests\Unit\Messaging\Gateway\AbstractProviderTestCase;
 class SmsGatewayCenterProviderTest extends AbstractProviderTestCase
 {
     private const API_KEY = 'test-api-key-xyz';
-    private const USER_ID = 'demo-user';
-    private const PASSWORD = 'demo-pass';
     private const SENDER_ID = 'SMSGAT';
     private const WEBHOOK_TOKEN = 'wt-secret';
 
@@ -27,7 +25,6 @@ class SmsGatewayCenterProviderTest extends AbstractProviderTestCase
         $GLOBALS['_test_options']['wsms_gateway_configs'] = [
             'smsgatewaycenter' => [
                 'shared' => array_merge([
-                    'auth_method'   => 'api_key',
                     'api_key'       => self::API_KEY,
                     'webhook_token' => self::WEBHOOK_TOKEN,
                 ], $sharedOverrides),
@@ -35,22 +32,6 @@ class SmsGatewayCenterProviderTest extends AbstractProviderTestCase
                     'sms' => ['sender_id' => self::SENDER_ID, 'duplicate_check' => true],
                     'rcs' => ['sender_id' => self::SENDER_ID],
                 ], $channelOverrides),
-            ],
-        ];
-    }
-
-    private function configureWithCredentials(): void
-    {
-        $GLOBALS['_test_options']['wsms_gateway_configs'] = [
-            'smsgatewaycenter' => [
-                'shared' => [
-                    'auth_method' => 'credentials',
-                    'user_id'     => self::USER_ID,
-                    'password'    => self::PASSWORD,
-                ],
-                'channels' => [
-                    'sms' => ['sender_id' => self::SENDER_ID, 'duplicate_check' => true],
-                ],
             ],
         ];
     }
@@ -94,15 +75,14 @@ class SmsGatewayCenterProviderTest extends AbstractProviderTestCase
         $this->assertFalse(SmsGatewayCenterProvider::TESTED);
     }
 
-    public function testConfigSchemaUsesShowIfForCredentialFields(): void
+    public function testConfigSchemaHasApiKeyAndWebhookToken(): void
     {
         $schema = $this->createProvider()->getConfigSchema();
 
-        $this->assertSame('select', $schema['shared']['auth_method']['type']);
-        $this->assertSame(['field' => 'auth_method', 'equals' => 'api_key'], $schema['shared']['api_key']['show_if']);
-        $this->assertSame(['field' => 'auth_method', 'equals' => 'credentials'], $schema['shared']['user_id']['show_if']);
-        $this->assertSame(['field' => 'auth_method', 'equals' => 'credentials'], $schema['shared']['password']['show_if']);
-        $this->assertArrayHasKey('webhook_token', $schema['shared']);
+        $this->assertSame('secret', $schema['shared']['api_key']['type']);
+        $this->assertTrue((bool) $schema['shared']['api_key']['required']);
+        $this->assertSame('secret', $schema['shared']['webhook_token']['type']);
+        $this->assertFalse((bool) ($schema['shared']['webhook_token']['required'] ?? false));
     }
 
     // --- Send: SMS with API key auth ---
@@ -140,25 +120,6 @@ class SmsGatewayCenterProviderTest extends AbstractProviderTestCase
         $this->assertArrayNotHasKey('flashMsg', $body);
         $this->assertArrayNotHasKey('userId', $body);
         $this->assertArrayNotHasKey('password', $body);
-    }
-
-    public function testSendSmsWithCredentialsPutsUserIdPasswordInBody(): void
-    {
-        $this->configureWithCredentials();
-        $this->mockHttpPost([
-            'status'        => 'success',
-            'transactionId' => 'txn-cred-001',
-            'statusCode'    => '900',
-        ]);
-
-        $this->createProvider()->send($this->createMessage());
-
-        $headers = $this->lastHeaders();
-        $this->assertArrayNotHasKey('apikey', $headers);
-
-        $body = $this->lastBody();
-        $this->assertSame(self::USER_ID, $body['userId']);
-        $this->assertSame(self::PASSWORD, $body['password']);
     }
 
     public function testSendDetectsUnicodeBody(): void
@@ -221,7 +182,7 @@ class SmsGatewayCenterProviderTest extends AbstractProviderTestCase
     {
         $GLOBALS['_test_options']['wsms_gateway_configs'] = [
             'smsgatewaycenter' => [
-                'shared'   => ['auth_method' => 'api_key'],
+                'shared'   => [],
                 'channels' => ['sms' => ['sender_id' => self::SENDER_ID]],
             ],
         ];
@@ -481,7 +442,7 @@ class SmsGatewayCenterProviderTest extends AbstractProviderTestCase
         ]);
 
         $config = [
-            'shared'   => ['auth_method' => 'api_key', 'api_key' => self::API_KEY],
+            'shared'   => ['api_key' => self::API_KEY],
             'channels' => [],
         ];
 

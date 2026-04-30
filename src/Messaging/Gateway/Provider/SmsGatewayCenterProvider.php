@@ -67,37 +67,11 @@ class SmsGatewayCenterProvider extends AbstractProvider implements
     {
         return [
             'shared' => [
-                'auth_method' => [
-                    'type'    => 'select',
-                    'label'   => __('Authentication Method', 'wp-sms'),
-                    'required' => true,
-                    'default' => 'api_key',
-                    'options' => [
-                        ['value' => 'api_key',     'label' => __('API Key (recommended)', 'wp-sms')],
-                        ['value' => 'credentials', 'label' => __('User ID + Password', 'wp-sms')],
-                    ],
-                    'description' => __('Choose how WSMS authenticates with SMSGatewayCenter. API Key is preferred — generate one from the dashboard.', 'wp-sms'),
-                ],
                 'api_key' => [
                     'type'        => 'secret',
                     'label'       => __('API Key', 'wp-sms'),
                     'required'    => true,
-                    'description' => __('Generate from the dashboard under Account → Generate API Key.', 'wp-sms'),
-                    'show_if'     => ['field' => 'auth_method', 'equals' => 'api_key'],
-                ],
-                'user_id' => [
-                    'type'        => 'string',
-                    'label'       => __('User ID', 'wp-sms'),
-                    'required'    => true,
-                    'description' => __('Your registered SMSGatewayCenter username.', 'wp-sms'),
-                    'show_if'     => ['field' => 'auth_method', 'equals' => 'credentials'],
-                ],
-                'password' => [
-                    'type'        => 'secret',
-                    'label'       => __('Password', 'wp-sms'),
-                    'required'    => true,
-                    'description' => __('Your SMSGatewayCenter account password.', 'wp-sms'),
-                    'show_if'     => ['field' => 'auth_method', 'equals' => 'credentials'],
+                    'description' => __('Generate from the SMSGatewayCenter dashboard under Account → Generate API Key.', 'wp-sms'),
                 ],
                 'webhook_token' => [
                     'type'        => 'secret',
@@ -242,7 +216,7 @@ class SmsGatewayCenterProvider extends AbstractProvider implements
                 'Content-Type' => 'application/x-www-form-urlencoded',
                 'Accept'       => 'application/json',
             ]),
-            'body' => http_build_query(array_merge($params, $this->buildAuthBody())),
+            'body' => http_build_query($params),
         ];
 
         $result = $this->httpPost($url, $args);
@@ -286,7 +260,7 @@ class SmsGatewayCenterProvider extends AbstractProvider implements
                 'Content-Type' => 'application/x-www-form-urlencoded',
                 'Accept'       => 'application/json',
             ]),
-            'body' => http_build_query(array_merge(['format' => 'json'], $this->buildAuthBody())),
+            'body' => http_build_query(['format' => 'json']),
         ]);
 
         if ($result instanceof DeliveryResult) {
@@ -313,7 +287,7 @@ class SmsGatewayCenterProvider extends AbstractProvider implements
                 'Content-Type' => 'application/x-www-form-urlencoded',
                 'Accept'       => 'application/json',
             ]),
-            'body' => http_build_query(array_merge(['format' => 'json'], $this->buildAuthBody())),
+            'body' => http_build_query(['format' => 'json']),
         ]);
 
         if (!$result instanceof DeliveryResult) {
@@ -429,10 +403,7 @@ class SmsGatewayCenterProvider extends AbstractProvider implements
                     'Content-Type' => 'application/x-www-form-urlencoded',
                     'Accept'       => 'application/json',
                 ]),
-                'body' => http_build_query(array_merge(
-                    ['do' => 'list', 'format' => 'json'],
-                    $this->buildAuthBody(),
-                )),
+                'body' => http_build_query(['do' => 'list', 'format' => 'json']),
             ];
 
             $result = $this->httpPost(self::SENDER_LIST_URL, $args);
@@ -499,10 +470,7 @@ class SmsGatewayCenterProvider extends AbstractProvider implements
                 'Content-Type' => 'application/x-www-form-urlencoded',
                 'Accept'       => 'application/json',
             ]),
-            'body' => http_build_query(array_merge(
-                ['do' => 'list', 'format' => 'json'],
-                $this->buildAuthBody(),
-            )),
+            'body' => http_build_query(['do' => 'list', 'format' => 'json']),
         ];
 
         $result = $this->httpPost(self::TEMPLATE_LIST_URL, $args);
@@ -550,14 +518,6 @@ class SmsGatewayCenterProvider extends AbstractProvider implements
 
     private function validateAuthConfigured(): ?DeliveryResult
     {
-        if ($this->getSharedConfig('auth_method') === 'credentials') {
-            if (!$this->getSharedConfig('user_id') || !$this->getSharedConfig('password')) {
-                return DeliveryResult::failed(__('SMSGatewayCenter user_id and password are required', 'wp-sms'));
-            }
-            return null;
-        }
-
-        // Default: api_key. Treat unset auth_method as api_key so existing fixtures work.
         if (!$this->getSharedConfig('api_key')) {
             return DeliveryResult::failed(__('SMSGatewayCenter API key is required', 'wp-sms'));
         }
@@ -566,22 +526,8 @@ class SmsGatewayCenterProvider extends AbstractProvider implements
 
     private function buildAuthHeaders(): array
     {
-        if ($this->getSharedConfig('auth_method') === 'credentials') {
-            return [];
-        }
         $apiKey = $this->getSharedConfig('api_key');
         return $apiKey ? ['apikey' => (string) $apiKey] : [];
-    }
-
-    private function buildAuthBody(): array
-    {
-        if ($this->getSharedConfig('auth_method') !== 'credentials') {
-            return [];
-        }
-        return [
-            'userId'   => (string) $this->getSharedConfig('user_id'),
-            'password' => (string) $this->getSharedConfig('password'),
-        ];
     }
 
     private function validateWebhookToken(\WP_REST_Request $request): bool

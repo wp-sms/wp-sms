@@ -144,17 +144,6 @@ function ConfigField({ fieldKey, field, value, onChange }: {
   );
 }
 
-function isFieldVisible(
-  field: GatewayConfigField,
-  values: Record<string, unknown>,
-  sectionSchema: Record<string, GatewayConfigField>,
-): boolean {
-  if (!field.show_if) return true;
-  const depField = sectionSchema[field.show_if.field];
-  const current = values[field.show_if.field] ?? depField?.default;
-  return current === field.show_if.equals;
-}
-
 export function GatewayConfigForm({ gatewayId, schema, values, supportedChannels, onChange }: GatewayConfigFormProps) {
   const shared = values.shared ?? {};
   const channels = values.channels ?? {};
@@ -184,48 +173,44 @@ export function GatewayConfigForm({ gatewayId, schema, values, supportedChannels
       {hasSharedFields && (
         <div className="space-y-4">
           <h4 className="text-sm font-medium">{__('Credentials', 'wp-sms')}</h4>
-          {Object.entries(schema.shared)
-            .filter(([, field]) => isFieldVisible(field, shared, schema.shared))
-            .map(([key, field]) => (
-              <ConfigField
-                key={key}
-                fieldKey={key}
-                field={field}
-                value={shared[key]}
-                onChange={updateShared}
-              />
-            ))}
+          {Object.entries(schema.shared).map(([key, field]) => (
+            <ConfigField
+              key={key}
+              fieldKey={key}
+              field={field}
+              value={shared[key]}
+              onChange={updateShared}
+            />
+          ))}
         </div>
       )}
 
       {channelSections.map((channel) => (
         <div key={channel} className="space-y-4">
           <h4 className="text-sm font-medium">{channelLabel(channel)} {__('Settings', 'wp-sms')}</h4>
-          {Object.entries(schema.channels[channel])
-            .filter(([, field]) => isFieldVisible(field, channels[channel] ?? {}, schema.channels[channel]))
-            .map(([key, field]) =>
-              field.dynamic ? (
-                <DynamicConfigField
-                  key={key}
-                  fieldKey={key}
-                  field={field}
-                  value={(channels[channel] ?? {})[key]}
-                  onChange={(k, v) => updateChannel(channel, k, v)}
-                  gatewayId={gatewayId}
-                  section={channel}
-                  draftConfig={values}
-                  sharedSchema={schema.shared}
-                />
-              ) : (
-                <ConfigField
-                  key={key}
-                  fieldKey={key}
-                  field={field}
-                  value={(channels[channel] ?? {})[key]}
-                  onChange={(k, v) => updateChannel(channel, k, v)}
-                />
-              )
-            )}
+          {Object.entries(schema.channels[channel]).map(([key, field]) =>
+            field.dynamic ? (
+              <DynamicConfigField
+                key={key}
+                fieldKey={key}
+                field={field}
+                value={(channels[channel] ?? {})[key]}
+                onChange={(k, v) => updateChannel(channel, k, v)}
+                gatewayId={gatewayId}
+                section={channel}
+                draftConfig={values}
+                sharedSchema={schema.shared}
+              />
+            ) : (
+              <ConfigField
+                key={key}
+                fieldKey={key}
+                field={field}
+                value={(channels[channel] ?? {})[key]}
+                onChange={(k, v) => updateChannel(channel, k, v)}
+              />
+            )
+          )}
         </div>
       ))}
 
