@@ -52,6 +52,7 @@ use WSms\Messaging\Gateway\Provider\TextplodeProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
 use WSms\Messaging\Gateway\Provider\SmsIrProvider;
 use WSms\Messaging\Gateway\Provider\UnifonicProvider;
+use WSms\Messaging\Gateway\Provider\UnisenderProvider;
 use WSms\Messaging\Gateway\Provider\VerimorProvider;
 use WSms\Messaging\Gateway\Provider\VonageProvider;
 use WSms\Messaging\Gateway\Provider\WaliProvider;
@@ -117,6 +118,7 @@ class MessagingServiceProvider implements ServiceProvider
         'spirius'        => SpiriusProvider::class,
         'sms77'          => Sms77Provider::class,
         'mensatek'       => MensatekProvider::class,
+        'unisender'      => UnisenderProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
