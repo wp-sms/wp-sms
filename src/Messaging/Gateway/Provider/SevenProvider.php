@@ -20,7 +20,7 @@ use WSms\Rest\RestRoute;
 defined('ABSPATH') || exit;
 
 /**
- * seven (formerly SMS77) — SMS, Voice, RCS, and WhatsApp via gateway.seven.io.
+ * seven — SMS, Voice, RCS, and WhatsApp via gateway.seven.io.
  *
  * Auth: single `X-Api-Key` header for all four channels. Webhook callbacks
  * are not signed by seven.io; we authenticate them via a shared
@@ -41,7 +41,7 @@ defined('ABSPATH') || exit;
  *  - Active-numbers dropdown (Numbers API exists but manual `from` entry is fine).
  *  - WhatsApp template *list* (Meta-managed; no provider list endpoint exists).
  */
-class Sms77Provider extends AbstractProvider implements
+class SevenProvider extends AbstractProvider implements
     SupportsStatusCallback,
     SupportsInboundMessage,
     SupportsOptOutDetection,
@@ -64,12 +64,12 @@ class Sms77Provider extends AbstractProvider implements
 
     public function getId(): string
     {
-        return 'sms77';
+        return 'seven';
     }
 
     public function getName(): string
     {
-        return 'seven (SMS77)';
+        return 'seven';
     }
 
     public function getSupportedChannels(): array
@@ -295,8 +295,8 @@ class Sms77Provider extends AbstractProvider implements
             $errorText = (string) ($firstMessage['error_text'] ?? $firstMessage['error'] ?? '');
             $message = $errorText !== '' ? sprintf('seven.io: %s', $errorText) : sprintf('seven.io error %s', $apiCode);
             return DeliveryResult::failed($message, array_filter([
-                'sms77_error_code' => $apiCode !== '' ? $apiCode : null,
-                'sms77_error_text' => $errorText !== '' ? $errorText : null,
+                'seven_error_code' => $apiCode !== '' ? $apiCode : null,
+                'seven_error_text' => $errorText !== '' ? $errorText : null,
             ]));
         }
 
@@ -306,8 +306,8 @@ class Sms77Provider extends AbstractProvider implements
             return DeliveryResult::failed(
                 $errorText !== '' ? sprintf('seven.io: %s', $errorText) : __('seven.io rejected the recipient', 'wp-sms'),
                 array_filter([
-                    'sms77_error_code' => isset($firstMessage['error']) ? (string) $firstMessage['error'] : null,
-                    'sms77_error_text' => $errorText !== '' ? $errorText : null,
+                    'seven_error_code' => isset($firstMessage['error']) ? (string) $firstMessage['error'] : null,
+                    'seven_error_text' => $errorText !== '' ? $errorText : null,
                 ]),
             );
         }
@@ -514,7 +514,7 @@ class Sms77Provider extends AbstractProvider implements
     {
         // seven.io does not document a dedicated opt-out error code. Be conservative:
         // only treat error_text containing explicit BLOCKED / OPT_OUT markers as opt-out.
-        $errorText = (string) ($result->meta['sms77_error_text'] ?? '');
+        $errorText = (string) ($result->meta['seven_error_text'] ?? '');
         if ($errorText === '') {
             return false;
         }

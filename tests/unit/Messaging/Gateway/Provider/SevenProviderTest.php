@@ -6,11 +6,11 @@ use WSms\Messaging\Catalog\TemplateMapping;
 use WSms\Messaging\Catalog\VariableStyle;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Gateway\AbstractProvider;
-use WSms\Messaging\Gateway\Provider\Sms77Provider;
+use WSms\Messaging\Gateway\Provider\SevenProvider;
 use WSms\Messaging\Message\Message;
 use WSms\Tests\Unit\Messaging\Gateway\AbstractProviderTestCase;
 
-class Sms77ProviderTest extends AbstractProviderTestCase
+class SevenProviderTest extends AbstractProviderTestCase
 {
     private const API_KEY       = 'sevenio-api-key-1234567890';
     private const WEBHOOK_TOKEN = 'webhook-token-abcdef';
@@ -21,7 +21,7 @@ class Sms77ProviderTest extends AbstractProviderTestCase
 
     protected function createProvider(): AbstractProvider
     {
-        return new Sms77Provider();
+        return new SevenProvider();
     }
 
     private function configure(array $sharedOverrides = [], array $channelOverrides = []): void
@@ -37,7 +37,7 @@ class Sms77ProviderTest extends AbstractProviderTestCase
         }
 
         $GLOBALS['_test_options']['wsms_gateway_configs'] = [
-            'sms77' => [
+            'seven' => [
                 'shared' => array_merge([
                     'api_key'       => self::API_KEY,
                     'webhook_token' => self::WEBHOOK_TOKEN,
@@ -108,18 +108,18 @@ class Sms77ProviderTest extends AbstractProviderTestCase
     public function testIdAndChannels(): void
     {
         $p = $this->createProvider();
-        $this->assertSame('sms77', $p->getId());
+        $this->assertSame('seven', $p->getId());
         $this->assertSame(['sms', 'voice', 'rcs', 'whatsapp'], $p->getSupportedChannels());
     }
 
-    public function testNameSurfacesBothBrandings(): void
+    public function testNameIsLowercaseSeven(): void
     {
-        $this->assertSame('seven (SMS77)', $this->createProvider()->getName());
+        $this->assertSame('seven', $this->createProvider()->getName());
     }
 
     public function testTestedFlagIsFalseUntilManuallyVerified(): void
     {
-        $this->assertFalse(Sms77Provider::TESTED);
+        $this->assertFalse(SevenProvider::TESTED);
     }
 
     public function testConfigSchemaShape(): void
@@ -214,7 +214,7 @@ class Sms77ProviderTest extends AbstractProviderTestCase
 
         $this->assertFalse($result->success);
         $this->assertStringContainsString('Invalid recipient', $result->error);
-        $this->assertSame('202', $result->meta['sms77_error_code']);
+        $this->assertSame('202', $result->meta['seven_error_code']);
     }
 
     public function testSmsSendReturnsFailedOn401(): void
@@ -532,7 +532,7 @@ class Sms77ProviderTest extends AbstractProviderTestCase
         $mapping = new TemplateMapping(
             templateType: 'otp',
             providerTemplateId: 'tpl_auth_001',
-            gatewayId: 'sms77',
+            gatewayId: 'seven',
             language: 'en',
             variableMap: [],
         );
@@ -552,13 +552,13 @@ class Sms77ProviderTest extends AbstractProviderTestCase
 
     public function testIsOptOutErrorReturnsFalseByDefault(): void
     {
-        $result = DeliveryResult::failed('boom', ['sms77_error_code' => '202', 'sms77_error_text' => 'Invalid recipient']);
+        $result = DeliveryResult::failed('boom', ['seven_error_code' => '202', 'seven_error_text' => 'Invalid recipient']);
         $this->assertFalse($this->createProvider()->isOptOutError($result));
     }
 
     public function testIsOptOutErrorTrueWhenErrorTextContainsOptOut(): void
     {
-        $result = DeliveryResult::failed('blocked', ['sms77_error_text' => 'Recipient OPT_OUT']);
+        $result = DeliveryResult::failed('blocked', ['seven_error_text' => 'Recipient OPT_OUT']);
         $this->assertTrue($this->createProvider()->isOptOutError($result));
     }
 }
