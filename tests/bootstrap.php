@@ -623,7 +623,9 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         function wp_remote_post(string $url, array $args = []) {
             $GLOBALS['_test_wp_remote_post_last_url'] = $url;
             $GLOBALS['_test_wp_remote_post_last_args'] = $args;
-            return $GLOBALS['_test_wp_remote_post'] ?? new \WP_Error('not_configured', 'Test not configured');
+            $mock = $GLOBALS['_test_wp_remote_post'] ?? new \WP_Error('not_configured', 'Test not configured');
+
+            return is_callable($mock) ? $mock($url, $args) : $mock;
         }
     }
 
