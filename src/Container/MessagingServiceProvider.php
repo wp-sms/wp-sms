@@ -13,6 +13,7 @@ use WSms\Messaging\Gateway\Provider\AfilnetProvider;
 use WSms\Messaging\Gateway\Provider\AfricasTalkingProvider;
 use WSms\Messaging\Gateway\Provider\AltiriaProvider;
 use WSms\Messaging\Gateway\Provider\AoboxProvider;
+use WSms\Messaging\Gateway\Provider\ArubaProvider;
 use WSms\Messaging\Gateway\Provider\AspSmsProvider;
 use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\CellsyntProvider;
@@ -134,6 +135,7 @@ class MessagingServiceProvider implements ServiceProvider
         'tubelightcommunications' => TubelightCommunicationsProvider::class,
         'taqnyat'        => TaqnyatProvider::class,
         'altiria'        => AltiriaProvider::class,
+        'aruba'          => ArubaProvider::class,
         'aobox'          => AoboxProvider::class,
         '160au'          => _160auProvider::class,
         '1s2u'           => _1s2uProvider::class,
