@@ -18,6 +18,7 @@ use WSms\Messaging\Gateway\Provider\AspSmsProvider;
 use WSms\Messaging\Gateway\Provider\BareedSmsProvider;
 use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\BulutfonProvider;
+use WSms\Messaging\Gateway\Provider\CallifonyProvider;
 use WSms\Messaging\Gateway\Provider\CellsyntProvider;
 use WSms\Messaging\Gateway\Provider\CpsmsProvider;
 use WSms\Messaging\Gateway\Provider\DeewanProvider;
@@ -147,6 +148,7 @@ class MessagingServiceProvider implements ServiceProvider
         '1s2u'           => _1s2uProvider::class,
         'bulutfon'       => BulutfonProvider::class,
         'cpsms'          => CpsmsProvider::class,
+        'callifony'      => CallifonyProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
