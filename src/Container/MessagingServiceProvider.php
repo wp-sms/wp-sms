@@ -20,6 +20,7 @@ use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\BulutfonProvider;
 use WSms\Messaging\Gateway\Provider\CallifonyProvider;
 use WSms\Messaging\Gateway\Provider\CellsyntProvider;
+use WSms\Messaging\Gateway\Provider\ComilioProvider;
 use WSms\Messaging\Gateway\Provider\CpsmsProvider;
 use WSms\Messaging\Gateway\Provider\DeewanProvider;
 use WSms\Messaging\Gateway\Provider\DexatelProvider;
@@ -112,6 +113,7 @@ class MessagingServiceProvider implements ServiceProvider
         'bareedsms'      => BareedSmsProvider::class,
         'bulkgate'       => BulkgateProvider::class,
         'cellsynt'       => CellsyntProvider::class,
+        'comilio'        => ComilioProvider::class,
         'dexatel'        => DexatelProvider::class,
         'hellosms'       => HelloSmsProvider::class,
         'unifonic'       => UnifonicProvider::class,
