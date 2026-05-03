@@ -20,16 +20,15 @@ use WSms\Rest\RestRoute;
 defined('ABSPATH') || exit;
 
 /**
- * seven — SMS, Voice, RCS, and WhatsApp via gateway.seven.io.
+ * seven — SMS, RCS, and WhatsApp via gateway.seven.io.
  *
- * Auth: single `X-Api-Key` header for all four channels. Webhook callbacks
- * are not signed by seven.io; we authenticate them via a shared
+ * Auth: single `X-Api-Key` header for all channels. Webhook callbacks are
+ * not signed by seven.io; we authenticate them via a shared
  * `X-WSMS-Token` header that the admin sets on the webhook subscription
  * (the SDK exposes a free-form `headers` field on `POST /hooks` for this).
  *
  * Endpoints (per github.com/seven-io/php-client and seven-io/api-schemes):
  *  - POST /sms          (form-encoded: text, to, from, flash, foreign_id, label, …)
- *  - POST /voice        (form-encoded: text, to, from, ringtime)
  *  - POST /rcs/messages (form-encoded: text, to, from, foreign_id, label, …)
  *  - POST /waba/messages (form-encoded: from, to, type, text|template|url, …)
  *  - GET  /balance      → {amount, currency}
@@ -40,6 +39,15 @@ defined('ABSPATH') || exit;
  *    when WSMS lands the interface).
  *  - Active-numbers dropdown (Numbers API exists but manual `from` entry is fine).
  *  - WhatsApp template *list* (Meta-managed; no provider list endpoint exists).
+ *
+ * TODO(voice): seven.io's POST /voice TTS endpoint is implemented in sendVoice()
+ * and the channel config block is preserved below as commented-out code, but
+ * 'voice' is removed from getSupportedChannels() until WSMS lands first-class
+ * voice infrastructure — most importantly extending MessageDispatcher's
+ * SuppressionGuard check (currently sms+whatsapp only) to cover voice so STOP
+ * keywords actually suppress calls. Voice-status / voice_call webhook event
+ * types are still parsed in parseStatusCallback / parseInboundCallback so a
+ * future re-enable just needs to flip the channel list back on.
  */
 class SevenProvider extends AbstractProvider implements
     SupportsStatusCallback,
@@ -74,7 +82,8 @@ class SevenProvider extends AbstractProvider implements
 
     public function getSupportedChannels(): array
     {
-        return ['sms', 'voice', 'rcs', 'whatsapp'];
+        // 'voice' is intentionally excluded — see class-level TODO(voice).
+        return ['sms', 'rcs', 'whatsapp'];
     }
 
     public function getConfigSchema(): array
@@ -104,15 +113,16 @@ class SevenProvider extends AbstractProvider implements
                         'description' => __('Sender ID — up to 11 alphanumeric or 16 numeric characters. Leave blank to use the seven.io account default.', 'wp-sms'),
                     ],
                 ],
-                'voice' => [
-                    'from' => [
-                        'type'        => 'string',
-                        'label'       => __('Caller ID', 'wp-sms'),
-                        'required'    => false,
-                        'placeholder' => '+491701234567',
-                        'description' => __('Number that recipients see when the TTS call rings.', 'wp-sms'),
-                    ],
-                ],
+                // TODO(voice): re-enable when the voice channel ships.
+                // 'voice' => [
+                //     'from' => [
+                //         'type'        => 'string',
+                //         'label'       => __('Caller ID', 'wp-sms'),
+                //         'required'    => false,
+                //         'placeholder' => '+491701234567',
+                //         'description' => __('Number that recipients see when the TTS call rings.', 'wp-sms'),
+                //     ],
+                // ],
                 'rcs' => [
                     'from' => [
                         'type'        => 'string',
@@ -142,7 +152,7 @@ class SevenProvider extends AbstractProvider implements
 
         return match ($message->getChannel()) {
             'sms'      => $this->sendSms($message),
-            'voice'    => $this->sendVoice($message),
+            // TODO(voice): 'voice' => $this->sendVoice($message),
             'rcs'      => $this->sendRcs($message),
             'whatsapp' => $this->sendWaba($message),
             default    => DeliveryResult::failed(sprintf(__('seven.io does not support channel %s', 'wp-sms'), $message->getChannel())),

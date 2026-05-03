@@ -15,7 +15,6 @@ class SevenProviderTest extends AbstractProviderTestCase
     private const API_KEY       = 'sevenio-api-key-1234567890';
     private const WEBHOOK_TOKEN = 'webhook-token-abcdef';
     private const SMS_FROM      = 'WSMS';
-    private const VOICE_FROM    = '+491701234567';
     private const RCS_FROM      = 'rcs-agent';
     private const WA_FROM       = '+491701234567';
 
@@ -28,7 +27,6 @@ class SevenProviderTest extends AbstractProviderTestCase
     {
         $defaultChannels = [
             'sms'      => ['from' => self::SMS_FROM],
-            'voice'    => ['from' => self::VOICE_FROM],
             'rcs'      => ['from' => self::RCS_FROM],
             'whatsapp' => ['from' => self::WA_FROM],
         ];
@@ -109,7 +107,7 @@ class SevenProviderTest extends AbstractProviderTestCase
     {
         $p = $this->createProvider();
         $this->assertSame('seven', $p->getId());
-        $this->assertSame(['sms', 'voice', 'rcs', 'whatsapp'], $p->getSupportedChannels());
+        $this->assertSame(['sms', 'rcs', 'whatsapp'], $p->getSupportedChannels());
     }
 
     public function testNameIsLowercaseSeven(): void
@@ -132,7 +130,6 @@ class SevenProviderTest extends AbstractProviderTestCase
         $this->assertFalse($schema['shared']['webhook_token']['required']);
 
         $this->assertArrayHasKey('sms', $schema['channels']);
-        $this->assertArrayHasKey('voice', $schema['channels']);
         $this->assertArrayHasKey('rcs', $schema['channels']);
         $this->assertArrayHasKey('whatsapp', $schema['channels']);
 
@@ -236,23 +233,6 @@ class SevenProviderTest extends AbstractProviderTestCase
 
         $this->assertFalse($result->success);
         $this->assertStringContainsString('not configured', $result->error);
-    }
-
-    // --- Send: Voice ---
-
-    public function testVoiceSendHitsVoiceEndpoint(): void
-    {
-        $this->configure();
-        $this->mockAccepted('voice-id-1');
-
-        $this->createProvider()->send($this->createMessage('voice', '+491701234567', 'Hello calling'));
-
-        $this->assertSame('https://gateway.seven.io/api/voice', $GLOBALS['_test_wp_remote_post_last_url']);
-
-        parse_str($GLOBALS['_test_wp_remote_post_last_args']['body'], $form);
-        $this->assertSame('+491701234567', $form['to']);
-        $this->assertSame('Hello calling', $form['text']);
-        $this->assertSame(self::VOICE_FROM, $form['from']);
     }
 
     // --- Send: RCS ---
