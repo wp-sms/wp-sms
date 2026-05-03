@@ -30,7 +30,7 @@ defined('ABSPATH') || exit;
 // isn't published. Defer SupportsInboundMessage until portal verification.
 // TODO(verify): 1s2u has an OTP product resembling Twilio Verify; defer until
 // the SupportsVerify cross-cutting interface lands.
-class OneS2uProvider extends AbstractProvider implements SupportsStatusCallback
+class _1s2uProvider extends AbstractProvider implements SupportsStatusCallback
 {
     /** Flip to true once the gateway clears end-to-end manual verification. */
     public const TESTED = false;

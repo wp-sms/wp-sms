@@ -3,11 +3,11 @@
 namespace WSms\Tests\Unit\Messaging\Gateway\Provider;
 
 use WSms\Messaging\Gateway\AbstractProvider;
-use WSms\Messaging\Gateway\Provider\OneS2uProvider;
+use WSms\Messaging\Gateway\Provider\_1s2uProvider;
 use WSms\Messaging\Message\Message;
 use WSms\Tests\Unit\Messaging\Gateway\AbstractProviderTestCase;
 
-class OneS2uProviderTest extends AbstractProviderTestCase
+class _1s2uProviderTest extends AbstractProviderTestCase
 {
     private const USERNAME       = '1s2u-user';
     private const PASSWORD       = 'super-secret';
@@ -16,7 +16,7 @@ class OneS2uProviderTest extends AbstractProviderTestCase
 
     protected function createProvider(): AbstractProvider
     {
-        return new OneS2uProvider();
+        return new _1s2uProvider();
     }
 
     protected function tearDown(): void
@@ -70,7 +70,7 @@ class OneS2uProviderTest extends AbstractProviderTestCase
 
     public function testTestedFlagIsFalseUntilManuallyVerified(): void
     {
-        $this->assertFalse(OneS2uProvider::TESTED);
+        $this->assertFalse(_1s2uProvider::TESTED);
     }
 
     public function testGetIdReturnsSlug(): void

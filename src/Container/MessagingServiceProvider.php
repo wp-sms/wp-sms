@@ -32,7 +32,7 @@ use WSms\Messaging\Gateway\Provider\MsegatProvider;
 use WSms\Messaging\Gateway\Provider\MtargetProvider;
 use WSms\Messaging\Gateway\Provider\NetGsmProvider;
 use WSms\Messaging\Gateway\Provider\OctopushProvider;
-use WSms\Messaging\Gateway\Provider\OneS2uProvider;
+use WSms\Messaging\Gateway\Provider\_1s2uProvider;
 use WSms\Messaging\Gateway\Provider\OurSmsProvider;
 use WSms\Messaging\Gateway\Provider\OvhProvider;
 use WSms\Messaging\Gateway\Provider\OxemisProvider;
@@ -132,7 +132,7 @@ class MessagingServiceProvider implements ServiceProvider
         'tubelightcommunications' => TubelightCommunicationsProvider::class,
         'taqnyat'        => TaqnyatProvider::class,
         'altiria'        => AltiriaProvider::class,
-        '1s2u'           => OneS2uProvider::class,
+        '1s2u'           => _1s2uProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
