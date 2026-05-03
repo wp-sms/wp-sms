@@ -17,6 +17,7 @@ use WSms\Messaging\Gateway\Provider\ArubaProvider;
 use WSms\Messaging\Gateway\Provider\AspSmsProvider;
 use WSms\Messaging\Gateway\Provider\BareedSmsProvider;
 use WSms\Messaging\Gateway\Provider\BulkgateProvider;
+use WSms\Messaging\Gateway\Provider\BulutfonProvider;
 use WSms\Messaging\Gateway\Provider\CellsyntProvider;
 use WSms\Messaging\Gateway\Provider\DexatelProvider;
 use WSms\Messaging\Gateway\Provider\EasySendSmsProvider;
@@ -141,6 +142,7 @@ class MessagingServiceProvider implements ServiceProvider
         'aobox'          => AoboxProvider::class,
         '160au'          => _160auProvider::class,
         '1s2u'           => _1s2uProvider::class,
+        'bulutfon'       => BulutfonProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
