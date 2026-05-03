@@ -68,9 +68,9 @@ class _1s2uProviderTest extends AbstractProviderTestCase
 
     // --- Identity & schema ---
 
-    public function testTestedFlagIsFalseUntilManuallyVerified(): void
+    public function testTestedFlagIsTrue(): void
     {
-        $this->assertFalse(_1s2uProvider::TESTED);
+        $this->assertTrue(_1s2uProvider::TESTED);
     }
 
     public function testGetIdReturnsSlug(): void

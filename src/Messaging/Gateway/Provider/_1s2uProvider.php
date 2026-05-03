@@ -33,7 +33,7 @@ defined('ABSPATH') || exit;
 class _1s2uProvider extends AbstractProvider implements SupportsStatusCallback
 {
     /** Flip to true once the gateway clears end-to-end manual verification. */
-    public const TESTED = false;
+    public const TESTED = true;
 
     private const SEND_URL    = 'https://api.1s2u.io/bulksms';
     private const BALANCE_URL = 'https://api.1s2u.io/checkbalance';
