@@ -270,6 +270,11 @@ class SevenProvider extends AbstractProvider implements
 
     /**
      * Issue a form-encoded POST and normalize the seven.io response shape into a DeliveryResult.
+     *
+     * seven.io always responds HTTP 200 even on auth/parameter errors. The body is either:
+     *   - a JSON object  e.g. {"success":"100","messages":[…]} (dispatch accepted)
+     *   - a bare JSON string holding only the error code  e.g. "900" (no payload sent)
+     * We treat any non-100 code as failure.
      */
     private function dispatch(string $path, array $payload): DeliveryResult
     {
@@ -293,6 +298,16 @@ class SevenProvider extends AbstractProvider implements
             return DeliveryResult::failed($error ?: sprintf('HTTP %d', $result['code']));
         }
 
+        // Bare-string error code (no payload): e.g. "900" for invalid API key.
+        if (is_string($data) && $data !== '') {
+            return $data === self::ACCEPTED_CODE
+                ? DeliveryResult::queued()
+                : DeliveryResult::failed(
+                    $this->errorMessageForCode($data),
+                    ['seven_error_code' => $data],
+                );
+        }
+
         if (!is_array($data)) {
             return DeliveryResult::failed(__('Invalid response from seven.io', 'wp-sms'));
         }
@@ -303,7 +318,7 @@ class SevenProvider extends AbstractProvider implements
 
         if ($apiCode !== self::ACCEPTED_CODE) {
             $errorText = (string) ($firstMessage['error_text'] ?? $firstMessage['error'] ?? '');
-            $message = $errorText !== '' ? sprintf('seven.io: %s', $errorText) : sprintf('seven.io error %s', $apiCode);
+            $message = $errorText !== '' ? sprintf('seven.io: %s', $errorText) : $this->errorMessageForCode($apiCode);
             return DeliveryResult::failed($message, array_filter([
                 'seven_error_code' => $apiCode !== '' ? $apiCode : null,
                 'seven_error_text' => $errorText !== '' ? $errorText : null,
@@ -341,6 +356,7 @@ class SevenProvider extends AbstractProvider implements
         }
 
         $data = json_decode($result['body'], true);
+        // Bare-string error code (e.g. "900") means we couldn't fetch the balance.
         if (!is_array($data) || !isset($data['amount'])) {
             return null;
         }
@@ -361,15 +377,31 @@ class SevenProvider extends AbstractProvider implements
             'headers' => $this->apiHeaders(),
         ]);
 
-        if (!$result instanceof DeliveryResult) {
-            if ($result['code'] === 401 || $result['code'] === 403) {
-                return TestConnectionResult::error(__('Invalid seven.io API key', 'wp-sms'));
-            }
+        if ($result instanceof DeliveryResult) {
+            return TestConnectionResult::error(
+                __('Could not reach the seven.io API. Check your server\'s internet connection.', 'wp-sms'),
+            );
         }
 
-        $data = $this->validateTestResponse($result, 'seven.io');
-        if ($data instanceof TestConnectionResult) {
-            return $data;
+        if ($result['code'] === 401 || $result['code'] === 403) {
+            return TestConnectionResult::error(__('Invalid seven.io API key', 'wp-sms'));
+        }
+
+        if ($result['code'] < 200 || $result['code'] >= 300) {
+            return TestConnectionResult::error(
+                sprintf(__('Unexpected response from seven.io (HTTP %d)', 'wp-sms'), $result['code']),
+            );
+        }
+
+        $data = json_decode($result['body'], true);
+
+        // seven.io returns HTTP 200 with a quoted error code (e.g. "900") on auth failure.
+        if (is_string($data) && $data !== '') {
+            return TestConnectionResult::error($this->errorMessageForCode($data));
+        }
+
+        if (!is_array($data)) {
+            return TestConnectionResult::error(__('Invalid response from seven.io', 'wp-sms'));
         }
 
         if (!isset($data['amount'])) {
@@ -650,6 +682,32 @@ class SevenProvider extends AbstractProvider implements
             'pptx', 'txt', 'csv'                           => 'document',
             'webp'                                         => 'sticker',
             default                                        => 'image',
+        };
+    }
+
+    /**
+     * Map seven.io API error codes (per docs.seven.io) to user-facing messages.
+     */
+    private function errorMessageForCode(string $code): string
+    {
+        return match ($code) {
+            ''     => __('Empty response from seven.io', 'wp-sms'),
+            '101'  => __('seven.io: failed to deliver to one or more recipients', 'wp-sms'),
+            '201'  => __('seven.io: invalid sender ID — too long or contains forbidden characters', 'wp-sms'),
+            '202'  => __('seven.io: invalid recipient number', 'wp-sms'),
+            '301'  => __('seven.io: recipient parameter is missing', 'wp-sms'),
+            '305'  => __('seven.io: text parameter is missing', 'wp-sms'),
+            '401'  => __('seven.io: text parameter too long', 'wp-sms'),
+            '402'  => __('seven.io: reload lock — same text was sent in the last 90 seconds', 'wp-sms'),
+            '403'  => __('seven.io: maximum SMS-per-minute limit reached', 'wp-sms'),
+            '500'  => __('seven.io: insufficient account balance', 'wp-sms'),
+            '600'  => __('seven.io: carrier delivery failed', 'wp-sms'),
+            '700'  => __('seven.io: unknown error — try again later', 'wp-sms'),
+            '900'  => __('Invalid seven.io API key — check the key in your seven.io dashboard under Developer > API tokens', 'wp-sms'),
+            '901'  => __('seven.io API key is disabled', 'wp-sms'),
+            '902'  => __('seven.io API key has insufficient permissions for this endpoint', 'wp-sms'),
+            '903'  => __('seven.io: this server\'s IP is not whitelisted on the API key', 'wp-sms'),
+            default => sprintf(__('seven.io error code %s', 'wp-sms'), $code),
         };
     }
 }

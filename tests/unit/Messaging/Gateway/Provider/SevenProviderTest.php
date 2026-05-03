@@ -225,6 +225,38 @@ class SevenProviderTest extends AbstractProviderTestCase
         $this->assertStringContainsString('Invalid', $result->error);
     }
 
+    /**
+     * seven.io returns HTTP 200 with a bare quoted error code (e.g. "900") on auth failure.
+     */
+    public function testSmsSendRecognizesBareStringErrorCode(): void
+    {
+        $this->configure();
+        $GLOBALS['_test_wp_remote_post'] = [
+            'body'     => '"900"',
+            'response' => ['code' => 200],
+        ];
+
+        $result = $this->createProvider()->send($this->createMessage());
+
+        $this->assertFalse($result->success);
+        $this->assertStringContainsString('Invalid seven.io API key', $result->error);
+        $this->assertSame('900', $result->meta['seven_error_code']);
+    }
+
+    public function testSmsSendTreatsBareStringHundredAsSuccess(): void
+    {
+        $this->configure();
+        $GLOBALS['_test_wp_remote_post'] = [
+            'body'     => '"100"',
+            'response' => ['code' => 200],
+        ];
+
+        $result = $this->createProvider()->send($this->createMessage());
+
+        $this->assertTrue($result->success);
+        $this->assertSame('queued', $result->status);
+    }
+
     public function testSmsSendReturnsFailedWhenNotConfigured(): void
     {
         $GLOBALS['_test_options']['wsms_gateway_configs'] = [];
@@ -369,6 +401,23 @@ class SevenProviderTest extends AbstractProviderTestCase
 
         $this->assertFalse($result->success);
         $this->assertStringContainsString('required', $result->message);
+    }
+
+    /**
+     * seven.io returns HTTP 200 with the body "900" when the API key is wrong.
+     */
+    public function testTestConnectionRecognizesBareStringErrorCode(): void
+    {
+        $this->configure();
+        $GLOBALS['_test_wp_remote_get'] = [
+            'body'     => '"900"',
+            'response' => ['code' => 200],
+        ];
+
+        $result = $this->createProvider()->testConnection();
+
+        $this->assertFalse($result->success);
+        $this->assertStringContainsString('Invalid seven.io API key', $result->message);
     }
 
     // --- Status callback validation/parsing ---
