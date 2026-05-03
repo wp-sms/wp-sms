@@ -19,6 +19,7 @@ use WSms\Messaging\Gateway\Provider\BareedSmsProvider;
 use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\BulutfonProvider;
 use WSms\Messaging\Gateway\Provider\CellsyntProvider;
+use WSms\Messaging\Gateway\Provider\CpsmsProvider;
 use WSms\Messaging\Gateway\Provider\DexatelProvider;
 use WSms\Messaging\Gateway\Provider\EasySendSmsProvider;
 use WSms\Messaging\Gateway\Provider\Fast2SmsProvider;
@@ -143,6 +144,7 @@ class MessagingServiceProvider implements ServiceProvider
         '160au'          => _160auProvider::class,
         '1s2u'           => _1s2uProvider::class,
         'bulutfon'       => BulutfonProvider::class,
+        'cpsms'          => CpsmsProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
