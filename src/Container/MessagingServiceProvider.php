@@ -15,6 +15,7 @@ use WSms\Messaging\Gateway\Provider\AltiriaProvider;
 use WSms\Messaging\Gateway\Provider\AoboxProvider;
 use WSms\Messaging\Gateway\Provider\ArubaProvider;
 use WSms\Messaging\Gateway\Provider\AspSmsProvider;
+use WSms\Messaging\Gateway\Provider\BareedSmsProvider;
 use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\CellsyntProvider;
 use WSms\Messaging\Gateway\Provider\DexatelProvider;
@@ -104,6 +105,7 @@ class MessagingServiceProvider implements ServiceProvider
         'easysendsms'    => EasySendSmsProvider::class,
         'mitto'          => MittoProvider::class,
         'smsto'          => SmstoProvider::class,
+        'bareedsms'      => BareedSmsProvider::class,
         'bulkgate'       => BulkgateProvider::class,
         'cellsynt'       => CellsyntProvider::class,
         'dexatel'        => DexatelProvider::class,
