@@ -49,6 +49,7 @@ use WSms\Messaging\Gateway\Provider\SmstoProvider;
 use WSms\Messaging\Gateway\Provider\SpiriusProvider;
 use WSms\Messaging\Gateway\Provider\SpotHitProvider;
 use WSms\Messaging\Gateway\Provider\SureSmsProvider;
+use WSms\Messaging\Gateway\Provider\TaqnyatProvider;
 use WSms\Messaging\Gateway\Provider\TextAnywhereProvider;
 use WSms\Messaging\Gateway\Provider\TextplodeProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
@@ -123,6 +124,7 @@ class MessagingServiceProvider implements ServiceProvider
         'mensatek'       => MensatekProvider::class,
         'unisender'      => UnisenderProvider::class,
         'afilnet'        => AfilnetProvider::class,
+        'taqnyat'        => TaqnyatProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
