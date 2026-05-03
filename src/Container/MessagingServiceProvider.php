@@ -22,6 +22,7 @@ use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
 use WSms\Messaging\Gateway\Provider\GunismsProvider;
 use WSms\Messaging\Gateway\Provider\HelloSmsProvider;
 use WSms\Messaging\Gateway\Provider\InfobipProvider;
+use WSms\Messaging\Gateway\Provider\InstantalertsProvider;
 use WSms\Messaging\Gateway\Provider\KavenegarProvider;
 use WSms\Messaging\Gateway\Provider\LabsMobileProvider;
 use WSms\Messaging\Gateway\Provider\MensatekProvider;
@@ -85,6 +86,7 @@ class MessagingServiceProvider implements ServiceProvider
         'sinch'          => SinchProvider::class,
         'labsmobile'     => LabsMobileProvider::class,
         'infobip'        => InfobipProvider::class,
+        'instantalerts'  => InstantalertsProvider::class,
         'gatewayapi'     => GatewayApiProvider::class,
         'gunisms'        => GunismsProvider::class,
         'aspsms'         => AspSmsProvider::class,
