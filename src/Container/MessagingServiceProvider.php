@@ -20,6 +20,7 @@ use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\BulutfonProvider;
 use WSms\Messaging\Gateway\Provider\CellsyntProvider;
 use WSms\Messaging\Gateway\Provider\CpsmsProvider;
+use WSms\Messaging\Gateway\Provider\DeewanProvider;
 use WSms\Messaging\Gateway\Provider\DexatelProvider;
 use WSms\Messaging\Gateway\Provider\EasySendSmsProvider;
 use WSms\Messaging\Gateway\Provider\Fast2SmsProvider;
@@ -113,6 +114,7 @@ class MessagingServiceProvider implements ServiceProvider
         'dexatel'        => DexatelProvider::class,
         'hellosms'       => HelloSmsProvider::class,
         'unifonic'       => UnifonicProvider::class,
+        'deewan'         => DeewanProvider::class,
         'msegat'         => MsegatProvider::class,
         'wali'           => WaliProvider::class,
         'mtarget'        => MtargetProvider::class,
