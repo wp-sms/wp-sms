@@ -11,6 +11,7 @@ use WSms\Messaging\Gateway\Email\WpMailGateway;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\Gateway\Provider\AfilnetProvider;
 use WSms\Messaging\Gateway\Provider\AfricasTalkingProvider;
+use WSms\Messaging\Gateway\Provider\AltiriaProvider;
 use WSms\Messaging\Gateway\Provider\AspSmsProvider;
 use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\CellsyntProvider;
@@ -129,6 +130,7 @@ class MessagingServiceProvider implements ServiceProvider
         'afilnet'        => AfilnetProvider::class,
         'tubelightcommunications' => TubelightCommunicationsProvider::class,
         'taqnyat'        => TaqnyatProvider::class,
+        'altiria'        => AltiriaProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
