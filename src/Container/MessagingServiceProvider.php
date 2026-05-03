@@ -9,6 +9,7 @@ use WSms\Messaging\Email\UnsubscribeTokenService;
 use WSms\Messaging\Gateway\Email\MailtrapGateway;
 use WSms\Messaging\Gateway\Email\WpMailGateway;
 use WSms\Messaging\Gateway\GatewayRegistry;
+use WSms\Messaging\Gateway\Provider\AfilnetProvider;
 use WSms\Messaging\Gateway\Provider\AfricasTalkingProvider;
 use WSms\Messaging\Gateway\Provider\AspSmsProvider;
 use WSms\Messaging\Gateway\Provider\BulkgateProvider;
@@ -119,6 +120,7 @@ class MessagingServiceProvider implements ServiceProvider
         'seven'          => SevenProvider::class,
         'mensatek'       => MensatekProvider::class,
         'unisender'      => UnisenderProvider::class,
+        'afilnet'        => AfilnetProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
@@ -204,7 +206,7 @@ class MessagingServiceProvider implements ServiceProvider
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
         // Providers implementing SupportsTemplates get the catalog manager injected
-        $templateProviders = ['twilio', 'kavenegar', 'smsir', 'plivo', 'sinch', 'infobip', 'smsapi', 'fast2sms', 'smsc', 'smsgatewayhub', 'smsgatewaycenter', 'seven'];
+        $templateProviders = ['twilio', 'kavenegar', 'smsir', 'plivo', 'sinch', 'infobip', 'smsapi', 'fast2sms', 'smsc', 'smsgatewayhub', 'smsgatewaycenter', 'seven', 'afilnet'];
 
         foreach (self::PROVIDERS as $id => $class) {
             if (in_array($id, $templateProviders, true)) {
