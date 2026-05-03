@@ -16,7 +16,6 @@ class AfilnetProviderTest extends AbstractProviderTestCase
     private const PASSWORD    = 'super-secret';
     private const SMS_FROM    = 'WSMS';
     private const PLATFORM_ID = 'wa-platform-1';
-    private const VOICE_LANG  = 'EN';
     private const ENDPOINT    = 'https://www.afilnet.com/api/http/';
 
     protected function createProvider(): AbstractProvider
@@ -29,7 +28,6 @@ class AfilnetProviderTest extends AbstractProviderTestCase
         $defaultChannels = [
             'sms'      => ['from' => self::SMS_FROM],
             'email'    => ['subject_prefix' => 'WSMS notice'],
-            'voice'    => ['language' => self::VOICE_LANG],
             'whatsapp' => ['platform_id' => self::PLATFORM_ID],
         ];
         foreach ($channelOverrides as $channel => $overrides) {
@@ -77,7 +75,7 @@ class AfilnetProviderTest extends AbstractProviderTestCase
 
     public function testGetSupportedChannels(): void
     {
-        $this->assertSame(['sms', 'email', 'voice', 'whatsapp'], $this->createProvider()->getSupportedChannels());
+        $this->assertSame(['sms', 'email', 'whatsapp'], $this->createProvider()->getSupportedChannels());
     }
 
     public function testGetIdAndConfigSchema(): void
@@ -92,8 +90,8 @@ class AfilnetProviderTest extends AbstractProviderTestCase
 
         $this->assertTrue($schema['channels']['sms']['from']['required']);
         $this->assertFalse($schema['channels']['email']['subject_prefix']['required']);
-        $this->assertSame('select', $schema['channels']['voice']['language']['type']);
         $this->assertTrue($schema['channels']['whatsapp']['platform_id']['required']);
+        $this->assertArrayNotHasKey('voice', $schema['channels']);
     }
 
     public function testIsConfiguredRequiresUsernameAndPassword(): void
@@ -188,21 +186,14 @@ class AfilnetProviderTest extends AbstractProviderTestCase
         $this->assertSame('WSMS notice', $form['subject']);
     }
 
-    // --- Send: Voice ---
-
-    public function testSendVoiceUsesVoiceClassAndLanguage(): void
+    public function testSendUnsupportedChannelReturnsFailed(): void
     {
-        $this->configure([], ['voice' => ['language' => 'ES']]);
-        $this->mockSuccess('voice-id-1');
+        $this->configure();
 
-        $this->createProvider()->send($this->createMessage('voice', '+34611223344', 'Hello caller'));
+        $result = $this->createProvider()->send($this->createMessage('voice', '+34611223344', 'Hi'));
 
-        parse_str($GLOBALS['_test_wp_remote_post_last_args']['body'], $form);
-        $this->assertSame('voice', $form['class']);
-        $this->assertSame('sendvoice', $form['method']);
-        $this->assertSame('+34611223344', $form['to']);
-        $this->assertSame('Hello caller', $form['message']);
-        $this->assertSame('ES', $form['language']);
+        $this->assertFalse($result->success);
+        $this->assertStringContainsString('does not support channel voice', $result->error);
     }
 
     // --- Send: WhatsApp ---

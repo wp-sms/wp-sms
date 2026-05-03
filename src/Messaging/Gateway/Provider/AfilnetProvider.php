@@ -17,14 +17,17 @@ defined('ABSPATH') || exit;
  * Afilnet — Spanish multi-channel cloud-messaging provider.
  *
  * One unified HTTP API at https://www.afilnet.com/api/http/, dispatched by
- * `class` (sms|email|voice|whatsapp|user) and `method`. Auth: every request
+ * `class` (sms|email|whatsapp|user) and `method`. Auth: every request
  * carries `user` + `password` form fields. Success envelope:
  *   {status: "SUCCESS", result: <id|count|balance>, ...}
  * Failure envelope:
  *   {status: "ERROR", error: "INCORRECT_USER_PASSWORD"|"NO_CREDITS"|...}
  *
- * All four channels accept `idtemplate` + `params=k1:v1,k2:v2` via the
+ * All channels accept `idtemplate` + `params=k1:v1,k2:v2` via the
  * `sendXfromtemplate` method variant for catalog-resolved templates.
+ *
+ * Voice is intentionally omitted — WSMS does not yet have voice-channel
+ * infrastructure to surface it to users.
  *
  * TODO(verify): Afilnet has an Authentication API for OTP send/verify;
  * defer until SupportsVerify lands.
@@ -50,7 +53,7 @@ class AfilnetProvider extends AbstractProvider implements SupportsTemplates
 
     public function getSupportedChannels(): array
     {
-        return ['sms', 'email', 'voice', 'whatsapp'];
+        return ['sms', 'email', 'whatsapp'];
     }
 
     public function getConfigSchema(): array
@@ -88,23 +91,6 @@ class AfilnetProvider extends AbstractProvider implements SupportsTemplates
                         'description' => __('Used when the message meta does not provide its own subject.', 'wp-sms'),
                     ],
                 ],
-                'voice' => [
-                    'language' => [
-                        'type'        => 'select',
-                        'label'       => __('TTS Language', 'wp-sms'),
-                        'required'    => false,
-                        'default'     => 'EN',
-                        'options'     => [
-                            ['value' => 'EN', 'label' => __('English', 'wp-sms')],
-                            ['value' => 'ES', 'label' => __('Spanish', 'wp-sms')],
-                            ['value' => 'FR', 'label' => __('French', 'wp-sms')],
-                            ['value' => 'DE', 'label' => __('German', 'wp-sms')],
-                            ['value' => 'IT', 'label' => __('Italian', 'wp-sms')],
-                            ['value' => 'PT', 'label' => __('Portuguese', 'wp-sms')],
-                        ],
-                        'description' => __('Language used by the text-to-speech engine for outgoing voice calls.', 'wp-sms'),
-                    ],
-                ],
                 'whatsapp' => [
                     'platform_id' => [
                         'type'        => 'string',
@@ -126,7 +112,6 @@ class AfilnetProvider extends AbstractProvider implements SupportsTemplates
         return match ($message->getChannel()) {
             'sms'      => $this->sendSms($message),
             'email'    => $this->sendEmail($message),
-            'voice'    => $this->sendVoice($message),
             'whatsapp' => $this->sendWhatsapp($message),
             default    => DeliveryResult::failed(sprintf(__('Afilnet does not support channel %s', 'wp-sms'), $message->getChannel())),
         };
@@ -179,29 +164,6 @@ class AfilnetProvider extends AbstractProvider implements SupportsTemplates
             'to'      => $message->getRecipient(),
             'subject' => $subject,
             'email'   => $message->getBody(),
-        ]);
-    }
-
-    private function sendVoice(MessageInterface $message): DeliveryResult
-    {
-        $language = (string) $this->getChannelConfig('voice', 'language', 'EN');
-
-        $template = $this->resolveTemplatePayload($message->getMeta());
-        if ($template !== null) {
-            return $this->postForm([
-                'class'    => 'voice',
-                'method'   => 'sendvoicefromtemplate',
-                'to'       => $message->getRecipient(),
-                'language' => $language,
-            ] + $template);
-        }
-
-        return $this->postForm([
-            'class'    => 'voice',
-            'method'   => 'sendvoice',
-            'to'       => $message->getRecipient(),
-            'message'  => $message->getBody(),
-            'language' => $language,
         ]);
     }
 
