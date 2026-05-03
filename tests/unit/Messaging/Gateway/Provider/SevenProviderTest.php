@@ -115,9 +115,9 @@ class SevenProviderTest extends AbstractProviderTestCase
         $this->assertSame('seven', $this->createProvider()->getName());
     }
 
-    public function testTestedFlagIsFalseUntilManuallyVerified(): void
+    public function testTestedFlagIsTrueAfterManualVerification(): void
     {
-        $this->assertFalse(SevenProvider::TESTED);
+        $this->assertTrue(SevenProvider::TESTED);
     }
 
     public function testConfigSchemaShape(): void

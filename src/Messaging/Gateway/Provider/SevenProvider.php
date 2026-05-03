@@ -55,8 +55,8 @@ class SevenProvider extends AbstractProvider implements
     SupportsOptOutDetection,
     SupportsTemplates
 {
-    /** Flip to true once the gateway clears end-to-end manual verification. */
-    public const TESTED = false;
+    /** Verified end-to-end against a live seven.io account. */
+    public const TESTED = true;
 
     private const BASE_URL = 'https://gateway.seven.io/api';
 
