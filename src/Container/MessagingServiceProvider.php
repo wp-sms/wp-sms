@@ -24,6 +24,7 @@ use WSms\Messaging\Gateway\Provider\ComilioProvider;
 use WSms\Messaging\Gateway\Provider\CpsmsProvider;
 use WSms\Messaging\Gateway\Provider\DeewanProvider;
 use WSms\Messaging\Gateway\Provider\DexatelProvider;
+use WSms\Messaging\Gateway\Provider\EbulkSmsProvider;
 use WSms\Messaging\Gateway\Provider\EasySendSmsProvider;
 use WSms\Messaging\Gateway\Provider\Fast2SmsProvider;
 use WSms\Messaging\Gateway\Provider\FortyTwoProvider;
@@ -118,6 +119,7 @@ class MessagingServiceProvider implements ServiceProvider
         'hellosms'       => HelloSmsProvider::class,
         'unifonic'       => UnifonicProvider::class,
         'deewan'         => DeewanProvider::class,
+        'ebulksms'       => EbulkSmsProvider::class,
         'msegat'         => MsegatProvider::class,
         'wali'           => WaliProvider::class,
         'mtarget'        => MtargetProvider::class,
