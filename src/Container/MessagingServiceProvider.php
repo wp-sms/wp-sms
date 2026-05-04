@@ -31,6 +31,7 @@ use WSms\Messaging\Gateway\Provider\EaziSMSproProvider;
 use WSms\Messaging\Gateway\Provider\EngyProvider;
 use WSms\Messaging\Gateway\Provider\EspayProvider;
 use WSms\Messaging\Gateway\Provider\EuroSmsProvider;
+use WSms\Messaging\Gateway\Provider\ExpertTextingProvider;
 use WSms\Messaging\Gateway\Provider\Fast2SmsProvider;
 use WSms\Messaging\Gateway\Provider\FortyTwoProvider;
 use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
@@ -163,6 +164,7 @@ class MessagingServiceProvider implements ServiceProvider
         'cpsms'          => CpsmsProvider::class,
         'callifony'      => CallifonyProvider::class,
         'eazismspro'     => EaziSMSproProvider::class,
+        'experttexting'  => ExpertTextingProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
