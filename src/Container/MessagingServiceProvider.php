@@ -40,6 +40,7 @@ use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
 use WSms\Messaging\Gateway\Provider\GatewaySaProvider;
 use WSms\Messaging\Gateway\Provider\GunismsProvider;
 use WSms\Messaging\Gateway\Provider\HelloSmsProvider;
+use WSms\Messaging\Gateway\Provider\HostPinnacleProvider;
 use WSms\Messaging\Gateway\Provider\InfobipProvider;
 use WSms\Messaging\Gateway\Provider\InstantalertsProvider;
 use WSms\Messaging\Gateway\Provider\KavenegarProvider;
@@ -135,6 +136,7 @@ class MessagingServiceProvider implements ServiceProvider
         'dexatel'        => DexatelProvider::class,
         'directsend'     => DirectsendProvider::class,
         'hellosms'       => HelloSmsProvider::class,
+        'hostpinnacle'   => HostPinnacleProvider::class,
         'unifonic'       => UnifonicProvider::class,
         'deewan'         => DeewanProvider::class,
         'ebulksms'       => EbulkSmsProvider::class,
