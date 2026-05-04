@@ -44,6 +44,7 @@ use WSms\Messaging\Gateway\Provider\InfobipProvider;
 use WSms\Messaging\Gateway\Provider\InstantalertsProvider;
 use WSms\Messaging\Gateway\Provider\KavenegarProvider;
 use WSms\Messaging\Gateway\Provider\LabsMobileProvider;
+use WSms\Messaging\Gateway\Provider\LiveAllProvider;
 use WSms\Messaging\Gateway\Provider\MensatekProvider;
 use WSms\Messaging\Gateway\Provider\MittoProvider;
 use WSms\Messaging\Gateway\Provider\MsegatProvider;
@@ -112,6 +113,7 @@ class MessagingServiceProvider implements ServiceProvider
         'africastalking' => AfricasTalkingProvider::class,
         'sinch'          => SinchProvider::class,
         'labsmobile'     => LabsMobileProvider::class,
+        'liveall'        => LiveAllProvider::class,
         'infobip'        => InfobipProvider::class,
         'instantalerts'  => InstantalertsProvider::class,
         'gatewayapi'     => GatewayApiProvider::class,
