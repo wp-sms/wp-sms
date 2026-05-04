@@ -80,9 +80,9 @@ class EbulkSmsProviderTest extends AbstractProviderTestCase
         $this->assertSame(['sms', 'whatsapp'], $p->getSupportedChannels());
     }
 
-    public function testTestedFlagIsFalseUntilManuallyVerified(): void
+    public function testTestedFlagIsTrueAfterManualVerification(): void
     {
-        $this->assertFalse(EbulkSmsProvider::TESTED);
+        $this->assertTrue(EbulkSmsProvider::TESTED);
     }
 
     public function testConfigSchemaShape(): void

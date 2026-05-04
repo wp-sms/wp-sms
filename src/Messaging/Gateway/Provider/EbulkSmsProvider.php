@@ -18,7 +18,7 @@ defined('ABSPATH') || exit;
 class EbulkSmsProvider extends AbstractProvider
 {
     /** Flip to true once the gateway clears end-to-end manual verification. */
-    public const TESTED = false;
+    public const TESTED = true;
 
     private const SMS_ENDPOINT      = 'https://api.ebulksms.com/sendsms.json';
     private const WHATSAPP_ENDPOINT = 'https://api.ebulksms.com/sendwhatsapp.json';
