@@ -24,6 +24,7 @@ use WSms\Messaging\Gateway\Provider\ComilioProvider;
 use WSms\Messaging\Gateway\Provider\CpsmsProvider;
 use WSms\Messaging\Gateway\Provider\DeewanProvider;
 use WSms\Messaging\Gateway\Provider\DexatelProvider;
+use WSms\Messaging\Gateway\Provider\DirectsendProvider;
 use WSms\Messaging\Gateway\Provider\EbulkSmsProvider;
 use WSms\Messaging\Gateway\Provider\EasySendSmsProvider;
 use WSms\Messaging\Gateway\Provider\EaziSMSproProvider;
@@ -117,6 +118,7 @@ class MessagingServiceProvider implements ServiceProvider
         'cellsynt'       => CellsyntProvider::class,
         'comilio'        => ComilioProvider::class,
         'dexatel'        => DexatelProvider::class,
+        'directsend'     => DirectsendProvider::class,
         'hellosms'       => HelloSmsProvider::class,
         'unifonic'       => UnifonicProvider::class,
         'deewan'         => DeewanProvider::class,
