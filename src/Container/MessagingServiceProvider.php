@@ -54,6 +54,7 @@ use WSms\Messaging\Gateway\Provider\MensatekProvider;
 use WSms\Messaging\Gateway\Provider\MittoProvider;
 use WSms\Messaging\Gateway\Provider\MsegatProvider;
 use WSms\Messaging\Gateway\Provider\MtargetProvider;
+use WSms\Messaging\Gateway\Provider\NesssolutionProvider;
 use WSms\Messaging\Gateway\Provider\NetGsmProvider;
 use WSms\Messaging\Gateway\Provider\OctopushProvider;
 use WSms\Messaging\Gateway\Provider\_160auProvider;
@@ -185,6 +186,7 @@ class MessagingServiceProvider implements ServiceProvider
         'eazismspro'     => EaziSMSproProvider::class,
         'experttexting'  => ExpertTextingProvider::class,
         'onewaysms'      => OneWaySmsProvider::class,
+        'nesssolution'   => NesssolutionProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
