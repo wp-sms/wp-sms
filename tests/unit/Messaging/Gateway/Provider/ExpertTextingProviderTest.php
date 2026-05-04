@@ -83,9 +83,9 @@ class ExpertTextingProviderTest extends AbstractProviderTestCase
         $this->assertSame(['sms'], $p->getSupportedChannels());
     }
 
-    public function testTestedFlagIsFalseUntilManuallyVerified(): void
+    public function testTestedFlagIsTrueAfterManualVerification(): void
     {
-        $this->assertFalse(ExpertTextingProvider::TESTED);
+        $this->assertTrue(ExpertTextingProvider::TESTED);
     }
 
     public function testConfigSchemaHasRequiredFields(): void

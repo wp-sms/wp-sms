@@ -24,7 +24,7 @@ defined('ABSPATH') || exit;
 class ExpertTextingProvider extends AbstractProvider
 {
     /** Flip to true once the gateway clears end-to-end manual verification. */
-    public const TESTED = false;
+    public const TESTED = true;
 
     private const API_BASE = 'https://www.experttexting.com/ExptRestApi/sms/json';
 
