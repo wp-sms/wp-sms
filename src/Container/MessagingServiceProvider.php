@@ -37,6 +37,7 @@ use WSms\Messaging\Gateway\Provider\FarazSmsProvider;
 use WSms\Messaging\Gateway\Provider\Fast2SmsProvider;
 use WSms\Messaging\Gateway\Provider\FortyTwoProvider;
 use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
+use WSms\Messaging\Gateway\Provider\GatewaySaProvider;
 use WSms\Messaging\Gateway\Provider\GunismsProvider;
 use WSms\Messaging\Gateway\Provider\HelloSmsProvider;
 use WSms\Messaging\Gateway\Provider\InfobipProvider;
@@ -114,6 +115,7 @@ class MessagingServiceProvider implements ServiceProvider
         'infobip'        => InfobipProvider::class,
         'instantalerts'  => InstantalertsProvider::class,
         'gatewayapi'     => GatewayApiProvider::class,
+        'gateway'        => GatewaySaProvider::class,
         'gunisms'        => GunismsProvider::class,
         'aspsms'         => AspSmsProvider::class,
         'smsglobal'      => SmsGlobalProvider::class,
