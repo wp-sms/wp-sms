@@ -30,6 +30,7 @@ use WSms\Messaging\Gateway\Provider\EasySendSmsProvider;
 use WSms\Messaging\Gateway\Provider\EaziSMSproProvider;
 use WSms\Messaging\Gateway\Provider\EngyProvider;
 use WSms\Messaging\Gateway\Provider\EspayProvider;
+use WSms\Messaging\Gateway\Provider\EuroSmsProvider;
 use WSms\Messaging\Gateway\Provider\Fast2SmsProvider;
 use WSms\Messaging\Gateway\Provider\FortyTwoProvider;
 use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
@@ -114,6 +115,7 @@ class MessagingServiceProvider implements ServiceProvider
         'smsapi'         => SmsApiProvider::class,
         'easysendsms'    => EasySendSmsProvider::class,
         'espay'          => EspayProvider::class,
+        'eurosms'        => EuroSmsProvider::class,
         'engy'           => EngyProvider::class,
         'mitto'          => MittoProvider::class,
         'smsto'          => SmstoProvider::class,
