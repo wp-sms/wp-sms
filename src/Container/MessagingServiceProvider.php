@@ -58,6 +58,7 @@ use WSms\Messaging\Gateway\Provider\NetGsmProvider;
 use WSms\Messaging\Gateway\Provider\OctopushProvider;
 use WSms\Messaging\Gateway\Provider\_160auProvider;
 use WSms\Messaging\Gateway\Provider\_1s2uProvider;
+use WSms\Messaging\Gateway\Provider\OneWaySmsProvider;
 use WSms\Messaging\Gateway\Provider\OurSmsProvider;
 use WSms\Messaging\Gateway\Provider\OvhProvider;
 use WSms\Messaging\Gateway\Provider\OxemisProvider;
@@ -183,6 +184,7 @@ class MessagingServiceProvider implements ServiceProvider
         'callifony'      => CallifonyProvider::class,
         'eazismspro'     => EaziSMSproProvider::class,
         'experttexting'  => ExpertTextingProvider::class,
+        'onewaysms'      => OneWaySmsProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
