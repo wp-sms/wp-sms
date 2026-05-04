@@ -29,6 +29,7 @@ use WSms\Messaging\Gateway\Provider\EbulkSmsProvider;
 use WSms\Messaging\Gateway\Provider\EasySendSmsProvider;
 use WSms\Messaging\Gateway\Provider\EaziSMSproProvider;
 use WSms\Messaging\Gateway\Provider\EngyProvider;
+use WSms\Messaging\Gateway\Provider\EspayProvider;
 use WSms\Messaging\Gateway\Provider\Fast2SmsProvider;
 use WSms\Messaging\Gateway\Provider\FortyTwoProvider;
 use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
@@ -112,6 +113,7 @@ class MessagingServiceProvider implements ServiceProvider
         'smsglobal'      => SmsGlobalProvider::class,
         'smsapi'         => SmsApiProvider::class,
         'easysendsms'    => EasySendSmsProvider::class,
+        'espay'          => EspayProvider::class,
         'engy'           => EngyProvider::class,
         'mitto'          => MittoProvider::class,
         'smsto'          => SmstoProvider::class,
@@ -244,7 +246,7 @@ class MessagingServiceProvider implements ServiceProvider
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
         // Providers implementing SupportsTemplates get the catalog manager injected
-        $templateProviders = ['twilio', 'kavenegar', 'razpayamak', 'smsir', 'plivo', 'sinch', 'infobip', 'smsapi', 'fast2sms', 'smsc', 'smsgatewayhub', 'smsgatewaycenter', 'seven', 'afilnet', 'tubelightcommunications'];
+        $templateProviders = ['twilio', 'kavenegar', 'razpayamak', 'smsir', 'plivo', 'sinch', 'infobip', 'smsapi', 'fast2sms', 'smsc', 'smsgatewayhub', 'smsgatewaycenter', 'seven', 'afilnet', 'tubelightcommunications', 'espay'];
 
         foreach (self::PROVIDERS as $id => $class) {
             if (in_array($id, $templateProviders, true)) {
