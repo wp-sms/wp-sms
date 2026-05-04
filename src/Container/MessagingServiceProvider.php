@@ -26,6 +26,7 @@ use WSms\Messaging\Gateway\Provider\DeewanProvider;
 use WSms\Messaging\Gateway\Provider\DexatelProvider;
 use WSms\Messaging\Gateway\Provider\EbulkSmsProvider;
 use WSms\Messaging\Gateway\Provider\EasySendSmsProvider;
+use WSms\Messaging\Gateway\Provider\EaziSMSproProvider;
 use WSms\Messaging\Gateway\Provider\Fast2SmsProvider;
 use WSms\Messaging\Gateway\Provider\FortyTwoProvider;
 use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
@@ -153,6 +154,7 @@ class MessagingServiceProvider implements ServiceProvider
         'bulutfon'       => BulutfonProvider::class,
         'cpsms'          => CpsmsProvider::class,
         'callifony'      => CallifonyProvider::class,
+        'eazismspro'     => EaziSMSproProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
