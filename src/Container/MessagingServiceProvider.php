@@ -38,6 +38,7 @@ use WSms\Messaging\Gateway\Provider\Fast2SmsProvider;
 use WSms\Messaging\Gateway\Provider\FortyTwoProvider;
 use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
 use WSms\Messaging\Gateway\Provider\GatewaySaProvider;
+use WSms\Messaging\Gateway\Provider\GlobalVoiceProvider;
 use WSms\Messaging\Gateway\Provider\GunismsProvider;
 use WSms\Messaging\Gateway\Provider\HelloSmsProvider;
 use WSms\Messaging\Gateway\Provider\HostPinnacleProvider;
@@ -120,6 +121,7 @@ class MessagingServiceProvider implements ServiceProvider
         'gatewayapi'     => GatewayApiProvider::class,
         'gateway'        => GatewaySaProvider::class,
         'gunisms'        => GunismsProvider::class,
+        'globalvoice'    => GlobalVoiceProvider::class,
         'aspsms'         => AspSmsProvider::class,
         'smsglobal'      => SmsGlobalProvider::class,
         'smsapi'         => SmsApiProvider::class,
