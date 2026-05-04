@@ -68,9 +68,9 @@ class HostPinnacleProviderTest extends AbstractProviderTestCase
         $this->assertSame(['sms'], $provider->getSupportedChannels());
     }
 
-    public function testTestedFlagIsFalseUntilManuallyVerified(): void
+    public function testTestedFlagIsTrueAfterManualVerification(): void
     {
-        $this->assertFalse(HostPinnacleProvider::TESTED);
+        $this->assertTrue(HostPinnacleProvider::TESTED);
     }
 
     public function testConfigSchemaShape(): void
@@ -82,7 +82,7 @@ class HostPinnacleProviderTest extends AbstractProviderTestCase
         $this->assertSame('secret', $schema['shared']['password']['type']);
         $this->assertTrue($schema['shared']['password']['required']);
         $this->assertSame('secret', $schema['shared']['api_key']['type']);
-        $this->assertTrue($schema['shared']['api_key']['required']);
+        $this->assertFalse($schema['shared']['api_key']['required']);
 
         $this->assertArrayHasKey('sms', $schema['channels']);
         $this->assertSame('string', $schema['channels']['sms']['sender_id']['type']);
@@ -97,9 +97,17 @@ class HostPinnacleProviderTest extends AbstractProviderTestCase
         $this->assertTrue($this->createProvider()->isConfiguredForChannel('sms'));
     }
 
-    public function testIsConfiguredForChannelMissingApiKey(): void
+    public function testIsConfiguredForChannelOkWithoutApiKey(): void
     {
+        // apiKey is an alternative auth method per the HostPinnacle docs;
+        // a config with username + password and no API key is still complete.
         $this->configure(['api_key' => '']);
+        $this->assertTrue($this->createProvider()->isConfiguredForChannel('sms'));
+    }
+
+    public function testIsConfiguredForChannelMissingPassword(): void
+    {
+        $this->configure(['password' => '']);
         $this->assertFalse($this->createProvider()->isConfiguredForChannel('sms'));
     }
 
@@ -136,6 +144,19 @@ class HostPinnacleProviderTest extends AbstractProviderTestCase
         $this->assertSame(self::SENDER_ID, $body['senderid']);
         $this->assertSame('text', $body['msgType']);
         $this->assertSame('json', $body['output']);
+    }
+
+    public function testSmsSendOmitsApiKeyHeaderWhenNotConfigured(): void
+    {
+        $this->configure(['api_key' => '']);
+        $this->mockPostJson(['transactionId' => 'tx-noheader', 'statusCode' => '200']);
+
+        $this->createProvider()->send($this->createMessage());
+
+        $args = $GLOBALS['_test_wp_remote_post_last_args'];
+        $this->assertArrayNotHasKey('apiKey', $args['headers'] ?? []);
+        $this->assertSame(self::USERNAME, $args['body']['userid']);
+        $this->assertSame(self::PASSWORD, $args['body']['password']);
     }
 
     public function testSmsSendUnicodeBodyFlipsMsgType(): void

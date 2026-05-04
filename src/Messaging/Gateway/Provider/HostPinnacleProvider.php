@@ -26,7 +26,7 @@ defined('ABSPATH') || exit;
 class HostPinnacleProvider extends AbstractProvider
 {
     /** Flip to true once the gateway clears end-to-end manual verification. */
-    public const TESTED = false;
+    public const TESTED = true;
 
     private const API_BASE = 'https://smsportal.hostpinnacle.co.ke/SMSApi';
 
@@ -59,8 +59,8 @@ class HostPinnacleProvider extends AbstractProvider
                 'api_key' => [
                     'type'        => 'secret',
                     'label'       => __('API Key', 'wp-sms'),
-                    'required'    => true,
-                    'description' => __('API key from your HostPinnacle SMS portal — Account → API.', 'wp-sms'),
+                    'required'    => false,
+                    'description' => __('Optional. API key from your HostPinnacle SMS portal (Account → API). The portal accepts either Username + Password or an API key — provide whichever is easier; supplying the API key sends it as an additional auth header.', 'wp-sms'),
                 ],
             ],
             'channels' => [
@@ -84,7 +84,7 @@ class HostPinnacleProvider extends AbstractProvider
         $apiKey   = (string) $this->getSharedConfig('api_key', '');
         $senderId = (string) $this->getChannelConfig('sms', 'sender_id', '');
 
-        if ($username === '' || $password === '' || $apiKey === '') {
+        if ($username === '' || $password === '') {
             return DeliveryResult::failed(__('HostPinnacle credentials not configured', 'wp-sms'));
         }
 
@@ -95,9 +95,8 @@ class HostPinnacleProvider extends AbstractProvider
         // unicode, not disable it). Autodetect from body bytes instead.
         $msgType = $this->isAscii($body) ? 'text' : 'unicode';
 
-        $result = $this->httpPost(self::API_BASE . '/send', [
-            'headers' => ['apiKey' => $apiKey],
-            'body'    => [
+        $args = [
+            'body' => [
                 'userid'     => $username,
                 'password'   => $password,
                 'sendMethod' => 'quick',
@@ -107,7 +106,12 @@ class HostPinnacleProvider extends AbstractProvider
                 'msgType'    => $msgType,
                 'output'     => 'json',
             ],
-        ]);
+        ];
+        if ($apiKey !== '') {
+            $args['headers'] = ['apiKey' => $apiKey];
+        }
+
+        $result = $this->httpPost(self::API_BASE . '/send', $args);
 
         if ($result instanceof DeliveryResult) {
             return $result;
