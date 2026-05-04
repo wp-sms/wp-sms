@@ -13,6 +13,7 @@ use WSms\Messaging\Gateway\Provider\AfilnetProvider;
 use WSms\Messaging\Gateway\Provider\AfricasTalkingProvider;
 use WSms\Messaging\Gateway\Provider\AltiriaProvider;
 use WSms\Messaging\Gateway\Provider\AoboxProvider;
+use WSms\Messaging\Gateway\Provider\AriaCPProvider;
 use WSms\Messaging\Gateway\Provider\ArubaProvider;
 use WSms\Messaging\Gateway\Provider\AspSmsProvider;
 use WSms\Messaging\Gateway\Provider\BareedSmsProvider;
@@ -45,6 +46,7 @@ use WSms\Messaging\Gateway\Provider\HostIranProvider;
 use WSms\Messaging\Gateway\Provider\HostPinnacleProvider;
 use WSms\Messaging\Gateway\Provider\InfobipProvider;
 use WSms\Messaging\Gateway\Provider\InstantalertsProvider;
+use WSms\Messaging\Gateway\Provider\JawalBSmsProvider;
 use WSms\Messaging\Gateway\Provider\KavenegarProvider;
 use WSms\Messaging\Gateway\Provider\LabsMobileProvider;
 use WSms\Messaging\Gateway\Provider\LiveAllProvider;
@@ -107,6 +109,7 @@ class MessagingServiceProvider implements ServiceProvider
         'kavenegar'      => KavenegarProvider::class,
         'razpayamak'     => RazpayamakProvider::class,
         'farapayamak'    => FarapayamakProvider::class,
+        'payamakaria'    => AriaCPProvider::class,
         'farazsms'       => FarazSmsProvider::class,
         'hostiran'       => HostIranProvider::class,
         'octopush'       => OctopushProvider::class,
@@ -120,6 +123,7 @@ class MessagingServiceProvider implements ServiceProvider
         'liveall'        => LiveAllProvider::class,
         'infobip'        => InfobipProvider::class,
         'instantalerts'  => InstantalertsProvider::class,
+        'jawalbsms'      => JawalBSmsProvider::class,
         'gatewayapi'     => GatewayApiProvider::class,
         'gateway'        => GatewaySaProvider::class,
         'gunisms'        => GunismsProvider::class,
@@ -264,7 +268,7 @@ class MessagingServiceProvider implements ServiceProvider
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
         // Providers implementing SupportsTemplates get the catalog manager injected
-        $templateProviders = ['twilio', 'kavenegar', 'razpayamak', 'farapayamak', 'farazsms', 'hostiran', 'smsir', 'plivo', 'sinch', 'infobip', 'smsapi', 'fast2sms', 'smsc', 'smsgatewayhub', 'smsgatewaycenter', 'seven', 'afilnet', 'tubelightcommunications', 'espay'];
+        $templateProviders = ['twilio', 'kavenegar', 'razpayamak', 'farapayamak', 'payamakaria', 'farazsms', 'hostiran', 'smsir', 'plivo', 'sinch', 'infobip', 'smsapi', 'fast2sms', 'smsc', 'smsgatewayhub', 'smsgatewaycenter', 'seven', 'afilnet', 'tubelightcommunications', 'espay'];
 
         foreach (self::PROVIDERS as $id => $class) {
             if (in_array($id, $templateProviders, true)) {
