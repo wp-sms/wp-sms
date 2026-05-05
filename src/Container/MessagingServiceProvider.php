@@ -64,6 +64,7 @@ use WSms\Messaging\Gateway\Provider\OurSmsProvider;
 use WSms\Messaging\Gateway\Provider\OvhProvider;
 use WSms\Messaging\Gateway\Provider\OxemisProvider;
 use WSms\Messaging\Gateway\Provider\PlivoProvider;
+use WSms\Messaging\Gateway\Provider\PrimotextoProvider;
 use WSms\Messaging\Gateway\Provider\RazpayamakProvider;
 use WSms\Messaging\Gateway\Provider\SevenProvider;
 use WSms\Messaging\Gateway\Provider\SinchProvider;
@@ -119,6 +120,7 @@ class MessagingServiceProvider implements ServiceProvider
         'netgsm'         => NetGsmProvider::class,
         'smsir'          => SmsIrProvider::class,
         'plivo'          => PlivoProvider::class,
+        'primotexto'     => PrimotextoProvider::class,
         'africastalking' => AfricasTalkingProvider::class,
         'sinch'          => SinchProvider::class,
         'labsmobile'     => LabsMobileProvider::class,
