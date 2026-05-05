@@ -79,6 +79,7 @@ use WSms\Messaging\Gateway\Provider\SmsGatewayHubProvider;
 use WSms\Messaging\Gateway\Provider\SmsGlobalProvider;
 use WSms\Messaging\Gateway\Provider\SmshostingProvider;
 use WSms\Messaging\Gateway\Provider\SmspointProvider;
+use WSms\Messaging\Gateway\Provider\SmssolutionsProvider;
 use WSms\Messaging\Gateway\Provider\SmstoProvider;
 use WSms\Messaging\Gateway\Provider\SpiriusProvider;
 use WSms\Messaging\Gateway\Provider\SpotHitProvider;
@@ -176,6 +177,7 @@ class MessagingServiceProvider implements ServiceProvider
         'textplode'      => TextplodeProvider::class,
         'smses'          => SmsesProvider::class,
         'smspoint'       => SmspointProvider::class,
+        'smssolutions'   => SmssolutionsProvider::class,
         'spirius'        => SpiriusProvider::class,
         'seven'          => SevenProvider::class,
         'mensatek'       => MensatekProvider::class,
