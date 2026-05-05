@@ -71,6 +71,7 @@ use WSms\Messaging\Gateway\Provider\SinchProvider;
 use WSms\Messaging\Gateway\Provider\SmsApiProvider;
 use WSms\Messaging\Gateway\Provider\SmscProvider;
 use WSms\Messaging\Gateway\Provider\SmsesProvider;
+use WSms\Messaging\Gateway\Provider\SmsgatewayatProvider;
 use WSms\Messaging\Gateway\Provider\SmsGatewayCenterProvider;
 use WSms\Messaging\Gateway\Provider\SmsGatewayHubProvider;
 use WSms\Messaging\Gateway\Provider\SmsGlobalProvider;
@@ -189,6 +190,7 @@ class MessagingServiceProvider implements ServiceProvider
         'experttexting'  => ExpertTextingProvider::class,
         'onewaysms'      => OneWaySmsProvider::class,
         'nesssolution'   => NesssolutionProvider::class,
+        'smsgatewayat'   => SmsgatewayatProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
