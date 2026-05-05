@@ -66,6 +66,7 @@ use WSms\Messaging\Gateway\Provider\OxemisProvider;
 use WSms\Messaging\Gateway\Provider\PlivoProvider;
 use WSms\Messaging\Gateway\Provider\PrimotextoProvider;
 use WSms\Messaging\Gateway\Provider\ProSmsProvider;
+use WSms\Messaging\Gateway\Provider\ProsmsdkProvider;
 use WSms\Messaging\Gateway\Provider\RazpayamakProvider;
 use WSms\Messaging\Gateway\Provider\SafaSmsProvider;
 use WSms\Messaging\Gateway\Provider\SendappProvider;
@@ -207,6 +208,7 @@ class MessagingServiceProvider implements ServiceProvider
         'sendapp'        => SendappProvider::class,
         'sendappwhatsapp' => SendappWhatsappProvider::class,
         'safasms'        => SafaSmsProvider::class,
+        'prosmsdk'       => ProsmsdkProvider::class,
     ];
 
     public function register(ServiceContainer $container): void

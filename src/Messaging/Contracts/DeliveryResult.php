@@ -27,8 +27,8 @@ class DeliveryResult
         return new self(false, 'failed', null, $error, null, $meta, $retryable);
     }
 
-    public static function queued(?string $providerId = null): self
+    public static function queued(?string $providerId = null, ?float $cost = null, array $meta = []): self
     {
-        return new self(true, 'queued', $providerId);
+        return new self(true, 'queued', $providerId, null, $cost, $meta);
     }
 }
