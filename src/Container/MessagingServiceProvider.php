@@ -68,6 +68,7 @@ use WSms\Messaging\Gateway\Provider\PrimotextoProvider;
 use WSms\Messaging\Gateway\Provider\RazpayamakProvider;
 use WSms\Messaging\Gateway\Provider\SevenProvider;
 use WSms\Messaging\Gateway\Provider\SinchProvider;
+use WSms\Messaging\Gateway\Provider\SlinteractiveProvider;
 use WSms\Messaging\Gateway\Provider\SmsApiProvider;
 use WSms\Messaging\Gateway\Provider\SmsboxProvider;
 use WSms\Messaging\Gateway\Provider\SmscProvider;
@@ -195,6 +196,7 @@ class MessagingServiceProvider implements ServiceProvider
         'onewaysms'      => OneWaySmsProvider::class,
         'nesssolution'   => NesssolutionProvider::class,
         'smsgatewayat'   => SmsgatewayatProvider::class,
+        'slinteractive'  => SlinteractiveProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
