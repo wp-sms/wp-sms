@@ -93,6 +93,7 @@ use WSms\Messaging\Gateway\Provider\UnisenderProvider;
 use WSms\Messaging\Gateway\Provider\VerimorProvider;
 use WSms\Messaging\Gateway\Provider\VonageProvider;
 use WSms\Messaging\Gateway\Provider\WaliProvider;
+use WSms\Messaging\Gateway\Provider\ZainProvider;
 use WSms\Messaging\Gateway\Line\LineGateway;
 use WSms\Messaging\Gateway\Telegram\TelegramGateway;
 use WSms\Messaging\Gateway\TestGateway;
@@ -157,6 +158,7 @@ class MessagingServiceProvider implements ServiceProvider
         'ebulksms'       => EbulkSmsProvider::class,
         'msegat'         => MsegatProvider::class,
         'wali'           => WaliProvider::class,
+        'zain'           => ZainProvider::class,
         'mtarget'        => MtargetProvider::class,
         'fast2sms'       => Fast2SmsProvider::class,
         'smsc'           => SmscProvider::class,
