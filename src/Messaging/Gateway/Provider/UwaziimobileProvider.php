@@ -58,7 +58,7 @@ class UwaziimobileProvider extends AbstractProvider
                     'type'        => 'string',
                     'label'       => __('Username', 'wp-sms'),
                     'required'    => true,
-                    'description' => __('Your Uwazii MOBILE portal username from my.uwaziimobile.com.', 'wp-sms'),
+                    'description' => __('Your Uwazii MOBILE portal username from portal.uwaziimobile.com.', 'wp-sms'),
                 ],
                 'password' => [
                     'type'        => 'secret',
