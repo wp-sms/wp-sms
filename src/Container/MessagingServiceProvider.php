@@ -69,6 +69,7 @@ use WSms\Messaging\Gateway\Provider\RazpayamakProvider;
 use WSms\Messaging\Gateway\Provider\SevenProvider;
 use WSms\Messaging\Gateway\Provider\SinchProvider;
 use WSms\Messaging\Gateway\Provider\SmsApiProvider;
+use WSms\Messaging\Gateway\Provider\SmsboxProvider;
 use WSms\Messaging\Gateway\Provider\SmscProvider;
 use WSms\Messaging\Gateway\Provider\SmsesProvider;
 use WSms\Messaging\Gateway\Provider\SmsgatewayatProvider;
@@ -136,6 +137,7 @@ class MessagingServiceProvider implements ServiceProvider
         'aspsms'         => AspSmsProvider::class,
         'smsglobal'      => SmsGlobalProvider::class,
         'smsapi'         => SmsApiProvider::class,
+        'smsbox'         => SmsboxProvider::class,
         'easysendsms'    => EasySendSmsProvider::class,
         'espay'          => EspayProvider::class,
         'eurosms'        => EuroSmsProvider::class,
