@@ -93,9 +93,9 @@ final class SmsboxProvider extends AbstractProvider
                         'type'        => 'select',
                         'label'       => __('TTS Language', 'wp-sms'),
                         'required'    => false,
+                        'placeholder' => __('— Not set —', 'wp-sms'),
                         'description' => __('Language used when a message is sent as text-to-speech (only when the dispatch explicitly requests TTS via message metadata).', 'wp-sms'),
                         'options'     => [
-                            ['value' => '',   'label' => __('— Not set —', 'wp-sms')],
                             ['value' => 'NL', 'label' => __('Dutch (NL)', 'wp-sms')],
                             ['value' => 'EN', 'label' => __('English (EN)', 'wp-sms')],
                             ['value' => 'FR', 'label' => __('French (FR)', 'wp-sms')],
