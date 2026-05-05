@@ -21,6 +21,7 @@ use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\BulutfonProvider;
 use WSms\Messaging\Gateway\Provider\CallifonyProvider;
 use WSms\Messaging\Gateway\Provider\CellsyntProvider;
+use WSms\Messaging\Gateway\Provider\CheapglobalSmsProvider;
 use WSms\Messaging\Gateway\Provider\ComilioProvider;
 use WSms\Messaging\Gateway\Provider\CpsmsProvider;
 use WSms\Messaging\Gateway\Provider\DeewanProvider;
@@ -213,6 +214,7 @@ class MessagingServiceProvider implements ServiceProvider
         'sendappwhatsapp' => SendappWhatsappProvider::class,
         'safasms'        => SafaSmsProvider::class,
         'prosmsdk'       => ProsmsdkProvider::class,
+        'cheapglobalsms' => CheapglobalSmsProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
