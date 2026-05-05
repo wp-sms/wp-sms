@@ -95,6 +95,7 @@ use WSms\Messaging\Gateway\Provider\TextAnywhereProvider;
 use WSms\Messaging\Gateway\Provider\TextplodeProvider;
 use WSms\Messaging\Gateway\Provider\TubelightCommunicationsProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
+use WSms\Messaging\Gateway\Provider\UwaziimobileProvider;
 use WSms\Messaging\Gateway\Provider\SmsIrProvider;
 use WSms\Messaging\Gateway\Provider\UnifonicProvider;
 use WSms\Messaging\Gateway\Provider\UnisenderProvider;
@@ -119,6 +120,7 @@ class MessagingServiceProvider implements ServiceProvider
     /** @var array<string, class-string> Provider ID => class name for deferred registration */
     private const PROVIDERS = [
         'twilio'         => TwilioProvider::class,
+        'uwaziimobile'   => UwaziimobileProvider::class,
         'vonage'         => VonageProvider::class,
         'kavenegar'      => KavenegarProvider::class,
         'razpayamak'     => RazpayamakProvider::class,
