@@ -53,6 +53,7 @@ use WSms\Messaging\Gateway\Provider\LabsMobileProvider;
 use WSms\Messaging\Gateway\Provider\LiveAllProvider;
 use WSms\Messaging\Gateway\Provider\MensatekProvider;
 use WSms\Messaging\Gateway\Provider\MittoProvider;
+use WSms\Messaging\Gateway\Provider\MobiledotnetProvider;
 use WSms\Messaging\Gateway\Provider\MsegatProvider;
 use WSms\Messaging\Gateway\Provider\MtargetProvider;
 use WSms\Messaging\Gateway\Provider\NesssolutionProvider;
@@ -170,6 +171,7 @@ class MessagingServiceProvider implements ServiceProvider
         'deewan'         => DeewanProvider::class,
         'ebulksms'       => EbulkSmsProvider::class,
         'msegat'         => MsegatProvider::class,
+        'mobiledotnet'   => MobiledotnetProvider::class,
         'wali'           => WaliProvider::class,
         'zain'           => ZainProvider::class,
         'mtarget'        => MtargetProvider::class,
