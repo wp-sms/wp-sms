@@ -66,6 +66,8 @@ use WSms\Messaging\Gateway\Provider\OxemisProvider;
 use WSms\Messaging\Gateway\Provider\PlivoProvider;
 use WSms\Messaging\Gateway\Provider\PrimotextoProvider;
 use WSms\Messaging\Gateway\Provider\RazpayamakProvider;
+use WSms\Messaging\Gateway\Provider\SendappProvider;
+use WSms\Messaging\Gateway\Provider\SendappWhatsappProvider;
 use WSms\Messaging\Gateway\Provider\SevenProvider;
 use WSms\Messaging\Gateway\Provider\SinchProvider;
 use WSms\Messaging\Gateway\Provider\SlinteractiveProvider;
@@ -199,6 +201,8 @@ class MessagingServiceProvider implements ServiceProvider
         'nesssolution'   => NesssolutionProvider::class,
         'smsgatewayat'   => SmsgatewayatProvider::class,
         'slinteractive'  => SlinteractiveProvider::class,
+        'sendapp'        => SendappProvider::class,
+        'sendappwhatsapp' => SendappWhatsappProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
