@@ -63,6 +63,7 @@ use WSms\Messaging\Gateway\Provider\OneWaySmsProvider;
 use WSms\Messaging\Gateway\Provider\OurSmsProvider;
 use WSms\Messaging\Gateway\Provider\OvhProvider;
 use WSms\Messaging\Gateway\Provider\OxemisProvider;
+use WSms\Messaging\Gateway\Provider\PayamresanProvider;
 use WSms\Messaging\Gateway\Provider\PlivoProvider;
 use WSms\Messaging\Gateway\Provider\PrimotextoProvider;
 use WSms\Messaging\Gateway\Provider\ProSmsProvider;
@@ -129,6 +130,7 @@ class MessagingServiceProvider implements ServiceProvider
         'ovh'            => OvhProvider::class,
         'netgsm'         => NetGsmProvider::class,
         'smsir'          => SmsIrProvider::class,
+        'payamresan'     => PayamresanProvider::class,
         'plivo'          => PlivoProvider::class,
         'primotexto'     => PrimotextoProvider::class,
         'prosms'         => ProSmsProvider::class,
@@ -294,7 +296,7 @@ class MessagingServiceProvider implements ServiceProvider
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
         // Providers implementing SupportsTemplates get the catalog manager injected
-        $templateProviders = ['twilio', 'kavenegar', 'razpayamak', 'farapayamak', 'payamakaria', 'farazsms', 'hostiran', 'smsir', 'plivo', 'sinch', 'infobip', 'smsapi', 'fast2sms', 'smsc', 'smsgatewayhub', 'smsgatewaycenter', 'seven', 'afilnet', 'tubelightcommunications', 'espay'];
+        $templateProviders = ['twilio', 'kavenegar', 'razpayamak', 'farapayamak', 'payamakaria', 'farazsms', 'hostiran', 'smsir', 'payamresan', 'plivo', 'sinch', 'infobip', 'smsapi', 'fast2sms', 'smsc', 'smsgatewayhub', 'smsgatewaycenter', 'seven', 'afilnet', 'tubelightcommunications', 'espay'];
 
         foreach (self::PROVIDERS as $id => $class) {
             if (in_array($id, $templateProviders, true)) {
