@@ -87,8 +87,8 @@ class GhasedakProvider extends AbstractProvider implements SupportsTemplates
                     'required'    => true,
                     'description' => __('New API requires whitelisting your server IP when generating the API key; legacy does not.', 'wp-sms'),
                     'options'     => [
-                        'ghasedak.me'     => __('New API (ghasedak.me)', 'wp-sms'),
-                        'ghasedaksms.com' => __('Legacy API (ghasedaksms.com)', 'wp-sms'),
+                        ['value' => 'ghasedak.me',     'label' => __('New API (ghasedak.me)', 'wp-sms')],
+                        ['value' => 'ghasedaksms.com', 'label' => __('Legacy API (ghasedaksms.com)', 'wp-sms')],
                     ],
                     'default'     => 'ghasedak.me',
                 ],
