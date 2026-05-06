@@ -105,6 +105,40 @@ use WSms\Messaging\Gateway\Provider\VerimorProvider;
 use WSms\Messaging\Gateway\Provider\VonageProvider;
 use WSms\Messaging\Gateway\Provider\WaliProvider;
 use WSms\Messaging\Gateway\Provider\ZainProvider;
+use WSms\Messaging\Gateway\Provider\_0098smsProvider;
+use WSms\Messaging\Gateway\Provider\_18smsProvider;
+use WSms\Messaging\Gateway\Provider\AdpDigitalProvider;
+use WSms\Messaging\Gateway\Provider\AradSmsProvider;
+use WSms\Messaging\Gateway\Provider\AsanakProvider;
+use WSms\Messaging\Gateway\Provider\HiroSmsProvider;
+use WSms\Messaging\Gateway\Provider\IdehPayamProvider;
+use WSms\Messaging\Gateway\Provider\IranSmsPanelProvider;
+use WSms\Messaging\Gateway\Provider\IranspkProvider;
+use WSms\Messaging\Gateway\Provider\IsmsieProvider;
+use WSms\Messaging\Gateway\Provider\JahanPayamakProvider;
+use WSms\Messaging\Gateway\Provider\LoginPanelProvider;
+use WSms\Messaging\Gateway\Provider\MarkazPayamakProvider;
+use WSms\Messaging\Gateway\Provider\MatinSmsProvider;
+use WSms\Messaging\Gateway\Provider\MdPanelProvider;
+use WSms\Messaging\Gateway\Provider\MedianaProvider;
+use WSms\Messaging\Gateway\Provider\MeliPayamakProvider;
+use WSms\Messaging\Gateway\Provider\NasrPayamProvider;
+use WSms\Messaging\Gateway\Provider\Novin1SmsProvider;
+use WSms\Messaging\Gateway\Provider\PayamakPanelProvider;
+use WSms\Messaging\Gateway\Provider\PayameRozProvider;
+use WSms\Messaging\Gateway\Provider\RayganSmsProvider;
+use WSms\Messaging\Gateway\Provider\SignalAdsProvider;
+use WSms\Messaging\Gateway\Provider\SmsBanProvider;
+use WSms\Messaging\Gateway\Provider\SmsBartarProvider;
+use WSms\Messaging\Gateway\Provider\SmsCallProvider;
+use WSms\Messaging\Gateway\Provider\SmsClickProvider;
+use WSms\Messaging\Gateway\Provider\SmsHooshmandProvider;
+use WSms\Messaging\Gateway\Provider\SmsLineProvider;
+use WSms\Messaging\Gateway\Provider\SmsMelliProvider;
+use WSms\Messaging\Gateway\Provider\SmsServiceProvider;
+use WSms\Messaging\Gateway\Provider\SmsToosProvider;
+use WSms\Messaging\Gateway\Provider\SsmssProvider;
+use WSms\Messaging\Gateway\Provider\TextSmsProvider;
 use WSms\Messaging\Gateway\Line\LineGateway;
 use WSms\Messaging\Gateway\Telegram\TelegramGateway;
 use WSms\Messaging\Gateway\TestGateway;
@@ -217,6 +251,43 @@ class MessagingServiceProvider implements ServiceProvider
         'safasms'        => SafaSmsProvider::class,
         'prosmsdk'       => ProsmsdkProvider::class,
         'cheapglobalsms' => CheapglobalSmsProvider::class,
+
+        // Iranian gateways ported from v7. APIs are reachable only from inside Iran;
+        // every provider in this block ships with `TESTED = false` until manually verified.
+        '0098sms'        => _0098smsProvider::class,
+        '18sms'          => _18smsProvider::class,
+        'adpdigital'     => AdpDigitalProvider::class,
+        'aradsms'        => AradSmsProvider::class,
+        'asanak'         => AsanakProvider::class,
+        'hirosms'        => HiroSmsProvider::class,
+        'idehpayam'      => IdehPayamProvider::class,
+        'iransmspanel'   => IranSmsPanelProvider::class,
+        'iranspk'        => IranspkProvider::class,
+        'ismsie'         => IsmsieProvider::class,
+        'jahanpayamak'   => JahanPayamakProvider::class,
+        'loginpanel'     => LoginPanelProvider::class,
+        'markazpayamak'  => MarkazPayamakProvider::class,
+        'matinsms'       => MatinSmsProvider::class,
+        'mdpanel'        => MdPanelProvider::class,
+        'mediana'        => MedianaProvider::class,
+        'melipayamak'    => MeliPayamakProvider::class,
+        'nasrpayam'      => NasrPayamProvider::class,
+        'novin1sms'      => Novin1SmsProvider::class,
+        'payamakpanel'   => PayamakPanelProvider::class,
+        'payameroz'      => PayameRozProvider::class,
+        'raygansms'      => RayganSmsProvider::class,
+        'signalads'      => SignalAdsProvider::class,
+        'smsban'         => SmsBanProvider::class,
+        'smsbartar'      => SmsBartarProvider::class,
+        'smscall'        => SmsCallProvider::class,
+        'smsclick'       => SmsClickProvider::class,
+        'smshooshmand'   => SmsHooshmandProvider::class,
+        'smsline'        => SmsLineProvider::class,
+        'smsmelli'       => SmsMelliProvider::class,
+        'smsservice'     => SmsServiceProvider::class,
+        'smstoos'        => SmsToosProvider::class,
+        'ssmss'          => SsmssProvider::class,
+        'textsms'        => TextSmsProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
@@ -302,7 +373,7 @@ class MessagingServiceProvider implements ServiceProvider
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
         // Providers implementing SupportsTemplates get the catalog manager injected
-        $templateProviders = ['twilio', 'kavenegar', 'razpayamak', 'farapayamak', 'payamakaria', 'farazsms', 'hostiran', 'smsir', 'payamresan', 'plivo', 'sinch', 'infobip', 'smsapi', 'fast2sms', 'smsc', 'smsgatewayhub', 'smsgatewaycenter', 'seven', 'afilnet', 'tubelightcommunications', 'espay'];
+        $templateProviders = ['twilio', 'kavenegar', 'razpayamak', 'farapayamak', 'payamakaria', 'farazsms', 'hostiran', 'smsir', 'payamresan', 'plivo', 'sinch', 'infobip', 'smsapi', 'fast2sms', 'smsc', 'smsgatewayhub', 'smsgatewaycenter', 'seven', 'afilnet', 'tubelightcommunications', 'espay', 'melipayamak'];
 
         foreach (self::PROVIDERS as $id => $class) {
             if (in_array($id, $templateProviders, true)) {
