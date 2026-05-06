@@ -139,6 +139,27 @@ use WSms\Messaging\Gateway\Provider\SmsServiceProvider;
 use WSms\Messaging\Gateway\Provider\SmsToosProvider;
 use WSms\Messaging\Gateway\Provider\SsmssProvider;
 use WSms\Messaging\Gateway\Provider\TextSmsProvider;
+use WSms\Messaging\Gateway\Provider\AdsPanelProvider;
+use WSms\Messaging\Gateway\Provider\AfeProvider;
+use WSms\Messaging\Gateway\Provider\ArkaPayamakProvider;
+use WSms\Messaging\Gateway\Provider\AvalPayamProvider;
+use WSms\Messaging\Gateway\Provider\BandarSmsProvider;
+use WSms\Messaging\Gateway\Provider\BestitProvider;
+use WSms\Messaging\Gateway\Provider\CandooSmsProvider;
+use WSms\Messaging\Gateway\Provider\ChapargahProvider;
+use WSms\Messaging\Gateway\Provider\FirstPayamakProvider;
+use WSms\Messaging\Gateway\Provider\GhasedakProvider;
+use WSms\Messaging\Gateway\Provider\ImenCmsProvider;
+use WSms\Messaging\Gateway\Provider\MyDnsPanelProvider;
+use WSms\Messaging\Gateway\Provider\OnlinePanelProvider;
+use WSms\Messaging\Gateway\Provider\PaazProvider;
+use WSms\Messaging\Gateway\Provider\ParsaSmsProvider;
+use WSms\Messaging\Gateway\Provider\ParsGreenProvider;
+use WSms\Messaging\Gateway\Provider\PersianSmsProvider;
+use WSms\Messaging\Gateway\Provider\RayanSmsPanelProvider;
+use WSms\Messaging\Gateway\Provider\SabanovinProvider;
+use WSms\Messaging\Gateway\Provider\SunwaySmsProvider;
+use WSms\Messaging\Gateway\Provider\TsmsProvider;
 use WSms\Messaging\Gateway\Line\LineGateway;
 use WSms\Messaging\Gateway\Telegram\TelegramGateway;
 use WSms\Messaging\Gateway\TestGateway;
@@ -288,6 +309,31 @@ class MessagingServiceProvider implements ServiceProvider
         'smstoos'        => SmsToosProvider::class,
         'ssmss'          => SsmssProvider::class,
         'textsms'        => TextSmsProvider::class,
+
+        // Iranian gateways missed in the first batch (recon TSV was incomplete).
+        // Same caveats: Iran-network only, reverse-engineered from v7 PHP,
+        // ship with `TESTED = false` until manually verified.
+        'adspanel'       => AdsPanelProvider::class,
+        'afe'            => AfeProvider::class,
+        'arkapayamak'    => ArkaPayamakProvider::class,
+        'avalpayam'      => AvalPayamProvider::class,
+        'bandarsms'      => BandarSmsProvider::class,
+        'bestit'         => BestitProvider::class,
+        'candoosms'      => CandooSmsProvider::class,
+        'chapargah'      => ChapargahProvider::class,
+        'firstpayamak'   => FirstPayamakProvider::class,
+        'ghasedak'       => GhasedakProvider::class,
+        'imencms'        => ImenCmsProvider::class,
+        'mydnspanel'     => MyDnsPanelProvider::class,
+        'onlinepanel'    => OnlinePanelProvider::class,
+        'paaz'           => PaazProvider::class,
+        'parsasms'       => ParsaSmsProvider::class,
+        'parsgreen'      => ParsGreenProvider::class,
+        'persiansms'     => PersianSmsProvider::class,
+        'rayansmspanel'  => RayanSmsPanelProvider::class,
+        'sabanovin'      => SabanovinProvider::class,
+        'sunwaysms'      => SunwaySmsProvider::class,
+        'tsms'           => TsmsProvider::class,
     ];
 
     public function register(ServiceContainer $container): void
@@ -373,7 +419,7 @@ class MessagingServiceProvider implements ServiceProvider
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
         // Providers implementing SupportsTemplates get the catalog manager injected
-        $templateProviders = ['twilio', 'kavenegar', 'razpayamak', 'farapayamak', 'payamakaria', 'farazsms', 'hostiran', 'smsir', 'payamresan', 'plivo', 'sinch', 'infobip', 'smsapi', 'fast2sms', 'smsc', 'smsgatewayhub', 'smsgatewaycenter', 'seven', 'afilnet', 'tubelightcommunications', 'espay', 'melipayamak'];
+        $templateProviders = ['twilio', 'kavenegar', 'razpayamak', 'farapayamak', 'payamakaria', 'farazsms', 'hostiran', 'smsir', 'payamresan', 'plivo', 'sinch', 'infobip', 'smsapi', 'fast2sms', 'smsc', 'smsgatewayhub', 'smsgatewaycenter', 'seven', 'afilnet', 'tubelightcommunications', 'espay', 'melipayamak', 'ghasedak'];
 
         foreach (self::PROVIDERS as $id => $class) {
             if (in_array($id, $templateProviders, true)) {
