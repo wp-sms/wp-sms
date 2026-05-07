@@ -17,6 +17,7 @@ use WSms\Messaging\Gateway\Provider\AriaCPProvider;
 use WSms\Messaging\Gateway\Provider\ArubaProvider;
 use WSms\Messaging\Gateway\Provider\AspSmsProvider;
 use WSms\Messaging\Gateway\Provider\BareedSmsProvider;
+use WSms\Messaging\Gateway\Provider\BandwidthProvider;
 use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\BulutfonProvider;
 use WSms\Messaging\Gateway\Provider\CallifonyProvider;
@@ -215,6 +216,7 @@ class MessagingServiceProvider implements ServiceProvider
         'mitto'          => MittoProvider::class,
         'smsto'          => SmstoProvider::class,
         'bareedsms'      => BareedSmsProvider::class,
+        'bandwidth'      => BandwidthProvider::class,
         'bulkgate'       => BulkgateProvider::class,
         'cellsynt'       => CellsyntProvider::class,
         'comilio'        => ComilioProvider::class,
