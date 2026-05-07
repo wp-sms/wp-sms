@@ -23,6 +23,7 @@ use WSms\Messaging\Gateway\Provider\BulutfonProvider;
 use WSms\Messaging\Gateway\Provider\CallifonyProvider;
 use WSms\Messaging\Gateway\Provider\CellsyntProvider;
 use WSms\Messaging\Gateway\Provider\CheapglobalSmsProvider;
+use WSms\Messaging\Gateway\Provider\ClickSendProvider;
 use WSms\Messaging\Gateway\Provider\ComilioProvider;
 use WSms\Messaging\Gateway\Provider\CpsmsProvider;
 use WSms\Messaging\Gateway\Provider\DeewanProvider;
@@ -274,6 +275,7 @@ class MessagingServiceProvider implements ServiceProvider
         'safasms'        => SafaSmsProvider::class,
         'prosmsdk'       => ProsmsdkProvider::class,
         'cheapglobalsms' => CheapglobalSmsProvider::class,
+        'clicksend'      => ClickSendProvider::class,
 
         // Iranian gateways ported from v7. APIs are reachable only from inside Iran;
         // every provider in this block ships with `TESTED = false` until manually verified.
