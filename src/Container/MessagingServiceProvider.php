@@ -11,6 +11,7 @@ use WSms\Messaging\Gateway\Email\WpMailGateway;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\Gateway\Provider\AfilnetProvider;
 use WSms\Messaging\Gateway\Provider\AfricasTalkingProvider;
+use WSms\Messaging\Gateway\Provider\AlphaSmsProvider;
 use WSms\Messaging\Gateway\Provider\AltiriaProvider;
 use WSms\Messaging\Gateway\Provider\AoboxProvider;
 use WSms\Messaging\Gateway\Provider\AriaCPProvider;
@@ -278,6 +279,7 @@ class MessagingServiceProvider implements ServiceProvider
         'prosmsdk'       => ProsmsdkProvider::class,
         'cheapglobalsms' => CheapglobalSmsProvider::class,
         'clicksend'      => ClickSendProvider::class,
+        'alphasms'       => AlphaSmsProvider::class,
 
         // Iranian gateways ported from v7. APIs are reachable only from inside Iran;
         // every provider in this block ships with `TESTED = false` until manually verified.
