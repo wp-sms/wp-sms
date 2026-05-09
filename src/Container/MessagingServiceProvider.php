@@ -49,6 +49,7 @@ use WSms\Messaging\Gateway\Provider\EasySendSmsProvider;
 use WSms\Messaging\Gateway\Provider\EaziSMSproProvider;
 use WSms\Messaging\Gateway\Provider\EngyProvider;
 use WSms\Messaging\Gateway\Provider\EskizProvider;
+use WSms\Messaging\Gateway\Provider\EsmsProvider;
 use WSms\Messaging\Gateway\Provider\EspayProvider;
 use WSms\Messaging\Gateway\Provider\EuroSmsProvider;
 use WSms\Messaging\Gateway\Provider\ExpertTextingProvider;
@@ -313,6 +314,7 @@ class MessagingServiceProvider implements ServiceProvider
         'cmtelecom'      => CmtelecomProvider::class,
         'clickatell'     => ClickatellProvider::class,
         'alphasms'       => AlphaSmsProvider::class,
+        'esms'           => EsmsProvider::class,
         'telnyx'         => TelnyxProvider::class,
 
         // Iranian gateways ported from v7. APIs are reachable only from inside Iran;
