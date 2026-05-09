@@ -67,8 +67,8 @@ class BrevoProvider extends AbstractProvider implements
                         'default'     => 'transactional',
                         'description' => __('Marketing traffic is subject to time-of-day restrictions in some countries; only use Marketing with explicit recipient consent.', 'wp-sms'),
                         'options'     => [
-                            'transactional' => __('Transactional', 'wp-sms'),
-                            'marketing'     => __('Marketing', 'wp-sms'),
+                            ['value' => 'transactional', 'label' => __('Transactional', 'wp-sms')],
+                            ['value' => 'marketing',     'label' => __('Marketing', 'wp-sms')],
                         ],
                     ],
                 ],

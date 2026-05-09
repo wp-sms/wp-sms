@@ -98,8 +98,9 @@ class BrevoProviderTest extends AbstractProviderTestCase
         $this->assertTrue($schema['channels']['sms']['from']['required']);
         $this->assertArrayHasKey('type', $schema['channels']['sms']);
         $this->assertSame('select', $schema['channels']['sms']['type']['type']);
-        $this->assertArrayHasKey('transactional', $schema['channels']['sms']['type']['options']);
-        $this->assertArrayHasKey('marketing', $schema['channels']['sms']['type']['options']);
+        $optionValues = array_column($schema['channels']['sms']['type']['options'], 'value');
+        $this->assertContains('transactional', $optionValues);
+        $this->assertContains('marketing', $optionValues);
 
         $this->assertArrayHasKey('from', $schema['channels']['whatsapp']);
         $this->assertTrue($schema['channels']['whatsapp']['from']['required']);
