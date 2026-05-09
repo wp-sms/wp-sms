@@ -25,6 +25,7 @@ use WSms\Messaging\Gateway\Provider\BrevoProvider;
 use WSms\Messaging\Gateway\Provider\BrqSmsProvider;
 use WSms\Messaging\Gateway\Provider\BtsSmsProvider;
 use WSms\Messaging\Gateway\Provider\BulkSMSgatewayProvider;
+use WSms\Messaging\Gateway\Provider\BulkSmsHyderabadProvider;
 use WSms\Messaging\Gateway\Provider\BulkSmsMaProvider;
 use WSms\Messaging\Gateway\Provider\BulkSmsProvider;
 use WSms\Messaging\Gateway\Provider\BulkgateProvider;
@@ -237,6 +238,7 @@ class MessagingServiceProvider implements ServiceProvider
         'btssms'         => BtsSmsProvider::class,
         'bulksms'        => BulkSmsProvider::class,
         'bulksmsgateway' => BulkSMSgatewayProvider::class,
+        'bulksmshyderabad' => BulkSmsHyderabadProvider::class,
         'bulksmsma'      => BulkSmsMaProvider::class,
         'bulkgate'       => BulkgateProvider::class,
         'cellsynt'       => CellsyntProvider::class,
