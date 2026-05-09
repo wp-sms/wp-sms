@@ -48,6 +48,7 @@ use WSms\Messaging\Gateway\Provider\EbulkSmsProvider;
 use WSms\Messaging\Gateway\Provider\EasySendSmsProvider;
 use WSms\Messaging\Gateway\Provider\EaziSMSproProvider;
 use WSms\Messaging\Gateway\Provider\EngyProvider;
+use WSms\Messaging\Gateway\Provider\EskizProvider;
 use WSms\Messaging\Gateway\Provider\EspayProvider;
 use WSms\Messaging\Gateway\Provider\EuroSmsProvider;
 use WSms\Messaging\Gateway\Provider\ExpertTextingProvider;
@@ -234,6 +235,7 @@ class MessagingServiceProvider implements ServiceProvider
         'espay'          => EspayProvider::class,
         'eurosms'        => EuroSmsProvider::class,
         'engy'           => EngyProvider::class,
+        'eskiz'          => EskizProvider::class,
         'mitto'          => MittoProvider::class,
         'smsto'          => SmstoProvider::class,
         'bareedsms'      => BareedSmsProvider::class,
