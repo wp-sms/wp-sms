@@ -37,6 +37,7 @@ use WSms\Messaging\Gateway\Provider\CellsyntProvider;
 use WSms\Messaging\Gateway\Provider\CloudTalkProvider;
 use WSms\Messaging\Gateway\Provider\CheapglobalSmsProvider;
 use WSms\Messaging\Gateway\Provider\ClickSendProvider;
+use WSms\Messaging\Gateway\Provider\CmtelecomProvider;
 use WSms\Messaging\Gateway\Provider\ClickatellProvider;
 use WSms\Messaging\Gateway\Provider\ComilioProvider;
 use WSms\Messaging\Gateway\Provider\CpsmsProvider;
@@ -307,6 +308,7 @@ class MessagingServiceProvider implements ServiceProvider
         'prosmsdk'       => ProsmsdkProvider::class,
         'cheapglobalsms' => CheapglobalSmsProvider::class,
         'clicksend'      => ClickSendProvider::class,
+        'cmtelecom'      => CmtelecomProvider::class,
         'clickatell'     => ClickatellProvider::class,
         'alphasms'       => AlphaSmsProvider::class,
         'telnyx'         => TelnyxProvider::class,
@@ -457,7 +459,7 @@ class MessagingServiceProvider implements ServiceProvider
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
         // Providers implementing SupportsTemplates get the catalog manager injected
-        $templateProviders = ['twilio', 'kavenegar', 'razpayamak', 'farapayamak', 'payamakaria', 'farazsms', 'hostiran', 'smsir', 'payamresan', 'plivo', 'sinch', 'infobip', 'messagebird', 'smsapi', 'fast2sms', 'smsc', 'smsgatewayhub', 'smsgatewaycenter', 'seven', 'afilnet', 'tubelightcommunications', 'espay', 'melipayamak', 'ghasedak', 'telnyx'];
+        $templateProviders = ['twilio', 'kavenegar', 'razpayamak', 'farapayamak', 'payamakaria', 'farazsms', 'hostiran', 'smsir', 'payamresan', 'plivo', 'sinch', 'infobip', 'messagebird', 'smsapi', 'fast2sms', 'smsc', 'smsgatewayhub', 'smsgatewaycenter', 'seven', 'afilnet', 'tubelightcommunications', 'espay', 'melipayamak', 'ghasedak', 'telnyx', 'cmtelecom'];
 
         foreach (self::PROVIDERS as $id => $class) {
             if (in_array($id, $templateProviders, true)) {
