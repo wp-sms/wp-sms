@@ -34,6 +34,7 @@ use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\BulutfonProvider;
 use WSms\Messaging\Gateway\Provider\CallifonyProvider;
 use WSms\Messaging\Gateway\Provider\CellsyntProvider;
+use WSms\Messaging\Gateway\Provider\CloudTalkProvider;
 use WSms\Messaging\Gateway\Provider\CheapglobalSmsProvider;
 use WSms\Messaging\Gateway\Provider\ClickSendProvider;
 use WSms\Messaging\Gateway\Provider\ComilioProvider;
@@ -246,6 +247,7 @@ class MessagingServiceProvider implements ServiceProvider
         'bulksmsnigeria' => BulkSmsNigeriaProvider::class,
         'bulkgate'       => BulkgateProvider::class,
         'cellsynt'       => CellsyntProvider::class,
+        'cloudtalk'      => CloudTalkProvider::class,
         'comilio'        => ComilioProvider::class,
         'dexatel'        => DexatelProvider::class,
         'directsend'     => DirectsendProvider::class,
