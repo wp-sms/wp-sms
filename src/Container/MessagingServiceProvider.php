@@ -50,6 +50,7 @@ use WSms\Messaging\Gateway\Provider\EaziSMSproProvider;
 use WSms\Messaging\Gateway\Provider\EngyProvider;
 use WSms\Messaging\Gateway\Provider\EskizProvider;
 use WSms\Messaging\Gateway\Provider\EsmsProvider;
+use WSms\Messaging\Gateway\Provider\EsmsbdProvider;
 use WSms\Messaging\Gateway\Provider\EspayProvider;
 use WSms\Messaging\Gateway\Provider\EuroSmsProvider;
 use WSms\Messaging\Gateway\Provider\Every8dProvider;
@@ -321,6 +322,7 @@ class MessagingServiceProvider implements ServiceProvider
         'clickatell'     => ClickatellProvider::class,
         'alphasms'       => AlphaSmsProvider::class,
         'esms'           => EsmsProvider::class,
+        'esmsbd'         => EsmsbdProvider::class,
         'telnyx'         => TelnyxProvider::class,
 
         // Iranian gateways ported from v7. APIs are reachable only from inside Iran;
