@@ -23,6 +23,7 @@ use WSms\Messaging\Gateway\Provider\BareedSmsProvider;
 use WSms\Messaging\Gateway\Provider\BandwidthProvider;
 use WSms\Messaging\Gateway\Provider\BrevoProvider;
 use WSms\Messaging\Gateway\Provider\BrqSmsProvider;
+use WSms\Messaging\Gateway\Provider\BtsSmsProvider;
 use WSms\Messaging\Gateway\Provider\BulkSMSgatewayProvider;
 use WSms\Messaging\Gateway\Provider\BulkSmsMaProvider;
 use WSms\Messaging\Gateway\Provider\BulkgateProvider;
@@ -232,6 +233,7 @@ class MessagingServiceProvider implements ServiceProvider
         'bandwidth'      => BandwidthProvider::class,
         'brevo'          => BrevoProvider::class,
         'brqsms'         => BrqSmsProvider::class,
+        'btssms'         => BtsSmsProvider::class,
         'bulksmsgateway' => BulkSMSgatewayProvider::class,
         'bulksmsma'      => BulkSmsMaProvider::class,
         'bulkgate'       => BulkgateProvider::class,
