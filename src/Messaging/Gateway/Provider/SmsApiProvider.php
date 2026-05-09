@@ -46,6 +46,7 @@ class SmsApiProvider extends AbstractProvider implements
     private const HOSTS = [
         'com' => 'https://api.smsapi.com',
         'pl'  => 'https://api.smsapi.pl',
+        'bg'  => 'https://api.smsapi.bg',
     ];
     private const DEFAULT_REGION = 'com';
 
@@ -78,8 +79,9 @@ class SmsApiProvider extends AbstractProvider implements
                     'options'  => [
                         ['value' => 'com', 'label' => __('.com (global)', 'wp-sms')],
                         ['value' => 'pl',  'label' => __('.pl (Poland)', 'wp-sms')],
+                        ['value' => 'bg',  'label' => __('.bg (Bulgaria)', 'wp-sms')],
                     ],
-                    'description' => __('Pick the SMSAPI host that matches your account: .com for global routing or .pl for the Polish portal.', 'wp-sms'),
+                    'description' => __('Pick the SMSAPI host that matches your account: .com for global routing, .pl for the Polish portal, or .bg for the Bulgarian portal.', 'wp-sms'),
                 ],
                 'api_token' => [
                     'type'        => 'secret',
@@ -417,15 +419,11 @@ class SmsApiProvider extends AbstractProvider implements
 
     // --- Internal ---
 
-    protected function getApiHost(): string
-    {
-        $region = (string) $this->getSharedConfig('region', self::DEFAULT_REGION);
-        return self::HOSTS[$region] ?? self::HOSTS[self::DEFAULT_REGION];
-    }
-
     private function endpoint(string $path): string
     {
-        return $this->getApiHost() . $path;
+        $region = (string) $this->getSharedConfig('region', self::DEFAULT_REGION);
+        $base = self::HOSTS[$region] ?? self::HOSTS[self::DEFAULT_REGION];
+        return $base . $path;
     }
 
     private function authHeaders(string $apiToken): array

@@ -181,6 +181,16 @@ class SmsApiProviderTest extends AbstractProviderTestCase
         $this->assertSame('https://api.smsapi.pl/sms.do', $GLOBALS['_test_wp_remote_post_last_url']);
     }
 
+    public function testSmsSendUsesBulgarianHostWhenRegionBg(): void
+    {
+        $this->configure('bg');
+        $this->mockHttpPost(['list' => [['id' => 'msg-bg', 'status' => 'QUEUE']]]);
+
+        $this->createProvider()->send($this->createMessage('+359888111222'));
+
+        $this->assertSame('https://api.smsapi.bg/sms.do', $GLOBALS['_test_wp_remote_post_last_url']);
+    }
+
     public function testSmsSendOmitsFromWhenNotConfigured(): void
     {
         $this->configure(smsChannelOverrides: ['from' => '']);
