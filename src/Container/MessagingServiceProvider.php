@@ -64,6 +64,7 @@ use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
 use WSms\Messaging\Gateway\Provider\GatewaySaProvider;
 use WSms\Messaging\Gateway\Provider\GlobalVoiceProvider;
 use WSms\Messaging\Gateway\Provider\GreenwebProvider;
+use WSms\Messaging\Gateway\Provider\GtxMessagingProvider;
 use WSms\Messaging\Gateway\Provider\GunismsProvider;
 use WSms\Messaging\Gateway\Provider\HelloSmsProvider;
 use WSms\Messaging\Gateway\Provider\HostIranProvider;
@@ -233,6 +234,7 @@ class MessagingServiceProvider implements ServiceProvider
         'gunisms'        => GunismsProvider::class,
         'globalvoice'    => GlobalVoiceProvider::class,
         'greenweb'       => GreenwebProvider::class,
+        'gtxmessaging'   => GtxMessagingProvider::class,
         'aspsms'         => AspSmsProvider::class,
         'smsglobal'      => SmsGlobalProvider::class,
         'smsapi'         => SmsApiProvider::class,
