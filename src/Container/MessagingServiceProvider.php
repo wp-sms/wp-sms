@@ -26,6 +26,7 @@ use WSms\Messaging\Gateway\Provider\BrqSmsProvider;
 use WSms\Messaging\Gateway\Provider\BtsSmsProvider;
 use WSms\Messaging\Gateway\Provider\BulkSMSgatewayProvider;
 use WSms\Messaging\Gateway\Provider\BulkSmsMaProvider;
+use WSms\Messaging\Gateway\Provider\BulkSmsProvider;
 use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\BulutfonProvider;
 use WSms\Messaging\Gateway\Provider\CallifonyProvider;
@@ -234,6 +235,7 @@ class MessagingServiceProvider implements ServiceProvider
         'brevo'          => BrevoProvider::class,
         'brqsms'         => BrqSmsProvider::class,
         'btssms'         => BtsSmsProvider::class,
+        'bulksms'        => BulkSmsProvider::class,
         'bulksmsgateway' => BulkSMSgatewayProvider::class,
         'bulksmsma'      => BulkSmsMaProvider::class,
         'bulkgate'       => BulkgateProvider::class,
