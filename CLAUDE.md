@@ -1,6 +1,24 @@
 ## Development Phase
 This project is in active development. No backward compatibility, deprecation shims, or migration paths are needed — change schemas, APIs, and interfaces directly.
 
+## Gateway Provider Schemas
+
+Config-schema `select` fields MUST use array-of-objects for `options`, not associative arrays. The React renderer (`resources/react/src/components/gateway-config-form.tsx`) calls `field.options.map(opt => opt.value / opt.label)`; PHP associative arrays serialize to JSON objects which have no `.map()` and crash the gateway detail page to blank.
+
+```php
+// ✅ Correct
+'options' => [
+    ['value' => 'transactional', 'label' => __('Transactional', 'wp-sms')],
+    ['value' => 'marketing',     'label' => __('Marketing', 'wp-sms')],
+],
+
+// ❌ Wrong — serializes to {transactional: "...", marketing: "..."}
+'options' => [
+    'transactional' => __('Transactional', 'wp-sms'),
+    'marketing'     => __('Marketing', 'wp-sms'),
+],
+```
+
 ## Browser Automation
 
 Use `agent-browser` for web automation. Run `agent-browser --help` for all commands.
