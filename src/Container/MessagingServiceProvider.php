@@ -66,6 +66,7 @@ use WSms\Messaging\Gateway\Provider\NetGsmProvider;
 use WSms\Messaging\Gateway\Provider\OctopushProvider;
 use WSms\Messaging\Gateway\Provider\_160auProvider;
 use WSms\Messaging\Gateway\Provider\_1s2uProvider;
+use WSms\Messaging\Gateway\Provider\_4jawalyProvider;
 use WSms\Messaging\Gateway\Provider\OneWaySmsProvider;
 use WSms\Messaging\Gateway\Provider\OurSmsProvider;
 use WSms\Messaging\Gateway\Provider\OvhProvider;
@@ -269,6 +270,7 @@ class MessagingServiceProvider implements ServiceProvider
         'awssns'         => AwsSnsProvider::class,
         '160au'          => _160auProvider::class,
         '1s2u'           => _1s2uProvider::class,
+        '4jawaly'        => _4jawalyProvider::class,
         'bulutfon'       => BulutfonProvider::class,
         'cpsms'          => CpsmsProvider::class,
         'callifony'      => CallifonyProvider::class,
