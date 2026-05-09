@@ -131,6 +131,7 @@ use WSms\Messaging\Gateway\Provider\UnisenderProvider;
 use WSms\Messaging\Gateway\Provider\VerimorProvider;
 use WSms\Messaging\Gateway\Provider\VonageProvider;
 use WSms\Messaging\Gateway\Provider\WaliProvider;
+use WSms\Messaging\Gateway\Provider\YamamahProvider;
 use WSms\Messaging\Gateway\Provider\ZainProvider;
 use WSms\Messaging\Gateway\Provider\_0098smsProvider;
 use WSms\Messaging\Gateway\Provider\_18smsProvider;
@@ -328,6 +329,7 @@ class MessagingServiceProvider implements ServiceProvider
         'esms'           => EsmsProvider::class,
         'esmsbd'         => EsmsbdProvider::class,
         'telnyx'         => TelnyxProvider::class,
+        'yamamah'        => YamamahProvider::class,
 
         // Iranian gateways ported from v7. APIs are reachable only from inside Iran;
         // every provider in this block ships with `TESTED = false` until manually verified.
