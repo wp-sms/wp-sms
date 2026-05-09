@@ -14,6 +14,7 @@ use WSms\Messaging\Gateway\Provider\AfricasTalkingProvider;
 use WSms\Messaging\Gateway\Provider\AlphaSmsProvider;
 use WSms\Messaging\Gateway\Provider\AltiriaProvider;
 use WSms\Messaging\Gateway\Provider\AoboxProvider;
+use WSms\Messaging\Gateway\Provider\ApifonProvider;
 use WSms\Messaging\Gateway\Provider\AriaCPProvider;
 use WSms\Messaging\Gateway\Provider\ArubaProvider;
 use WSms\Messaging\Gateway\Provider\AspSmsProvider;
@@ -199,6 +200,7 @@ class MessagingServiceProvider implements ServiceProvider
         'primotexto'     => PrimotextoProvider::class,
         'prosms'         => ProSmsProvider::class,
         'africastalking' => AfricasTalkingProvider::class,
+        'apifon'         => ApifonProvider::class,
         'sinch'          => SinchProvider::class,
         'labsmobile'     => LabsMobileProvider::class,
         'liveall'        => LiveAllProvider::class,
