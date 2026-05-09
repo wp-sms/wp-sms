@@ -121,6 +121,7 @@ use WSms\Messaging\Gateway\Provider\SureSmsProvider;
 use WSms\Messaging\Gateway\Provider\TaqnyatProvider;
 use WSms\Messaging\Gateway\Provider\TelnyxProvider;
 use WSms\Messaging\Gateway\Provider\TextAnywhereProvider;
+use WSms\Messaging\Gateway\Provider\TextMagicProvider;
 use WSms\Messaging\Gateway\Provider\TextplodeProvider;
 use WSms\Messaging\Gateway\Provider\TubelightCommunicationsProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
@@ -282,6 +283,7 @@ class MessagingServiceProvider implements ServiceProvider
         'spothit'        => SpotHitProvider::class,
         'smshosting'     => SmshostingProvider::class,
         'textanywhere'   => TextAnywhereProvider::class,
+        'textmagic'      => TextMagicProvider::class,
         'suresms'        => SureSmsProvider::class,
         'oxemis'         => OxemisProvider::class,
         'verimor'        => VerimorProvider::class,
