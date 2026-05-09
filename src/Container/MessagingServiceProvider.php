@@ -57,6 +57,7 @@ use WSms\Messaging\Gateway\Provider\ExpertTextingProvider;
 use WSms\Messaging\Gateway\Provider\FarapayamakProvider;
 use WSms\Messaging\Gateway\Provider\FarazSmsProvider;
 use WSms\Messaging\Gateway\Provider\Fast2SmsProvider;
+use WSms\Messaging\Gateway\Provider\FiretextProvider;
 use WSms\Messaging\Gateway\Provider\FortyTwoProvider;
 use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
 use WSms\Messaging\Gateway\Provider\GatewaySaProvider;
@@ -281,6 +282,7 @@ class MessagingServiceProvider implements ServiceProvider
         'smsgatewayhub'    => SmsGatewayHubProvider::class,
         'smsgatewaycenter' => SmsGatewayCenterProvider::class,
         'oursms'         => OurSmsProvider::class,
+        'firetext'       => FiretextProvider::class,
         'fortytwo'       => FortyTwoProvider::class,
         'textplode'      => TextplodeProvider::class,
         'smses'          => SmsesProvider::class,
