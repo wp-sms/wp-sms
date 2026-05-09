@@ -96,6 +96,7 @@ use WSms\Messaging\Gateway\Provider\SpiriusProvider;
 use WSms\Messaging\Gateway\Provider\SpotHitProvider;
 use WSms\Messaging\Gateway\Provider\SureSmsProvider;
 use WSms\Messaging\Gateway\Provider\TaqnyatProvider;
+use WSms\Messaging\Gateway\Provider\TelnyxProvider;
 use WSms\Messaging\Gateway\Provider\TextAnywhereProvider;
 use WSms\Messaging\Gateway\Provider\TextplodeProvider;
 use WSms\Messaging\Gateway\Provider\TubelightCommunicationsProvider;
@@ -280,6 +281,7 @@ class MessagingServiceProvider implements ServiceProvider
         'cheapglobalsms' => CheapglobalSmsProvider::class,
         'clicksend'      => ClickSendProvider::class,
         'alphasms'       => AlphaSmsProvider::class,
+        'telnyx'         => TelnyxProvider::class,
 
         // Iranian gateways ported from v7. APIs are reachable only from inside Iran;
         // every provider in this block ships with `TESTED = false` until manually verified.
@@ -427,7 +429,7 @@ class MessagingServiceProvider implements ServiceProvider
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
         // Providers implementing SupportsTemplates get the catalog manager injected
-        $templateProviders = ['twilio', 'kavenegar', 'razpayamak', 'farapayamak', 'payamakaria', 'farazsms', 'hostiran', 'smsir', 'payamresan', 'plivo', 'sinch', 'infobip', 'messagebird', 'smsapi', 'fast2sms', 'smsc', 'smsgatewayhub', 'smsgatewaycenter', 'seven', 'afilnet', 'tubelightcommunications', 'espay', 'melipayamak', 'ghasedak'];
+        $templateProviders = ['twilio', 'kavenegar', 'razpayamak', 'farapayamak', 'payamakaria', 'farazsms', 'hostiran', 'smsir', 'payamresan', 'plivo', 'sinch', 'infobip', 'messagebird', 'smsapi', 'fast2sms', 'smsc', 'smsgatewayhub', 'smsgatewaycenter', 'seven', 'afilnet', 'tubelightcommunications', 'espay', 'melipayamak', 'ghasedak', 'telnyx'];
 
         foreach (self::PROVIDERS as $id => $class) {
             if (in_array($id, $templateProviders, true)) {
