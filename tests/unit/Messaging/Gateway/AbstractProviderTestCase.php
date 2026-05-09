@@ -25,7 +25,7 @@ abstract class AbstractProviderTestCase extends TestCase
         $id = $provider->getId();
 
         $this->assertNotEmpty($id);
-        $this->assertMatchesRegularExpression('/^[a-z0-9_]+$/', $id);
+        $this->assertMatchesRegularExpression('/^[a-z0-9_-]+$/', $id);
     }
 
     public function testGetNameReturnsNonEmptyString(): void

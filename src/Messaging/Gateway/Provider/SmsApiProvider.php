@@ -417,11 +417,15 @@ class SmsApiProvider extends AbstractProvider implements
 
     // --- Internal ---
 
-    private function endpoint(string $path): string
+    protected function getApiHost(): string
     {
         $region = (string) $this->getSharedConfig('region', self::DEFAULT_REGION);
-        $base = self::HOSTS[$region] ?? self::HOSTS[self::DEFAULT_REGION];
-        return $base . $path;
+        return self::HOSTS[$region] ?? self::HOSTS[self::DEFAULT_REGION];
+    }
+
+    private function endpoint(string $path): string
+    {
+        return $this->getApiHost() . $path;
     }
 
     private function authHeaders(string $apiToken): array
