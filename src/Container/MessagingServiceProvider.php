@@ -129,6 +129,7 @@ use WSms\Messaging\Gateway\Provider\UwaziimobileProvider;
 use WSms\Messaging\Gateway\Provider\SmsIrProvider;
 use WSms\Messaging\Gateway\Provider\UnifonicProvider;
 use WSms\Messaging\Gateway\Provider\UnisenderProvider;
+use WSms\Messaging\Gateway\Provider\UpsideWirelessProvider;
 use WSms\Messaging\Gateway\Provider\VerimorProvider;
 use WSms\Messaging\Gateway\Provider\VonageProvider;
 use WSms\Messaging\Gateway\Provider\WaliProvider;
@@ -207,6 +208,7 @@ class MessagingServiceProvider implements ServiceProvider
     /** @var array<string, class-string> Provider ID => class name for deferred registration */
     private const PROVIDERS = [
         'twilio'         => TwilioProvider::class,
+        'upsidewireless' => UpsideWirelessProvider::class,
         'uwaziimobile'   => UwaziimobileProvider::class,
         'vonage'         => VonageProvider::class,
         'kavenegar'      => KavenegarProvider::class,
