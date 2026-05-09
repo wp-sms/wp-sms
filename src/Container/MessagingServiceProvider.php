@@ -23,6 +23,7 @@ use WSms\Messaging\Gateway\Provider\BareedSmsProvider;
 use WSms\Messaging\Gateway\Provider\BandwidthProvider;
 use WSms\Messaging\Gateway\Provider\BrevoProvider;
 use WSms\Messaging\Gateway\Provider\BrqSmsProvider;
+use WSms\Messaging\Gateway\Provider\BulkSMSgatewayProvider;
 use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\BulutfonProvider;
 use WSms\Messaging\Gateway\Provider\CallifonyProvider;
@@ -230,6 +231,7 @@ class MessagingServiceProvider implements ServiceProvider
         'bandwidth'      => BandwidthProvider::class,
         'brevo'          => BrevoProvider::class,
         'brqsms'         => BrqSmsProvider::class,
+        'bulksmsgateway' => BulkSMSgatewayProvider::class,
         'bulkgate'       => BulkgateProvider::class,
         'cellsynt'       => CellsyntProvider::class,
         'comilio'        => ComilioProvider::class,
