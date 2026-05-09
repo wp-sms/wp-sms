@@ -117,6 +117,7 @@ use WSms\Messaging\Gateway\Provider\SmssolutionsProvider;
 use WSms\Messaging\Gateway\Provider\SmstoProvider;
 use WSms\Messaging\Gateway\Provider\SpiriusProvider;
 use WSms\Messaging\Gateway\Provider\SpotHitProvider;
+use WSms\Messaging\Gateway\Provider\SslWirelessProvider;
 use WSms\Messaging\Gateway\Provider\SureSmsProvider;
 use WSms\Messaging\Gateway\Provider\TaqnyatProvider;
 use WSms\Messaging\Gateway\Provider\TelnyxProvider;
@@ -283,6 +284,7 @@ class MessagingServiceProvider implements ServiceProvider
         'fast2sms'       => Fast2SmsProvider::class,
         'smsc'           => SmscProvider::class,
         'spothit'        => SpotHitProvider::class,
+        'sslwireless'    => SslWirelessProvider::class,
         'smshosting'     => SmshostingProvider::class,
         'textanywhere'   => TextAnywhereProvider::class,
         'textmagic'      => TextMagicProvider::class,
