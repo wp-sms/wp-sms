@@ -27,6 +27,7 @@ use WSms\Messaging\Gateway\Provider\BtsSmsProvider;
 use WSms\Messaging\Gateway\Provider\BulkSMSgatewayProvider;
 use WSms\Messaging\Gateway\Provider\BulkSmsHyderabadProvider;
 use WSms\Messaging\Gateway\Provider\BulkSmsMaProvider;
+use WSms\Messaging\Gateway\Provider\BulkSmsNigeriaProvider;
 use WSms\Messaging\Gateway\Provider\BulkSmsProvider;
 use WSms\Messaging\Gateway\Provider\BulkgateProvider;
 use WSms\Messaging\Gateway\Provider\BulutfonProvider;
@@ -240,6 +241,7 @@ class MessagingServiceProvider implements ServiceProvider
         'bulksmsgateway' => BulkSMSgatewayProvider::class,
         'bulksmshyderabad' => BulkSmsHyderabadProvider::class,
         'bulksmsma'      => BulkSmsMaProvider::class,
+        'bulksmsnigeria' => BulkSmsNigeriaProvider::class,
         'bulkgate'       => BulkgateProvider::class,
         'cellsynt'       => CellsyntProvider::class,
         'comilio'        => ComilioProvider::class,
