@@ -52,6 +52,7 @@ use WSms\Messaging\Gateway\Provider\EskizProvider;
 use WSms\Messaging\Gateway\Provider\EsmsProvider;
 use WSms\Messaging\Gateway\Provider\EspayProvider;
 use WSms\Messaging\Gateway\Provider\EuroSmsProvider;
+use WSms\Messaging\Gateway\Provider\Every8dProvider;
 use WSms\Messaging\Gateway\Provider\ExpertTextingProvider;
 use WSms\Messaging\Gateway\Provider\FarapayamakProvider;
 use WSms\Messaging\Gateway\Provider\FarazSmsProvider;
@@ -60,6 +61,7 @@ use WSms\Messaging\Gateway\Provider\FortyTwoProvider;
 use WSms\Messaging\Gateway\Provider\GatewayApiProvider;
 use WSms\Messaging\Gateway\Provider\GatewaySaProvider;
 use WSms\Messaging\Gateway\Provider\GlobalVoiceProvider;
+use WSms\Messaging\Gateway\Provider\GreenwebProvider;
 use WSms\Messaging\Gateway\Provider\GunismsProvider;
 use WSms\Messaging\Gateway\Provider\HelloSmsProvider;
 use WSms\Messaging\Gateway\Provider\HostIranProvider;
@@ -228,6 +230,7 @@ class MessagingServiceProvider implements ServiceProvider
         'gateway'        => GatewaySaProvider::class,
         'gunisms'        => GunismsProvider::class,
         'globalvoice'    => GlobalVoiceProvider::class,
+        'greenweb'       => GreenwebProvider::class,
         'aspsms'         => AspSmsProvider::class,
         'smsglobal'      => SmsGlobalProvider::class,
         'smsapi'         => SmsApiProvider::class,
@@ -237,6 +240,7 @@ class MessagingServiceProvider implements ServiceProvider
         'eurosms'        => EuroSmsProvider::class,
         'engy'           => EngyProvider::class,
         'eskiz'          => EskizProvider::class,
+        'every8d'        => Every8dProvider::class,
         'mitto'          => MittoProvider::class,
         'smsto'          => SmstoProvider::class,
         'bareedsms'      => BareedSmsProvider::class,
