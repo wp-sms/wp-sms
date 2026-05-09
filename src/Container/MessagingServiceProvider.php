@@ -37,6 +37,7 @@ use WSms\Messaging\Gateway\Provider\CellsyntProvider;
 use WSms\Messaging\Gateway\Provider\CloudTalkProvider;
 use WSms\Messaging\Gateway\Provider\CheapglobalSmsProvider;
 use WSms\Messaging\Gateway\Provider\ClickSendProvider;
+use WSms\Messaging\Gateway\Provider\ClickatellProvider;
 use WSms\Messaging\Gateway\Provider\ComilioProvider;
 use WSms\Messaging\Gateway\Provider\CpsmsProvider;
 use WSms\Messaging\Gateway\Provider\DeewanProvider;
@@ -306,6 +307,7 @@ class MessagingServiceProvider implements ServiceProvider
         'prosmsdk'       => ProsmsdkProvider::class,
         'cheapglobalsms' => CheapglobalSmsProvider::class,
         'clicksend'      => ClickSendProvider::class,
+        'clickatell'     => ClickatellProvider::class,
         'alphasms'       => AlphaSmsProvider::class,
         'telnyx'         => TelnyxProvider::class,
 
