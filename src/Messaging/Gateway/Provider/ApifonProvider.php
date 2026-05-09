@@ -160,8 +160,9 @@ class ApifonProvider extends AbstractProvider implements
             return null;
         }
 
-        $result = $this->httpGet(self::API_BASE . self::BALANCE_PATH, [
-            'headers' => $this->signRequest('GET', self::BALANCE_PATH, '', $token, $secret),
+        $result = $this->httpPost(self::API_BASE . self::BALANCE_PATH, [
+            'headers' => $this->signRequest('POST', self::BALANCE_PATH, '', $token, $secret),
+            'body'    => '',
         ]);
 
         if ($result instanceof DeliveryResult) {
@@ -174,8 +175,7 @@ class ApifonProvider extends AbstractProvider implements
             return null;
         }
 
-        $currency = $data['currency'] ?? 'EUR';
-        return number_format((float) $balance, 4) . ' ' . $currency;
+        return number_format((float) $balance, 4);
     }
 
     public function testConnection(): TestConnectionResult
@@ -187,8 +187,9 @@ class ApifonProvider extends AbstractProvider implements
             return TestConnectionResult::error(__('API Token and Secret Key are required', 'wp-sms'));
         }
 
-        $result = $this->httpGet(self::API_BASE . self::BALANCE_PATH, [
-            'headers' => $this->signRequest('GET', self::BALANCE_PATH, '', $token, $secret),
+        $result = $this->httpPost(self::API_BASE . self::BALANCE_PATH, [
+            'headers' => $this->signRequest('POST', self::BALANCE_PATH, '', $token, $secret),
+            'body'    => '',
         ]);
 
         if (!$result instanceof DeliveryResult) {
@@ -203,11 +204,10 @@ class ApifonProvider extends AbstractProvider implements
         }
 
         $balance = $data['balance'] ?? 'N/A';
-        $currency = $data['currency'] ?? 'EUR';
 
         return TestConnectionResult::ok(
-            sprintf(__('Connected — Balance: %s %s', 'wp-sms'), $balance, $currency),
-            ['balance' => $balance, 'currency' => $currency],
+            sprintf(__('Connected — Balance: %s', 'wp-sms'), $balance),
+            ['balance' => $balance],
         );
     }
 
@@ -304,13 +304,14 @@ class ApifonProvider extends AbstractProvider implements
      *
      * Canonical string-to-sign:
      *   METHOD + "\n" + PATH + "\n" + BODY + "\n" + DATE
-     * where DATE is RFC 2616 (GMT) e.g. "Thu, 09 May 2026 12:34:56 +0000".
+     * where DATE is RFC 1123 GMT e.g. "Thu, 29 Sep 2016 12:18:56 GMT" — Apifon's
+     * sample headers use the literal "GMT" suffix, not "+0000".
      *
      * @return array<string, string>
      */
     private function signRequest(string $method, string $path, string $body, string $token, string $secret, ?string $date = null): array
     {
-        $date = $date ?? gmdate('D, d M Y H:i:s') . ' +0000';
+        $date = $date ?? gmdate('D, d M Y H:i:s') . ' GMT';
         $stringToSign = strtoupper($method) . "\n" . $path . "\n" . $body . "\n" . $date;
         $signature = base64_encode(hash_hmac('sha256', $stringToSign, $secret, true));
 

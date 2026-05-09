@@ -172,9 +172,10 @@ class ApifonProviderTest extends AbstractProviderTestCase
 
         $this->assertSame($expectedHeader, $authHeader);
 
-        // Also verify the date header matches RFC 2616 GMT (e.g., "Sun, 06 Nov 1994 08:49:37 +0000")
+        // Verify the date header matches RFC 1123 GMT format per Apifon's sample
+        // headers, e.g. "Thu, 29 Sep 2016 12:18:56 GMT" — literal "GMT", not "+0000".
         $this->assertMatchesRegularExpression(
-            '/^[A-Z][a-z]{2}, \d{2} [A-Z][a-z]{2} \d{4} \d{2}:\d{2}:\d{2} \+0000$/',
+            '/^[A-Z][a-z]{2}, \d{2} [A-Z][a-z]{2} \d{4} \d{2}:\d{2}:\d{2} GMT$/',
             $date,
         );
     }
@@ -235,9 +236,11 @@ class ApifonProviderTest extends AbstractProviderTestCase
     public function testGetCreditReturnsFormattedBalance(): void
     {
         $this->configure();
-        $this->mockHttpGet(['balance' => 12.5, 'currency' => 'EUR']);
+        // Apifon balance response: { "balance": "9864.0", "reserved": "0.0", "plafon": "0.0", ... }
+        // No "currency" field — display the raw amount.
+        $this->mockHttpPost(['balance' => '9864.0', 'reserved' => '0.0', 'plafon' => '0.0']);
 
-        $this->assertSame('12.5000 EUR', $this->createProvider()->getCredit());
+        $this->assertSame('9,864.0000', $this->createProvider()->getCredit());
     }
 
     public function testGetCreditReturnsNullWhenUnconfigured(): void
@@ -249,25 +252,40 @@ class ApifonProviderTest extends AbstractProviderTestCase
     public function testTestConnectionReturnsOkWithBalance(): void
     {
         $this->configure();
-        $this->mockHttpGet(['balance' => 5.25, 'currency' => 'EUR']);
+        $this->mockHttpPost(['balance' => '5.25', 'reserved' => '0.0', 'plafon' => '0.0']);
 
         $result = $this->createProvider()->testConnection();
 
         $this->assertTrue($result->success);
         $this->assertStringContainsString('5.25', (string) $result->message);
-        $this->assertSame(5.25, $result->details['balance']);
-        $this->assertSame('EUR', $result->details['currency']);
+        $this->assertSame('5.25', $result->details['balance']);
     }
 
     public function testTestConnectionReturnsErrorOn401(): void
     {
         $this->configure();
-        $this->mockHttpGet(['error' => 'unauth'], 401);
+        $this->mockHttpPost(['error' => 'unauth'], 401);
 
         $result = $this->createProvider()->testConnection();
 
         $this->assertFalse($result->success);
         $this->assertStringContainsString('Invalid', $result->message);
+    }
+
+    public function testGetCreditUsesPostNotGetForBalance(): void
+    {
+        // Regression: Apifon's /balance is POST, not GET. Sending GET returns 405.
+        $this->configure();
+        $this->mockHttpPost(['balance' => '1.0']);
+
+        $this->createProvider()->getCredit();
+
+        $this->assertSame(
+            'https://ars.apifon.com/services/api/v1/balance',
+            $GLOBALS['_test_wp_remote_post_last_url'],
+        );
+        // Body must be empty per Apifon docs; signature canonical string includes the empty body
+        $this->assertSame('', $GLOBALS['_test_wp_remote_post_last_args']['body']);
     }
 
     public function testTestConnectionRequiresCredentials(): void
