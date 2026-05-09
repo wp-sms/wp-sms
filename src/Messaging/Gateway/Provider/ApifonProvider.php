@@ -33,7 +33,7 @@ class ApifonProvider extends AbstractProvider implements
     SupportsInboundMessage
 {
     /** Flip to true once the gateway clears end-to-end manual verification. */
-    public const TESTED = false;
+    public const TESTED = true;
 
     private const API_BASE = 'https://ars.apifon.com';
     private const SEND_PATH = '/services/api/v1/sms/send';
