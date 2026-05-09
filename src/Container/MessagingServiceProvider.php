@@ -18,6 +18,7 @@ use WSms\Messaging\Gateway\Provider\ApifonProvider;
 use WSms\Messaging\Gateway\Provider\AriaCPProvider;
 use WSms\Messaging\Gateway\Provider\ArubaProvider;
 use WSms\Messaging\Gateway\Provider\AspSmsProvider;
+use WSms\Messaging\Gateway\Provider\AwsSnsProvider;
 use WSms\Messaging\Gateway\Provider\BareedSmsProvider;
 use WSms\Messaging\Gateway\Provider\BandwidthProvider;
 use WSms\Messaging\Gateway\Provider\BulkgateProvider;
@@ -265,6 +266,7 @@ class MessagingServiceProvider implements ServiceProvider
         'altiria'        => AltiriaProvider::class,
         'aruba'          => ArubaProvider::class,
         'aobox'          => AoboxProvider::class,
+        'awssns'         => AwsSnsProvider::class,
         '160au'          => _160auProvider::class,
         '1s2u'           => _1s2uProvider::class,
         'bulutfon'       => BulutfonProvider::class,
