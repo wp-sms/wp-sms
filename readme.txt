@@ -142,6 +142,7 @@ All premium features + all add-ons in one package.
 - **Fix:** Fixed missing field placeholder chips in the Quform integration message body.
 - **Fix:** Fixed `[wp_sms_subscriber_form]` shortcode showing an empty group list when "Available groups" is blank; it now falls back to all groups.
 - **Fix:** Fixed custom gateway HTTP Headers and Parameters fields rendering as single-line inputs.
+- **Fix:** Fixed custom gateway HTTP Headers and Parameters losing newlines on save, which caused requests to send a malformed Authorization header and fail with "Unauthenticated".
 
 = v7.2.4 - 2026-03-15 =
 - **New:** Added credit balance support for the GuniSMS gateway.
