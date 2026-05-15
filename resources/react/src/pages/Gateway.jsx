@@ -642,7 +642,7 @@ export default function Gateway() {
               )}
               {gatewayDocumentUrl && (
                 <a
-                  href={gatewayDocumentUrl}
+                  href={`${gatewayDocumentUrl}${gatewayDocumentUrl.includes('?') ? '&' : '?'}utm_source=wp-sms&utm_medium=link&utm_campaign=settings`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[13px] wsms-text-primary hover:wsms-text-primary/80 wsms-font-medium"

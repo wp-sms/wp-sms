@@ -25,10 +25,23 @@ const FieldDescription = ({ children, className, id }) => {
   const renderDescription = (text) => {
     if (typeof text !== 'string') return text
 
-    // Split by <code> and <a> tags and render appropriately
-    const parts = text.split(/(<code>.*?<\/code>|<a\s+[^>]*>.*?<\/a>)/g)
+    // Split by <pre>, <code>, and <a> tags and render appropriately
+    const parts = text.split(/(<pre>[\s\S]*?<\/pre>|<code>.*?<\/code>|<a\s+[^>]*>.*?<\/a>)/g)
 
     return parts.map((part, index) => {
+      // Check if this part is a <pre> block (multi-line code)
+      const preMatch = part.match(/<pre>([\s\S]*?)<\/pre>/)
+      if (preMatch) {
+        return (
+          <pre
+            key={index}
+            className="wsms-mt-1 wsms-rounded wsms-bg-muted wsms-p-2 wsms-font-mono wsms-text-[11px] wsms-text-foreground wsms-whitespace-pre wsms-overflow-x-auto"
+          >
+            {preMatch[1]}
+          </pre>
+        )
+      }
+
       // Check if this part is a <code> tag
       const codeMatch = part.match(/<code>(.*?)<\/code>/)
       if (codeMatch) {
