@@ -1,7 +1,7 @@
-v7.2.5 - 2026-04-**
-- **Fix:** Fixed Quform integration where individual field placeholder chips no longer appeared in the Message body, caused by structural elements being skipped when collecting form fields.
-- **Fix:** Fixed the `[wp_sms_subscriber_form]` shortcode rendering an empty group list when "Available groups" was left blank. The form now correctly falls back to all available groups in this case.
-- **Fix:** Fixed the custom gateway HTTP Headers and HTTP Parameters fields rendering as single-line inputs in the new settings UI, preventing users from entering one parameter per line.
+v7.2.5 - 2026-05-15
+- **Fix:** Fixed missing field placeholder chips in the Quform integration message body.
+- **Fix:** Fixed `[wp_sms_subscriber_form]` shortcode showing an empty group list when "Available groups" is blank; it now falls back to all groups.
+- **Fix:** Fixed custom gateway HTTP Headers and Parameters fields rendering as single-line inputs.
 
 v7.2.4 - 2026-03-15
 - **New:** Added credit balance support for the GuniSMS gateway.
