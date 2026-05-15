@@ -642,7 +642,17 @@ export default function Gateway() {
               )}
               {gatewayDocumentUrl && (
                 <a
-                  href={`${gatewayDocumentUrl}${gatewayDocumentUrl.includes('?') ? '&' : '?'}utm_source=wp-sms&utm_medium=link&utm_campaign=settings`}
+                  href={(() => {
+                    try {
+                      const u = new URL(gatewayDocumentUrl)
+                      u.searchParams.set('utm_source', 'wp-sms')
+                      u.searchParams.set('utm_medium', 'link')
+                      u.searchParams.set('utm_campaign', 'settings')
+                      return u.toString()
+                    } catch {
+                      return gatewayDocumentUrl
+                    }
+                  })()}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[13px] wsms-text-primary hover:wsms-text-primary/80 wsms-font-medium"
