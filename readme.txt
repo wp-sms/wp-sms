@@ -4,7 +4,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 7.2.4
+Stable tag: 7.2.5
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -138,6 +138,11 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
+= v7.2.5 - 2026-05-15 =
+- **Fix:** Fixed missing field placeholder chips in the Quform integration message body.
+- **Fix:** Fixed `[wp_sms_subscriber_form]` shortcode showing an empty group list when "Available groups" is blank; it now falls back to all groups.
+- **Fix:** Fixed custom gateway HTTP Headers and Parameters not preserving multi-line input.
+
 = v7.2.4 - 2026-03-15 =
 - **New:** Added credit balance support for the GuniSMS gateway.
 - **Fix:** Updated EaziSMSpro gateway to use the new API endpoint.

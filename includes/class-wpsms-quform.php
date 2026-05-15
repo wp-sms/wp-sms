@@ -59,30 +59,17 @@ class Quform
     {
         $fields = [];
         foreach ($array['elements'] as $element) {
-            // Get element type
-            $elementType = $element['type'] ?? '';
+            if (isset($element['elements'])) {
+                $fields += self::getFieldsFromElements($element);
+                continue;
+            }
 
-            // Skip non-input elements (buttons, captchas, structural elements, etc.)
+            $elementType = $element['type'] ?? '';
             if (in_array($elementType, self::$excludedElementTypes, true)) {
                 continue;
             }
 
-            if (isset($element['elements'])) {
-                foreach ($element['elements'] as $item) {
-                    if (isset($item['elements'])) {
-                        $fields += self::getFieldsFromElements($item);
-                    } else {
-                        // Skip non-input elements in nested structures too
-                        $itemType = $item['type'] ?? '';
-                        if (!in_array($itemType, self::$excludedElementTypes, true)) {
-                            $fields[$item['id']] = $item['label'];
-                        }
-                    }
-                }
-            } else {
-                $fields[$element['id']] = $element['label'];
-            }
-
+            $fields[$element['id']] = $element['label'];
         }
 
         return $fields;

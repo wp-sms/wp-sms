@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { InputField, SelectField, SwitchField, MultiSelectField } from '@/components/ui/form-field'
+import { InputField, SelectField, SwitchField, MultiSelectField, TextareaField } from '@/components/ui/form-field'
 import { SearchableSelect } from '@/components/ui/searchable-select'
 import { Tip, CollapsibleSection, HelpLink, SectionDivider } from '@/components/ui/ux-helpers'
 import { useSettings, useSetting } from '@/context/SettingsContext'
@@ -706,6 +706,21 @@ export default function Gateway() {
                       placeholder={field.placeholder || `Select ${field.name}`}
                       options={options}
                       className={isFullWidth ? 'md:wsms-col-span-2' : ''}
+                    />
+                  )
+                }
+
+                if (field.type === 'textarea') {
+                  return (
+                    <TextareaField
+                      key={field.id}
+                      label={field.name}
+                      description={field.desc}
+                      value={fieldValue}
+                      onChange={(e) => updateSetting(field.id, e.target.value)}
+                      placeholder={field.placeholder || ''}
+                      rows={5}
+                      className="md:wsms-col-span-2"
                     />
                   )
                 }

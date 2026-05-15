@@ -507,14 +507,14 @@ class SettingsApi extends RestApi
     private function sanitizeSettings($settings)
     {
         $sanitized = [];
-        $addonFieldTypes = $this->getAddonFieldTypes();
+        $fieldTypes = array_merge($this->getAddonFieldTypes(), $this->getGatewayFieldTypes());
 
         foreach ($settings as $key => $value) {
             $sanitizedKey = sanitize_key($key);
 
-            // Check if this is an add-on field with a specific type
-            if (isset($addonFieldTypes[$sanitizedKey])) {
-                $sanitized[$sanitizedKey] = $this->sanitizeAddonField($value, $addonFieldTypes[$sanitizedKey]);
+            // Check if this field has a known type (add-on or active gateway)
+            if (isset($fieldTypes[$sanitizedKey])) {
+                $sanitized[$sanitizedKey] = $this->sanitizeAddonField($value, $fieldTypes[$sanitizedKey]);
             } elseif (is_array($value)) {
                 $sanitized[$sanitizedKey] = $this->sanitizeSettings($value);
             } elseif (is_bool($value)) {
@@ -770,6 +770,36 @@ class SettingsApi extends RestApi
 
                 $types[$field['id']] = $field['type'];
             }
+        }
+
+        return $types;
+    }
+
+    /**
+     * Get field types from the active gateway's gatewayFields definition
+     *
+     * Core gateways (e.g. the Custom gateway) declare typed fields such as
+     * `textarea` for `gateway_http_headers` and `gateway_http_parameters`.
+     * Without this mapping those fields fall through to `sanitize_text_field()`,
+     * which strips newlines and breaks multi-line header / parameter input.
+     *
+     * @return array Field types keyed by field ID
+     */
+    private function getGatewayFieldTypes()
+    {
+        $types = [];
+        $sms = $GLOBALS['sms'] ?? null;
+
+        if (!$sms || empty($sms->gatewayFields) || !is_array($sms->gatewayFields)) {
+            return $types;
+        }
+
+        foreach ($sms->gatewayFields as $field) {
+            if (empty($field['id']) || empty($field['type'])) {
+                continue;
+            }
+
+            $types[$field['id']] = $field['type'];
         }
 
         return $types;
