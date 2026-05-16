@@ -121,9 +121,16 @@ class custom extends \WP_SMS\Gateway
                 // Convert the single string to an array based on newline separation
                 $lines = explode("\n", $this->http_headers);
                 foreach ($lines as $line) {
-                    // Split each line into key and value
+                    $line = trim($line);
+                    if ($line === '' || strpos($line, ':') === false) {
+                        continue;
+                    }
                     list($key, $value) = explode(':', $line, 2);
-                    $headers[trim($key)] = trim($value);
+                    $key = trim($key);
+                    if ($key === '') {
+                        continue;
+                    }
+                    $headers[$key] = trim($value);
                 }
             }
 
@@ -157,14 +164,22 @@ class custom extends \WP_SMS\Gateway
                 if ($this->http_parameters) {
                     $lines = explode("\n", $this->http_parameters);
                     foreach ($lines as $line) {
+                        $line = trim($line);
+                        if ($line === '' || strpos($line, ':') === false) {
+                            continue;
+                        }
                         list($key, $value) = explode(':', $line, 2);
-                        $definedParams[trim($key)] = trim($value);
+                        $key = trim($key);
+                        if ($key === '') {
+                            continue;
+                        }
+                        $definedParams[$key] = trim($value);
                     }
                 }
 
                 $finalParams = [];
                 foreach ($definedParams as $key => $value) {
-                    $replaced = str_replace(['{from}', '{to}', '{message}'], [$this->from, implode(',', $this->to), $this->msg], $value);
+                    $replaced = str_replace(['{from}', '{to}', '{message}'], [$this->from, implode(',', (array) $this->to), $this->msg], $value);
 
                     // Values wrapped in [...] are sent as a JSON array (split by comma, trimmed).
                     if (is_string($replaced) && strlen($replaced) >= 2 && $replaced[0] === '[' && substr($replaced, -1) === ']') {

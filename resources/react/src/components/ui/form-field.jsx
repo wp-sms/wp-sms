@@ -81,9 +81,9 @@ const FieldDescription = ({ children, className, id }) => {
   }
 
   return (
-    <p id={id} className={cn('wsms-text-[12px] wsms-text-muted-foreground wsms-leading-relaxed', className)}>
+    <div id={id} className={cn('wsms-text-[12px] wsms-text-muted-foreground wsms-leading-relaxed', className)}>
       {renderDescription(children)}
-    </p>
+    </div>
   )
 }
 
