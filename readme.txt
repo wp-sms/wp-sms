@@ -138,7 +138,7 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
-= v7.2.5 - 2026-05-15 =
+= v7.2.5 - 2026-05-19 =
 - **Fix:** Fixed missing field placeholder chips in the Quform integration message body.
 - **Fix:** Fixed `[wp_sms_subscriber_form]` shortcode showing an empty group list when "Available groups" is blank; it now falls back to all groups.
 - **Enhancement:** Improved the custom gateway with multi-line HTTP Headers/Parameters, a Raw JSON body format, and array values for APIs that require nested structures.
