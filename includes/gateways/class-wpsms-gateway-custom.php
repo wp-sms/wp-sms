@@ -16,7 +16,9 @@ class custom extends \WP_SMS\Gateway
     public $unit;
     public $api_url;
     public $http_headers;
+    public $body_format;
     public $http_parameters;
+    public $raw_payload;
     public $is_post_body;
     public $encode_message;
     public $documentUrl = 'https://wsms.io/docs/custom-gateway/';
@@ -24,7 +26,7 @@ class custom extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->help          = sprintf('Check the <a target="_blank" href="%s">documentation</a> for instructions on setting up your custom API gateway.', WP_SMS_SITE . '/docs/custom-gateway/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings');
+        $this->help          = esc_html__('Use this gateway to integrate any HTTP-based SMS provider. Configure the endpoint and parameters below.', 'wp-sms');
         $this->gatewayFields = [
             'api_url'         => [
                 'id'   => 'gateway_api_url',
@@ -34,24 +36,49 @@ class custom extends \WP_SMS\Gateway
             'http_headers'    => [
                 'id'   => 'gateway_http_headers',
                 'name' => esc_html__('HTTP Headers', 'wp-sms'),
-                'desc' => esc_html__('Specify any HTTP headers required for API requests. Headers often include authentication details and content specifications. Each parameter should be on a new line. For example: Content-Type:application/json;charset=UTF-8', 'wp-sms'),
+                'desc' => __('One <code>Header-Name: value</code> per line. Example: <code>Content-Type: application/json</code>, <code>Authorization: Bearer xxx</code>', 'wp-sms'),
                 'type' => 'textarea',
             ],
-            'http_parameters' => [
-                'id'   => 'gateway_http_parameters',
-                'name' => esc_html__('HTTP Parameters', 'wp-sms'),
-                'desc' => esc_html__('List the parameters required by the API for sending SMS messages. These often include fields like the sender, recipient, and message content. Replace {from}, {to}, and {message} with actual values when making a request. Each parameter should be on a new line. For example: receptor:{to}', 'wp-sms'),
-                'type' => 'textarea',
-            ],
-            'is_post_body'    => [
-                'id'      => 'gateway_is_post_body',
-                'name'    => 'Send As POST',
-                'desc'    => __("Choose 'Yes' to send the HTTP parameters as body data in a POST request. Select 'No' if parameters are sent directly in the URL.", 'wp-sms'),
+            'body_format'     => [
+                'id'      => 'gateway_body_format',
+                'name'    => esc_html__('Body Format', 'wp-sms'),
+                'desc'    => __('Choose how the request body is built. Use Key-Value for simple flat APIs, or Raw JSON for Postman-style payloads with nested objects or arrays.', 'wp-sms'),
                 'type'    => 'select',
                 'options' => [
+                    'key_value' => 'Key-Value',
+                    'raw_json'  => 'Raw JSON',
+                ],
+            ],
+            'http_parameters' => [
+                'id'        => 'gateway_http_parameters',
+                'name'      => esc_html__('HTTP Parameters', 'wp-sms'),
+                'desc'      => __('One <code>key:value</code> per line. Placeholders: <code>{from}</code>, <code>{to}</code>, <code>{message}</code>. Wrap a value in square brackets to send it as a JSON array. Example: <code>to:{to}</code>, <code>message:{message}</code>, <code>recipients:[{to}]</code>', 'wp-sms'),
+                'type'      => 'textarea',
+                'className' => 'js-wpsms-show_if_gateway_body_format_equal_key_value',
+            ],
+            'raw_payload'     => [
+                'id'        => 'gateway_raw_payload',
+                'name'      => esc_html__('Request Body (JSON)', 'wp-sms'),
+                'desc'      => __('Paste the full JSON payload, just like in Postman. Placeholders <code>{from}</code>, <code>{to}</code>, <code>{message}</code>, <code>{recipients}</code> are replaced at send time. Any other keys are sent as-is, so you can add provider-specific fields (sender, route, callback URL, etc.). Example:<pre>{
+  "body": "{message}",
+  "originator": "{from}",
+  "recipients": [{recipients}],
+  "route": "business",
+  "reference": "wsms-order-42"
+}</pre>', 'wp-sms'),
+                'type'      => 'textarea',
+                'className' => 'js-wpsms-show_if_gateway_body_format_equal_raw_json',
+            ],
+            'is_post_body'    => [
+                'id'        => 'gateway_is_post_body',
+                'name'      => 'Send As POST',
+                'desc'      => __('Send HTTP Parameters as a JSON POST body, or as URL query parameters.', 'wp-sms'),
+                'type'      => 'select',
+                'options'   => [
                     'no'  => 'No',
                     'yes' => 'Yes',
-                ]
+                ],
+                'className' => 'js-wpsms-show_if_gateway_body_format_equal_key_value',
             ],
             'encode_message'  => [
                 'id'      => 'gateway_encode_message',
@@ -94,20 +121,16 @@ class custom extends \WP_SMS\Gateway
                 // Convert the single string to an array based on newline separation
                 $lines = explode("\n", $this->http_headers);
                 foreach ($lines as $line) {
-                    // Split each line into key and value
+                    $line = trim($line);
+                    if ($line === '' || strpos($line, ':') === false) {
+                        continue;
+                    }
                     list($key, $value) = explode(':', $line, 2);
-                    $headers[trim($key)] = trim($value);
-                }
-            }
-
-            $definedParams = [];
-            if ($this->http_parameters) {
-                // Convert the single string to an array based on newline separation
-                $lines = explode("\n", $this->http_parameters);
-                foreach ($lines as $line) {
-                    // Split each line into key and the placeholder value
-                    list($key, $value) = explode(':', $line, 2);
-                    $definedParams[trim($key)] = trim($value);
+                    $key = trim($key);
+                    if ($key === '') {
+                        continue;
+                    }
+                    $headers[$key] = trim($value);
                 }
             }
 
@@ -115,24 +138,65 @@ class custom extends \WP_SMS\Gateway
                 $this->msg = urlencode($this->msg);
             }
 
-            // Replace placeholders with actual values
-            $finalParams = [];
-            foreach ($definedParams as $key => $value) {
-                $finalParams[$key] = str_replace(['{from}', '{to}', '{message}'], [$this->from, implode(',', $this->to), $this->msg], $value);
-            }
-
-            $args = [
-                'headers' => $headers
-            ];
-
+            $args       = ['headers' => $headers];
             $httpMethod = 'GET';
             $params     = [];
 
-            if ($this->is_post_body and $this->is_post_body == 'yes') {
-                $args['body'] = wp_json_encode($finalParams);
-                $httpMethod   = 'POST';
+            if ($this->body_format === 'raw_json' && !empty($this->raw_payload)) {
+                // Raw JSON mode: substitute placeholders inside the JSON payload (JSON-safe escaping) and POST as-is.
+                $recipientsList = array_map(function ($number) {
+                    return wp_json_encode((string) $number);
+                }, (array) $this->to);
+
+                $jsonSafeFrom = trim(wp_json_encode((string) $this->from), '"');
+                $jsonSafeTo   = trim(wp_json_encode(implode(',', (array) $this->to)), '"');
+                $jsonSafeMsg  = trim(wp_json_encode((string) $this->msg), '"');
+
+                $args['body'] = str_replace(
+                    ['{from}', '{to}', '{message}', '{recipients}'],
+                    [$jsonSafeFrom, $jsonSafeTo, $jsonSafeMsg, implode(',', $recipientsList)],
+                    $this->raw_payload
+                );
+                $httpMethod = 'POST';
             } else {
-                $params = $finalParams;
+                // Key-Value mode: parse `key:value` lines, replace placeholders, and send as query string or JSON body.
+                $definedParams = [];
+                if ($this->http_parameters) {
+                    $lines = explode("\n", $this->http_parameters);
+                    foreach ($lines as $line) {
+                        $line = trim($line);
+                        if ($line === '' || strpos($line, ':') === false) {
+                            continue;
+                        }
+                        list($key, $value) = explode(':', $line, 2);
+                        $key = trim($key);
+                        if ($key === '') {
+                            continue;
+                        }
+                        $definedParams[$key] = trim($value);
+                    }
+                }
+
+                $finalParams = [];
+                foreach ($definedParams as $key => $value) {
+                    $replaced = str_replace(['{from}', '{to}', '{message}'], [$this->from, implode(',', (array) $this->to), $this->msg], $value);
+
+                    // Values wrapped in [...] are sent as a JSON array (split by comma, trimmed).
+                    if (is_string($replaced) && strlen($replaced) >= 2 && $replaced[0] === '[' && substr($replaced, -1) === ']') {
+                        $inner             = substr($replaced, 1, -1);
+                        $items             = array_values(array_filter(array_map('trim', explode(',', $inner)), 'strlen'));
+                        $finalParams[$key] = $items;
+                    } else {
+                        $finalParams[$key] = $replaced;
+                    }
+                }
+
+                if ($this->is_post_body && $this->is_post_body == 'yes') {
+                    $args['body'] = wp_json_encode($finalParams);
+                    $httpMethod   = 'POST';
+                } else {
+                    $params = $finalParams;
+                }
             }
 
             $response = $this->request($httpMethod, $this->api_url, $params, $args);
