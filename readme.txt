@@ -35,6 +35,20 @@ Send SMS/MMS notifications, OTP & 2FA messages, and WooCommerce updates with sup
 - **Messaging Button:** Let visitors reach you instantly via messaging channels.
 - **GDPR Compliant:** Built with privacy and compliance in mind.
 
+## 📡 Supported SMS Gateways
+WSMS connects to 270+ SMS gateways worldwide. Popular supported gateways by region include:
+
+- **Global:** Twilio, Vonage, Plivo, Clickatell, MessageBird, Infobip, Sinch, ClickSend, AWS SNS, Telnyx, GatewayAPI, BulkGate, SMSGlobal, LabsMobile, Octopush, Fortytwo, SMS.to, EasySendSMS, Mitto, Dexatel
+- **GCC:** Unifonic, Taqnyat, Msegat, OurSMS, Deewan, JawalBSMS, 4jawaly, Zain
+- **Middle East:** Kavenegar, MeliPayamak, FaraPayamak, Ghasedak, FarazSMS, SMS.ir, ParsGreen, Asanak, AdpDigital, ParsaSMS, SMS Melli, Mediana, Markazpayamak, Sabanovin, IranSMSpanel, Verimor, Bulutfon, NetGSM, VatanSMS, TurboSMS
+- **Europe:** SMSAPI, Brevo, Esendex, CM.com, LINK Mobility, OVH, Orange, Skebby, Primotexto, Comilio, Aruba, SMSC, CPSMS, SureSMS, ASPSMS, TextAnywhere
+- **Asia-Pacific:** Fast2SMS, MSG91, Gupshup, Textlocal, MessageMedia, SMSGatewayHub, GuniSMS, ShreeSMS, DirectSend, NHN Cloud, Eskiz, ReveSMS
+- **Africa:** Africa's Talking, Hubtel, eBulkSMS, Jusibe, Uwazii Mobile, Hostpinnacle
+- **Latin America:** SMSMasivos, Sonora Tecnologia, Torpedos
+- **Any other provider:** Use the built-in **Custom Gateway** to connect any SMS API (custom HTTP headers, parameters, and raw JSON body supported).
+
+👉 [See the full list of supported SMS gateways](https://wsms.io/gateways?utm_source=wporg&utm_medium=link&utm_campaign=gateways)
+
 ## 💎 Upgrade to WSMS All-in-One
 Unlock additional features with **All-in-One** — the plan that gives you access to all premium add-ons in one package.
 
@@ -98,6 +112,9 @@ All source code for minified JavaScript and CSS is included in the plugin under 
 == Frequently Asked Questions ==
 = Who should use WSMS? =
 Any WordPress site that wants to enhance communication with users, customers, or subscribers via SMS. Perfect for businesses, bloggers, and e-commerce stores.
+
+= Which SMS gateways does WSMS support? =
+WSMS supports 270+ SMS gateways worldwide. This includes global providers such as GatewayAPI, BulkGate, SMSGlobal, LabsMobile, Octopush, SMSAPI, EasySendSMS, SMS.to, and Fortytwo; GCC providers such as Unifonic, Msegat, OurSMS, Deewan, and JawalBSMS; Middle East providers such as Kavenegar, MeliPayamak, FaraPayamak, Ghasedak, FarazSMS, Verimor, and Bulutfon; Asia-Pacific providers such as Fast2SMS, SMSGatewayHub, GuniSMS, and DirectSend; and European providers such as SMSC, UniSender, Comilio, Primotexto, CPSMS, and SureSMS. Premium gateways such as Twilio, Vonage, Plivo, Clickatell, and Taqnyat are available with the All-in-One add-on. You can also connect any other provider using the built-in Custom Gateway. See the [full list of supported gateways](https://wsms.io/gateways?utm_source=wporg&utm_medium=link&utm_campaign=gateways).
 
 = Is technical knowledge required? =
 No. WSMS is beginner-friendly and well-documented.
