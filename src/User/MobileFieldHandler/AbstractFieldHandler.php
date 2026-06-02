@@ -32,10 +32,13 @@ abstract class AbstractFieldHandler
                 return false;
             }
 
-            // Validate phone number
+            // Validate phone number. Pass the user ID so the duplicate check
+            // excludes this user's own existing number, otherwise re-saving the
+            // same (already verified) number is wrongly rejected as a duplicate
+            // and the billing phone is silently dropped.
             if ($phoneNumber) {
                 $mobile   = Helper::sanitizeMobileNumber($phoneNumber);
-                $validity = Helper::checkMobileNumberValidity($mobile);
+                $validity = Helper::checkMobileNumberValidity($mobile, $objectId);
 
                 if (is_wp_error($validity)) return false;
             }
