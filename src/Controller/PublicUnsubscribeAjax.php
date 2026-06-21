@@ -79,7 +79,26 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
             }
         }
 
-        wp_send_json_success(esc_html__('You have successfully unsubscribed from the newsletter.', 'wp-sms'));
+        /**
+         * Filter the unsubscribe success message.
+         *
+         * Allows customizing the confirmation message shown after a successful
+         * unsubscribe, for example to show a different message per group.
+         *
+         * @since 7.2.6
+         *
+         * @param string    $message  The default success message.
+         * @param array|int $groupIds The group ID(s) the number was unsubscribed from (empty for all groups).
+         * @param string    $number   The unsubscribed mobile number.
+         */
+        $message = apply_filters(
+            'wpsms_unsubscribe_success_message',
+            esc_html__('You have successfully unsubscribed from the newsletter.', 'wp-sms'),
+            $groupIds,
+            $number
+        );
+
+        wp_send_json_success($message);
     }
 
 }
