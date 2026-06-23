@@ -48,6 +48,13 @@ fi
 
 cd "$PLUGIN_DIR"
 
+# ---- Pre-flight: wp-cli is required by `pnpm build` (build:pot -> wp i18n make-pot) ----
+if ! command -v wp >/dev/null 2>&1; then
+    echo "Error: wp-cli ('wp') not found, but it is required to generate the translation template (.pot)."
+    echo "Install it from https://wp-cli.org/ and re-run."
+    exit 1
+fi
+
 # ---- Step 1: Install PHP dependencies ----
 echo "Step 1: Installing PHP dependencies..."
 composer install
