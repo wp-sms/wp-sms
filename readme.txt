@@ -4,7 +4,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 7.2.5
+Stable tag: 7.2.6
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -155,6 +155,11 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
+= v7.2.6 - 2026-06-** =
+- **New:** Added the LogisticSMS gateway (Iran).
+- **New:** Added the `wpsms_unsubscribe_success_message` filter to customize the newsletter unsubscribe confirmation message.
+- **Fix:** Fixed the billing phone number being silently dropped when a WooCommerce order or profile is re-saved.
+
 = v7.2.5 - 2026-05-19 =
 - **Fix:** Fixed missing field placeholder chips in the Quform integration message body.
 - **Fix:** Fixed `[wp_sms_subscriber_form]` shortcode showing an empty group list when "Available groups" is blank; it now falls back to all groups.
