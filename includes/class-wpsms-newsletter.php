@@ -75,13 +75,31 @@ class Newsletter
         $number  = wp_unslash(trim($_REQUEST[$unSubscriberQueryString]));
         $numbers = [$number, "+{$number}"];
 
+        // Capture the group(s) this number belongs to before it is removed, so the
+        // success message can be customized per group. This mirrors the unsubscribe
+        // form path and lets the wpsms_unsubscribe_success_message filter work when
+        // unsubscribing through the URL link as well.
+        $groups   = self::getSubscriberGroupsByNumber($number);
+        $groupIds = is_wp_error($groups) ? array() : array_map('intval', wp_list_pluck($groups, 'group_id'));
+
         foreach ($numbers as $number) {
             $response = self::deleteSubscriberByNumber($number);
 
             do_action('wp_sms_number_unsubscribed_through_url', $number);
 
             if ($response['result'] == 'success') {
-                wp_die(esc_html($response['message']), esc_html__('SMS newsletter', 'wp-sms'), [
+                /**
+                 * Filter the unsubscribe success message.
+                 *
+                 * @since 7.2.6
+                 *
+                 * @param string    $message  The default success message.
+                 * @param array     $groupIds The group ID(s) the number was unsubscribed from (empty for none).
+                 * @param string    $number   The unsubscribed mobile number.
+                 */
+                $message = apply_filters('wpsms_unsubscribe_success_message', $response['message'], $groupIds, $number);
+
+                wp_die(esc_html($message), esc_html__('SMS newsletter', 'wp-sms'), [
                     'link_text' => esc_html__('Home page', 'wp-sms'),
                     'link_url'  => esc_url(get_bloginfo('url')),
                     'response'  => 200,
