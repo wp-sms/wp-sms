@@ -37,6 +37,13 @@ export default defineConfig(({ command, mode }) => ({
         drop_console: true,
         drop_debugger: true,
       },
+      mangle: {
+        // Keep the @wordpress/i18n function names so `wp i18n make-pot` can still
+        // extract __()/_x()/_n() calls from the built bundle. Without this, terser
+        // renames them and WordPress.org cannot generate the dashboard's JS
+        // translations (the React strings would stay untranslated).
+        reserved: ['__', '_x', '_n', '_nx', 'sprintf'],
+      },
       output: {
         comments: false,
       },

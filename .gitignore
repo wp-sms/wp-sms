@@ -40,10 +40,6 @@ package-lock.json
 !/public/.gitkeep
 bundle-analysis.html
 
-# Generated translation JSON/MO (rebuilt by `npm run build:json` from the tracked .po).
-/resources/languages/*.json
-/resources/languages/*.mo
-
 #vscode
 .vscode
 
