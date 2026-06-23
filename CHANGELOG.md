@@ -1,6 +1,6 @@
 v7.2.6 - 2026-06-**
 - **New:** Added the LogisticSMS gateway (Iran).
-- **New:** Added the `wpsms_unsubscribe_success_message` filter to customize the newsletter unsubscribe confirmation message.
+- **New:** Added the `wpsms_unsubscribe_success_message` filter to customize the newsletter unsubscribe confirmation message, with the unsubscribed group passed to the filter for both the unsubscribe form and the unsubscribe link.
 - **Fix:** Fixed the billing phone number being silently dropped when a WooCommerce order or profile is re-saved.
 
 v7.2.5 - 2026-05-19
