@@ -57,6 +57,23 @@ export default function PhoneInput({
         .iti__country-list { font-size: 12px; }
         .iti__country-name, .iti__dial-code { font-size: 12px; }
         .iti__search-input { font-size: 12px; padding: 6px 8px; }
+        [data-theme="dark"] .wsms-wizard-phone-input .iti {
+          --iti-hover-color: hsl(var(--accent));
+          --iti-border-color: hsl(var(--border));
+          --iti-dialcode-color: hsl(var(--muted-foreground));
+          --iti-dropdown-bg: hsl(var(--popover));
+          --iti-arrow-color: hsl(var(--muted-foreground));
+        }
+        [data-theme="dark"] .wsms-wizard-phone-input .iti__dropdown-content {
+          color: hsl(var(--popover-foreground));
+        }
+        [data-theme="dark"] .wsms-wizard-phone-input input.iti__tel-input {
+          color: hsl(var(--muted-foreground)) !important;
+        }
+        [data-theme="dark"] .wsms-wizard-phone-input .iti__search-input {
+          color: hsl(var(--foreground));
+          background-color: hsl(var(--background));
+        }
       `
 
 
@@ -240,7 +257,7 @@ export default function PhoneInput({
   }, [value, isLoaded])
 
   return (
-    <div className={cn('wsms-relative', className)}>
+    <div className={cn('wsms-wizard-phone-input wsms-relative', className)}>
       <input
         ref={inputRef}
         type="tel"
@@ -250,7 +267,7 @@ export default function PhoneInput({
         aria-label={ariaLabel}
         id={id}
         className={cn(
-          'wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-bg-background wsms-py-1 wsms-text-sm wsms-ring-offset-background',
+          'wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-bg-background wsms-py-1 wsms-text-sm wsms-text-muted-foreground wsms-ring-offset-background',
           'placeholder:wsms-text-muted-foreground',
           'focus-visible:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-offset-2',
           'disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50',

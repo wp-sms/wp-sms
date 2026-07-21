@@ -1024,7 +1024,7 @@ export default function Subscribers() {
                   onChange={(e) => setQuickReplyMessage(e.target.value)}
                   placeholder="Type your message..."
                   rows={4}
-                  className="wsms-w-full wsms-px-3 wsms-py-2 wsms-text-[13px] wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-resize-none focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-ring focus:wsms-ring-offset-2"
+                  className="wsms-w-full wsms-px-3 wsms-py-2 wsms-text-[13px] wsms-text-foreground wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-resize-none placeholder:wsms-text-muted-foreground focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-ring focus:wsms-ring-offset-2"
                 />
                 <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-text-right">
                   {quickReplyMessage.length} characters
