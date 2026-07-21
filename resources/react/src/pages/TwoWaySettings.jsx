@@ -22,7 +22,7 @@ import { Label } from '@/components/ui/label'
 import { TemplateTextarea } from '@/components/shared/TemplateTextarea'
 import { AddonUpdateRequired } from '@/components/shared/AddonUpdateRequired'
 import { SettingRow, SelectField } from '@/components/ui/form-field'
-import { Tip } from '@/components/ui/ux-helpers'
+import { Tip, HelpLink } from '@/components/ui/ux-helpers'
 import { useSettings } from '@/context/SettingsContext'
 import { getWpSettings, buildRestUrl, cn, isAddonDashboardReady } from '@/lib/utils'
 import { useToast } from '@/components/ui/toaster'
@@ -38,11 +38,14 @@ export default function TwoWaySettings() {
   // Get webhook/gateway data from schema's getDynamicData
   const addonData = wpSettings.addonSettings?.['two-way']?.data || {}
   const webhookUrl = addonData.webhookUrl || ''
+  const webhookUrlPath = addonData.webhookUrlPath || ''
   const webhookSupported = addonData.webhookSupported || false
   const currentGateway = addonData.currentGateway || ''
   const registerType = addonData.registerType || ''
   const panelUrl = addonData.panelUrl || ''
   const registerWebhookHelp = addonData.registerWebhookHelp || ''
+  const docsUrl = addonData.docsUrl || 'https://wsms.io/docs/addon-two-way/'
+  const gatewaySetupUrl = addonData.gatewaySetupUrl || 'https://wsms.io/docs/two-way-gateway-setup/'
 
   // Settings values
   const smsForwardEnabled = getAddonSetting('two-way', 'notif_new_inbox_message', false)
@@ -52,21 +55,21 @@ export default function TwoWaySettings() {
   const retentionDays = getAddonSetting('two-way', 'inbox_retention_days', '90')
 
   // UI state
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState('')
   const [isResetting, setIsResetting] = useState(false)
   const [isRegistering, setIsRegistering] = useState(false)
 
-  // Copy webhook URL to clipboard
-  const handleCopyUrl = async () => {
+  // Copy a webhook URL to clipboard (`which` marks the field that shows the check icon)
+  const handleCopyUrl = async (value, which = 'query') => {
     try {
-      await navigator.clipboard.writeText(webhookUrl)
-      setCopied(true)
+      await navigator.clipboard.writeText(value)
+      setCopied(which)
       toast({
         title: __('Copied', 'wp-sms'),
         description: __('Webhook URL copied to clipboard', 'wp-sms'),
         variant: 'success',
       })
-      setTimeout(() => setCopied(false), 2000)
+      setTimeout(() => setCopied(''), 2000)
     } catch (error) {
       toast({
         title: __('Error', 'wp-sms'),
@@ -196,6 +199,15 @@ export default function TwoWaySettings() {
           <CardDescription>
             {__('Webhook configuration for receiving incoming SMS messages', 'wp-sms')}
           </CardDescription>
+          <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-x-4 wsms-gap-y-1 wsms-pt-2">
+            <HelpLink href={gatewaySetupUrl}>
+              {currentGateway
+                /* translators: %s: gateway name, e.g. Twilio */
+                ? __('Webhook setup for %s', 'wp-sms').replace('%s', currentGateway)
+                : __('Gateway webhook setup guide', 'wp-sms')}
+            </HelpLink>
+            <HelpLink href={docsUrl}>{__('Two-Way SMS documentation', 'wp-sms')}</HelpLink>
+          </div>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           {/* Status Bar - follows Gateway.jsx pattern */}
@@ -271,11 +283,11 @@ export default function TwoWaySettings() {
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={handleCopyUrl}
+                  onClick={() => handleCopyUrl(webhookUrl, 'query')}
                   disabled={!webhookUrl}
                   title={__('Copy URL', 'wp-sms')}
                 >
-                  {copied ? (
+                  {copied === 'query' ? (
                     <Check className="wsms-h-4 wsms-w-4 wsms-text-success" />
                   ) : (
                     <Copy className="wsms-h-4 wsms-w-4" />
@@ -340,6 +352,38 @@ export default function TwoWaySettings() {
                     </a>
                   )}
                 </Tip>
+              )}
+
+              {/* Fallback URL for gateways that drop the ?wpsms_token part when saving */}
+              {registerType !== 'api' && webhookUrlPath && (
+                <div className="wsms-space-y-2 wsms-rounded-lg wsms-border wsms-border-dashed wsms-border-border wsms-bg-muted/20 wsms-p-3">
+                  <Label className="wsms-text-[13px] wsms-font-medium">
+                    {__('Alternative URL (token in the path)', 'wp-sms')}
+                  </Label>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground">
+                    {__('Some gateways remove everything after the "?" when they save a webhook URL, which makes incoming messages fail. Use this URL instead if that happens.', 'wp-sms')}
+                  </p>
+                  <div className="wsms-flex wsms-gap-2">
+                    <Input
+                      value={webhookUrlPath}
+                      readOnly
+                      aria-label={__('Alternative webhook URL', 'wp-sms')}
+                      className="wsms-font-mono wsms-text-xs wsms-bg-muted/50"
+                    />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleCopyUrl(webhookUrlPath, 'path')}
+                      title={__('Copy URL', 'wp-sms')}
+                    >
+                      {copied === 'path' ? (
+                        <Check className="wsms-h-4 wsms-w-4 wsms-text-success" />
+                      ) : (
+                        <Copy className="wsms-h-4 wsms-w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
               )}
             </div>
           )}
