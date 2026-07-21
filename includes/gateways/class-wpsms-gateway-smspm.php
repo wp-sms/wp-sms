@@ -161,7 +161,16 @@ class smspm extends \WP_SMS\Gateway
             return isset($m['status']) && stripos($m['status'], 'Added to queue') !== false;
         }));
 
-        if (!empty($messages) && $queuedCount === 0) {
+        // A missing or empty `messages` array is not a success case — it means
+        // SMSPM returned a 200 with no batch payload at all, which should fail
+        // closed rather than silently proceed as if the send succeeded.
+        if (empty($messages)) {
+            $errorMessage = __('SMSPM returned an empty response with no message batch.', 'wp-sms');
+            $this->log($this->from, $this->msg, $this->to, $errorMessage, 'error');
+            return new WP_Error('send-sms', $errorMessage);
+        }
+
+        if ($queuedCount === 0) {
             $firstError = $messages[0]['error'] ?? __('SMSPM rejected all recipients in this batch.', 'wp-sms');
             $this->log($this->from, $this->msg, $this->to, $firstError, 'error');
             return new WP_Error('send-sms', $firstError);
