@@ -62,7 +62,7 @@ export default function CountryStep({
         </label>
         <select
           id="wpsms-migration-country"
-          className="wsms-w-full wsms-border wsms-border-input wsms-rounded-md wsms-px-3 wsms-py-2 wsms-text-[13px] wsms-bg-background"
+          className="wsms-w-full wsms-border wsms-border-input wsms-rounded-md wsms-px-3 wsms-py-2 wsms-text-[13px] wsms-bg-background wsms-text-foreground"
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
           disabled={loading}
