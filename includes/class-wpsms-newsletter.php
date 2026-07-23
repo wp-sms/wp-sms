@@ -43,7 +43,12 @@ class Newsletter
      */
     public static function generateUnSubscribeToken($number)
     {
-        return wp_hash('wp_sms_unsubscribe|' . $number);
+        // Normalise to digits only so the token is stable regardless of a leading
+        // "+" (which is not URL-encoded in the link and decodes to a space when
+        // the recipient opens it).
+        $normalized = preg_replace('/[^0-9]/', '', (string) $number);
+
+        return wp_hash('wp_sms_unsubscribe|' . $normalized);
     }
 
     /**
@@ -73,7 +78,13 @@ class Newsletter
             return;
         }
 
-        $number = wp_unslash(trim($_REQUEST[$unSubscriberQueryString]));
+        // Only a scalar number is valid; ignore array input so trim() cannot fatal.
+        $rawNumber = $_REQUEST[$unSubscriberQueryString];
+        if (!is_scalar($rawNumber)) {
+            return;
+        }
+
+        $number = trim(wp_unslash($rawNumber));
 
         // Check CSRF: the token must match the one issued for this exact number.
         if (apply_filters('wpsms_unsubscribe_csrf_enabled', true)) {

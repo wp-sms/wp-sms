@@ -34,14 +34,14 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
             throw new Exception(esc_html__('Please accept the privacy checkbox to continue.', 'wp-sms'));
         }
 
-        // Throttle requests per client so the endpoint cannot be used to probe
-        // or mass-remove records.
+        // Throttle failed lookups per client so the endpoint cannot be used to
+        // probe which numbers are subscribed. Successful unsubscribes are not
+        // counted, so ordinary opt-outs (including shared networks) are unaffected.
         $rateKey  = 'wpsms_unsub_' . md5(sanitize_text_field(wp_unslash(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '')));
         $rateHits = (int) get_transient($rateKey);
         if ($rateHits >= 10) {
             throw new Exception(esc_html__('Too many requests. Please try again later.', 'wp-sms'));
         }
-        set_transient($rateKey, $rateHits + 1, 10 * MINUTE_IN_SECONDS);
 
         $name           = $this->get('name');
         $number         = $this->get('mobile');
@@ -54,22 +54,14 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
         // Get all matching subscribers
         $subscribers = Newsletter::getSubscriberByMobile($number, false);
         if (empty($subscribers)) {
+            set_transient($rateKey, $rateHits + 1, 10 * MINUTE_IN_SECONDS);
             throw new Exception(esc_html__('The provided mobile number is not subscribed.', 'wp-sms'));
         }
 
-        $groupIds     = is_array($group_id) ? $group_id : array($group_id);
-        $providedName = trim((string) $name);
-        $matched      = false;
+        $groupIds = is_array($group_id) ? $group_id : array($group_id);
 
         foreach ($subscribers as $subscriber) {
             $subscriberNumber = $subscriber->mobile;
-
-            // Ownership check: the request must also carry the name stored for
-            // this number, so knowing the number alone is not enough to remove it.
-            if (strcasecmp(trim((string) $subscriber->name), $providedName) !== 0) {
-                continue;
-            }
-            $matched = true;
 
             if ($groups_enabled && !empty(array_filter($groupIds))) {
                 $subscriberGroups = Newsletter::getSubscriberGroupsByNumber($subscriberNumber);
@@ -95,10 +87,6 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
                     throw new Exception(esc_html($result->get_error_message()));
                 }
             }
-        }
-
-        if (!$matched) {
-            throw new Exception(esc_html__('The provided mobile number is not subscribed.', 'wp-sms'));
         }
 
         /**

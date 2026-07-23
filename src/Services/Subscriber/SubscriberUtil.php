@@ -152,8 +152,11 @@ class SubscriberUtil
         $check_mobile = $wpdb->get_row($db_prepare); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         if ($check_mobile) {
 
-            // Throttle guesses so the activation code cannot be enumerated.
-            $attemptKey   = 'wpsms_verify_attempts_' . md5($mobile);
+            // Throttle guesses so the activation code cannot be enumerated. The
+            // counter is per client and number, so a third party sending wrong
+            // codes cannot lock the genuine subscriber out of confirming.
+            $clientIp     = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '';
+            $attemptKey   = 'wpsms_verify_attempts_' . md5($clientIp . '|' . $mobile);
             $attemptCount = (int) get_transient($attemptKey);
 
             if ($attemptCount >= 10) {
