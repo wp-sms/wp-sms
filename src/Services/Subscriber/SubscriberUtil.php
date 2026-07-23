@@ -152,10 +152,26 @@ class SubscriberUtil
         $check_mobile = $wpdb->get_row($db_prepare); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         if ($check_mobile) {
 
-            if ($activation != $check_mobile->activate_key) {
+            // Throttle guesses so the activation code cannot be enumerated. The
+            // counter is per client and number, so a third party sending wrong
+            // codes cannot lock the genuine subscriber out of confirming.
+            $clientIp     = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '';
+            $attemptKey   = 'wpsms_verify_attempts_' . md5($clientIp . '|' . $mobile);
+            $attemptCount = (int) get_transient($attemptKey);
+
+            if ($attemptCount >= 10) {
+                return new \WP_Error('verify_subscriber', esc_html__('Too many attempts. Please try again later.', 'wp-sms'));
+            }
+
+            if (!hash_equals((string) $check_mobile->activate_key, (string) $activation)) {
+                set_transient($attemptKey, $attemptCount + 1, 15 * MINUTE_IN_SECONDS);
+
                 // Return response
                 return new \WP_Error('verify_subscriber', esc_html__('Activation code is wrong!', 'wp-sms'));
             }
+
+            // Successful verification clears the throttle counter.
+            delete_transient($attemptKey);
 
             // Check the mobile number is string or integer
             if (strpos($mobile, '+') !== false) {

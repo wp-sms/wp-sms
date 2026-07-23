@@ -34,6 +34,15 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
             throw new Exception(esc_html__('Please accept the privacy checkbox to continue.', 'wp-sms'));
         }
 
+        // Throttle failed lookups per client so the endpoint cannot be used to
+        // probe which numbers are subscribed. Successful unsubscribes are not
+        // counted, so ordinary opt-outs (including shared networks) are unaffected.
+        $rateKey  = 'wpsms_unsub_' . md5(sanitize_text_field(wp_unslash(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '')));
+        $rateHits = (int) get_transient($rateKey);
+        if ($rateHits >= 10) {
+            throw new Exception(esc_html__('Too many requests. Please try again later.', 'wp-sms'));
+        }
+
         $name           = $this->get('name');
         $number         = $this->get('mobile');
         $group_id       = $this->get('group_id', 0);
@@ -45,6 +54,7 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
         // Get all matching subscribers
         $subscribers = Newsletter::getSubscriberByMobile($number, false);
         if (empty($subscribers)) {
+            set_transient($rateKey, $rateHits + 1, 10 * MINUTE_IN_SECONDS);
             throw new Exception(esc_html__('The provided mobile number is not subscribed.', 'wp-sms'));
         }
 

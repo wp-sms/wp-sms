@@ -101,7 +101,6 @@ class smsto extends \WP_SMS\Gateway
             'timeout'     => 15,
             'redirection' => 10,
             'httpversion' => '1.1',
-            'sslverify'   => false,
             'headers'     => [
                 'authorization' => 'Bearer ' . $this->has_key,
                 'content-type'  => 'application/json',
