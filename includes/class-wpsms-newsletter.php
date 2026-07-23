@@ -34,6 +34,19 @@ class Newsletter
     }
 
     /**
+     * Builds the unsubscribe token for a specific number, so a link issued for
+     * one recipient cannot be reused to unsubscribe a different number.
+     *
+     * @param string $number
+     *
+     * @return string
+     */
+    public static function generateUnSubscribeToken($number)
+    {
+        return wp_hash('wp_sms_unsubscribe|' . $number);
+    }
+
+    /**
      * @param $number
      *
      * @return string
@@ -42,7 +55,7 @@ class Newsletter
     {
         $unSubscribeUrl = add_query_arg([
             self::getUnSubscriberQueryString() => $number,
-            'csrf'                             => wp_hash('wp_sms_unsubscribe')
+            'csrf'                             => self::generateUnSubscribeToken($number)
         ], get_bloginfo('url'));
 
         return wp_sms_shorturl($unSubscribeUrl);
@@ -60,10 +73,14 @@ class Newsletter
             return;
         }
 
-        // Check CSRF
+        $number = wp_unslash(trim($_REQUEST[$unSubscriberQueryString]));
+
+        // Check CSRF: the token must match the one issued for this exact number.
         if (apply_filters('wpsms_unsubscribe_csrf_enabled', true)) {
 
-            if (!isset($_REQUEST['csrf']) || wp_hash('wp_sms_unsubscribe') != $_REQUEST['csrf']) {
+            $submittedToken = isset($_REQUEST['csrf']) ? wp_unslash($_REQUEST['csrf']) : '';
+
+            if (!is_string($submittedToken) || !hash_equals(self::generateUnSubscribeToken($number), $submittedToken)) {
                 wp_die(esc_html__('Access denied.', 'wp-sms'), esc_html__('SMS newsletter', 'wp-sms'), [
                     'link_text' => esc_html__('Home page', 'wp-sms'),
                     'link_url'  => esc_url(get_bloginfo('url')),
@@ -72,7 +89,6 @@ class Newsletter
             }
         }
 
-        $number  = wp_unslash(trim($_REQUEST[$unSubscriberQueryString]));
         $numbers = [$number, "+{$number}"];
 
         // Capture the group(s) this number belongs to before it is removed, so the

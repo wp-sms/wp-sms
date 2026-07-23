@@ -10,6 +10,10 @@ class ControllerManager
     {
         $this->registerPublicControllers();
         $this->registerAdminControllers();
+
+        // Bind the privacy-export cleanup so the scheduled deletion can run
+        // (WP-Cron requests do not go through the admin bootstrap).
+        add_action(PrivacyDataAjax::CLEANUP_HOOK, [PrivacyDataAjax::class, 'cleanupExport']);
     }
 
     /**

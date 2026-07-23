@@ -54,6 +54,12 @@ class PluginActions
     {
         check_ajax_referer('wp_rest', 'wps_nonce');
 
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error([
+                'message' => __('You do not have permission to perform this action.', 'wp-sms'),
+            ], 403);
+        }
+
         try {
             $licenseKey = Request::has('license_key') ? wp_unslash(Request::get('license_key')) : false;
             $addOn      = Request::get('addon_slug');
@@ -84,6 +90,12 @@ class PluginActions
     public function check_plugin_action_callback()
     {
         check_ajax_referer('wp_rest', 'wps_nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error([
+                'message' => __('You do not have permission to perform this action.', 'wp-sms'),
+            ], 403);
+        }
 
         try {
             $pluginSlug = Request::has('plugin_slug') ? wp_unslash(Request::get('plugin_slug')) : false;

@@ -7,6 +7,23 @@ if (!defined('ABSPATH')) exit;
 class CsvHelper
 {
     /**
+     * Prefixes a leading control character so spreadsheet software treats the
+     * cell as text instead of a formula (CSV/formula injection).
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    public static function neutralizeFormula($value)
+    {
+        if (is_string($value) && $value !== '' && in_array($value[0], array('=', '+', '-', '@', "\t", "\r"), true)) {
+            return "'" . $value;
+        }
+
+        return $value;
+    }
+
+    /**
      * Convert data to csv format and send download header
      *
      * @param $fileName
@@ -28,9 +45,9 @@ class CsvHelper
             // Add a header row if not included
             if (!$header_included) {
                 // Use the keys as titles
-                fputcsv($file_data, array_keys($line));
+                fputcsv($file_data, array_map(array(self::class, 'neutralizeFormula'), array_keys($line)));
             }
-            fputcsv($file_data, $line);
+            fputcsv($file_data, array_map(array(self::class, 'neutralizeFormula'), $line));
         }
         fclose($file_data); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
         exit;
