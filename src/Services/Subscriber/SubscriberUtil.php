@@ -61,7 +61,7 @@ class SubscriberUtil
                 return new \WP_Error('subscribe', esc_html__('Service provider is not available for send activate key to your mobile. Please contact with site.', 'wp-sms'));
             }
 
-            $key = wp_rand(100000, 999999);
+            $key = wp_rand(1000, 9999);
 
             foreach ($groupIds as $groupId) {
                 // Add subscribe to database
