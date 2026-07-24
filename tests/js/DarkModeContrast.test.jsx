@@ -8,6 +8,13 @@ import {
 } from '@/components/ui/dialog'
 import { Toaster, useToast } from '@/components/ui/toaster'
 import CountryStep from '@/components/migration/CountryStep'
+import PhoneInput from '@/components/wizard/components/PhoneInput'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 function ToastTrigger({ variant = 'default' }) {
   const { toast } = useToast()
@@ -68,6 +75,34 @@ describe('dark-mode contrast safeguards', () => {
     const toasts = screen.getAllByText('Contrast notice')
     const warningToast = toasts[toasts.length - 1].closest('.wsms-pointer-events-auto')
     expect(warningToast).toHaveClass('dark:wsms-bg-amber-950', 'dark:wsms-text-amber-200')
+  })
+
+  test('row/bulk action dropdown menus use theme surface and text tokens', () => {
+    render(
+      <DropdownMenu open>
+        <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>Edit</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+
+    expect(screen.getByRole('menu')).toHaveStyle({
+      backgroundColor: 'hsl(var(--popover))',
+      color: 'hsl(var(--popover-foreground))',
+    })
+    expect(screen.getByRole('menuitem', { name: 'Edit' })).toHaveStyle({
+      color: 'hsl(var(--popover-foreground))',
+    })
+  })
+
+  test('phone input muted text is scoped to dark mode only, not light mode', () => {
+    render(<PhoneInput aria-label="Phone number" />)
+
+    const input = screen.getByLabelText('Phone number')
+    // Muted text must only apply in dark mode; light mode keeps the default foreground.
+    expect(input).toHaveClass('dark:wsms-text-muted-foreground')
+    expect(input).not.toHaveClass('wsms-text-muted-foreground')
   })
 
   test('the migration country selector has an explicit foreground token', () => {

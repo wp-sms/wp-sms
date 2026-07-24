@@ -267,7 +267,7 @@ export default function PhoneInput({
         aria-label={ariaLabel}
         id={id}
         className={cn(
-          'wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-bg-background wsms-py-1 wsms-text-sm wsms-text-muted-foreground wsms-ring-offset-background',
+          'wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-bg-background wsms-py-1 wsms-text-sm dark:wsms-text-muted-foreground wsms-ring-offset-background',
           'placeholder:wsms-text-muted-foreground',
           'focus-visible:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-offset-2',
           'disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50',
