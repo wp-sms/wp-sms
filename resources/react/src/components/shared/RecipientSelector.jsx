@@ -572,9 +572,10 @@ const RecipientSelector = React.forwardRef(
                 {/* Input Area */}
                 <div className="wsms-flex wsms-gap-2">
                   <Input
-                    type="text"
+                    type="tel"
+                    inputMode="tel"
                     value={numberInput}
-                    onChange={(e) => setNumberInput(e.target.value)}
+                    onChange={(e) => setNumberInput(e.target.value.replace(/[^0-9+,\s]/g, ''))}
                     onKeyDown={handleKeyDown}
                     placeholder={__('Enter phone number...', 'wp-sms')}
                     aria-label={__('Phone number', 'wp-sms')}
