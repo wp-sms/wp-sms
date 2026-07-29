@@ -123,17 +123,24 @@ class logisticsms extends \WP_SMS\Gateway
                     ],
                 ];
 
-                $response = $this->request('POST', "{$this->apiBase}/sms/send", [], $params, false);
+                try {
+                    $response = $this->request('POST', "{$this->apiBase}/sms/send", [], $params, false);
 
-                if (!is_object($response) || !isset($response->msg)) {
-                    throw new Exception(esc_html__('Unexpected response from the LogisticSMS send endpoint.', 'wp-sms'));
+                    if (!is_object($response) || !isset($response->msg)) {
+                        throw new Exception(esc_html__('Unexpected response from the LogisticSMS send endpoint.', 'wp-sms'));
+                    }
+
+                    if ($response->msg !== 'success') {
+                        throw new Exception(esc_html((string) $response->msg));
+                    }
+
+                    $results[] = $response;
+                } catch (Exception $e) {
+                    $error = new WP_Error('send-sms', $e->getMessage(), array('recipient' => $recipient));
+                    $results[] = $error;
+
+                    $this->log($this->from, $this->msg, array($recipient), $e->getMessage(), 'error');
                 }
-
-                if ($response->msg !== 'success') {
-                    throw new Exception(esc_html((string) $response->msg));
-                }
-
-                $results[] = $response;
             }
 
             $this->log($this->from, $this->msg, $this->to, $results);

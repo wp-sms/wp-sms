@@ -58,25 +58,32 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
             throw new Exception(esc_html__('The provided mobile number is not subscribed.', 'wp-sms'));
         }
 
-        $groupIds = is_array($group_id) ? $group_id : array($group_id);
+        $requestedGroupIds = is_array($group_id) ? $group_id : array($group_id);
+        $groupIds          = array();
 
         foreach ($subscribers as $subscriber) {
             $subscriberNumber = $subscriber->mobile;
+            $subscriberGroups = Newsletter::getSubscriberGroupsByNumber($subscriberNumber);
+            $unsubscribeGroupIds = $requestedGroupIds;
 
-            if ($groups_enabled && !empty(array_filter($groupIds))) {
-                $subscriberGroups = Newsletter::getSubscriberGroupsByNumber($subscriberNumber);
+            if (is_wp_error($subscriberGroups)) {
+                $subscriberGroups = array();
+            } else {
+                $groupIds = array_merge($groupIds, array_map('intval', wp_list_pluck($subscriberGroups, 'group_id')));
+            }
 
+            if ($groups_enabled && !empty(array_filter($requestedGroupIds))) {
                 if (empty($subscriberGroups)) {
-                    $groupIds = array();
+                    $unsubscribeGroupIds = array();
                 } elseif (!Newsletter::subscriberExistsInGroup($subscriberNumber, $group_id)) {
                     throw new Exception(esc_html__('This mobile number is not subscribed to the selected group(s).', 'wp-sms'));
                 }
             }
 
             // Perform unsubscription
-            if (!empty($groupIds)) {
-                foreach ($groupIds as $groupId) {
-                    $result = SubscriberUtil::unSubscribe($name, $subscriberNumber, $groupId);
+            if (!empty($unsubscribeGroupIds)) {
+                foreach ($unsubscribeGroupIds as $requestedGroupId) {
+                    $result = SubscriberUtil::unSubscribe($name, $subscriberNumber, $requestedGroupId);
                     if (is_wp_error($result)) {
                         throw new Exception(esc_html($result->get_error_message()));
                     }
@@ -88,6 +95,8 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
                 }
             }
         }
+
+        $groupIds = array_values(array_unique($groupIds));
 
         /**
          * Filter the unsubscribe success message.

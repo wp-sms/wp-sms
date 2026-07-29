@@ -6138,9 +6138,9 @@ msgid "Bulk action failed"
 msgstr ""
 
 #: public/dashboard/assets/dashboard-69YM8y2V.js:1
-#: resources/react/src/pages/Outbox.jsx:231
+#: resources/react/src/pages/Outbox.jsx:232
 #, js-format
-msgid "Reply sent to %d1 recipient(s). %d2 skipped — their country codes don't match your country restriction settings."
+msgid "Reply sent to %1$d recipient(s). %2$d skipped — their country codes don't match your country restriction settings."
 msgstr ""
 
 #: public/dashboard/assets/dashboard-69YM8y2V.js:1

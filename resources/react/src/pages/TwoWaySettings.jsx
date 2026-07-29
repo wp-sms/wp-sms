@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {
   Settings,
   AlertCircle,
@@ -55,6 +55,7 @@ export default function TwoWaySettings() {
   const retentionDays = getAddonSetting('two-way', 'inbox_retention_days', '90')
 
   // UI state
+  const copyResetTimerRef = useRef(null)
   const [copied, setCopied] = useState('')
   const [isResetting, setIsResetting] = useState(false)
   const [isRegistering, setIsRegistering] = useState(false)
@@ -63,13 +64,14 @@ export default function TwoWaySettings() {
   const handleCopyUrl = async (value, which = 'query') => {
     try {
       await navigator.clipboard.writeText(value)
+      clearTimeout(copyResetTimerRef.current)
       setCopied(which)
       toast({
         title: __('Copied', 'wp-sms'),
         description: __('Webhook URL copied to clipboard', 'wp-sms'),
         variant: 'success',
       })
-      setTimeout(() => setCopied(''), 2000)
+      copyResetTimerRef.current = setTimeout(() => setCopied(''), 2000)
     } catch (error) {
       toast({
         title: __('Error', 'wp-sms'),

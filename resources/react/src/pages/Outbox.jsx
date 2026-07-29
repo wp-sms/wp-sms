@@ -228,7 +228,11 @@ export default function Outbox() {
       })
       if (blocked.length > 0) {
         toast({
-              title: __('Reply sent to %d1 recipient(s). %d2 skipped — their country codes don\'t match your country restriction settings.', 'wp-sms').replace('%d1', allowed.length).replace('%d2', blocked.length),
+          title: sprintf(
+            __('Reply sent to %1$d recipient(s). %2$d skipped — their country codes don\'t match your country restriction settings.', 'wp-sms'),
+            allowed.length,
+            blocked.length
+          ),
           variant: 'warning',
         })
       } else {
