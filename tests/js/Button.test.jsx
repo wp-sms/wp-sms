@@ -18,6 +18,7 @@ describe('Button', () => {
     const button = screen.getByRole('button', { name: /outline/i })
     expect(button).toHaveClass('wsms-border')
     expect(button).toHaveClass('wsms-bg-card')
+    expect(button).toHaveClass('wsms-text-foreground')
   })
 
   test('renders with destructive variant', () => {

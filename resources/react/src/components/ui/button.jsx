@@ -68,7 +68,7 @@ const buttonVariants = cva(
         destructive:
           'wsms-bg-destructive wsms-text-destructive-foreground wsms-shadow-sm hover:wsms-bg-destructive/90',
         outline:
-          'wsms-border wsms-border-input wsms-bg-card wsms-shadow-sm hover:wsms-bg-accent/50 hover:wsms-border-primary/50',
+          'wsms-border wsms-border-input wsms-bg-card wsms-text-foreground wsms-shadow-sm hover:wsms-bg-accent/50 hover:wsms-border-primary/50',
         secondary:
           'wsms-bg-secondary wsms-text-secondary-foreground wsms-shadow-sm hover:wsms-bg-secondary/80',
         ghost:

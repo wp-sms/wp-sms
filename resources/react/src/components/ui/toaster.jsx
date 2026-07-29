@@ -29,9 +29,10 @@ function Toast({ id, title, description, variant, onDismiss }) {
         isExiting
           ? 'wsms-opacity-0 wsms-translate-x-2 rtl:wsms--translate-x-2'
           : 'wsms-opacity-100 wsms-translate-x-0',
-        variant === 'destructive' && 'wsms-border-red-200 wsms-bg-red-50 wsms-text-red-900',
-        variant === 'success' && 'wsms-border-emerald-200 wsms-bg-emerald-50 wsms-text-emerald-900',
-        variant === 'default' && 'wsms-border-border wsms-bg-white wsms-text-foreground'
+        variant === 'destructive' && 'wsms-border-red-200 wsms-bg-red-50 wsms-text-red-900 dark:wsms-border-red-800 dark:wsms-bg-red-950 dark:wsms-text-red-200',
+        variant === 'success' && 'wsms-border-emerald-200 wsms-bg-emerald-50 wsms-text-emerald-900 dark:wsms-border-emerald-800 dark:wsms-bg-emerald-950 dark:wsms-text-emerald-200',
+        variant === 'warning' && 'wsms-border-amber-200 wsms-bg-amber-50 wsms-text-amber-900 dark:wsms-border-amber-800 dark:wsms-bg-amber-950 dark:wsms-text-amber-200',
+        variant === 'default' && 'wsms-border-border wsms-bg-popover wsms-text-popover-foreground'
       )}
       style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
     >
