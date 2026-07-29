@@ -28,4 +28,21 @@ describe('RecipientSelector', () => {
       numbers: ['+1 234', '567890'],
     })
   })
+
+  test('does not add malformed sanitized phone numbers', () => {
+    const handleChange = jest.fn()
+
+    render(<RecipientSelector value={emptyRecipients} onChange={handleChange} />)
+    fireEvent.click(screen.getByRole('button', { name: /numbers/i }))
+
+    fireEvent.change(screen.getByRole('textbox', { name: /phone number/i }), {
+      target: { value: '+++, 1++2, + 123, +123, 456 789' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: /add number/i }))
+
+    expect(handleChange).toHaveBeenCalledWith({
+      ...emptyRecipients,
+      numbers: ['+123', '456 789'],
+    })
+  })
 })

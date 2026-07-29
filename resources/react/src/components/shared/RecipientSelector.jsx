@@ -14,6 +14,8 @@ const TABS = [
   { id: 'numbers', label: __('Numbers', 'wp-sms'), icon: Phone, description: __('Manual entry', 'wp-sms') },
 ]
 
+const PHONE_NUMBER_PATTERN = /^\+?\d(?:[\d ]*\d)?$/
+
 // Map icon names from PHP to lucide-react components
 const ICON_MAP = {
   ShoppingCart,
@@ -122,7 +124,7 @@ const RecipientSelector = React.forwardRef(
       const numbers = trimmed
         .split(/[,\n]/)
         .map((n) => n.trim())
-        .filter((n) => n && !value.numbers.includes(n))
+        .filter((n) => PHONE_NUMBER_PATTERN.test(n) && !value.numbers.includes(n))
 
       if (numbers.length > 0) {
         onChange?.({ ...value, numbers: [...value.numbers, ...numbers] })
