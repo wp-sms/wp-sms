@@ -156,9 +156,12 @@ All premium features + all add-ons in one package.
 
 == Changelog ==
 = v7.2.6 - 2026-07-30 =
-- **New:** Added the LogisticSMS gateway (Iran).
+- **New:** Added the LogisticSMS gateway
 - **New:** Added the `wpsms_unsubscribe_success_message` filter to customize the newsletter unsubscribe confirmation message, with the unsubscribed group passed to the filter for both the unsubscribe form and the unsubscribe link.
+- **Enhancement:** The Two-Way SMS settings page now shows the alternative path-style webhook URL for gateways that drop the query string, and links to the Two-Way SMS documentation and the setup guide for the connected gateway.
 - **Enhancement:** General security hardening across admin endpoints, subscriber and newsletter handling, gateway connections, and data exports.
+- **Fix:** Fixed Forminator notifications configured to send SMS to a submitted phone field.
+- **Fix:** Fixed Raw JSON custom gateway payloads when placeholder values start or end with quotation marks.
 - **Fix:** Fixed the billing phone number being silently dropped when a WooCommerce order or profile is re-saved.
 
 = v7.2.5 - 2026-05-19 =
