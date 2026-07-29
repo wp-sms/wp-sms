@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n'
+import { __, sprintf } from '@wordpress/i18n'
 import React, { useRef, useState } from 'react'
 import {
   Settings,
@@ -205,7 +205,7 @@ export default function TwoWaySettings() {
             <HelpLink href={gatewaySetupUrl}>
               {currentGateway
                 /* translators: %s: gateway name, e.g. Twilio */
-                ? __('Webhook setup for %s', 'wp-sms').replace('%s', currentGateway)
+                ? sprintf(__('Webhook setup for %s', 'wp-sms'), currentGateway)
                 : __('Gateway webhook setup guide', 'wp-sms')}
             </HelpLink>
             <HelpLink href={docsUrl}>{__('Two-Way SMS documentation', 'wp-sms')}</HelpLink>
