@@ -13,6 +13,10 @@ use WP_SMS\SmsOtp\Generator;
 use WP_SMS\SmsOtp\Verifier;
 use WP_UnitTestCase;
 
+class AjaxResponseException extends \RuntimeException
+{
+}
+
 /**
  * Tier 1 E.164 hardening tests.
  *
@@ -289,7 +293,7 @@ class E164HardeningTest extends WP_UnitTestCase
         // Generation submits in local format, verification submits in international format —
         // both must normalize to the same canonical row.
         $local         = '2025550' . str_pad((string) random_int(0, 999), 3, '0', STR_PAD_LEFT);
-        $international = '+1' . substr(Helper::normalizeToE164($local), 3);
+        $international = Helper::normalizeToE164($local);
 
         $generator = new Generator($local, 'test-agent');
         $generator->createCode(6);
@@ -341,7 +345,7 @@ class E164HardeningTest extends WP_UnitTestCase
     private function makeLegacyCanonicalPair()
     {
         $canonical = '+1202555' . str_pad((string) random_int(0, 99999), 5, '0', STR_PAD_LEFT);
-        $legacy    = '0' . substr($canonical, 3);
+        $legacy    = '0' . substr($canonical, strlen(Option::getOption('mobile_county_code')));
         return [$canonical, $legacy];
     }
 
@@ -368,7 +372,7 @@ class E164HardeningTest extends WP_UnitTestCase
 
         // Seed an OTP row in legacy non-canonical form (mimics a user mid-flight at deploy).
         $canonical = '+1202555' . str_pad((string) random_int(0, 99999), 5, '0', STR_PAD_LEFT);
-        $legacy    = '0' . substr($canonical, 3);
+        $legacy    = '0' . substr($canonical, strlen(Option::getOption('mobile_county_code')));
         $code      = '654321';
 
         $wpdb->insert(
@@ -517,7 +521,7 @@ class E164HardeningTest extends WP_UnitTestCase
         $exception = null;
         try {
             $this->callExecute();
-        } catch (\WPDieException $e) {
+        } catch (AjaxResponseException $e) {
             $exception = $e;
         }
 
@@ -556,8 +560,8 @@ class E164HardeningTest extends WP_UnitTestCase
     // ---------------------------------------------------------------------
 
     /**
-     * Invoke NumberMigrationAjax::execute directly. wp_send_json_success / _error throw
-     * WPDieException in the test bootstrap, which we catch with try/finally on the caller side.
+     * Invoke NumberMigrationAjax::execute directly in an AJAX context so wp_send_json_success
+     * uses wp_die and the test handler can convert it to AjaxResponseException.
      */
     private function callExecute()
     {
@@ -565,7 +569,13 @@ class E164HardeningTest extends WP_UnitTestCase
         $reflection = new \ReflectionClass($controller);
         $method     = $reflection->getMethod('execute');
         $method->setAccessible(true);
-        $method->invoke($controller);
+
+        ob_start();
+        try {
+            $this->invokeAjaxMethod($method, $controller);
+        } finally {
+            ob_end_clean();
+        }
     }
 
     private function callExecuteAndAssertSuccess()
@@ -573,7 +583,7 @@ class E164HardeningTest extends WP_UnitTestCase
         try {
             $this->callExecute();
             $this->fail('execute() should have called wp_send_json_success');
-        } catch (\WPDieException $e) {
+        } catch (AjaxResponseException $e) {
             // wp_send_json_success dies — expected.
         }
     }
@@ -585,11 +595,14 @@ class E164HardeningTest extends WP_UnitTestCase
         $method     = $reflection->getMethod('revert');
         $method->setAccessible(true);
 
+        ob_start();
         try {
-            $method->invoke($controller);
+            $this->invokeAjaxMethod($method, $controller);
             $this->fail('revert() should have called wp_send_json_success');
-        } catch (\WPDieException $e) {
+        } catch (AjaxResponseException $e) {
             // wp_send_json_success dies — expected.
+        } finally {
+            ob_end_clean();
         }
     }
 
@@ -610,15 +623,41 @@ class E164HardeningTest extends WP_UnitTestCase
 
         ob_start();
         try {
-            $method->invoke($controller);
-        } catch (\WPDieException $e) {
+            $this->invokeAjaxMethod($method, $controller);
+        } catch (AjaxResponseException $e) {
             // expected — wp_send_json_success/error dies after echoing
+        } finally {
+            $output = ob_get_clean();
         }
-        $output = ob_get_clean();
 
         $decoded = json_decode($output, true);
         $this->assertIsArray($decoded, sprintf('%s() should have produced JSON output', $methodName));
         return $decoded;
+    }
+
+    /**
+     * Invoke an AJAX controller method without allowing wp_send_json to terminate PHPUnit.
+     */
+    private function invokeAjaxMethod($method, $controller)
+    {
+        $doingAjax = function () {
+            return true;
+        };
+        $dieHandler = function () {
+            return function () {
+                throw new AjaxResponseException();
+            };
+        };
+
+        add_filter('wp_doing_ajax', $doingAjax);
+        add_filter('wp_die_ajax_handler', $dieHandler);
+
+        try {
+            $method->invoke($controller);
+        } finally {
+            remove_filter('wp_die_ajax_handler', $dieHandler);
+            remove_filter('wp_doing_ajax', $doingAjax);
+        }
     }
 
     // ---------------------------------------------------------------------

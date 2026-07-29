@@ -125,7 +125,7 @@ class SubscribersApiTest extends WPSMSTestCase
 
         $this->assertEquals(400, $response->get_status());
         $this->assertArrayHasKey('error', $data);
-        $this->assertStringContainsString('length', strtolower($data['error']['message']));
+        $this->assertStringContainsString('complete phone number', strtolower($data['error']['message']));
     }
 
     /**

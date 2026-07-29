@@ -180,7 +180,7 @@ class CustomGatewayTest extends WP_UnitTestCase
     public function test_raw_json_escapes_special_characters_in_message()
     {
         $this->gateway->body_format = 'raw_json';
-        $this->gateway->msg         = "Line one\nLine \"two\"";
+        $this->gateway->msg         = "\"Line one\nLine \"two\"";
         $this->gateway->raw_payload = '{"text":"{message}"}';
 
         $this->gateway->expects($this->once())
@@ -191,7 +191,7 @@ class CustomGatewayTest extends WP_UnitTestCase
                 [],
                 $this->callback(function ($args) {
                     $decoded = json_decode($args['body'], true);
-                    return is_array($decoded) && $decoded['text'] === "Line one\nLine \"two\"";
+                    return is_array($decoded) && $decoded['text'] === "\"Line one\nLine \"two\"";
                 })
             )
             ->willReturn('ok');
