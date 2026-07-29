@@ -19,7 +19,7 @@ describe('RecipientSelector', () => {
     const input = screen.getByRole('textbox', { name: /phone number/i })
     fireEvent.change(input, { target: { value: 'abc+1 234, test\n567-890' } })
 
-    expect(input).toHaveValue('+1 234, \n567890')
+    expect(input).toHaveValue('+1 234, 567890')
 
     fireEvent.click(screen.getByRole('button', { name: /add number/i }))
 
