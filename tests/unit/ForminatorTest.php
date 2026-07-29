@@ -55,5 +55,21 @@ namespace unit {
 
             $this->assertSame('+61412345678', $data->getValue($forminator)['phone-1']);
         }
+
+        public function testFallsBackToPostDataWhenPreparedDataIsEmpty()
+        {
+            $_POST['phone-1'] = 'recipient-from-post';
+
+            $forminator = new Forminator();
+            $reflection = new ReflectionClass($forminator);
+            $setData    = $reflection->getMethod('set_data');
+            $setData->setAccessible(true);
+            $setData->invoke($forminator);
+
+            $data = $reflection->getProperty('data');
+            $data->setAccessible(true);
+
+            $this->assertSame('recipient-from-post', $data->getValue($forminator)['phone-1']);
+        }
     }
 }
