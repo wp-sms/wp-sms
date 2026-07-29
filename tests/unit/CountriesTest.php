@@ -55,10 +55,10 @@ class CountriesTest extends WP_UnitTestCase
      */
     public function testGetCountryByPrefixReturnsCorrectCountry()
     {
-        $country = $this->countries->getCountryByPrefix('+1');
+        $country = $this->countries->getCountryByPrefix('+49');
 
         $this->assertIsArray($country);
-        $this->assertEquals('United States (USA)', $country['name']);
+        $this->assertEquals('Germany', $country['name']);
     }
 
     /**

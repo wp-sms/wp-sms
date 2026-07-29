@@ -285,7 +285,7 @@ class SmsFlowSettingsTest extends WPSMSTestCase
         Option::updateOption('only_local_numbers_countries', ['+1', '+44']);
         $this->reinitializeGateway();
 
-        $numbers = ['+15551234567', '+449876543210', '+12025550123', '+8612345678901'];
+        $numbers = ['+15551234567', '+449876543210', '+491512345678', '+8612345678901'];
 
         $filtered = apply_filters('wp_sms_to', $numbers);
 
