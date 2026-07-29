@@ -158,6 +158,8 @@ class PrivacyDataAjax extends AjaxControllerAbstract
 
         // Schedule removal of the export shortly after it is generated so the
         // personal data does not remain available in the uploads directory.
+        // This depends on WP-Cron being run by site traffic or a system cron;
+        // sites with DISABLE_WP_CRON must invoke wp-cron.php externally.
         if (!wp_next_scheduled(self::CLEANUP_HOOK, array($filepath))) {
             wp_schedule_single_event(time() + 15 * MINUTE_IN_SECONDS, self::CLEANUP_HOOK, array($filepath));
         }
