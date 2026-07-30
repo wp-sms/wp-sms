@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import BrandingFooter from '@/components/layout/BrandingFooter'
 import { setupWpSmsSettings } from './testing-utils'
 
@@ -45,6 +45,15 @@ describe('BrandingFooter', () => {
       'href',
       'https://wordpress.org/support/plugin/wp-sms/reviews/#new-post'
     )
+    expect(rateLink).toHaveAttribute('target', '_blank')
     expect(rateLink).toHaveAttribute('rel', 'noopener noreferrer')
+
+    const stars = rateLink.querySelectorAll('.lucide-star')
+    fireEvent.mouseEnter(rateLink)
+    stars.forEach((star) => expect(star).toHaveClass('wsms-fill-amber-400'))
+
+    fireEvent.mouseLeave(rateLink)
+    fireEvent.focus(rateLink)
+    stars.forEach((star) => expect(star).toHaveClass('wsms-fill-amber-400'))
   })
 })

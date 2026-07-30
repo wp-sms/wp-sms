@@ -11380,9 +11380,15 @@ msgid "Webhook URL"
 msgstr ""
 
 #: public/dashboard/assets/dashboard-U03nmXwF.js:1
-#: resources/react/src/pages/TwoWaySettings.jsx:290
-#: resources/react/src/pages/TwoWaySettings.jsx:379
 msgid "Copy URL"
+msgstr ""
+
+#: resources/react/src/pages/TwoWaySettings.jsx:290
+msgid "Copy webhook URL"
+msgstr ""
+
+#: resources/react/src/pages/TwoWaySettings.jsx:379
+msgid "Copy alternative webhook URL"
 msgstr ""
 
 #: public/dashboard/assets/dashboard-U03nmXwF.js:1

@@ -287,7 +287,7 @@ export default function TwoWaySettings() {
                   size="icon"
                   onClick={() => handleCopyUrl(webhookUrl, 'query')}
                   disabled={!webhookUrl}
-                  title={__('Copy URL', 'wp-sms')}
+                  title={__('Copy webhook URL', 'wp-sms')}
                 >
                   {copied === 'query' ? (
                     <Check className="wsms-h-4 wsms-w-4 wsms-text-success" />
@@ -376,7 +376,7 @@ export default function TwoWaySettings() {
                       variant="outline"
                       size="icon"
                       onClick={() => handleCopyUrl(webhookUrlPath, 'path')}
-                      title={__('Copy URL', 'wp-sms')}
+                      title={__('Copy alternative webhook URL', 'wp-sms')}
                     >
                       {copied === 'path' ? (
                         <Check className="wsms-h-4 wsms-w-4 wsms-text-success" />
