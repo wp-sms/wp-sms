@@ -3,12 +3,18 @@
 namespace WP_SMS\Controller;
 
 use WP_SMS\Helper;
+use WP_SMS\Utils\CsvHelper;
 
 if (!defined('ABSPATH')) exit;
 
 class PrivacyDataAjax extends AjaxControllerAbstract
 {
     protected $action = 'wp_sms_privacy_data';
+
+    /**
+     * Cron hook used to remove a generated export file after a short window.
+     */
+    const CLEANUP_HOOK = 'wp_sms_privacy_export_cleanup';
     protected $options;
     protected $mobile;
     protected $type;
@@ -43,7 +49,9 @@ class PrivacyDataAjax extends AjaxControllerAbstract
          * Export type
          */
         if ($this->type === 'export') {
-            $this->createCSV($user_data, "wp-sms-report-" . $this->mobile);
+            // Use a random, unguessable file name so a generated export cannot be
+            // located by knowing the mobile number.
+            $this->createCSV($user_data, 'wp-sms-report-' . wp_generate_password(20, false));
         }
 
         /*
@@ -140,20 +148,54 @@ class PrivacyDataAjax extends AjaxControllerAbstract
         $i = 0;
         foreach ($data as $fields) {
             if ($i == 0) {
-                fputcsv($fp, array_keys($fields));
+                fputcsv($fp, array_map(array(CsvHelper::class, 'neutralizeFormula'), array_keys($fields)));
             }
-            fputcsv($fp, array_values($fields));
+            fputcsv($fp, array_map(array(CsvHelper::class, 'neutralizeFormula'), array_values($fields)));
             $i++;
         }
         fclose($fp); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
         $file_url = $upload_dir['baseurl'] . '/' . $filename . '.csv';
 
+        // Schedule removal of the export shortly after it is generated so the
+        // personal data does not remain available in the uploads directory.
+        // This depends on WP-Cron being run by site traffic or a system cron;
+        // sites with DISABLE_WP_CRON must invoke wp-cron.php externally.
+        if (!wp_next_scheduled(self::CLEANUP_HOOK, array($filepath))) {
+            wp_schedule_single_event(time() + 15 * MINUTE_IN_SECONDS, self::CLEANUP_HOOK, array($filepath));
+        }
+
         wp_send_json_success([
             'message'  => Helper::notice(__('The CSV file generated successfully!', 'wp-sms'), 'success', false, '', true),
             'file_url' => $file_url
         ]);
+    }
 
-        unlink($filepath);
-        exit();
+    /**
+     * Removes a generated privacy export file. Bound to the cleanup cron hook.
+     *
+     * @param string $filepath Absolute path of the file to delete.
+     *
+     * @return void
+     */
+    public static function cleanupExport($filepath)
+    {
+        $uploads = wp_upload_dir();
+        $base    = trailingslashit($uploads['basedir']);
+
+        // Only ever delete inside the uploads directory, and only our own export files.
+        $real     = wp_normalize_path((string) $filepath);
+        $baseReal = wp_normalize_path($base);
+
+        if (strpos($real, $baseReal) !== 0) {
+            return;
+        }
+
+        if (strpos(basename($real), 'wp-sms-report-') !== 0) {
+            return;
+        }
+
+        if (file_exists($real)) {
+            wp_delete_file($real);
+        }
     }
 }

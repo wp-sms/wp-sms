@@ -548,7 +548,9 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'label' => esc_html__('Active', 'wp-sms')
                 ));
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
+            // Covers Error as well as Exception — a gateway SDK blowing up
+            // must not take the admin screen down with it
             self::$get_response = $e->getMessage();
 
             if ($return) {
@@ -669,7 +671,13 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         global $sms;
 
         // Get credit
-        $result = $sms->GetCredit();
+        try {
+            $result = $sms->GetCredit();
+        } catch (\Throwable $e) {
+            update_option('wpsms_gateway_credit', 0);
+
+            return 0;
+        }
 
         if (is_wp_error($result)) {
             update_option('wpsms_gateway_credit', 0);

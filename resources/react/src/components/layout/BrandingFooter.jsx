@@ -1,5 +1,23 @@
-import { __ } from '@wordpress/i18n'
-import React, { memo } from 'react'
+import { __, sprintf } from '@wordpress/i18n'
+import React, { memo, useState } from 'react'
+import { Star } from 'lucide-react'
+
+const brandingUrls = {
+  docs: 'https://wsms.io/docs/',
+  support: 'https://wsms.io/support/',
+  changelog: 'https://wsms.io/changelog/',
+  rate: 'https://wordpress.org/support/plugin/wp-sms/reviews/#new-post',
+}
+
+const linkClass = 'hover:wsms-text-foreground wsms-transition-colors'
+
+function Separator() {
+  return (
+    <span aria-hidden="true" className="wsms-opacity-50">
+      ·
+    </span>
+  )
+}
 
 /**
  * WSMS Logo Icon - Geometric parallelogram shapes
@@ -51,34 +69,118 @@ function HeartIcon({ className }) {
 }
 
 /**
- * BrandingFooter - Warm community-focused footer
+ * RateLink - Review link with stars that light up individually on hover
  *
- * Celebrates the WordPress community with genuine warmth.
- * Logo + heartfelt message that feels authentic, not corporate.
+ * Hovering the link lights all five in sequence; hovering a single star
+ * lights up to that star, so each star reacts on its own.
+ */
+function RateLink() {
+  const [isLinkHovered, setIsLinkHovered] = useState(false)
+  const [hoveredStar, setHoveredStar] = useState(0)
+
+  // A hovered star wins over the whole-link hover
+  const filledCount = hoveredStar || (isLinkHovered ? 5 : 0)
+
+  const resetHover = () => {
+    setIsLinkHovered(false)
+    setHoveredStar(0)
+  }
+
+  return (
+    <a
+      href={brandingUrls.rate}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={__('Leave a review on WordPress.org', 'wp-sms')}
+      className="wsms-inline-flex wsms-items-center wsms-gap-1.5 hover:wsms-text-foreground wsms-transition-colors"
+      onMouseEnter={() => setIsLinkHovered(true)}
+      onMouseLeave={resetHover}
+      onFocus={() => setIsLinkHovered(true)}
+      onBlur={resetHover}
+    >
+      <span>{__('Rate us', 'wp-sms')}</span>
+      <span
+        className="wsms-inline-flex wsms-items-center wsms-gap-0.5"
+        aria-hidden="true"
+        onMouseLeave={() => setHoveredStar(0)}
+      >
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            className="wsms-inline-flex wsms-p-px"
+            onMouseEnter={() => setHoveredStar(star)}
+          >
+            <Star
+              className={
+                star <= filledCount
+                  ? 'wsms-h-3 wsms-w-3 wsms-text-amber-400 wsms-fill-amber-400 wsms-transition-all wsms-duration-150'
+                  : 'wsms-h-3 wsms-w-3 wsms-text-amber-400/40 wsms-transition-all wsms-duration-150'
+              }
+              // Stagger only the sweep triggered by hovering the link itself
+              style={{ transitionDelay: hoveredStar ? '0ms' : `${star * 40}ms` }}
+            />
+          </span>
+        ))}
+      </span>
+    </a>
+  )
+}
+
+/**
+ * BrandingFooter - Compact community footer
+ *
+ * One row: logo and community message on one side, help links,
+ * review link and version on the other. Stacks on narrow screens.
  */
 const BrandingFooter = memo(function BrandingFooter() {
+  const version = window.wpSmsSettings?.version || '7.0'
+
   return (
-    <div className="wsms-mt-20 wsms-mb-10 wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-gap-4">
-      {/* Logo container with refined hover interaction */}
-      <div className="wsms-group wsms-relative wsms-flex wsms-items-center wsms-justify-center wsms-p-4 wsms-cursor-default">
-        {/* Subtle glow effect on hover */}
-        <div
-          className="wsms-absolute wsms-inset-0 wsms-rounded-full wsms-bg-primary/0 wsms-blur-xl wsms-transition-all wsms-duration-700 group-hover:wsms-bg-primary/5"
-          aria-hidden="true"
-        />
+    <div className="wsms-mt-10 wsms-mb-6 wsms-border-t wsms-border-border/60 wsms-pt-4">
+      <div className="wsms-flex wsms-flex-col wsms-items-center wsms-justify-between wsms-gap-2 sm:wsms-flex-row sm:wsms-gap-4">
+        {/* Logo and community message */}
+        <p className="wsms-flex wsms-items-center wsms-gap-2 wsms-text-[11px] wsms-text-muted-foreground">
+          <LogoIcon className="wsms-h-4 wsms-w-auto wsms-shrink-0 wsms-text-muted-foreground/40" />
+          <span className="wsms-flex wsms-items-center wsms-gap-1">
+            <span>{__('Made with', 'wp-sms')}</span>
+            <HeartIcon className="wsms-h-3 wsms-w-3 wsms-text-rose-400/70" />
+            <span>{__('for the WordPress community', 'wp-sms')}</span>
+          </span>
+        </p>
 
-        {/* Logo with smooth color transition */}
-        <LogoIcon
-          className="wsms-relative wsms-h-12 wsms-w-auto wsms-text-muted-foreground/25 wsms-transition-all wsms-duration-500 wsms-ease-out group-hover:wsms-text-primary/40 group-hover:wsms-scale-110"
-        />
+        {/* Help links, review link and version */}
+        <p className="wsms-flex wsms-flex-wrap wsms-items-center wsms-justify-center wsms-gap-x-2 wsms-gap-y-1 wsms-text-[11px] wsms-text-muted-foreground">
+          <a
+            href={brandingUrls.docs}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkClass}
+          >
+            {__('Documentation', 'wp-sms')}
+          </a>
+          <Separator />
+          <a
+            href={brandingUrls.support}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkClass}
+          >
+            {__('Support', 'wp-sms')}
+          </a>
+          <Separator />
+          <RateLink />
+          <Separator />
+          <a
+            href={brandingUrls.changelog}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={__("What's New", 'wp-sms')}
+            className={linkClass}
+          >
+            {sprintf(/* translators: %s: plugin version number. */ __('v%s', 'wp-sms'), version)}
+          </a>
+        </p>
       </div>
-
-      {/* Community message */}
-      <p className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-text-muted-foreground">
-        <span>{__('Made with', 'wp-sms')}</span>
-        <HeartIcon className="wsms-h-3.5 wsms-w-3.5 wsms-text-rose-400/70" />
-        <span>{__('for the WordPress community', 'wp-sms')}</span>
-      </p>
     </div>
   )
 })

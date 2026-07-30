@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "license": "GPLv3",
   "scripts": {
-    "build": "npm run copy-static && npm run build:blocks && npm run build:scripts && npm run build:sass && npm run build:dashboard",
+    "build": "npm run copy-static && npm run build:blocks && npm run build:scripts && npm run build:sass && npm run build:dashboard && npm run build:i18n-strings && npm run build:pot",
     "build:blocks": "wp-scripts build --webpack-src-dir=resources/blocks --output-path=public/blocks && rm -rf public/blocks/dev",
     "build:scripts": "ENTRY=admin vite build --config vite.config.entries.mjs && ENTRY=frontend vite build --config vite.config.entries.mjs",
     "build:sass": "sass resources/scss/front-styles.scss:public/css/front-styles.css resources/scss/mail.scss:public/css/mail.css resources/scss/admin/admin.scss:public/css/admin.css --style=compressed --no-source-map",
     "build:dashboard": "vite build",
+    "build:i18n-strings": "node bin/emit-i18n-strings.mjs",
+    "build:pot": "wp i18n make-pot . languages/wp-sms.pot",
     "copy-static": "node bin/copy-static.mjs",
     "dev": "vite",
     "dev:all": "concurrently \"npm run dev:blocks\" \"npm run dev:scripts\" \"npm run dev:sass\" \"npm run dev\"",
@@ -27,7 +29,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
-    "@babel/core": "^7.0.0",
+    "@babel/core": "^7.29.6",
     "@babel/preset-env": "^7.28.5",
     "@babel/preset-react": "^7.24.1",
     "@playwright/test": "^1.57.0",
@@ -50,7 +52,7 @@
     "sass": "^1.94.1",
     "tailwindcss": "^3.4.0",
     "terser": "^5.44.1",
-    "vite": "^6.4.2",
+    "vite": "^6.4.3",
     "vite-plugin-compression": "^0.5.1"
   },
   "dependencies": {

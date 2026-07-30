@@ -44,13 +44,14 @@ const DialogContent = React.forwardRef(
           left: '50%',
           transform: 'translate(-50%, -50%)',
           zIndex: 999999,
-          backgroundColor: '#ffffff',
+          backgroundColor: 'hsl(var(--popover))',
+          border: '1px solid hsl(var(--border))',
           borderRadius: '12px',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
           width: '90%',
           fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
           fontSize: '14px',
-          color: '#1f2937',
+          color: 'hsl(var(--popover-foreground))',
           ...sizeConfig[size],
           ...style,
         }}
@@ -69,19 +70,19 @@ const DialogContent = React.forwardRef(
               border: 'none',
               background: 'transparent',
               cursor: 'pointer',
-              color: '#9ca3af',
+              color: 'hsl(var(--muted-foreground))',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               transition: 'all 0.15s ease',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#f3f4f6'
-              e.currentTarget.style.color = '#374151'
+              e.currentTarget.style.backgroundColor = 'hsl(var(--accent))'
+              e.currentTarget.style.color = 'hsl(var(--accent-foreground))'
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent'
-              e.currentTarget.style.color = '#9ca3af'
+              e.currentTarget.style.color = 'hsl(var(--muted-foreground))'
             }}
           >
             <X style={{ width: '18px', height: '18px' }} aria-hidden="true" />
@@ -128,7 +129,7 @@ const DialogTitle = React.forwardRef(({ className, style, ...props }, ref) => (
       fontSize: '16px',
       fontWeight: 600,
       lineHeight: 1.4,
-      color: '#111827',
+      color: 'hsl(var(--foreground))',
       margin: 0,
       ...style,
     }}
@@ -143,7 +144,7 @@ const DialogDescription = React.forwardRef(({ className, style, ...props }, ref)
     className={cn('wsms-dialog-description', className)}
     style={{
       fontSize: '13px',
-      color: '#6b7280',
+      color: 'hsl(var(--muted-foreground))',
       margin: '4px 0 0 0',
       ...style,
     }}

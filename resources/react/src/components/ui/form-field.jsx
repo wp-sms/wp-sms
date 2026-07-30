@@ -339,8 +339,8 @@ const MultiSelectField = React.forwardRef(
 MultiSelectField.displayName = 'MultiSelectField'
 
 /**
- * SettingRow - A bordered row with title, description, and switch toggle
- * Used for toggle settings that need prominent display
+ * SettingRow - A row with title, description, and switch toggle
+ * Matches SwitchField's plain, borderless layout
  */
 const SettingRow = React.forwardRef(
   ({ title, description, checked, onCheckedChange, disabled, className, ...props }, ref) => {
@@ -348,7 +348,7 @@ const SettingRow = React.forwardRef(
       <div
         ref={ref}
         className={cn(
-          'wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4',
+          'wsms-flex wsms-items-center wsms-justify-between wsms-py-3',
           disabled && 'wsms-opacity-50',
           className
         )}

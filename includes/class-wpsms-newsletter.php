@@ -34,6 +34,24 @@ class Newsletter
     }
 
     /**
+     * Builds the unsubscribe token for a specific number, so a link issued for
+     * one recipient cannot be reused to unsubscribe a different number.
+     *
+     * @param string $number
+     *
+     * @return string
+     */
+    public static function generateUnSubscribeToken($number)
+    {
+        // Normalise to digits only so the token is stable regardless of a leading
+        // "+" (which is not URL-encoded in the link and decodes to a space when
+        // the recipient opens it).
+        $normalized = preg_replace('/[^0-9]/', '', (string) $number);
+
+        return wp_hash('wp_sms_unsubscribe|' . $normalized);
+    }
+
+    /**
      * @param $number
      *
      * @return string
@@ -42,7 +60,7 @@ class Newsletter
     {
         $unSubscribeUrl = add_query_arg([
             self::getUnSubscriberQueryString() => $number,
-            'csrf'                             => wp_hash('wp_sms_unsubscribe')
+            'csrf'                             => self::generateUnSubscribeToken($number)
         ], get_bloginfo('url'));
 
         return wp_sms_shorturl($unSubscribeUrl);
@@ -60,10 +78,20 @@ class Newsletter
             return;
         }
 
-        // Check CSRF
+        // Only a scalar number is valid; ignore array input so trim() cannot fatal.
+        $rawNumber = $_REQUEST[$unSubscriberQueryString];
+        if (!is_scalar($rawNumber)) {
+            return;
+        }
+
+        $number = trim(wp_unslash($rawNumber));
+
+        // Check CSRF: the token must match the one issued for this exact number.
         if (apply_filters('wpsms_unsubscribe_csrf_enabled', true)) {
 
-            if (!isset($_REQUEST['csrf']) || wp_hash('wp_sms_unsubscribe') != $_REQUEST['csrf']) {
+            $submittedToken = isset($_REQUEST['csrf']) ? wp_unslash($_REQUEST['csrf']) : '';
+
+            if (!is_string($submittedToken) || !hash_equals(self::generateUnSubscribeToken($number), $submittedToken)) {
                 wp_die(esc_html__('Access denied.', 'wp-sms'), esc_html__('SMS newsletter', 'wp-sms'), [
                     'link_text' => esc_html__('Home page', 'wp-sms'),
                     'link_url'  => esc_url(get_bloginfo('url')),
@@ -72,8 +100,14 @@ class Newsletter
             }
         }
 
-        $number  = wp_unslash(trim($_REQUEST[$unSubscriberQueryString]));
         $numbers = [$number, "+{$number}"];
+
+        // Capture the group(s) this number belongs to before it is removed, so the
+        // success message can be customized per group. This mirrors the unsubscribe
+        // form path and lets the wpsms_unsubscribe_success_message filter work when
+        // unsubscribing through the URL link as well.
+        $groups   = self::getSubscriberGroupsByNumber($number);
+        $groupIds = is_wp_error($groups) ? array() : array_map('intval', wp_list_pluck($groups, 'group_id'));
 
         foreach ($numbers as $number) {
             $response = self::deleteSubscriberByNumber($number);
@@ -81,7 +115,18 @@ class Newsletter
             do_action('wp_sms_number_unsubscribed_through_url', $number);
 
             if ($response['result'] == 'success') {
-                wp_die(esc_html($response['message']), esc_html__('SMS newsletter', 'wp-sms'), [
+                /**
+                 * Filter the unsubscribe success message.
+                 *
+                 * @since 7.2.6
+                 *
+                 * @param string    $message  The default success message.
+                 * @param array     $groupIds The group ID(s) the number was unsubscribed from (empty for none).
+                 * @param string    $number   The unsubscribed mobile number.
+                 */
+                $message = apply_filters('wpsms_unsubscribe_success_message', $response['message'], $groupIds, $number);
+
+                wp_die(esc_html($message), esc_html__('SMS newsletter', 'wp-sms'), [
                     'link_text' => esc_html__('Home page', 'wp-sms'),
                     'link_url'  => esc_url(get_bloginfo('url')),
                     'response'  => 200,

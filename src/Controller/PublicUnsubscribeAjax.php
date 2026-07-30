@@ -34,6 +34,15 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
             throw new Exception(esc_html__('Please accept the privacy checkbox to continue.', 'wp-sms'));
         }
 
+        // Throttle failed lookups per client so the endpoint cannot be used to
+        // probe which numbers are subscribed. Successful unsubscribes are not
+        // counted, so ordinary opt-outs (including shared networks) are unaffected.
+        $rateKey  = 'wpsms_unsub_' . md5(sanitize_text_field(wp_unslash(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '')));
+        $rateHits = (int) get_transient($rateKey);
+        if ($rateHits >= 10) {
+            throw new Exception(esc_html__('Too many requests. Please try again later.', 'wp-sms'));
+        }
+
         $name           = $this->get('name');
         $number         = $this->get('mobile');
         $group_id       = $this->get('group_id', 0);
@@ -45,28 +54,36 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
         // Get all matching subscribers
         $subscribers = Newsletter::getSubscriberByMobile($number, false);
         if (empty($subscribers)) {
+            set_transient($rateKey, $rateHits + 1, 10 * MINUTE_IN_SECONDS);
             throw new Exception(esc_html__('The provided mobile number is not subscribed.', 'wp-sms'));
         }
 
-        $groupIds = is_array($group_id) ? $group_id : array($group_id);
+        $requestedGroupIds = is_array($group_id) ? $group_id : array($group_id);
+        $groupIds          = array();
 
         foreach ($subscribers as $subscriber) {
             $subscriberNumber = $subscriber->mobile;
+            $subscriberGroups = Newsletter::getSubscriberGroupsByNumber($subscriberNumber);
+            $unsubscribeGroupIds = $requestedGroupIds;
 
-            if ($groups_enabled && !empty(array_filter($groupIds))) {
-                $subscriberGroups = Newsletter::getSubscriberGroupsByNumber($subscriberNumber);
+            if (is_wp_error($subscriberGroups)) {
+                $subscriberGroups = array();
+            } else {
+                $groupIds = array_merge($groupIds, array_map('intval', wp_list_pluck($subscriberGroups, 'group_id')));
+            }
 
+            if ($groups_enabled && !empty(array_filter($requestedGroupIds))) {
                 if (empty($subscriberGroups)) {
-                    $groupIds = array();
+                    $unsubscribeGroupIds = array();
                 } elseif (!Newsletter::subscriberExistsInGroup($subscriberNumber, $group_id)) {
                     throw new Exception(esc_html__('This mobile number is not subscribed to the selected group(s).', 'wp-sms'));
                 }
             }
 
             // Perform unsubscription
-            if (!empty($groupIds)) {
-                foreach ($groupIds as $groupId) {
-                    $result = SubscriberUtil::unSubscribe($name, $subscriberNumber, $groupId);
+            if (!empty($unsubscribeGroupIds)) {
+                foreach ($unsubscribeGroupIds as $requestedGroupId) {
+                    $result = SubscriberUtil::unSubscribe($name, $subscriberNumber, $requestedGroupId);
                     if (is_wp_error($result)) {
                         throw new Exception(esc_html($result->get_error_message()));
                     }
@@ -79,7 +96,28 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
             }
         }
 
-        wp_send_json_success(esc_html__('You have successfully unsubscribed from the newsletter.', 'wp-sms'));
+        $groupIds = array_values(array_unique($groupIds));
+
+        /**
+         * Filter the unsubscribe success message.
+         *
+         * Allows customizing the confirmation message shown after a successful
+         * unsubscribe, for example to show a different message per group.
+         *
+         * @since 7.2.6
+         *
+         * @param string    $message  The default success message.
+         * @param array|int $groupIds The group ID(s) the number was unsubscribed from (empty for all groups).
+         * @param string    $number   The unsubscribed mobile number.
+         */
+        $message = apply_filters(
+            'wpsms_unsubscribe_success_message',
+            esc_html__('You have successfully unsubscribed from the newsletter.', 'wp-sms'),
+            $groupIds,
+            $number
+        );
+
+        wp_send_json_success($message);
     }
 
 }

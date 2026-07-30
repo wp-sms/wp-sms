@@ -152,7 +152,20 @@ class SubscriberUtil
         $check_mobile = $wpdb->get_row($db_prepare); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         if ($check_mobile) {
 
-            if ($activation != $check_mobile->activate_key) {
+            // Throttle guesses so the activation code cannot be enumerated. The
+            // counter is per client and number, so a third party sending wrong
+            // codes cannot lock the genuine subscriber out of confirming.
+            $clientIp   = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '';
+            $attemptKey = 'wpsms_verify_attempts_' . hash('sha256', $clientIp . '|' . $mobile);
+            $isValid    = hash_equals((string) $check_mobile->activate_key, (string) $activation);
+            $attempt    = self::recordVerificationAttempt($attemptKey, $isValid);
+
+            if (is_wp_error($attempt)) {
+                return $attempt;
+            }
+
+            if (!$isValid) {
+
                 // Return response
                 return new \WP_Error('verify_subscriber', esc_html__('Activation code is wrong!', 'wp-sms'));
             }
@@ -173,5 +186,81 @@ class SubscriberUtil
         }
 
         return new \WP_Error('verify_subscriber', esc_html__('Not found the number!', 'wp-sms'));
+    }
+
+    /**
+     * Atomically record a verification attempt or reset a successful one.
+     *
+     * A short-lived option lock serializes the transient read-modify-write for
+     * both database-backed transients and persistent object-cache backends.
+     * Lock contention fails closed so parallel requests cannot bypass the cap.
+     *
+     * @param string $attemptKey Transient key for the client and mobile number.
+     * @param bool   $isValid    Whether the submitted activation code is valid.
+     *
+     * @return int|\WP_Error The new attempt count, or an error when unavailable or limited.
+     */
+    private static function recordVerificationAttempt($attemptKey, $isValid)
+    {
+        global $wpdb;
+
+        $lockName  = 'wpsms_verify_lock_' . hash('sha256', $attemptKey);
+        $lockValue = wp_generate_uuid4() . '|' . time();
+        $acquired  = false;
+
+        for ($retry = 0; $retry < 20; $retry++) {
+            if (add_option($lockName, $lockValue, '', 'no')) {
+                $acquired = true;
+                break;
+            }
+
+            $existingLock = (string) get_option($lockName, '');
+            $lockParts    = explode('|', $existingLock);
+            $lockCreated  = isset($lockParts[1]) ? (int) $lockParts[1] : 0;
+
+            // Recover from a request that terminated while holding the lock.
+            if ($lockCreated > 0 && $lockCreated < time() - 5) {
+                $deleted = $wpdb->delete(
+                    $wpdb->options,
+                    array('option_name' => $lockName, 'option_value' => $existingLock),
+                    array('%s', '%s')
+                );
+
+                if ($deleted) {
+                    wp_cache_delete($lockName, 'options');
+                    continue;
+                }
+            }
+
+            usleep(50000);
+        }
+
+        if (!$acquired) {
+            return new \WP_Error('verify_subscriber', esc_html__('Too many attempts. Please try again later.', 'wp-sms'));
+        }
+
+        try {
+            $attemptCount = (int) get_transient($attemptKey);
+
+            if ($attemptCount >= 10) {
+                return new \WP_Error('verify_subscriber', esc_html__('Too many attempts. Please try again later.', 'wp-sms'));
+            }
+
+            if ($isValid) {
+                delete_transient($attemptKey);
+
+                return 0;
+            }
+
+            if (!set_transient($attemptKey, $attemptCount + 1, 15 * MINUTE_IN_SECONDS)) {
+                return new \WP_Error('verify_subscriber', esc_html__('Too many attempts. Please try again later.', 'wp-sms'));
+            }
+
+            return $attemptCount + 1;
+        } finally {
+            if (get_option($lockName) === $lockValue) {
+                delete_option($lockName);
+            }
+        }
     }
 }

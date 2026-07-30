@@ -135,7 +135,7 @@ describe('Sidebar', () => {
       // Check that the button gets the active styling (has primary background with opacity)
       await waitFor(() => {
         const button = outboxItem.closest('button')
-        expect(button).toHaveClass('wsms-bg-primary/10')
+        expect(button).toHaveClass('wsms-bg-primary/[0.06]')
       })
     })
 
@@ -165,31 +165,19 @@ describe('Sidebar', () => {
   })
 
   describe('Footer', () => {
-    test('renders external links', () => {
+    test('shows the gateway status row', () => {
       renderSidebar()
-
-      const docLink = screen.getByText('Documentation')
-      const supportLink = screen.getByText('Support')
-
-      expect(docLink).toBeInTheDocument()
-      expect(supportLink).toBeInTheDocument()
-      expect(docLink.closest('a')).toHaveAttribute('target', '_blank')
-      expect(supportLink.closest('a')).toHaveAttribute('target', '_blank')
+      expect(screen.getByTitle(/gateway settings/i)).toBeInTheDocument()
     })
 
-    test('links have rel=noopener noreferrer for security', () => {
-      renderSidebar()
-
-      const docLink = screen.getByText('Documentation').closest('a')
-      expect(docLink).toHaveAttribute('rel', 'noopener noreferrer')
-    })
-
-    test('renders version number', () => {
+    test('holds no external links (those live in BrandingFooter)', () => {
       setupWpSmsSettings({ version: '7.5.0' })
       renderSidebar()
 
-      // WhatsNew component displays version as "v{version}"
-      expect(screen.getByText(/v7\.5\.0/)).toBeInTheDocument()
+      expect(screen.queryByText('Documentation')).not.toBeInTheDocument()
+      expect(screen.queryByText('Support')).not.toBeInTheDocument()
+      expect(screen.queryByText('Rate us')).not.toBeInTheDocument()
+      expect(screen.queryByText(/v7\.5\.0/)).not.toBeInTheDocument()
     })
   })
 

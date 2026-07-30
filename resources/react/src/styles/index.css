@@ -84,6 +84,11 @@
   --ring: 24 95% 45%;
 }
 
+/* Keep browser-rendered form controls and option popups consistent with the app theme. */
+[data-theme="dark"] #wpsms-settings-root {
+  color-scheme: dark;
+}
+
 /* ============================================
    Base Styles - Clean and minimal
    ============================================ */

@@ -138,12 +138,11 @@ class smses extends Gateway
                 }
 
                 $params = [
-                    'headers'   => [
+                    'headers' => [
                         'Accept'       => 'application/json',
                         'Content-Type' => 'application/json',
                     ],
-                    'body'      => json_encode($body),
-                    'sslverify' => false,
+                    'body'    => json_encode($body),
                 ];
 
                 $response = $this->request('POST', $apiBaseUrl . 'bulk/sendsms', [], $params);

@@ -228,7 +228,11 @@ export default function Outbox() {
       })
       if (blocked.length > 0) {
         toast({
-              title: __('Reply sent to %d1 recipient(s). %d2 skipped — their country codes don\'t match your country restriction settings.', 'wp-sms').replace('%d1', allowed.length).replace('%d2', blocked.length),
+          title: sprintf(
+            __('Reply sent to %1$d recipient(s). %2$d skipped — their country codes don\'t match your country restriction settings.', 'wp-sms'),
+            allowed.length,
+            blocked.length
+          ),
           variant: 'warning',
         })
       } else {
@@ -709,7 +713,7 @@ export default function Outbox() {
                   onChange={(e) => setQuickReplyMessage(e.target.value)}
                   placeholder={__('Type your reply message...', 'wp-sms')}
                   rows={4}
-                  className="wsms-flex wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-px-3 wsms-py-2 wsms-text-sm wsms-ring-offset-background placeholder:wsms-text-muted-foreground focus-visible:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-ring focus-visible:wsms-ring-offset-2"
+                  className="wsms-flex wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-px-3 wsms-py-2 wsms-text-sm wsms-text-foreground wsms-ring-offset-background placeholder:wsms-text-muted-foreground focus-visible:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-ring focus-visible:wsms-ring-offset-2"
                 />
               </div>
             </div>

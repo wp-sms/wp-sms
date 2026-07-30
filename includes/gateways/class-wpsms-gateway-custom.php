@@ -148,9 +148,9 @@ class custom extends \WP_SMS\Gateway
                     return wp_json_encode((string) $number);
                 }, (array) $this->to);
 
-                $jsonSafeFrom = trim(wp_json_encode((string) $this->from), '"');
-                $jsonSafeTo   = trim(wp_json_encode(implode(',', (array) $this->to)), '"');
-                $jsonSafeMsg  = trim(wp_json_encode((string) $this->msg), '"');
+                $jsonSafeFrom = substr(wp_json_encode((string) $this->from), 1, -1);
+                $jsonSafeTo   = substr(wp_json_encode(implode(',', (array) $this->to)), 1, -1);
+                $jsonSafeMsg  = substr(wp_json_encode((string) $this->msg), 1, -1);
 
                 $args['body'] = str_replace(
                     ['{from}', '{to}', '{message}', '{recipients}'],

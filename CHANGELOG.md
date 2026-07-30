@@ -1,7 +1,21 @@
+v7.2.6 - 2026-07-30
+- **New:** Added the LogisticSMS gateway
+- **New:** Added the `wpsms_unsubscribe_success_message` filter to customize the newsletter unsubscribe confirmation message, with the unsubscribed group passed to the filter for both the unsubscribe form and the unsubscribe link.
+- **Enhancement:** The Two-Way SMS settings page now shows the alternative path-style webhook URL for gateways that drop the query string, and links to the Two-Way SMS documentation and the setup guide for the connected gateway.
+- **Enhancement:** General security hardening across admin endpoints, subscriber and newsletter handling, gateway connections, and data exports.
+- **Enhancement:** Choosing a gateway now saves on its own, so switching provider no longer needs a second click on Save Changes.
+- **Enhancement:** Toggle switches across the settings pages now share one consistent style.
+- **Fix:** Fixed dashboard labels that translators could not reach on WordPress.org, so the admin can now be fully translated.
+- **Fix:** A gateway that fails to load no longer breaks the whole admin screen; the credit balance is simply left blank.
+- **Fix:** Fixed Forminator notifications configured to send SMS to a submitted phone field.
+- **Fix:** Fixed Raw JSON custom gateway payloads when placeholder values start or end with quotation marks.
+- **Fix:** Fixed the billing phone number being silently dropped when a WooCommerce order or profile is re-saved.
+
 v7.2.5 - 2026-05-19
 - **Fix:** Fixed missing field placeholder chips in the Quform integration message body.
 - **Fix:** Fixed `[wp_sms_subscriber_form]` shortcode showing an empty group list when "Available groups" is blank; it now falls back to all groups.
 - **Enhancement:** Improved the custom gateway with multi-line HTTP Headers/Parameters, a Raw JSON body format, and array values for APIs that require nested structures.
+- **Fix:** Improved dark-mode contrast for setup wizard phone controls, dialogs, notifications, buttons, and native form fields.
 
 v7.2.4 - 2026-03-15
 - **New:** Added credit balance support for the GuniSMS gateway.

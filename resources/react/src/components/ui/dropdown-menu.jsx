@@ -50,8 +50,8 @@ const DropdownMenuSubContent = React.forwardRef(
 DropdownMenuSubContent.displayName = DropdownMenuPrimitive.SubContent.displayName
 
 const dropdownContentStyles = {
-  backgroundColor: '#ffffff',
-  border: '1px solid #e5e7eb',
+  backgroundColor: 'hsl(var(--popover))',
+  border: '1px solid hsl(var(--border))',
   boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
   borderRadius: '8px',
   padding: '6px',
@@ -60,7 +60,7 @@ const dropdownContentStyles = {
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   fontSize: '13px',
   lineHeight: '1.5',
-  color: '#374151',
+  color: 'hsl(var(--popover-foreground))',
   outline: 'none',
 }
 
@@ -91,7 +91,7 @@ const dropdownItemBaseStyles = {
   fontSize: '13px',
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   lineHeight: '1.5',
-  color: '#374151',
+  color: 'hsl(var(--popover-foreground))',
   cursor: 'pointer',
   transition: 'background-color 0.15s ease',
   outline: 'none',
@@ -115,7 +115,7 @@ const DropdownMenuItem = React.forwardRef(
         )}
         style={{
           ...dropdownItemBaseStyles,
-          backgroundColor: isHovered ? '#f3f4f6' : 'transparent',
+          backgroundColor: isHovered ? 'hsl(var(--accent))' : 'transparent',
           ...style,
         }}
         onMouseEnter={() => setIsHovered(true)}

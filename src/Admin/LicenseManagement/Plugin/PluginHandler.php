@@ -15,6 +15,20 @@ if (!defined('ABSPATH')) exit;
 class PluginHandler
 {
     /**
+     * Validates a plugin slug so it can only ever reference a single plugin
+     * directory. Anything containing path separators, dots, or other unexpected
+     * characters is rejected before it is used to build a filesystem path.
+     *
+     * @param string $pluginSlug
+     *
+     * @return bool
+     */
+    private function isValidPluginSlug($pluginSlug)
+    {
+        return is_string($pluginSlug) && preg_match('/^[a-z0-9\-]+$/', $pluginSlug) === 1;
+    }
+
+    /**
      * Returns WP SMS add-on file path.
      *
      * @param string $pluginSlug
@@ -35,6 +49,10 @@ class PluginHandler
      */
     public function isPluginInstalled($pluginSlug)
     {
+        if (!$this->isValidPluginSlug($pluginSlug)) {
+            return false;
+        }
+
         return file_exists(WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $this->getPluginFile($pluginSlug));
     }
 

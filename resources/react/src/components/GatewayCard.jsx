@@ -16,7 +16,7 @@ export function GatewayCard({ gateway, isSelected, isCurrent, onClick, showFeatu
       onClick={() => onClick(gateway.slug)}
       style={{ textAlign: 'start' }}
       className={cn(
-        'wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-md wsms-border wsms-px-3 wsms-py-2 wsms-h-[46px] wsms-text-[12px] wsms-transition-colors',
+        'wsms-flex wsms-items-center wsms-gap-3 wsms-rounded-md wsms-border wsms-px-3.5 wsms-py-2.5 wsms-h-[58px] wsms-text-[13px] wsms-transition-colors',
         isSelected
           ? 'wsms-border-primary wsms-bg-primary/10 wsms-text-primary wsms-font-medium'
           : isCurrent
@@ -28,7 +28,7 @@ export function GatewayCard({ gateway, isSelected, isCurrent, onClick, showFeatu
         <img
           src={logoUrl}
           alt=""
-          className="wsms-h-5 wsms-w-5 wsms-shrink-0 wsms-rounded-sm wsms-object-contain"
+          className="wsms-h-7 wsms-w-7 wsms-shrink-0 wsms-rounded-sm wsms-object-contain"
           loading="lazy"
           onError={(e) => { e.target.style.display = 'none' }}
         />
@@ -36,12 +36,12 @@ export function GatewayCard({ gateway, isSelected, isCurrent, onClick, showFeatu
       <div className="wsms-min-w-0 wsms-flex-1">
         <span className="wsms-truncate wsms-block">{gateway.name}</span>
         {gateway.website && (
-          <span className="wsms-text-[9px] wsms-text-muted-foreground wsms-truncate wsms-block">
+          <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-truncate wsms-block">
             {gateway.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
           </span>
         )}
       </div>
-      {isSelected && <CheckCircle className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0" />}
+      {isSelected && <CheckCircle className="wsms-h-4 wsms-w-4 wsms-shrink-0" />}
     </button>
   )
 }
@@ -57,7 +57,7 @@ export function GatewayCardMinimal({ gateway, isSelected, isCurrent, onClick }) 
       onClick={() => onClick(gateway.slug)}
       style={{ textAlign: 'start' }}
       className={cn(
-        'wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-md wsms-border wsms-px-3 wsms-py-2 wsms-h-[46px] wsms-text-[12px] wsms-transition-colors',
+        'wsms-flex wsms-items-center wsms-gap-3 wsms-rounded-md wsms-border wsms-px-3.5 wsms-py-2.5 wsms-h-[58px] wsms-text-[13px] wsms-transition-colors',
         isSelected
           ? 'wsms-border-primary wsms-bg-primary/10 wsms-text-primary wsms-font-medium'
           : isCurrent
@@ -65,7 +65,7 @@ export function GatewayCardMinimal({ gateway, isSelected, isCurrent, onClick }) 
             : 'wsms-border-border wsms-bg-card hover:wsms-bg-accent'
       )}
     >
-      {isSelected && <CheckCircle className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0" />}
+      {isSelected && <CheckCircle className="wsms-h-4 wsms-w-4 wsms-shrink-0" />}
       <span className="wsms-truncate">{gateway.name}</span>
     </button>
   )
@@ -81,28 +81,28 @@ export function GatewayCardPro({ gateway }) {
       target="_blank"
       rel="noopener noreferrer"
       style={{ textAlign: 'start' }}
-      className="wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-md wsms-border wsms-border-dashed wsms-border-border wsms-px-3 wsms-py-2 wsms-h-[46px] wsms-text-[12px] wsms-opacity-75 hover:wsms-opacity-100 wsms-transition-opacity"
+      className="wsms-flex wsms-items-center wsms-gap-3 wsms-rounded-md wsms-border wsms-border-dashed wsms-border-border wsms-px-3.5 wsms-py-2.5 wsms-h-[58px] wsms-text-[13px] wsms-opacity-75 hover:wsms-opacity-100 wsms-transition-opacity"
     >
       {gateway.logo ? (
         <img
           src={gateway.logo}
           alt=""
-          className="wsms-h-5 wsms-w-5 wsms-shrink-0 wsms-rounded-sm wsms-object-contain wsms-grayscale"
+          className="wsms-h-7 wsms-w-7 wsms-shrink-0 wsms-rounded-sm wsms-object-contain wsms-grayscale"
           loading="lazy"
           onError={(e) => { e.target.style.display = 'none' }}
         />
       ) : (
-        <Lock className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0 wsms-text-muted-foreground" />
+        <Lock className="wsms-h-4 wsms-w-4 wsms-shrink-0 wsms-text-muted-foreground" />
       )}
       <div className="wsms-min-w-0 wsms-flex-1">
         <span className="wsms-truncate wsms-block wsms-text-muted-foreground">{gateway.name}</span>
         {gateway.description && (
-          <span className="wsms-text-[9px] wsms-text-muted-foreground/70 wsms-truncate wsms-block">
+          <span className="wsms-text-[11px] wsms-text-muted-foreground/70 wsms-truncate wsms-block">
             {gateway.description}
           </span>
         )}
       </div>
-      <span className="wsms-shrink-0 wsms-rounded wsms-bg-muted wsms-px-1.5 wsms-py-0.5 wsms-text-[9px] wsms-font-medium wsms-uppercase wsms-text-muted-foreground">
+      <span className="wsms-shrink-0 wsms-rounded wsms-bg-muted wsms-px-1.5 wsms-py-0.5 wsms-text-[10px] wsms-font-medium wsms-uppercase wsms-text-muted-foreground">
         {__('Pro', 'wp-sms')}
       </span>
     </a>
@@ -127,7 +127,7 @@ export function PremiumSearchResults({ gateways, searchQuery }) {
       <p className="wsms-text-center wsms-text-[12px] wsms-text-muted-foreground">
         {__('These gateways are available with the Pro add-on:', 'wp-sms')}
       </p>
-      <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
+      <div className="wsms-grid wsms-grid-cols-1 wsms-gap-2.5 sm:wsms-grid-cols-2 lg:wsms-grid-cols-3">
         {gateways.slice(0, 8).map((g) => (
           <GatewayCardPro key={g.slug} gateway={{ ...g, logo: getGatewayLogo(g) }} />
         ))}

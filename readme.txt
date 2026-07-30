@@ -4,7 +4,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 7.2.5
+Stable tag: 7.2.6
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,20 @@ Send SMS/MMS notifications, OTP & 2FA messages, and WooCommerce updates with sup
 - **Third-Party Integration:** Connect with external services and automation platforms.
 - **Messaging Button:** Let visitors reach you instantly via messaging channels.
 - **GDPR Compliant:** Built with privacy and compliance in mind.
+
+## 📡 Supported SMS Gateways
+WSMS connects to 270+ SMS gateways worldwide. Popular supported gateways by region include:
+
+- **Global:** Twilio, Vonage, Plivo, Clickatell, MessageBird, Infobip, Sinch, ClickSend, AWS SNS, Telnyx, GatewayAPI, BulkGate, SMSGlobal, LabsMobile, Octopush, Fortytwo, SMS.to, EasySendSMS, Mitto, Dexatel
+- **GCC:** Unifonic, Taqnyat, Msegat, OurSMS, Deewan, JawalBSMS, 4jawaly, Zain
+- **Middle East:** Kavenegar, MeliPayamak, FaraPayamak, Ghasedak, FarazSMS, SMS.ir, ParsGreen, Asanak, AdpDigital, ParsaSMS, SMS Melli, Mediana, Markazpayamak, Sabanovin, IranSMSpanel, Verimor, Bulutfon, NetGSM, VatanSMS, TurboSMS
+- **Europe:** SMSAPI, Brevo, Esendex, CM.com, LINK Mobility, OVH, Orange, Skebby, Primotexto, Comilio, Aruba, SMSC, CPSMS, SureSMS, ASPSMS, TextAnywhere
+- **Asia-Pacific:** Fast2SMS, MSG91, Gupshup, Textlocal, MessageMedia, SMSGatewayHub, GuniSMS, ShreeSMS, DirectSend, NHN Cloud, Eskiz, ReveSMS
+- **Africa:** Africa's Talking, Hubtel, eBulkSMS, Jusibe, Uwazii Mobile, Hostpinnacle
+- **Latin America:** SMSMasivos, Sonora Tecnologia, Torpedos
+- **Any other provider:** Use the built-in **Custom Gateway** to connect any SMS API (custom HTTP headers, parameters, and raw JSON body supported).
+
+👉 [See the full list of supported SMS gateways](https://wsms.io/gateways?utm_source=wporg&utm_medium=link&utm_campaign=gateways)
 
 ## 💎 Upgrade to WSMS All-in-One
 Unlock additional features with **All-in-One** — the plan that gives you access to all premium add-ons in one package.
@@ -99,6 +113,9 @@ All source code for minified JavaScript and CSS is included in the plugin under 
 = Who should use WSMS? =
 Any WordPress site that wants to enhance communication with users, customers, or subscribers via SMS. Perfect for businesses, bloggers, and e-commerce stores.
 
+= Which SMS gateways does WSMS support? =
+WSMS supports 270+ SMS gateways worldwide. This includes global providers such as GatewayAPI, BulkGate, SMSGlobal, LabsMobile, Octopush, SMSAPI, EasySendSMS, SMS.to, and Fortytwo; GCC providers such as Unifonic, Msegat, OurSMS, Deewan, and JawalBSMS; Middle East providers such as Kavenegar, MeliPayamak, FaraPayamak, Ghasedak, FarazSMS, Verimor, and Bulutfon; Asia-Pacific providers such as Fast2SMS, SMSGatewayHub, GuniSMS, and DirectSend; and European providers such as SMSC, UniSender, Comilio, Primotexto, CPSMS, and SureSMS. Premium gateways such as Twilio, Vonage, Plivo, Clickatell, and Taqnyat are available with the All-in-One add-on. You can also connect any other provider using the built-in Custom Gateway. See the [full list of supported gateways](https://wsms.io/gateways?utm_source=wporg&utm_medium=link&utm_campaign=gateways).
+
 = Is technical knowledge required? =
 No. WSMS is beginner-friendly and well-documented.
 
@@ -138,6 +155,19 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
+= v7.2.6 - 2026-07-30 =
+- **New:** Added the LogisticSMS gateway
+- **New:** Added the `wpsms_unsubscribe_success_message` filter to customize the newsletter unsubscribe confirmation message, with the unsubscribed group passed to the filter for both the unsubscribe form and the unsubscribe link.
+- **Enhancement:** The Two-Way SMS settings page now shows the alternative path-style webhook URL for gateways that drop the query string, and links to the Two-Way SMS documentation and the setup guide for the connected gateway.
+- **Enhancement:** General security hardening across admin endpoints, subscriber and newsletter handling, gateway connections, and data exports.
+- **Enhancement:** Choosing a gateway now saves on its own, so switching provider no longer needs a second click on Save Changes.
+- **Enhancement:** Toggle switches across the settings pages now share one consistent style.
+- **Fix:** Fixed dashboard labels that translators could not reach on WordPress.org, so the admin can now be fully translated.
+- **Fix:** A gateway that fails to load no longer breaks the whole admin screen; the credit balance is simply left blank.
+- **Fix:** Fixed Forminator notifications configured to send SMS to a submitted phone field.
+- **Fix:** Fixed Raw JSON custom gateway payloads when placeholder values start or end with quotation marks.
+- **Fix:** Fixed the billing phone number being silently dropped when a WooCommerce order or profile is re-saved.
+
 = v7.2.5 - 2026-05-19 =
 - **Fix:** Fixed missing field placeholder chips in the Quform integration message body.
 - **Fix:** Fixed `[wp_sms_subscriber_form]` shortcode showing an empty group list when "Available groups" is blank; it now falls back to all groups.
