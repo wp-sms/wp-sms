@@ -53,6 +53,7 @@ describe('BrandingFooter', () => {
     stars.forEach((star) => expect(star).toHaveClass('wsms-fill-amber-400'))
 
     fireEvent.mouseLeave(rateLink)
+    stars.forEach((star) => expect(star).not.toHaveClass('wsms-fill-amber-400'))
     fireEvent.focus(rateLink)
     stars.forEach((star) => expect(star).toHaveClass('wsms-fill-amber-400'))
   })
