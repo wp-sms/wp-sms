@@ -11,6 +11,8 @@
 
 # WSMS - WordPress SMS Plugin
 
+> 🚀 **WSMS v8 Early Access is open** — a major rewrite, and we'd love your feedback. Developers and active users welcome. **[Want in? Comment here →](https://github.com/wp-sms/wp-sms/discussions/482)**
+
 SMS & MMS Notifications, 2FA, OTP, and Integrations with E-Commerce and Form Builders. Send messages through **200+ gateways** including Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Messagebird, ClickSend and more. [See all gateways](https://wsms.io/gateways/)
 
 <p align="center">
