@@ -1,15 +1,6 @@
-import { __ } from '@wordpress/i18n'
+import { __, sprintf } from '@wordpress/i18n'
 import React, { useState, useEffect, useCallback } from 'react'
-import {
-  ExternalLink,
-  ChevronRight,
-  ChevronDown,
-  Star,
-  Sparkles,
-  X,
-  Settings2,
-  RefreshCw,
-} from 'lucide-react'
+import { ChevronRight, X } from 'lucide-react'
 import { cn, getWpSettings, getGatewayDisplayName, isAddonDashboardReady } from '@/lib/utils'
 import Logo from './Logo'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
@@ -18,21 +9,8 @@ import { inboxApi } from '@/api/twoWayApi'
 import { useSettings, useSavedSetting } from '@/context/SettingsContext'
 import { getNavigation } from '@/lib/pageRegistry'
 
-function getLinks() {
-  return [
-    { label: __('Documentation', 'wp-sms'), href: 'https://wsms.io/docs/' },
-    { label: __('Support', 'wp-sms'), href: 'https://wsms.io/support/' },
-  ]
-}
-
-const footerUrls = {
-  changelog: 'https://wsms.io/changelog/',
-  rate: 'https://wordpress.org/support/plugin/wp-sms/reviews/#new-post',
-}
-
-// Gateway status indicator component with expandable details
+// Single-row gateway status; clicking it opens the gateway settings page
 function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
-  const [isExpanded, setIsExpanded] = useState(false)
   const [credit, setCredit] = useState(null)
   const [creditSupported, setCreditSupported] = useState(null)
   const [isLoadingCredit, setIsLoadingCredit] = useState(true)
@@ -76,168 +54,68 @@ function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
   // Determine connection status: connected only when credit is available
   const isConnected = creditSupported === true && credit !== null
 
-  // If not configured, just show the button that navigates to gateway settings
+  // Full status, always available to screen readers and as the row's tooltip
+  let statusLabel
   if (!isConfigured) {
-    return (
-      <button
-        onClick={onConfigure}
-        className="wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-px-3 wsms-py-2 wsms-rounded-md wsms-transition-all wsms-text-start wsms-bg-amber-500/10 hover:wsms-bg-amber-500/15"
-      >
-        <span className="wsms-relative wsms-flex wsms-h-2 wsms-w-2">
-          <span className="wsms-relative wsms-inline-flex wsms-rounded-full wsms-h-2 wsms-w-2 wsms-bg-amber-500" />
-        </span>
-        <span className="wsms-text-[11px] wsms-font-medium wsms-text-amber-700 dark:wsms-text-amber-400">
-          {__('Gateway not configured', 'wp-sms')}
-        </span>
-      </button>
-    )
+    statusLabel = __('Gateway not configured', 'wp-sms')
+  } else if (isLoadingCredit) {
+    statusLabel = __('Checking gateway...', 'wp-sms')
+  } else if (isConnected) {
+    statusLabel = __('Gateway Connected', 'wp-sms')
+  } else {
+    statusLabel = __('Gateway not connected', 'wp-sms')
   }
 
-  const statusLabel = isLoadingCredit
-    ? __('Checking gateway...', 'wp-sms')
-    : isConnected
-      ? __('Gateway Connected', 'wp-sms')
-      : __('Gateway not connected', 'wp-sms')
+  // When connected, the dot carries the status so the row can spend its width on
+  // the gateway name and credit instead of repeating "Gateway Connected"
+  let visibleLabel
+  if (isConnected) {
+    visibleLabel = sprintf(
+      /* translators: 1: gateway name. 2: remaining credit. */
+      __('%1$s · %2$s credit', 'wp-sms'),
+      gatewayDisplayName,
+      credit
+    )
+  } else if (isConfigured && !isLoadingCredit) {
+    visibleLabel = sprintf(
+      /* translators: %s: gateway name. */
+      __('%s · not connected', 'wp-sms'),
+      gatewayDisplayName
+    )
+  } else {
+    visibleLabel = statusLabel
+  }
 
   return (
-    <div className={cn('wsms-rounded-md wsms-transition-all', isConnected ? 'wsms-bg-emerald-500/10' : 'wsms-bg-amber-500/10')}>
-      {/* Header - clickable to expand/collapse */}
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        aria-expanded={isExpanded}
+    <button
+      onClick={onConfigure}
+      title={`${statusLabel} — ${__('open gateway settings', 'wp-sms')}`}
+      className={cn(
+        'wsms-flex wsms-w-full wsms-items-start wsms-gap-2 wsms-px-3 wsms-py-2 wsms-rounded-md wsms-text-start wsms-transition-colors',
+        isConnected
+          ? 'wsms-bg-emerald-500/10 hover:wsms-bg-emerald-500/15'
+          : 'wsms-bg-amber-500/10 hover:wsms-bg-amber-500/15'
+      )}
+    >
+      <span
+        aria-hidden="true"
         className={cn(
-          'wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-px-3 wsms-py-2 wsms-text-start wsms-rounded-md wsms-transition-colors',
-          isConnected ? 'hover:wsms-bg-emerald-500/15' : 'hover:wsms-bg-amber-500/15'
+          'wsms-mt-[5px] wsms-inline-flex wsms-shrink-0 wsms-rounded-full wsms-h-2 wsms-w-2',
+          isConnected ? 'wsms-bg-emerald-500' : 'wsms-bg-amber-500'
+        )}
+      />
+      <span
+        className={cn(
+          'wsms-min-w-0 wsms-flex-1 wsms-text-[11px] wsms-font-medium wsms-leading-snug wsms-break-words',
+          isConnected
+            ? 'wsms-text-emerald-700 dark:wsms-text-emerald-400'
+            : 'wsms-text-amber-700 dark:wsms-text-amber-400'
         )}
       >
-        <div className="wsms-flex wsms-items-center wsms-gap-2">
-          <span className="wsms-relative wsms-flex wsms-h-2 wsms-w-2">
-            {isConnected && (
-              <span className="wsms-absolute wsms-inline-flex wsms-h-full wsms-w-full wsms-rounded-full wsms-bg-emerald-500 wsms-opacity-75 wsms-animate-ping" />
-            )}
-            <span className={cn(
-              'wsms-relative wsms-inline-flex wsms-rounded-full wsms-h-2 wsms-w-2',
-              isConnected ? 'wsms-bg-emerald-500' : 'wsms-bg-amber-500'
-            )} />
-          </span>
-          <span className={cn(
-            'wsms-text-[11px] wsms-font-medium',
-            isConnected
-              ? 'wsms-text-emerald-700 dark:wsms-text-emerald-400'
-              : 'wsms-text-amber-700 dark:wsms-text-amber-400'
-          )}>
-            {statusLabel}
-          </span>
-        </div>
-        <ChevronDown
-          className={cn(
-            'wsms-h-3.5 wsms-w-3.5 wsms-transition-transform wsms-duration-200',
-            isConnected ? 'wsms-text-emerald-600 dark:wsms-text-emerald-400' : 'wsms-text-amber-600 dark:wsms-text-amber-400',
-            isExpanded && 'wsms-rotate-180'
-          )}
-          strokeWidth={2}
-        />
-      </button>
-
-      {/* Expandable content */}
-      <div
-        className={cn(
-          'wsms-overflow-hidden wsms-transition-all wsms-duration-200 wsms-ease-out',
-          isExpanded ? 'wsms-max-h-[150px] wsms-opacity-100' : 'wsms-max-h-0 wsms-opacity-0'
-        )}
-      >
-        <div className="wsms-px-3 wsms-pb-2.5 wsms-space-y-2">
-          {/* Gateway name */}
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-text-[11px]">
-            <span className="wsms-text-muted-foreground">{__('Gateway', 'wp-sms')}</span>
-            <span className="wsms-font-medium wsms-text-foreground">{gatewayDisplayName}</span>
-          </div>
-
-          {/* Credit */}
-          {isConnected && (
-            <div className="wsms-flex wsms-items-center wsms-justify-between wsms-text-[11px]">
-              <span className="wsms-text-muted-foreground">{__('Credit', 'wp-sms')}</span>
-              <div className="wsms-flex wsms-items-center wsms-gap-1.5">
-                {isLoadingCredit ? (
-                  <RefreshCw className="wsms-h-3 wsms-w-3 wsms-animate-spin wsms-text-muted-foreground" />
-                ) : (
-                  <>
-                    <span className="wsms-font-medium wsms-text-foreground">
-                      {credit !== null ? credit : '—'}
-                    </span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        fetchCredit()
-                      }}
-                      className="wsms-p-0.5 wsms-rounded hover:wsms-bg-emerald-500/20 wsms-transition-colors"
-                      title={__('Refresh credit', 'wp-sms')}
-                    >
-                      <RefreshCw className="wsms-h-3 wsms-w-3 wsms-text-muted-foreground hover:wsms-text-foreground" />
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Configure button */}
-          <button
-            onClick={onConfigure}
-            className={cn(
-              'wsms-flex wsms-w-full wsms-items-center wsms-justify-center wsms-gap-1.5 wsms-px-2.5 wsms-py-1.5 wsms-text-[11px] wsms-font-medium wsms-rounded-md wsms-transition-colors',
-              isConnected
-                ? 'wsms-text-emerald-700 dark:wsms-text-emerald-400 wsms-bg-emerald-500/10 hover:wsms-bg-emerald-500/20'
-                : 'wsms-text-amber-700 dark:wsms-text-amber-400 wsms-bg-amber-500/10 hover:wsms-bg-amber-500/20'
-            )}
-          >
-            <Settings2 className="wsms-h-3 wsms-w-3" />
-            {__('Configure', 'wp-sms')}
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// What's New component with changelog link
-function WhatsNew({ version }) {
-  return (
-    <a
-      href={footerUrls.changelog}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="wsms-group wsms-flex wsms-items-center wsms-justify-between wsms-w-full wsms-px-3 wsms-py-1.5 wsms-text-[11px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors wsms-rounded-md hover:wsms-bg-accent"
-    >
-      <span className="wsms-flex wsms-items-center wsms-gap-1.5">
-        <Sparkles className="wsms-h-3 wsms-w-3 wsms-text-primary/60 group-hover:wsms-text-primary wsms-transition-colors" />
-        <span>{__("What's New", 'wp-sms')}</span>
+        <span className="wsms-sr-only">{`${statusLabel}. `}</span>
+        {visibleLabel}
       </span>
-      <span className="wsms-font-medium wsms-text-muted-foreground">v{version}</span>
-    </a>
-  )
-}
-
-// Rate plugin component with animated stars
-function RatePlugin() {
-  return (
-    <a
-      href={footerUrls.rate}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="wsms-group wsms-flex wsms-items-center wsms-justify-between wsms-w-full wsms-px-3 wsms-py-1.5 wsms-text-[11px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors wsms-rounded-md hover:wsms-bg-accent"
-    >
-      <span>{__('Enjoying WSMS?', 'wp-sms')}</span>
-      <span className="wsms-flex wsms-items-center wsms-gap-0.5">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <Star
-            key={star}
-            className="wsms-h-3 wsms-w-3 wsms-text-amber-400/40 group-hover:wsms-text-amber-400 group-hover:wsms-fill-amber-400 wsms-transition-all wsms-duration-150"
-            style={{ transitionDelay: `${star * 40}ms` }}
-          />
-        ))}
-      </span>
-    </a>
+    </button>
   )
 }
 
@@ -507,7 +385,6 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions, badges = {} 
 
 export default function Sidebar({ onClose, showClose }) {
   const { currentPage, setCurrentPage, isAddonActive } = useSettings()
-  const version = window.wpSmsSettings?.version || '7.0'
   const { gdprEnabled: initialGdprEnabled, hasProAddon } = getWpSettings()
 
   // Use saved setting so sidebar only reflects persisted gateway (not unsaved dropdown changes)
@@ -556,7 +433,6 @@ export default function Sidebar({ onClose, showClose }) {
 
   // Get navigation items with translations applied
   const navigation = getNavigation()
-  const links = getLinks()
 
   // Filter navigation items based on conditions
   const filteredNavigation = navigation.filter((item) => {
@@ -616,38 +492,13 @@ export default function Sidebar({ onClose, showClose }) {
         </div>
       </nav>
 
-      {/* Footer */}
-      <div className="wsms-border-t wsms-border-border wsms-mt-auto wsms-bg-muted/30">
-        {/* Quick Links */}
-        <div className="wsms-px-3 wsms-pt-2 wsms-pb-1 wsms-space-y-0.5">
-          {links.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="wsms-flex wsms-items-center wsms-justify-between wsms-px-3 wsms-py-1.5 wsms-text-[11px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors wsms-rounded-md hover:wsms-bg-accent"
-            >
-              <span>{link.label}</span>
-              <ExternalLink className="wsms-h-3 wsms-w-3" />
-            </a>
-          ))}
-        </div>
-
-        {/* Gateway Status */}
-        <div className="wsms-px-3 wsms-py-1">
-          <GatewayStatus
-            isConfigured={isGatewayConfigured}
-            gatewayKey={savedGatewayName}
-            onConfigure={() => setCurrentPage('gateway')}
-          />
-        </div>
-
-        {/* Version & Rate */}
-        <div className="wsms-px-3 wsms-py-1.5 wsms-space-y-0.5 wsms-border-t wsms-border-border/50">
-          <WhatsNew version={version} />
-          <RatePlugin />
-        </div>
+      {/* Footer: gateway status only — links, rating and version live in BrandingFooter */}
+      <div className="wsms-border-t wsms-border-border wsms-mt-auto wsms-bg-muted/30 wsms-px-3 wsms-py-3.5">
+        <GatewayStatus
+          isConfigured={isGatewayConfigured}
+          gatewayKey={savedGatewayName}
+          onConfigure={() => setCurrentPage('gateway')}
+        />
       </div>
     </div>
   )
