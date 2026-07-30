@@ -66,6 +66,29 @@ export default function Gateway() {
   const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false)
   const [pendingGateway, setPendingGateway] = useState(null)
 
+  // Bring the switch confirmation into view — picking a gateway happens mid-list,
+  // so the prompt must never appear off-screen
+  const switchPromptRef = useRef(null)
+  useEffect(() => {
+    if (!pendingGateway || !switchPromptRef.current) return
+    switchPromptRef.current.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+  }, [pendingGateway])
+
+  // Choosing a gateway saves on its own — the confirmation click is the commit,
+  // so no second trip to the Save Changes bar. The flag defers the call by one
+  // render so saveSettings closes over the new gateway_name.
+  const [autoSaveGateway, setAutoSaveGateway] = useState(false)
+  useEffect(() => {
+    if (!autoSaveGateway) return
+    setAutoSaveGateway(false)
+    saveSettings().then(() => setPendingGateway(null))
+  }, [autoSaveGateway, saveSettings])
+
+  const selectGateway = (slug) => {
+    setGatewayName(slug)
+    setAutoSaveGateway(true)
+  }
+
   // Build region options from registry data (no flags — flags appear in the gateway list)
   const regionOptions = useMemo(() => {
     if (regions.length > 0) {
@@ -251,7 +274,7 @@ export default function Gateway() {
       return
     }
     if (!gatewayName) {
-      setGatewayName(slug)
+      selectGateway(slug)
       return
     }
     setPendingGateway(slug)
@@ -281,14 +304,173 @@ export default function Gateway() {
         </Tip>
       )}
 
-      {/* Gateway Selection */}
+      {/* Selected gateway — kept above the picker so it reads as status, not another list item */}
+      <div data-setting-key="gateway_name" className={cn(
+        "wsms-rounded-lg wsms-border wsms-shadow wsms-overflow-hidden wsms-transition-all wsms-duration-200",
+        gatewayNameError
+          ? "wsms-border-destructive wsms-bg-card"
+          : gatewayName
+            ? "wsms-border-primary/30 wsms-bg-primary/5"
+            : "wsms-border-dashed wsms-border-border wsms-bg-muted/30"
+      )}>
+        {gatewayName ? (
+          <>
+            {/* Selected State */}
+            <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-3 wsms-p-4">
+              <div className="wsms-flex wsms-items-center wsms-gap-3.5">
+                <div className="wsms-flex wsms-h-11 wsms-w-11 wsms-shrink-0 wsms-items-center wsms-justify-center wsms-rounded-md wsms-border wsms-border-primary/20 wsms-bg-card wsms-overflow-hidden">
+                  {isApiSource && getGatewayLogo(getGateway(gatewayName)) ? (
+                    <img
+                      src={getGatewayLogo(getGateway(gatewayName))}
+                      alt=""
+                      className="wsms-h-7 wsms-w-7 wsms-object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none'
+                        e.target.parentElement.innerHTML = '<svg class="wsms-h-4 wsms-w-4 wsms-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
+                      }}
+                    />
+                  ) : (
+                    <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+                  )}
+                </div>
+                <div className="wsms-min-w-0">
+                  <p className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
+                    {__('Selected Gateway', 'wp-sms')}
+                  </p>
+                  <p className="wsms-text-[15px] wsms-font-semibold wsms-text-foreground wsms-leading-snug">
+                    {displayName(gatewayName)}
+                  </p>
+                  {isApiSource && getGateway(gatewayName)?.description && (
+                    <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-line-clamp-1">
+                      {getGateway(gatewayName).description}
+                    </p>
+                  )}
+                  {getGateway(gatewayName)?.website && (
+                    <a
+                      href={`${getGateway(gatewayName).website}?utm_source=wsms&utm_medium=plugin&utm_campaign=gateway-settings`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-text-primary hover:wsms-text-primary/80"
+                    >
+                      <ExternalLink className="wsms-h-3 wsms-w-3" />
+                      {__('Visit Website', 'wp-sms')}
+                    </a>
+                  )}
+                </div>
+              </div>
+              {pendingGateway ? (
+                <span className="wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground">
+                  {__('Confirm the switch below', 'wp-sms')}
+                </span>
+              ) : showDisconnectConfirm ? (
+                <div className="wsms-flex wsms-items-center wsms-gap-2">
+                  <span className="wsms-text-[12px] wsms-text-muted-foreground">{__('Are you sure?', 'wp-sms')}</span>
+                  <button
+                    onClick={() => {
+                      setGatewayName('')
+                      setShowDisconnectConfirm(false)
+                    }}
+                    className="wsms-rounded-md wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-bg-destructive wsms-text-destructive-foreground wsms-transition-colors hover:wsms-bg-destructive/90"
+                  >
+                    {__('Disconnect', 'wp-sms')}
+                  </button>
+                  <button
+                    onClick={() => setShowDisconnectConfirm(false)}
+                    className="wsms-rounded-md wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-border wsms-border-border wsms-bg-background wsms-transition-colors hover:wsms-bg-accent"
+                  >
+                    {__('Cancel', 'wp-sms')}
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowDisconnectConfirm(true)}
+                  className="wsms-flex rtl:wsms-flex-row-reverse wsms-items-center wsms-gap-1.5 wsms-rounded-md wsms-px-3 wsms-py-1.5 wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground wsms-transition-colors hover:wsms-bg-destructive/10 hover:wsms-text-destructive"
+                >
+                  <Unplug className="wsms-h-3.5 wsms-w-3.5" />
+                  {__('Disconnect', 'wp-sms')}
+                </button>
+              )}
+            </div>
+            {/* Inline Capabilities */}
+            <div className="wsms-border-t wsms-border-primary/20 wsms-px-4 wsms-py-3 wsms-bg-primary/[0.02]">
+              {hasUnsavedGatewayChange ? (
+                <p className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-text-amber-600 dark:wsms-text-amber-400">
+                  {(isSaving || autoSaveGateway) && <Loader2 className="wsms-h-3.5 wsms-w-3.5 wsms-animate-spin" />}
+                  {isSaving || autoSaveGateway
+                    ? __('Applying gateway — the page will reload with its capabilities and credential fields.', 'wp-sms')
+                    : __('Save your changes to see capabilities and configure credentials for this gateway.', 'wp-sms')}
+                </p>
+              ) : (
+                <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-flex-wrap">
+                  <span className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
+                    {__('Capabilities:', 'wp-sms')}
+                  </span>
+                  <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-flex-wrap">
+                    <span className={cn(
+                      "wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-font-medium",
+                      gatewayCapabilities.flash === 'enable' ? "wsms-text-success" : "wsms-text-muted-foreground/50"
+                    )}>
+                      {gatewayCapabilities.flash === 'enable' ? <CheckCircle className="wsms-h-3.5 wsms-w-3.5" /> : <XCircle className="wsms-h-3.5 wsms-w-3.5" />}
+                      {__('Flash SMS', 'wp-sms')}
+                    </span>
+                    <span className={cn(
+                      "wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-font-medium",
+                      gatewayCapabilities.bulk_send !== false ? "wsms-text-success" : "wsms-text-muted-foreground/50"
+                    )}>
+                      {gatewayCapabilities.bulk_send !== false ? <CheckCircle className="wsms-h-3.5 wsms-w-3.5" /> : <XCircle className="wsms-h-3.5 wsms-w-3.5" />}
+                      {__('Bulk Send', 'wp-sms')}
+                    </span>
+                    <span className={cn(
+                      "wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-font-medium",
+                      gatewayCapabilities.supportMedia === true ? "wsms-text-success" : "wsms-text-muted-foreground/50"
+                    )}>
+                      {gatewayCapabilities.supportMedia === true ? <CheckCircle className="wsms-h-3.5 wsms-w-3.5" /> : <XCircle className="wsms-h-3.5 wsms-w-3.5" />}
+                      {__('MMS', 'wp-sms')}
+                    </span>
+                    <span className={cn(
+                      "wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-font-medium",
+                      gatewayCapabilities.supportIncoming === true ? "wsms-text-success" : "wsms-text-muted-foreground/50"
+                    )}>
+                      {gatewayCapabilities.supportIncoming === true ? <CheckCircle className="wsms-h-3.5 wsms-w-3.5" /> : <XCircle className="wsms-h-3.5 wsms-w-3.5" />}
+                      {__('Incoming SMS', 'wp-sms')}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
+          <div className="wsms-flex wsms-items-center wsms-gap-3.5 wsms-p-4">
+            <div className="wsms-flex wsms-h-11 wsms-w-11 wsms-shrink-0 wsms-items-center wsms-justify-center wsms-rounded-md wsms-bg-muted">
+              <Radio className="wsms-h-5 wsms-w-5 wsms-text-muted-foreground" />
+            </div>
+            <div>
+              <p className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
+                {__('No Gateway Selected', 'wp-sms')}
+              </p>
+              <p className="wsms-text-[13px] wsms-text-muted-foreground">
+                {__('Choose a provider from the list below', 'wp-sms')}
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+      {gatewayNameError && (
+        <p role="alert" className="wsms-text-[12px] wsms-text-destructive">{gatewayNameError}</p>
+      )}
+
+      {/* Gateway Selection — titled for the job it does, since the chosen one sits above */}
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Radio className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('SMS Gateway', 'wp-sms')}
+            {gatewayName ? __('Change Gateway', 'wp-sms') : __('SMS Gateway', 'wp-sms')}
           </CardTitle>
-          <CardDescription>{__('Select your SMS service provider. Configure credentials below after selecting.', 'wp-sms')}</CardDescription>
+          <CardDescription>
+            {gatewayName
+              ? __('Pick a different provider, then enter its credentials below.', 'wp-sms')
+              : __('Select your SMS service provider. Configure credentials below after selecting.', 'wp-sms')}
+          </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           {/* Search and Region Filter */}
@@ -320,7 +502,40 @@ export default function Gateway() {
             </div>
           </div>
 
-          <div className="wsms-max-h-[280px] wsms-overflow-y-auto wsms-rounded-md wsms-border wsms-border-border wsms-p-4 wsms-scrollbar-thin wsms-bg-muted/30">
+          {/* Switch confirmation sits with the list, where the click happened */}
+          {pendingGateway && (
+            <div
+              ref={switchPromptRef}
+              className="wsms-flex wsms-flex-wrap wsms-items-center wsms-justify-between wsms-gap-3 wsms-rounded-md wsms-border wsms-border-primary/40 wsms-bg-primary/[0.06] wsms-px-4 wsms-py-3"
+            >
+              <p className="wsms-text-[13px] wsms-text-foreground">
+                {__('Switch to', 'wp-sms')}{' '}
+                <strong className="wsms-font-semibold">{displayName(pendingGateway)}</strong>?{' '}
+                <span className="wsms-text-muted-foreground">
+                  {__('Your current credentials will be replaced.', 'wp-sms')}
+                </span>
+              </p>
+              <div className="wsms-flex wsms-items-center wsms-gap-2">
+                <button
+                  onClick={() => selectGateway(pendingGateway)}
+                  disabled={isSaving}
+                  className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-rounded-md wsms-px-3 wsms-py-1.5 wsms-text-[13px] wsms-font-medium wsms-bg-primary wsms-text-primary-foreground wsms-transition-colors hover:wsms-bg-primary/90 disabled:wsms-opacity-60"
+                >
+                  {isSaving && <Loader2 className="wsms-h-3.5 wsms-w-3.5 wsms-animate-spin" />}
+                  {isSaving ? __('Switching…', 'wp-sms') : __('Switch', 'wp-sms')}
+                </button>
+                <button
+                  onClick={() => setPendingGateway(null)}
+                  disabled={isSaving}
+                  className="wsms-rounded-md wsms-px-3 wsms-py-1.5 wsms-text-[13px] wsms-font-medium wsms-border wsms-border-border wsms-bg-background wsms-transition-colors hover:wsms-bg-accent disabled:wsms-opacity-60"
+                >
+                  {__('Cancel', 'wp-sms')}
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="wsms-max-h-[430px] wsms-overflow-y-auto wsms--mx-5 wsms-px-5 wsms-scrollbar-thin">
             {registryLoading ? (
               <div className="wsms-flex wsms-items-center wsms-justify-center wsms-py-12 wsms-text-muted-foreground">
                 <Loader2 className="wsms-h-5 wsms-w-5 wsms-animate-spin wsms-me-2" />
@@ -333,20 +548,20 @@ export default function Gateway() {
                   <div className="wsms-space-y-5">
                     {countryGroups.sortedCodes.map((code) => (
                       <div key={code}>
-                        <p className="wsms-mb-2 wsms-text-[12px] wsms-font-semibold wsms-text-foreground">
+                        <p className="wsms-sticky wsms-top-0 wsms-z-[1] wsms-bg-card wsms-pt-2.5 wsms-pb-2 wsms-text-[13px] wsms-font-semibold wsms-text-foreground">
                           {countryCodeToFlag(code)} {countryNameMap[code] || code}
                         </p>
-                        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
+                        <div className="wsms-grid wsms-grid-cols-1 wsms-gap-2.5 sm:wsms-grid-cols-2 lg:wsms-grid-cols-3">
                           {countryGroups.groups[code].map(renderGatewayButton)}
                         </div>
                       </div>
                     ))}
                     {countryGroups.ungrouped.length > 0 && (
                       <div>
-                        <p className="wsms-mb-2 wsms-text-[12px] wsms-font-semibold wsms-text-foreground">
+                        <p className="wsms-sticky wsms-top-0 wsms-z-[1] wsms-bg-card wsms-pt-2.5 wsms-pb-2 wsms-text-[13px] wsms-font-semibold wsms-text-foreground">
                           {__('Other', 'wp-sms')}
                         </p>
-                        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
+                        <div className="wsms-grid wsms-grid-cols-1 wsms-gap-2.5 sm:wsms-grid-cols-2 lg:wsms-grid-cols-3">
                           {countryGroups.ungrouped.map(renderGatewayButton)}
                         </div>
                       </div>
@@ -358,11 +573,11 @@ export default function Gateway() {
                     {/* Recommended section at top */}
                     {recommended.length > 0 && (
                       <div>
-                        <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
-                          <Star className="wsms-h-3 wsms-w-3 wsms-text-amber-500" />
+                        <p className="wsms-sticky wsms-top-0 wsms-z-[1] wsms-bg-card wsms-pt-2.5 wsms-pb-2 wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
+                          <Star className="wsms-h-3.5 wsms-w-3.5 wsms-text-amber-500" />
                           {__('Recommended', 'wp-sms')}
                         </p>
-                        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
+                        <div className="wsms-grid wsms-grid-cols-1 wsms-gap-2.5 sm:wsms-grid-cols-2 lg:wsms-grid-cols-3">
                           {recommended.map(renderGatewayButton)}
                         </div>
                       </div>
@@ -371,11 +586,11 @@ export default function Gateway() {
                     {/* Test / Development gateway */}
                     {regionGroups.testList.length > 0 && (
                       <div>
-                        <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
-                          <Wrench className="wsms-h-3 wsms-w-3 wsms-text-muted-foreground" />
+                        <p className="wsms-sticky wsms-top-0 wsms-z-[1] wsms-bg-card wsms-pt-2.5 wsms-pb-2 wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
+                          <Wrench className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
                           {__('Development', 'wp-sms')}
                         </p>
-                        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
+                        <div className="wsms-grid wsms-grid-cols-1 wsms-gap-2.5 sm:wsms-grid-cols-2 lg:wsms-grid-cols-3">
                           {regionGroups.testList.map(renderGatewayButton)}
                         </div>
                       </div>
@@ -384,11 +599,11 @@ export default function Gateway() {
                     {/* Global gateways */}
                     {regionGroups.globalList.length > 0 && (
                       <div>
-                        <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
-                          <Globe className="wsms-h-3 wsms-w-3 wsms-text-muted-foreground" />
+                        <p className="wsms-sticky wsms-top-0 wsms-z-[1] wsms-bg-card wsms-pt-2.5 wsms-pb-2 wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
+                          <Globe className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
                           {__('Global', 'wp-sms')}
                         </p>
-                        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
+                        <div className="wsms-grid wsms-grid-cols-1 wsms-gap-2.5 sm:wsms-grid-cols-2 lg:wsms-grid-cols-3">
                           {regionGroups.globalList.map(renderGatewayButton)}
                         </div>
                       </div>
@@ -399,10 +614,10 @@ export default function Gateway() {
                       const regionName = regionNameMap[slug] || slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ')
                       return (
                         <div key={slug}>
-                          <p className="wsms-mb-2 wsms-text-[12px] wsms-font-semibold wsms-text-foreground">
+                          <p className="wsms-sticky wsms-top-0 wsms-z-[1] wsms-bg-card wsms-pt-2.5 wsms-pb-2 wsms-text-[13px] wsms-font-semibold wsms-text-foreground">
                             {regionName}
                           </p>
-                          <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
+                          <div className="wsms-grid wsms-grid-cols-1 wsms-gap-2.5 sm:wsms-grid-cols-2 lg:wsms-grid-cols-3">
                             {regionGroups.groups[slug].map(renderGatewayButton)}
                           </div>
                         </div>
@@ -414,11 +629,11 @@ export default function Gateway() {
                     {/* Recommended Section */}
                     {recommended.length > 0 && (
                       <div className="wsms-mb-4">
-                        <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
-                          <Star className="wsms-h-3 wsms-w-3 wsms-text-amber-500" />
+                        <p className="wsms-sticky wsms-top-0 wsms-z-[1] wsms-bg-card wsms-pt-2.5 wsms-pb-2 wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
+                          <Star className="wsms-h-3.5 wsms-w-3.5 wsms-text-amber-500" />
                           {__('Recommended', 'wp-sms')}
                         </p>
-                        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
+                        <div className="wsms-grid wsms-grid-cols-1 wsms-gap-2.5 sm:wsms-grid-cols-2 lg:wsms-grid-cols-3">
                           {recommended.map(renderGatewayButton)}
                         </div>
                       </div>
@@ -428,11 +643,11 @@ export default function Gateway() {
                     {rest.length > 0 && (
                       <div>
                         {recommended.length > 0 && (
-                          <p className="wsms-mb-2 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
+                          <p className="wsms-sticky wsms-top-0 wsms-z-[1] wsms-bg-card wsms-pt-2.5 wsms-pb-2 wsms-text-[12px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
                             {__('All Gateways', 'wp-sms')}
                           </p>
                         )}
-                        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
+                        <div className="wsms-grid wsms-grid-cols-1 wsms-gap-2.5 sm:wsms-grid-cols-2 lg:wsms-grid-cols-3">
                           {rest.map(renderGatewayButton)}
                         </div>
                       </div>
@@ -451,174 +666,6 @@ export default function Gateway() {
             <MoreGatewaysNotice premiumCount={premiumCount} searchQuery={searchQuery} />
           )}
 
-          {/* Selection Status Bar */}
-          <div data-setting-key="gateway_name" className={cn(
-            "wsms-rounded-lg wsms-border wsms-transition-all wsms-duration-200",
-            gatewayNameError
-              ? "wsms-border-destructive"
-              : gatewayName
-                ? "wsms-border-primary/30 wsms-bg-primary/5"
-                : "wsms-border-dashed wsms-border-border wsms-bg-muted/30"
-          )}>
-            {gatewayName ? (
-              <>
-                {/* Selected State */}
-                <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-3 wsms-p-3">
-                  <div className="wsms-flex wsms-items-center wsms-gap-3">
-                    <div className="wsms-flex wsms-h-8 wsms-w-8 wsms-items-center wsms-justify-center wsms-rounded-md wsms-bg-primary/10 wsms-overflow-hidden">
-                      {isApiSource && getGatewayLogo(getGateway(gatewayName)) ? (
-                        <img
-                          src={getGatewayLogo(getGateway(gatewayName))}
-                          alt=""
-                          className="wsms-h-6 wsms-w-6 wsms-object-contain"
-                          onError={(e) => {
-                            e.target.style.display = 'none'
-                            e.target.parentElement.innerHTML = '<svg class="wsms-h-4 wsms-w-4 wsms-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
-                          }}
-                        />
-                      ) : (
-                        <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                      )}
-                    </div>
-                    <div>
-                      <p className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
-                        {__('Selected Gateway', 'wp-sms')}
-                      </p>
-                      <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground">
-                        {displayName(gatewayName)}
-                      </p>
-                      {isApiSource && getGateway(gatewayName)?.description && (
-                        <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-line-clamp-1">
-                          {getGateway(gatewayName).description}
-                        </p>
-                      )}
-                      {getGateway(gatewayName)?.website && (
-                        <a
-                          href={`${getGateway(gatewayName).website}?utm_source=wsms&utm_medium=plugin&utm_campaign=gateway-settings`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-text-primary hover:wsms-text-primary/80"
-                        >
-                          <ExternalLink className="wsms-h-3 wsms-w-3" />
-                          {__('Visit Website', 'wp-sms')}
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                  {pendingGateway ? (
-                    <div className="wsms-flex wsms-items-center wsms-gap-2">
-                      <span className="wsms-text-[12px] wsms-text-muted-foreground">
-                        {__('Switch to', 'wp-sms')} <strong className="wsms-text-foreground">{displayName(pendingGateway)}</strong>?
-                      </span>
-                      <button
-                        onClick={() => {
-                          setGatewayName(pendingGateway)
-                          setPendingGateway(null)
-                        }}
-                        className="wsms-rounded-md wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-bg-primary wsms-text-primary-foreground wsms-transition-colors hover:wsms-bg-primary/90"
-                      >
-                        {__('Switch', 'wp-sms')}
-                      </button>
-                      <button
-                        onClick={() => setPendingGateway(null)}
-                        className="wsms-rounded-md wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-border wsms-border-border wsms-bg-background wsms-transition-colors hover:wsms-bg-accent"
-                      >
-                        {__('Cancel', 'wp-sms')}
-                      </button>
-                    </div>
-                  ) : showDisconnectConfirm ? (
-                    <div className="wsms-flex wsms-items-center wsms-gap-2">
-                      <span className="wsms-text-[12px] wsms-text-muted-foreground">{__('Are you sure?', 'wp-sms')}</span>
-                      <button
-                        onClick={() => {
-                          setGatewayName('')
-                          setShowDisconnectConfirm(false)
-                        }}
-                        className="wsms-rounded-md wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-bg-destructive wsms-text-destructive-foreground wsms-transition-colors hover:wsms-bg-destructive/90"
-                      >
-                        {__('Disconnect', 'wp-sms')}
-                      </button>
-                      <button
-                        onClick={() => setShowDisconnectConfirm(false)}
-                        className="wsms-rounded-md wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-border wsms-border-border wsms-bg-background wsms-transition-colors hover:wsms-bg-accent"
-                      >
-                        {__('Cancel', 'wp-sms')}
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => setShowDisconnectConfirm(true)}
-                      className="wsms-flex rtl:wsms-flex-row-reverse wsms-items-center wsms-gap-1.5 wsms-rounded-md wsms-px-3 wsms-py-1.5 wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground wsms-transition-colors hover:wsms-bg-destructive/10 hover:wsms-text-destructive"
-                    >
-                      <Unplug className="wsms-h-3.5 wsms-w-3.5" />
-                      {__('Disconnect', 'wp-sms')}
-                    </button>
-                  )}
-                </div>
-                {/* Inline Capabilities */}
-                <div className="wsms-border-t wsms-border-primary/20 wsms-px-3 wsms-py-2 wsms-bg-primary/[0.02]">
-                  {hasUnsavedGatewayChange ? (
-                    <p className="wsms-text-[11px] wsms-text-amber-600 dark:wsms-text-amber-400">
-                      {__('Save your changes to see capabilities and configure credentials for this gateway.', 'wp-sms')}
-                    </p>
-                  ) : (
-                    <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-flex-wrap">
-                      <span className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
-                        {__('Capabilities:', 'wp-sms')}
-                      </span>
-                      <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-flex-wrap">
-                        <span className={cn(
-                          "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
-                          gatewayCapabilities.flash === 'enable' ? "wsms-text-success" : "wsms-text-muted-foreground/50"
-                        )}>
-                          {gatewayCapabilities.flash === 'enable' ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                          {__('Flash SMS', 'wp-sms')}
-                        </span>
-                        <span className={cn(
-                          "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
-                          gatewayCapabilities.bulk_send !== false ? "wsms-text-success" : "wsms-text-muted-foreground/50"
-                        )}>
-                          {gatewayCapabilities.bulk_send !== false ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                          {__('Bulk Send', 'wp-sms')}
-                        </span>
-                        <span className={cn(
-                          "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
-                          gatewayCapabilities.supportMedia === true ? "wsms-text-success" : "wsms-text-muted-foreground/50"
-                        )}>
-                          {gatewayCapabilities.supportMedia === true ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                          {__('MMS', 'wp-sms')}
-                        </span>
-                        <span className={cn(
-                          "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
-                          gatewayCapabilities.supportIncoming === true ? "wsms-text-success" : "wsms-text-muted-foreground/50"
-                        )}>
-                          {gatewayCapabilities.supportIncoming === true ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                          {__('Incoming SMS', 'wp-sms')}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-p-3">
-                <div className="wsms-flex wsms-h-8 wsms-w-8 wsms-items-center wsms-justify-center wsms-rounded-md wsms-bg-muted">
-                  <Radio className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
-                    {__('No Gateway Selected', 'wp-sms')}
-                  </p>
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                    {__('Choose a provider from the list above', 'wp-sms')}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-          {gatewayNameError && (
-            <p role="alert" className="wsms-text-[12px] wsms-text-destructive">{gatewayNameError}</p>
-          )}
         </CardContent>
       </Card>
 
@@ -826,34 +873,27 @@ export default function Gateway() {
 
           <SectionDivider>{__('Message Formatting', 'wp-sms')}</SectionDivider>
 
-          <div className="wsms-divide-y wsms-divide-border wsms-rounded-lg wsms-border wsms-border-border wsms-overflow-hidden">
-            <SwitchField
-              label={__('Enable Unicode', 'wp-sms')}
-              description={__('Required for non-Latin characters (Arabic, Chinese, emoji). May reduce characters per SMS.', 'wp-sms')}
-              checked={sendUnicode === '1'}
-              onCheckedChange={(checked) => setSendUnicode(checked ? '1' : '')}
-              className="wsms-px-4"
-            />
-            <SwitchField
-              label={__('Auto-format Numbers', 'wp-sms')}
-              description={__('Automatically remove spaces and special characters from phone numbers before sending.', 'wp-sms')}
-              checked={cleanNumbers === '1'}
-              onCheckedChange={(checked) => setCleanNumbers(checked ? '1' : '')}
-              className="wsms-px-4"
-            />
-          </div>
+          <SwitchField
+            label={__('Enable Unicode', 'wp-sms')}
+            description={__('Required for non-Latin characters (Arabic, Chinese, emoji). May reduce characters per SMS.', 'wp-sms')}
+            checked={sendUnicode === '1'}
+            onCheckedChange={(checked) => setSendUnicode(checked ? '1' : '')}
+          />
+          <SwitchField
+            label={__('Auto-format Numbers', 'wp-sms')}
+            description={__('Automatically remove spaces and special characters from phone numbers before sending.', 'wp-sms')}
+            checked={cleanNumbers === '1'}
+            onCheckedChange={(checked) => setCleanNumbers(checked ? '1' : '')}
+          />
 
           <SectionDivider>{__('Country Restrictions', 'wp-sms')}</SectionDivider>
 
-          <div className="wsms-rounded-lg wsms-border wsms-border-border">
-            <SwitchField
-              label={__('Restrict to Specific Countries', 'wp-sms')}
-              description={__('Only send SMS to phone numbers from selected countries.', 'wp-sms')}
-              checked={localNumbersOnly === '1'}
-              onCheckedChange={(checked) => setLocalNumbersOnly(checked ? '1' : '')}
-              className="wsms-px-4"
-            />
-          </div>
+          <SwitchField
+            label={__('Restrict to Specific Countries', 'wp-sms')}
+            description={__('Only send SMS to phone numbers from selected countries.', 'wp-sms')}
+            checked={localNumbersOnly === '1'}
+            onCheckedChange={(checked) => setLocalNumbersOnly(checked ? '1' : '')}
+          />
 
           {localNumbersOnly === '1' && (
             <MultiSelectField
@@ -877,23 +917,19 @@ export default function Gateway() {
             {__('Credit Display', 'wp-sms')}
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="wsms-divide-y wsms-divide-border wsms-rounded-lg wsms-border wsms-border-border wsms-overflow-hidden">
-            <SwitchField
-              label={__('Show Credit in Menu', 'wp-sms')}
-              description={__('Display your SMS credit balance in the WordPress admin menu bar.', 'wp-sms')}
-              checked={creditInMenu === '1'}
-              onCheckedChange={(checked) => setCreditInMenu(checked ? '1' : '')}
-              className="wsms-px-4"
-            />
-            <SwitchField
-              label={__('Show Credit on Send Page', 'wp-sms')}
-              description={__('Display your remaining SMS credits when composing messages.', 'wp-sms')}
-              checked={creditInSendSms === '1'}
-              onCheckedChange={(checked) => setCreditInSendSms(checked ? '1' : '')}
-              className="wsms-px-4"
-            />
-          </div>
+        <CardContent className="wsms-space-y-4">
+          <SwitchField
+            label={__('Show Credit in Menu', 'wp-sms')}
+            description={__('Display your SMS credit balance in the WordPress admin menu bar.', 'wp-sms')}
+            checked={creditInMenu === '1'}
+            onCheckedChange={(checked) => setCreditInMenu(checked ? '1' : '')}
+          />
+          <SwitchField
+            label={__('Show Credit on Send Page', 'wp-sms')}
+            description={__('Display your remaining SMS credits when composing messages.', 'wp-sms')}
+            checked={creditInSendSms === '1'}
+            onCheckedChange={(checked) => setCreditInSendSms(checked ? '1' : '')}
+          />
         </CardContent>
       </Card>
 

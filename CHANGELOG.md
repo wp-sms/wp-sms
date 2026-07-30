@@ -3,6 +3,10 @@ v7.2.6 - 2026-07-30
 - **New:** Added the `wpsms_unsubscribe_success_message` filter to customize the newsletter unsubscribe confirmation message, with the unsubscribed group passed to the filter for both the unsubscribe form and the unsubscribe link.
 - **Enhancement:** The Two-Way SMS settings page now shows the alternative path-style webhook URL for gateways that drop the query string, and links to the Two-Way SMS documentation and the setup guide for the connected gateway.
 - **Enhancement:** General security hardening across admin endpoints, subscriber and newsletter handling, gateway connections, and data exports.
+- **Enhancement:** Choosing a gateway now saves on its own, so switching provider no longer needs a second click on Save Changes.
+- **Enhancement:** Toggle switches across the settings pages now share one consistent style.
+- **Fix:** Fixed dashboard labels that translators could not reach on WordPress.org, so the admin can now be fully translated.
+- **Fix:** A gateway that fails to load no longer breaks the whole admin screen; the credit balance is simply left blank.
 - **Fix:** Fixed Forminator notifications configured to send SMS to a submitted phone field.
 - **Fix:** Fixed Raw JSON custom gateway payloads when placeholder values start or end with quotation marks.
 - **Fix:** Fixed the billing phone number being silently dropped when a WooCommerce order or profile is re-saved.

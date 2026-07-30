@@ -586,7 +586,8 @@ class Dashboard extends Singleton
         if (isset($sms) && method_exists($sms, 'GetCredit')) {
             try {
                 return $sms->GetCredit();
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
+                // A broken gateway SDK must not take the whole admin down
                 return null;
             }
         }

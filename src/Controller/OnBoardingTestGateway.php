@@ -51,7 +51,7 @@ class OnBoardingTestGateway extends AjaxControllerAbstract
         try {
             $credit    = $this->sms->GetCredit();
             $is_active = !is_wp_error($credit) && $credit !== false;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $is_active = false;
             $credit    = false;
             error_log('Error getting SMS gateway credit: ' . $e->getMessage());
@@ -101,7 +101,11 @@ class OnBoardingTestGateway extends AjaxControllerAbstract
 
     public function send_sms()
     {
-        $credit = $this->sms->GetCredit();
+        try {
+            $credit = $this->sms->GetCredit();
+        } catch (\Throwable $e) {
+            $credit = false;
+        }
 
         $params = [
             'to'  => Option::getOption('admin_mobile_number'),
