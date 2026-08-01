@@ -157,6 +157,7 @@ All premium features + all add-ons in one package.
 == Changelog ==
 = v7.2.7 - Unreleased =
 - **Fix:** An update that does not finish no longer takes the whole site down. When plugin files are missing, WP SMS now stops on its own and shows a notice explaining that reinstalling the plugin restores them; your settings and data are not affected (ticket #17381).
+- **Enhancement:** When Forminator treats a submission as spam or abandoned, WP SMS now records why no SMS was sent. Previously the message was skipped silently, which looked the same as a broken integration (issue [#509](https://github.com/wp-sms/wp-sms/issues/509)).
 
 = v7.2.6 - 2026-07-30 =
 - **New:** Added the LogisticSMS gateway

@@ -17,6 +17,42 @@ class Forminator
     {
         add_action("forminator_form_draft_after_save_entry", array($this, 'handle_sms'), 10, 2);
         add_action("forminator_form_after_save_entry", array($this, 'handle_sms'), 10, 2);
+
+        // Forminator builds the hook name from the submission status, so a submission
+        // it treats as spam or abandoned fires a different event and never reaches
+        // handle_sms(). Not sending those is intentional, but the skip is otherwise
+        // invisible: the entry is saved and the email notification still goes out
+        // while the Outbox stays empty, which looks exactly like a broken integration.
+        add_action("forminator_form_spam_after_save_entry", array($this, 'log_skipped_sms'), 10, 2);
+        add_action("forminator_form_abandoned_after_save_entry", array($this, 'log_skipped_sms'), 10, 2);
+    }
+
+    /**
+     * Records that a submission was skipped because Forminator flagged it, and why.
+     *
+     * @param int $form Form ID.
+     * @param array $res Forminator response.
+     * @return void
+     */
+    public function log_skipped_sms($form, $res)
+    {
+        $sms_options = Option::getOptions();
+
+        // Only report forms that were actually set up to send. Without this, spam on
+        // any unrelated form would fill the log with lines the site owner cannot act on.
+        $isConfigured = !empty($sms_options['forminator_notify_enable_form_' . $form])
+            || !empty($sms_options['forminator_notify_enable_field_form_' . $form]);
+
+        if (!$isConfigured) {
+            return;
+        }
+
+        $status = strpos((string)current_action(), '_spam_') !== false ? 'spam' : 'abandoned';
+
+        Logger::log(
+            sprintf('Forminator submission for form %d was flagged as %s by Forminator, so no SMS was sent.', $form, $status),
+            'warning'
+        );
     }
 
     public function handle_sms($form, $res)
