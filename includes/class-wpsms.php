@@ -97,22 +97,54 @@ class WP_SMS
 
     /**
      * Constructors plugin Setup
+     *
+     * The bootstrap is wrapped because a partial or interrupted update can leave
+     * the autoloader in place while individual class files are missing. Without
+     * the guard the first unresolved class raises a fatal error during
+     * plugins_loaded, which takes the entire site down instead of just this
+     * plugin. Degrade to an admin notice and let the rest of the site load.
      */
     public function plugin_setup()
     {
         $this->loadTextDomain();
 
-        add_action('init', array($this, 'init'));
+        try {
+            add_action('init', array($this, 'init'));
 
-        $this->includes();
+            $this->includes();
 
-        // Initialize default settings if not already present
-        if (!get_option('wpsms_settings')) {
-            require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
-            update_option('wpsms_settings', \WP_SMS\Settings::getDefaultSettings());
+            // Initialize default settings if not already present
+            if (!get_option('wpsms_settings')) {
+                require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
+                update_option('wpsms_settings', \WP_SMS\Settings::getDefaultSettings());
+            }
+
+            $this->setupBackgroundProcess();
+        } catch (\Throwable $error) {
+            $this->handleBootstrapFailure($error);
         }
+    }
 
-        $this->setupBackgroundProcess();
+    /**
+     * Reports a bootstrap failure without terminating the request.
+     *
+     * @param \Throwable $error The error raised while loading the plugin.
+     * @return void
+     */
+    private function handleBootstrapFailure($error)
+    {
+        error_log(sprintf('WP SMS could not finish loading: %s', $error->getMessage()));
+
+        add_action('admin_notices', function () {
+            if (!current_user_can('activate_plugins')) {
+                return;
+            }
+
+            printf(
+                '<div class="notice notice-error"><p>%s</p></div>',
+                esc_html__('WP SMS could not finish loading because some of its files are missing or unreadable. This usually means an update did not finish. Reinstalling the plugin restores the missing files; your settings and data are not affected.', 'wp-sms')
+            );
+        });
     }
 
     /**
