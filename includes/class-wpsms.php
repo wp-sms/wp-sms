@@ -109,8 +109,6 @@ class WP_SMS
         $this->loadTextDomain();
 
         try {
-            add_action('init', array($this, 'init'));
-
             $this->includes();
 
             // Initialize default settings if not already present
@@ -120,6 +118,11 @@ class WP_SMS
             }
 
             $this->setupBackgroundProcess();
+
+            // Registered last so a failed bootstrap never leaves the init callback
+            // behind, which would run the gateway setup against a plugin whose
+            // managers were never constructed.
+            add_action('init', array($this, 'init'));
         } catch (\Throwable $error) {
             $this->handleBootstrapFailure($error);
         }
@@ -133,7 +136,13 @@ class WP_SMS
      */
     private function handleBootstrapFailure($error)
     {
-        error_log(sprintf('WP SMS could not finish loading: %s', $error->getMessage()));
+        // plugin_setup() runs on every request, so logging unconditionally would
+        // fill the error log and bury the first occurrence, which is the one that
+        // identifies the cause. Record it at most once an hour.
+        if (!get_transient('wp_sms_bootstrap_failure_logged')) {
+            error_log(sprintf('WP SMS could not finish loading: %s', $error->getMessage()));
+            set_transient('wp_sms_bootstrap_failure_logged', 1, HOUR_IN_SECONDS);
+        }
 
         add_action('admin_notices', function () {
             if (!current_user_can('activate_plugins')) {
@@ -347,6 +356,13 @@ class WP_SMS
      */
     public function getRemoteRequestAsync()
     {
+        // Stays null when the bootstrap aborted before setupBackgroundProcess().
+        // Callers chain straight onto the result, so build it on demand rather
+        // than handing back null and turning a contained failure into a fatal.
+        if ($this->remoteRequestAsync === null) {
+            $this->remoteRequestAsync = new RemoteRequestAsync();
+        }
+
         return $this->remoteRequestAsync;
     }
 
@@ -355,6 +371,12 @@ class WP_SMS
      */
     public function getRemoteRequestQueue()
     {
+        // See getRemoteRequestAsync(): built on demand so a failed bootstrap does
+        // not leave callers dereferencing null.
+        if ($this->remoteRequestQueue === null) {
+            $this->remoteRequestQueue = new RemoteRequestQueue();
+        }
+
         return $this->remoteRequestQueue;
     }
 }
