@@ -1,3 +1,6 @@
+v7.2.7 - Unreleased
+- **Fix:** An update that does not finish no longer takes the whole site down. When plugin files are missing, WP SMS now stops on its own and shows a notice explaining that reinstalling the plugin restores them; your settings and data are not affected (ticket #17381).
+
 v7.2.6 - 2026-07-30
 - **New:** Added the LogisticSMS gateway
 - **New:** Added the `wpsms_unsubscribe_success_message` filter to customize the newsletter unsubscribe confirmation message, with the unsubscribed group passed to the filter for both the unsubscribe form and the unsubscribe link.
