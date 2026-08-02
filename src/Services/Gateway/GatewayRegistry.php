@@ -190,18 +190,20 @@ class GatewayRegistry
      */
     private static function applyMetadataOverrides($data)
     {
-        if (empty($data['gateways']) || !is_array($data['gateways'])) {
-            return $data;
-        }
-
-        foreach ($data['gateways'] as &$gateway) {
-            $slug = $gateway['slug'] ?? '';
-
-            if (isset(self::GATEWAY_METADATA_OVERRIDES[$slug])) {
-                $gateway = array_merge($gateway, self::GATEWAY_METADATA_OVERRIDES[$slug]);
+        foreach (['gateways', 'premium_gateways'] as $list) {
+            if (empty($data[$list]) || !is_array($data[$list])) {
+                continue;
             }
+
+            foreach ($data[$list] as &$gateway) {
+                $slug = $gateway['slug'] ?? '';
+
+                if (isset(self::GATEWAY_METADATA_OVERRIDES[$slug])) {
+                    $gateway = array_merge($gateway, self::GATEWAY_METADATA_OVERRIDES[$slug]);
+                }
+            }
+            unset($gateway);
         }
-        unset($gateway);
 
         return $data;
     }
