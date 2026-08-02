@@ -66,8 +66,14 @@ class textsms extends \WP_SMS\Gateway
         foreach ($this->to as $number) {
             $receiver[] = "$number";
         }
-        $client = new \SoapClient($this->wsdl_link);
-        $result = $client->send_sms($this->username, $this->password, $this->from, implode(",", $receiver), $this->msg);
+        try {
+            $client = $this->getSoapClient();
+            $result = $client->send_sms($this->username, $this->password, $this->from, implode(",", $receiver), $this->msg);
+        } catch (\Exception $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+            return new \WP_Error('send-sms', $e->getMessage());
+        }
 
         if ($result) {
             // Log the result
@@ -98,12 +104,26 @@ class textsms extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
         }
 
-        if (!class_exists('SoapClient')) {
+        if (!$this->hasSoapClient()) {
             return new \WP_Error('required-class', __('Class SoapClient not found. please enable php_soap in your php.', 'wp-sms'));
         }
 
-        $client = new \SoapClient($this->wsdl_link);
+        try {
+            $client = $this->getSoapClient();
 
-        return $client->sms_credit($this->username, $this->password);
+            return $client->sms_credit($this->username, $this->password);
+        } catch (\Exception $e) {
+            return new \WP_Error('account-credit', $e->getMessage());
+        }
+    }
+
+    protected function getSoapClient()
+    {
+        return new \SoapClient($this->wsdl_link);
+    }
+
+    protected function hasSoapClient()
+    {
+        return class_exists('SoapClient');
     }
 }
