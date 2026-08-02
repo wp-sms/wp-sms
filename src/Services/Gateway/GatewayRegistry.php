@@ -12,6 +12,13 @@ class GatewayRegistry
     const CACHE_KEY_GATEWAYS = 'wpsms_gateway_registry';
     const CACHE_KEY_REGIONS = 'wpsms_gateway_regions';
     const CACHE_DURATION = 43200; // 12 hours
+    const GATEWAY_METADATA_OVERRIDES = [
+        'instantalerts' => [
+            'name'        => 'Spring Edge',
+            'description' => 'Spring Edge is an SMS gateway providing SMS messaging services via API integration for businesses worldwide.',
+            'website'     => 'https://www.springedge.com/',
+        ],
+    ];
 
     /**
      * Get gateways and regions from API with local fallback
@@ -23,7 +30,7 @@ class GatewayRegistry
         $cached = get_transient(self::CACHE_KEY_GATEWAYS);
 
         if ($cached !== false) {
-            return apply_filters('wpsms_gateway_registry', $cached);
+            return apply_filters('wpsms_gateway_registry', self::applyMetadataOverrides($cached));
         }
 
         $result = self::fetchFromApi();
@@ -31,11 +38,12 @@ class GatewayRegistry
         if ($result !== null) {
             $result = self::appendLocalGateways($result);
             $result = self::filterPremiumGateways($result);
+            $result = self::applyMetadataOverrides($result);
             set_transient(self::CACHE_KEY_GATEWAYS, $result, self::CACHE_DURATION);
             return apply_filters('wpsms_gateway_registry', $result);
         }
 
-        $fallback = self::getLocalFallback();
+        $fallback = self::applyMetadataOverrides(self::getLocalFallback());
         // Cache fallback for 1 hour (shorter, so we retry API sooner)
         set_transient(self::CACHE_KEY_GATEWAYS, $fallback, 3600);
 
@@ -172,6 +180,30 @@ class GatewayRegistry
             'website'     => '',
             'features'    => [],
         ];
+    }
+
+    /**
+     * Apply customer-facing metadata changes without changing gateway slugs.
+     *
+     * @param array $data
+     * @return array
+     */
+    private static function applyMetadataOverrides($data)
+    {
+        if (empty($data['gateways']) || !is_array($data['gateways'])) {
+            return $data;
+        }
+
+        foreach ($data['gateways'] as &$gateway) {
+            $slug = $gateway['slug'] ?? '';
+
+            if (isset(self::GATEWAY_METADATA_OVERRIDES[$slug])) {
+                $gateway = array_merge($gateway, self::GATEWAY_METADATA_OVERRIDES[$slug]);
+            }
+        }
+        unset($gateway);
+
+        return $data;
     }
 
     /**
