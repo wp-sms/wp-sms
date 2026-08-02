@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 class instantalerts extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://instantalerts.co/api/";
-    public $tariff = "http://springedge.com/";
+    public $tariff = "https://www.springedge.com/";
     public $unitrial = false;
     public $unit;
     public $flash = "enable";
