@@ -42,7 +42,10 @@ class InstantalertsGatewayTest extends WP_UnitTestCase
 
         $this->assertSame('instantalerts', $gateway['slug']);
         $this->assertSame('Spring Edge', $gateway['name']);
-        $this->assertStringStartsWith('Spring Edge', $gateway['description']);
+        $this->assertSame(
+            'Spring Edge is an SMS gateway providing SMS messaging services via API integration for businesses worldwide.',
+            $gateway['description']
+        );
         $this->assertSame('https://www.springedge.com/', $gateway['website']);
     }
 
@@ -66,7 +69,11 @@ class InstantalertsGatewayTest extends WP_UnitTestCase
 
         $this->assertSame('instantalerts', $gateway['slug']);
         $this->assertSame('Spring Edge', $gateway['name']);
-        $this->assertStringStartsWith('Spring Edge', $gateway['description']);
+        $this->assertSame(
+            'Spring Edge is an SMS gateway providing SMS messaging services via API integration for businesses worldwide.',
+            $gateway['description']
+        );
         $this->assertSame('https://www.springedge.com/', $gateway['website']);
+        $this->assertTrue($gateway['premium']);
     }
 }
