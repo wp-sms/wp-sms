@@ -8,6 +8,7 @@ class africastalking extends \WP_SMS\Gateway
 {
     private $wsdl_link = 'https://api.africastalking.com/version1';
     public $tariff = "https://africastalking.com";
+    public $documentUrl = 'https://wsms.io/docs/africastalking-gateway-setup';
     public $unitrial = false;
     public $unit;
     public $flash = "false";

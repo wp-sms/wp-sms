@@ -12,6 +12,7 @@ class octopush extends Gateway
 {
     private $wsdl_link = "https://api.octopush.com/v1/public";
     public $tariff = "https://www.octopush.com/";
+    public $documentUrl = 'https://wsms.io/docs/octopush-gateway-setup';
     public $unitrial = true;
     public $unit;
     public $flash = "disable";

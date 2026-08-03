@@ -8,6 +8,7 @@ class aspsms extends \WP_SMS\Gateway
 {
     private $wsdl_link = "https://json.aspsms.com/";
     public $tariff = "https://aspsms.com";
+    public $documentUrl = 'https://wsms.io/docs/aspsms-gateway-setup';
     public $unitrial = false;
     public $unit;
     public $flash = "disable";

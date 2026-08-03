@@ -8,6 +8,7 @@ class smsglobal extends \WP_SMS\Gateway
 {
     private $wsdl_link = "https://api.smsglobal.com/v2";
     public $tariff = "https://smsglobal.com";
+    public $documentUrl = 'https://wsms.io/docs/smsglobal-gateway-setup';
     public $unitrial = false;
     public $unit;
     public $flash = "false";
