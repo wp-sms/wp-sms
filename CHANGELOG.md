@@ -14,6 +14,7 @@ v7.2.6 - 2026-07-30
 - **Fix:** A gateway that fails to load no longer breaks the whole admin screen; the credit balance is simply left blank.
 - **Fix:** Fixed Forminator notifications configured to send SMS to a submitted phone field.
 - **Fix:** Fixed Raw JSON custom gateway payloads when placeholder values start or end with quotation marks.
+- **Fix:** Fixed Textsms gateway connection tests reporting success when SOAP WSDL loading fails.
 - **Fix:** Fixed the billing phone number being silently dropped when a WooCommerce order or profile is re-saved.
 
 v7.2.5 - 2026-05-19
