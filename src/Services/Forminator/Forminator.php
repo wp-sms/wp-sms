@@ -57,8 +57,31 @@ class Forminator
 
     public function handle_sms($form, $res)
     {
+        // Forminator fires this event for every submission attempt, including one it rejected
+        // for a missing or invalid field. Nothing is saved in that case, so sending would text
+        // a visitor who never got through the form, and charge for it.
+        if (!self::submissionSucceeded($res)) {
+            Logger::log(sprintf('Forminator rejected the submission for form %d, so no SMS was sent.', $form), 'info');
+
+            return;
+        }
+
         $sms_options = Option::getOptions();
         $this->set_data();
+
+        // Record the form that was actually submitted. Settings are stored per form ID, so a
+        // site with several similar forms can easily have SMS set up on one form while
+        // visitors fill in another. Without this line that mismatch is invisible: the entry
+        // saves, the email notification goes out, and nothing explains the silent Outbox.
+        $isConfigured = !empty($sms_options['forminator_notify_enable_form_' . $form])
+            || !empty($sms_options['forminator_notify_enable_field_form_' . $form]);
+
+        Logger::log(
+            $isConfigured
+                ? sprintf('Forminator submission received for form %d, which has SMS enabled.', $form)
+                : sprintf('Forminator submission received for form %d, but no SMS is enabled for that form. Check that the form you set up in WP SMS is the one on the page.', $form),
+            $isConfigured ? 'info' : 'warning'
+        );
 
         $forminatorNotification = NotificationFactory::getForminator($form, $this->data);
 
@@ -89,6 +112,29 @@ class Forminator
                 Logger::log(sprintf('Forminator receiver field "%s" was not found for form %d.', $receiverField, $form), 'warning');
             }
         }
+    }
+
+    /**
+     * Whether Forminator actually accepted and saved this submission.
+     *
+     * Older Forminator releases pass a response we cannot read, so anything that is not an
+     * explicit failure counts as a success. That keeps working sites working.
+     *
+     * @param mixed $res Forminator response for the submission.
+     *
+     * @return bool
+     */
+    private static function submissionSucceeded($res)
+    {
+        if (is_array($res) && array_key_exists('success', $res)) {
+            return (bool) $res['success'];
+        }
+
+        if (is_object($res) && isset($res->success)) {
+            return (bool) $res->success;
+        }
+
+        return true;
     }
 
     private function set_data()

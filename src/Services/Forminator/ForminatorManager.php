@@ -27,7 +27,7 @@ class ForminatorManager
         $forminator_forms = array();
 
         if (class_exists('Forminator')) {
-            $forms = Forminator_API::get_forms(null, 1, 20, "publish");
+            $forms = $this->getPublishedForms();
 
             if (empty($forms)) {
                 $forminator_forms['forminator_notify_form'] = array(
@@ -42,11 +42,14 @@ class ForminatorManager
                 $formFields                                                       = Forminator::formFields($form->id);
                 $forminator_forms['forminator_notify_form_' . $form->id]          = array(
                     'id'   => 'forminator_notify_form_' . $form->id,
-                    // translators: %s: Form name
-                    'name' => sprintf(__('Form notifications (%s)', 'wp-sms'), $form->name),
+                    // translators: 1: Form name, 2: Form ID
+                    'name' => sprintf(__('Form notifications (%1$s, ID %2$s)', 'wp-sms'), $form->name, $form->id),
                     'type' => 'header',
-                    // translators: %s: Form name
-                    'desc' => sprintf(__('By enabling this option you can send SMS notification once the %s form is submitted', 'wp-sms'), $form->name),
+                    // The ID is shown because settings are saved per form. Sites often have
+                    // several forms with near identical names, and the ID is the only way to be
+                    // sure this is the form that is actually on the page.
+                    // translators: 1: Form name, 2: Form ID
+                    'desc' => sprintf(__('By enabling this option you can send SMS notification once the %1$s form is submitted. This form has the ID %2$s, which you can check against the form on your page.', 'wp-sms'), $form->name, $form->id),
                     'doc'  => '',
                 );
                 $forminator_forms['forminator_notify_enable_form_' . $form->id]   = array(
@@ -105,6 +108,37 @@ class ForminatorManager
             );
         }
         return $forminator_forms;
+    }
+
+    /**
+     * Every published Forminator form, not just the first page of them.
+     *
+     * Forminator returns forms one page at a time. Asking for a single page meant sites
+     * with more forms than the page size simply never saw the rest on this screen, so
+     * those forms could not be given SMS settings at all and the omission looked like
+     * the integration ignoring them.
+     *
+     * @return array
+     */
+    private function getPublishedForms()
+    {
+        $perPage  = 50;
+        $page     = 1;
+        $maxPages = 100;
+        $forms    = [];
+
+        do {
+            $batch = Forminator_API::get_forms(null, $page, $perPage, 'publish');
+
+            if (is_wp_error($batch) || empty($batch) || !is_array($batch)) {
+                break;
+            }
+
+            $forms = array_merge($forms, $batch);
+            $page++;
+        } while (count($batch) === $perPage && $page <= $maxPages);
+
+        return $forms;
     }
 
     private function printVariables($variables)
