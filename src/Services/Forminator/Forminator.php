@@ -13,10 +13,29 @@ class Forminator
 {
     private $data;
 
+    /**
+     * Forms that have already been handled in this request, keyed by form ID.
+     *
+     * A form submitted with AJAX enabled fires after_save_entry; the same form with AJAX
+     * turned off fires after_handle_submit instead. We listen to both so the integration
+     * works either way, and this guards against the rare case where one request triggers
+     * both, so a recipient is never texted twice.
+     *
+     * @var array<int, bool>
+     */
+    private static $handledForms = [];
+
     public function init()
     {
         add_action("forminator_form_draft_after_save_entry", array($this, 'handle_sms'), 10, 2);
         add_action("forminator_form_after_save_entry", array($this, 'handle_sms'), 10, 2);
+
+        // A form with AJAX submission turned off reloads the page instead of posting in the
+        // background, and Forminator runs that through a different path that never fires
+        // after_save_entry. The entry is still saved and the admin email still goes out, so
+        // it looks exactly like a working form with a broken SMS. Listening here as well
+        // means the SMS is sent whether or not the form uses AJAX.
+        add_action("forminator_form_after_handle_submit", array($this, 'handle_sms'), 10, 2);
 
         // Forminator builds the hook name from the submission status, so a submission
         // it treats as spam or abandoned fires a different event and never reaches
@@ -65,6 +84,14 @@ class Forminator
 
             return;
         }
+
+        // We listen to both the AJAX and the page-reload submission events. They do not fire
+        // together today, but guarding here means a future change or an odd setup can never
+        // text the same recipient twice for one submission.
+        if (isset(self::$handledForms[$form])) {
+            return;
+        }
+        self::$handledForms[$form] = true;
 
         $sms_options = Option::getOptions();
         $this->set_data();

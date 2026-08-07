@@ -37,6 +37,11 @@ namespace unit {
             $this->originalPost = $_POST;
             $_POST = ['form_id' => '123'];
             Forminator_CForm_Front_Action::$prepared_data = [];
+
+            // The once-per-request guard is static, so clear it between tests that reuse a form ID.
+            $handled = new \ReflectionProperty(Forminator::class, 'handledForms');
+            $handled->setAccessible(true);
+            $handled->setValue(null, []);
         }
 
         public function tearDown(): void
@@ -96,6 +101,51 @@ namespace unit {
             });
 
             $this->assertSame([['+61412345678']], $recipients);
+        }
+
+        public function testNonAjaxSubmissionSendsThroughTheHandleSubmitEvent()
+        {
+            // A form with AJAX turned off reloads the page and fires after_handle_submit
+            // instead of after_save_entry. WSMS listens to both, so the SMS still goes out.
+            $this->configureForm(123);
+
+            Forminator_CForm_Front_Action::$prepared_data = [
+                'form_id' => '123',
+                'phone-1' => '+61466620021',
+            ];
+
+            $forminator = new Forminator();
+            $forminator->init();
+
+            $recipients = $this->captureRecipients(function () use ($forminator) {
+                do_action('forminator_form_after_handle_submit', 123, ['success' => true]);
+            });
+
+            $this->assertSame([['+61466620021']], $recipients);
+
+            remove_all_actions('forminator_form_after_handle_submit');
+            remove_all_actions('forminator_form_after_save_entry');
+        }
+
+        public function testAjaxAndNonAjaxEventsDoNotDoubleSend()
+        {
+            // The two events do not fire together today, but if a request ever raised both,
+            // the recipient must still only be texted once.
+            $this->configureForm(123);
+
+            Forminator_CForm_Front_Action::$prepared_data = [
+                'form_id' => '123',
+                'phone-1' => '+61466620021',
+            ];
+
+            $forminator = new Forminator();
+
+            $recipients = $this->captureRecipients(function () use ($forminator) {
+                $forminator->handle_sms(123, ['success' => true]);
+                $forminator->handle_sms(123, ['success' => true]);
+            });
+
+            $this->assertSame([['+61466620021']], $recipients);
         }
 
         public function testSubmissionForAFormWithoutSettingsSendsNothing()
