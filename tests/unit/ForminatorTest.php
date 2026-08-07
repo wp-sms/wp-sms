@@ -7,6 +7,16 @@ namespace {
             public static $prepared_data = [];
         }
     }
+
+    if (!class_exists('Forminator_API')) {
+        class Forminator_API
+        {
+            public static function get_form_fields($formId)
+            {
+                return [];
+            }
+        }
+    }
 }
 
 namespace unit {
@@ -159,14 +169,18 @@ namespace unit {
         {
             $recipients = [];
 
-            $capture = function ($to) use (&$recipients) {
+            $capture = function ($source, $to) use (&$recipients) {
                 $recipients[] = $to;
-                return $to;
+                return $source;
             };
 
-            add_filter('wp_sms_to', $capture, 1);
-            $callback();
-            remove_filter('wp_sms_to', $capture, 1);
+            add_filter('wp_sms_normalization_source', $capture, 10, 2);
+
+            try {
+                $callback();
+            } finally {
+                remove_filter('wp_sms_normalization_source', $capture, 10);
+            }
 
             return $recipients;
         }
