@@ -1,4 +1,5 @@
-v7.2.7 - Unreleased
+v7.2.7 - 2026-08-07
+- **Fix:** The admin is translated again on WordPress 6.7 and later. Translations were loaded a moment too early, which newer WordPress ignores, so parts of the plugin stayed in English even when a translation was installed.
 - **Fix:** Someone is no longer added to your subscriber list when the SMS confirming it could not be sent. If the provider refuses the number, for example because it is on the provider's opt-out list, the subscription is cancelled and the form shows the real reason instead of saying the message is on its way. Previously the number stayed on the list and never received anything (issue [#514](https://github.com/wp-sms/wp-sms/issues/514), ticket #16331).
 - **Fix:** An update that does not finish no longer takes the whole site down. When plugin files are missing, WP SMS now stops on its own and shows a notice explaining that reinstalling the plugin restores them; your settings and data are not affected (ticket #17381).
 - **Enhancement:** When Forminator treats a submission as spam or abandoned, WP SMS now records why no SMS was sent. Previously the message was skipped silently, which looked the same as a broken integration (issue [#509](https://github.com/wp-sms/wp-sms/issues/509)).

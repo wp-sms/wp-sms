@@ -106,8 +106,6 @@ class WP_SMS
      */
     public function plugin_setup()
     {
-        $this->loadTextDomain();
-
         try {
             $this->includes();
 
@@ -178,22 +176,20 @@ class WP_SMS
 
     public function init()
     {
+        $this->loadTextDomain();
         $this->initGateway();
     }
 
     /**
      * Load plugin text domain.
+     *
+     * Must run on `init` (or later). Since WordPress 6.7 translations loaded
+     * before `init` are ignored, which previously left wp-sms strings untranslated.
+     * load_plugin_textdomain() already checks WP_LANG_DIR/plugins/ (where the
+     * auto-updated .mo files live) before falling back to the bundled path.
      */
     private function loadTextDomain()
     {
-        // Compatibility with WordPress < 5.0
-        if (function_exists('determine_locale')) {
-            $locale = apply_filters('plugin_locale', determine_locale(), 'wp-sms');
-
-            unload_textdomain('wp-sms', true);
-            load_textdomain('wp-sms', WP_LANG_DIR . '/wp-sms-' . $locale . '.mo');
-        }
-
         load_plugin_textdomain('wp-sms', false, WP_SMS_DIR . 'resources/languages');
     }
 

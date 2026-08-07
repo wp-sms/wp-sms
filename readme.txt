@@ -4,7 +4,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 7.2.6
+Stable tag: 7.2.7
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -155,7 +155,8 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
-= v7.2.7 - Unreleased =
+= v7.2.7 - 2026-08-07 =
+- **Fix:** The admin is translated again on WordPress 6.7 and later. Translations were loaded a moment too early, which newer WordPress ignores, so parts of the plugin stayed in English even when a translation was installed.
 - **Fix:** An update that does not finish no longer takes the whole site down. When plugin files are missing, WP SMS now stops on its own and shows a notice explaining that reinstalling the plugin restores them; your settings and data are not affected (ticket #17381).
 - **Enhancement:** When Forminator treats a submission as spam or abandoned, WP SMS now records why no SMS was sent. Previously the message was skipped silently, which looked the same as a broken integration (issue [#509](https://github.com/wp-sms/wp-sms/issues/509)).
 
