@@ -37,7 +37,7 @@ if (file_exists(__DIR__ . '/packages/autoload.php')) {
 
         printf(
             '<div class="notice notice-error"><p>%s</p></div>',
-            esc_html__('WP SMS could not start because some of its files are missing. This usually means an update did not finish. Reinstalling the plugin restores the missing files; your settings and data are not affected.', 'wp-sms')
+            esc_html__('WSMS could not start because some of its files are missing. This usually means an update did not finish. Reinstalling the plugin restores the missing files; your settings and data are not affected.', 'wp-sms')
         );
     });
 
