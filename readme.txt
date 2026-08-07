@@ -156,13 +156,13 @@ All premium features + all add-ons in one package.
 
 == Changelog ==
 = v7.2.7 - 2026-08-07 =
-- **Fix:** Translations work again on WordPress 6.7 and later; the admin is no longer left partly in English.
-- **Fix:** A number is no longer added to your subscriber list when its confirmation SMS can't be sent, and the form now shows the real reason ([#514](https://github.com/wp-sms/wp-sms/issues/514)).
-- **Fix:** A half-finished update no longer takes the site down; WSMS stops and explains that reinstalling restores the missing files.
-- **Fix:** No SMS is sent when Forminator rejects a submission, so people who never completed the form aren't texted.
-- **Fix:** The Forminator settings screen now lists all your forms, not just the first 20.
-- **Enhancement:** The Forminator settings screen shows each form's ID and saves settings per form, so it's clear which form SMS is set up on.
-- **Enhancement:** When Forminator marks a submission as spam or abandoned, WSMS now records why no SMS was sent ([#509](https://github.com/wp-sms/wp-sms/issues/509)).
+- **Fix:** Translations work again on WordPress 6.7+.
+- **Fix:** A number isn't added to your subscriber list when its confirmation SMS fails ([#514](https://github.com/wp-sms/wp-sms/issues/514)).
+- **Fix:** A half-finished update no longer takes the site down.
+- **Fix:** No SMS is sent when Forminator rejects a submission.
+- **Fix:** The Forminator settings screen lists all forms, not just the first 20.
+- **Enhancement:** Forminator settings show each form's ID and save per form.
+- **Enhancement:** WSMS records why an SMS was skipped for spam or abandoned submissions ([#509](https://github.com/wp-sms/wp-sms/issues/509)).
 
 = v7.2.6 - 2026-07-30 =
 - **New:** Added the LogisticSMS gateway
