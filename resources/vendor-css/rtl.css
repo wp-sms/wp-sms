@@ -37,6 +37,10 @@ body.rtl .wpsms-chatbox.wpsms-chatbox--left-side .wpsms-chatbox__arrow {
   left: 2.5rem !important;
 }
 
+.rtl .wpsms-chatbox__copy-right {
+  direction: rtl !important;
+}
+
 /*
  * intl-tel-input (PhoneInput) in RTL:
  * Ensure the dropdown aligns inside the viewport and the list/search align properly.
