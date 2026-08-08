@@ -155,10 +155,11 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
-= v7.2.7 - 2026-08-07 =
+v7.2.7 - 2026-08-08
 - **Fix:** Translations work again on WordPress 6.7+.
 - **Fix:** A number isn't added to your subscriber list when its confirmation SMS fails ([#514](https://github.com/wp-sms/wp-sms/issues/514)).
 - **Fix:** A half-finished update no longer takes the site down.
+- **Fix:** Forminator notifications now work whether or not the form uses AJAX submission. A form with AJAX turned off reloads the page when submitted, which Forminator handles through a different path, and WSMS was only listening to the AJAX one. The form saved the entry and sent the admin email but no SMS, which looked like a broken gateway (ticket #17353).
 - **Fix:** No SMS is sent when Forminator rejects a submission.
 - **Fix:** The Forminator settings screen lists all forms, not just the first 20.
 - **Enhancement:** Forminator settings show each form's ID and save per form.
