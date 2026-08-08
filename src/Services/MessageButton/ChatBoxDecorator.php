@@ -37,7 +37,7 @@ class ChatBoxDecorator
 
     public function getFooterText()
     {
-        return $this->getData('chatbox_footer_text', __('Chat with us on WhatsApp for instant support!', 'wp-sms'));
+        return $this->getData('chatbox_footer_text');
     }
 
     public function getFooterLinkUrl()
