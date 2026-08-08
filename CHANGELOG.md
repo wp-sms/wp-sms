@@ -1,3 +1,13 @@
+v7.2.7 - 2026-08-08
+- **Fix:** Translations work again on WordPress 6.7+.
+- **Fix:** A number isn't added to your subscriber list when its confirmation SMS fails ([#514](https://github.com/wp-sms/wp-sms/issues/514)).
+- **Fix:** A half-finished update no longer takes the site down.
+- **Fix:** Forminator notifications now work whether or not the form uses AJAX submission. A form with AJAX turned off reloads the page when submitted, which Forminator handles through a different path, and WSMS was only listening to the AJAX one. The form saved the entry and sent the admin email but no SMS, which looked like a broken gateway (ticket #17353).
+- **Fix:** No SMS is sent when Forminator rejects a submission.
+- **Fix:** The Forminator settings screen lists all forms, not just the first 20.
+- **Enhancement:** Forminator settings show each form's ID and save per form.
+- **Enhancement:** WSMS records why an SMS was skipped for spam or abandoned submissions ([#509](https://github.com/wp-sms/wp-sms/issues/509)).
+
 v7.2.6 - 2026-07-30
 - **New:** Added the LogisticSMS gateway
 - **New:** Added the `wpsms_unsubscribe_success_message` filter to customize the newsletter unsubscribe confirmation message, with the unsubscribed group passed to the filter for both the unsubscribe form and the unsubscribe link.
@@ -9,6 +19,7 @@ v7.2.6 - 2026-07-30
 - **Fix:** A gateway that fails to load no longer breaks the whole admin screen; the credit balance is simply left blank.
 - **Fix:** Fixed Forminator notifications configured to send SMS to a submitted phone field.
 - **Fix:** Fixed Raw JSON custom gateway payloads when placeholder values start or end with quotation marks.
+- **Fix:** Fixed Textsms gateway connection tests reporting success when SOAP WSDL loading fails.
 - **Fix:** Fixed the billing phone number being silently dropped when a WooCommerce order or profile is re-saved.
 
 v7.2.5 - 2026-05-19

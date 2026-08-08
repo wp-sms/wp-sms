@@ -13,6 +13,7 @@ class fast2sms extends Gateway
 {
     private $wsdl_link = "https://www.fast2sms.com/dev";
     public $tariff = "https://www.fast2sms.com";
+    public $documentUrl = 'https://wsms.io/docs/fast2sms-gateway-setup';
     public $unitrial = false;
     public $unit;
     public $flash = "enable";

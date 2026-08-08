@@ -54,6 +54,8 @@ class SubscriberUtil
 
         $gateway_name = Option::getOption('gateway_name');
 
+        $addedIds = [];
+
         if (Option::getOption('newsletter_form_verify') and $gateway_name) {
             // Check gateway setting
             if (!$gateway_name) {
@@ -67,28 +69,85 @@ class SubscriberUtil
                 // Add subscribe to database
                 $result = Newsletter::addSubscriber($name, $mobile, $groupId, '0', $key, $customFields);
                 if ($result['result'] == 'error') {
+                    self::rollbackSubscribers($addedIds);
+
                     // Return response
                     return new \WP_Error('subscribe', $result['message']);
                 }
+
+                $addedIds[] = $result['id'];
             }
 
             // translators: %s: Activation code
-            wp_sms_send($mobile, sprintf(esc_html__('Your activation code: %s', 'wp-sms'), $key));
+            $sendResult = wp_sms_send($mobile, sprintf(esc_html__('Your activation code: %s', 'wp-sms'), $key));
+
+            // The activation code is the only way to complete this subscription, so a number
+            // the gateway refused leaves a row nobody can ever activate. Undo it and tell the
+            // visitor what actually happened instead of claiming the code is on its way.
+            if (is_wp_error($sendResult)) {
+                self::rollbackSubscribers($addedIds);
+
+                return new \WP_Error('subscribe', $sendResult->get_error_message());
+            }
 
             // Return response
             return esc_html__('To activate your subscription, the activation has been sent to your number.', 'wp-sms');
         } else {
+            SubscriberManager::forgetWelcomeMessageError();
+
             foreach ($groupIds as $groupId) {
                 // Add subscribe to database
                 $result = Newsletter::addSubscriber($name, $mobile, $groupId, '1', null, $customFields);
                 if ($result['result'] == 'error') {
+                    self::rollbackSubscribers($addedIds);
+
                     // Return response
                     return new \WP_Error('subscribe', $result['message']);
                 }
+
+                $addedIds[] = $result['id'];
+            }
+
+            // addSubscriber fires wp_sms_add_subscriber, which is where the welcome message
+            // goes out, so by now we know whether the number can actually receive anything.
+            // A number the gateway refuses (an opt-out at the provider, for example) would
+            // otherwise sit on the list forever without ever receiving a campaign.
+            $welcomeError = SubscriberManager::getWelcomeMessageError();
+
+            if (is_wp_error($welcomeError) && apply_filters('wp_sms_rollback_subscriber_on_failed_welcome', true, $mobile, $welcomeError)) {
+                self::rollbackSubscribers($addedIds);
+
+                return new \WP_Error('subscribe', $welcomeError->get_error_message());
             }
 
             // Return response
             return esc_html__('Your mobile number has been successfully subscribed.', 'wp-sms');
+        }
+    }
+
+    /**
+     * Remove subscribers added earlier in this request
+     *
+     * Used when a subscription cannot be completed, so a half finished attempt does not
+     * leave rows behind. Deletes by ID on purpose, so an existing subscription for the
+     * same number is never touched.
+     *
+     * @param array $subscriberIds
+     *
+     * @return void
+     */
+    private static function rollbackSubscribers($subscriberIds)
+    {
+        global $wpdb;
+
+        $subscriberIds = array_filter(array_map('intval', (array)$subscriberIds));
+
+        if (empty($subscriberIds)) {
+            return;
+        }
+
+        foreach ($subscriberIds as $subscriberId) {
+            $wpdb->delete("{$wpdb->prefix}sms_subscribes", ['ID' => $subscriberId], ['%d']);
         }
     }
 

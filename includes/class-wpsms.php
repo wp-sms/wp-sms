@@ -97,22 +97,61 @@ class WP_SMS
 
     /**
      * Constructors plugin Setup
+     *
+     * The bootstrap is wrapped because a partial or interrupted update can leave
+     * the autoloader in place while individual class files are missing. Without
+     * the guard the first unresolved class raises a fatal error during
+     * plugins_loaded, which takes the entire site down instead of just this
+     * plugin. Degrade to an admin notice and let the rest of the site load.
      */
     public function plugin_setup()
     {
-        $this->loadTextDomain();
+        try {
+            $this->includes();
 
-        add_action('init', array($this, 'init'));
+            // Initialize default settings if not already present
+            if (!get_option('wpsms_settings')) {
+                require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
+                update_option('wpsms_settings', \WP_SMS\Settings::getDefaultSettings());
+            }
 
-        $this->includes();
+            $this->setupBackgroundProcess();
 
-        // Initialize default settings if not already present
-        if (!get_option('wpsms_settings')) {
-            require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
-            update_option('wpsms_settings', \WP_SMS\Settings::getDefaultSettings());
+            // Registered last so a failed bootstrap never leaves the init callback
+            // behind, which would run the gateway setup against a plugin whose
+            // managers were never constructed.
+            add_action('init', array($this, 'init'));
+        } catch (\Throwable $error) {
+            $this->handleBootstrapFailure($error);
+        }
+    }
+
+    /**
+     * Reports a bootstrap failure without terminating the request.
+     *
+     * @param \Throwable $error The error raised while loading the plugin.
+     * @return void
+     */
+    private function handleBootstrapFailure($error)
+    {
+        // plugin_setup() runs on every request, so logging unconditionally would
+        // fill the error log and bury the first occurrence, which is the one that
+        // identifies the cause. Record it at most once an hour.
+        if (!get_transient('wp_sms_bootstrap_failure_logged')) {
+            error_log(sprintf('WP SMS could not finish loading: %s', $error->getMessage()));
+            set_transient('wp_sms_bootstrap_failure_logged', 1, HOUR_IN_SECONDS);
         }
 
-        $this->setupBackgroundProcess();
+        add_action('admin_notices', function () {
+            if (!current_user_can('activate_plugins')) {
+                return;
+            }
+
+            printf(
+                '<div class="notice notice-error"><p>%s</p></div>',
+                esc_html__('WP SMS could not finish loading because some of its files are missing or unreadable. This usually means an update did not finish. Reinstalling the plugin restores the missing files; your settings and data are not affected.', 'wp-sms')
+            );
+        });
     }
 
     /**
@@ -137,22 +176,20 @@ class WP_SMS
 
     public function init()
     {
+        $this->loadTextDomain();
         $this->initGateway();
     }
 
     /**
      * Load plugin text domain.
+     *
+     * Must run on `init` (or later). Since WordPress 6.7 translations loaded
+     * before `init` are ignored, which previously left wp-sms strings untranslated.
+     * load_plugin_textdomain() already checks WP_LANG_DIR/plugins/ (where the
+     * auto-updated .mo files live) before falling back to the bundled path.
      */
     private function loadTextDomain()
     {
-        // Compatibility with WordPress < 5.0
-        if (function_exists('determine_locale')) {
-            $locale = apply_filters('plugin_locale', determine_locale(), 'wp-sms');
-
-            unload_textdomain('wp-sms', true);
-            load_textdomain('wp-sms', WP_LANG_DIR . '/wp-sms-' . $locale . '.mo');
-        }
-
         load_plugin_textdomain('wp-sms', false, WP_SMS_DIR . 'resources/languages');
     }
 
@@ -315,6 +352,13 @@ class WP_SMS
      */
     public function getRemoteRequestAsync()
     {
+        // Stays null when the bootstrap aborted before setupBackgroundProcess().
+        // Callers chain straight onto the result, so build it on demand rather
+        // than handing back null and turning a contained failure into a fatal.
+        if ($this->remoteRequestAsync === null) {
+            $this->remoteRequestAsync = new RemoteRequestAsync();
+        }
+
         return $this->remoteRequestAsync;
     }
 
@@ -323,6 +367,12 @@ class WP_SMS
      */
     public function getRemoteRequestQueue()
     {
+        // See getRemoteRequestAsync(): built on demand so a failed bootstrap does
+        // not leave callers dereferencing null.
+        if ($this->remoteRequestQueue === null) {
+            $this->remoteRequestQueue = new RemoteRequestQueue();
+        }
+
         return $this->remoteRequestQueue;
     }
 }

@@ -59,7 +59,7 @@ class smses extends Gateway
      */
     public $supportIncoming = true;
 
-    public $documentUrl = 'https://wsms.io/docs/gateway-configuration';
+    public $documentUrl = 'https://wsms.io/docs/smses-gateway-setup';
 
     public $gateway_api_base_url;
 

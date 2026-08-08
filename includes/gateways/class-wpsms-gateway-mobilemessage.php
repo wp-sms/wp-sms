@@ -11,6 +11,7 @@ use WP_SMS\Gateway;
 class mobilemessage extends Gateway
 {
     private $wsdl_link      = "https://api.mobilemessage.com.au";
+    public $documentUrl     = 'https://wsms.io/docs/mobilemessage-gateway-setup';
     public $unitrial        = false;
     public $unit;
     public $flash           = "disable";
