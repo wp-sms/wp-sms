@@ -37,7 +37,9 @@ class ChatBoxDecorator
 
     public function getFooterText()
     {
-        return $this->getData('chatbox_footer_text');
+        $value = Option::getOption('chatbox_footer_text');
+
+        return $value === '' || $value === false || $value === null ? false : $value;
     }
 
     public function getFooterLinkUrl()

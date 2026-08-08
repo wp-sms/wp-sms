@@ -32,4 +32,13 @@ class ChatBoxDecoratorTest extends WP_UnitTestCase
 
         $this->assertSame('We typically reply within minutes', $chatbox->getFooterText());
     }
+
+    public function testFooterTextPreservesConfiguredZeroValue()
+    {
+        Option::updateOption('chatbox_footer_text', '0');
+
+        $chatbox = new ChatBoxDecorator();
+
+        $this->assertSame('0', $chatbox->getFooterText());
+    }
 }
