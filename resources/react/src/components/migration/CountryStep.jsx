@@ -2,6 +2,7 @@ import { __, sprintf } from '@wordpress/i18n'
 import React, { useMemo } from 'react'
 import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { SearchableSelect } from '@/components/ui/searchable-select'
 import { getWpSettings } from '@/lib/utils'
 
 /**
@@ -18,7 +19,34 @@ export default function CountryStep({
   onContinue,
   onBack,
 }) {
-  const { countriesByDialCode = {} } = getWpSettings()
+  const { countries = [], countriesByDialCode = {} } = getWpSettings()
+
+  const countryOptions = useMemo(() => {
+    const options = Object.entries(countriesByDialCode).map(([dialCode, label]) => ({
+      value: dialCode,
+      label,
+    }))
+    const plusOneIndex = options.findIndex(({ value: dialCode }) => dialCode === '+1')
+
+    if (plusOneIndex === -1 || !Array.isArray(countries)) {
+      return options
+    }
+
+    const plusOneCountries = countries
+      .filter(({ dialCode }) => dialCode === '+1')
+      .sort((countryA, countryB) => Number(countryB.code === 'US') - Number(countryA.code === 'US'))
+
+    if (!plusOneCountries.some(({ code }) => code === 'US')) {
+      return options
+    }
+
+    options[plusOneIndex] = {
+      value: '+1',
+      label: `${plusOneCountries.map(({ name, code }) => `${name} (${code})`).join(' & ')} (+1)`,
+    }
+
+    return options
+  }, [countries, countriesByDialCode])
 
   const exampleLine = useMemo(() => {
     if (!value) {
@@ -60,20 +88,15 @@ export default function CountryStep({
         >
           {__('Default country code', 'wp-sms')}
         </label>
-        <select
-          id="wpsms-migration-country"
-          className="wsms-w-full wsms-border wsms-border-input wsms-rounded-md wsms-px-3 wsms-py-2 wsms-text-[13px] wsms-bg-background wsms-text-foreground"
+        <SearchableSelect
           value={value || ''}
-          onChange={(e) => onChange(e.target.value)}
+          onValueChange={onChange}
+          options={countryOptions}
+          placeholder={__('Select country code...', 'wp-sms')}
+          searchPlaceholder={__('Search countries...', 'wp-sms')}
+          aria-label={__('Default country code', 'wp-sms')}
           disabled={loading}
-        >
-          <option value="">{__('Select country code...', 'wp-sms')}</option>
-          {Object.entries(countriesByDialCode).map(([dialCode, label]) => (
-            <option key={dialCode} value={dialCode}>
-              {label}
-            </option>
-          ))}
-        </select>
+        />
         <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-2">
           <bdi>{exampleLine}</bdi>
         </p>
