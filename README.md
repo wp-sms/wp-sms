@@ -140,6 +140,17 @@ Creates `dist/wp-sms.zip`, excluding files listed in `.distignore`.
 
 WSMS is translated into many languages. See the [translate page](https://translate.wordpress.org/projects/wp-plugins/wp-sms) for details.
 
+React admin strings must use `@wordpress/i18n` with the `wp-sms` text domain. Always run the complete build before creating a release:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm build
+```
+
+The build order is significant: it compiles the dashboard, generates `public/dashboard/i18n-strings.js` with stable literal calls for every React label, and then regenerates `languages/wp-sms.pot`. The tag deployment workflow runs this same build before publishing to WordPress.org. Do not publish a ZIP built with only `build:dashboard` or `build:pot`.
+
+Before release, verify that `public/dashboard/i18n-strings.js` is present and that dashboard labels appear in `languages/wp-sms.pot`. The generated script has a stable path so `wp_set_script_translations()` can load WordPress.org's matching `wp-sms-<locale>-<hash>.json` language-pack file in the admin UI.
+
 ## Resources
 
 - [WordPress.org](https://wordpress.org/plugins/wp-sms/)
