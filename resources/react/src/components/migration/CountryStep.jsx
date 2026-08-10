@@ -96,6 +96,7 @@ export default function CountryStep({
           placeholder={__('Select country code...', 'wp-sms')}
           searchPlaceholder={__('Search countries...', 'wp-sms')}
           aria-label={__('Default country code', 'wp-sms')}
+          triggerClassName="wsms-bg-background wsms-text-foreground"
           disabled={loading}
         />
         <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-2">
