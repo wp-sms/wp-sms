@@ -89,6 +89,7 @@ export default function CountryStep({
           {__('Default country code', 'wp-sms')}
         </label>
         <SearchableSelect
+          id="wpsms-migration-country"
           value={value || ''}
           onValueChange={onChange}
           options={countryOptions}
