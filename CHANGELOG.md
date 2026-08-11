@@ -1,5 +1,7 @@
-v7.2.7 - 2026-08-08
+Unreleased
 - **Fix:** The phone-number normalization wizard now makes the United States easy to find in the default country selector ([#522](https://github.com/wp-sms/wp-sms/issues/522)).
+
+v7.2.7 - 2026-08-08
 - **Fix:** Translations work again on WordPress 6.7+.
 - **Fix:** A number isn't added to your subscriber list when its confirmation SMS fails ([#514](https://github.com/wp-sms/wp-sms/issues/514)).
 - **Fix:** A half-finished update no longer takes the site down.
