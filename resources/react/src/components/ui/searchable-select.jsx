@@ -14,6 +14,7 @@ import { Input } from './input'
  * @param {Function} props.onValueChange - Callback when selection changes
  * @param {string} props.placeholder - Placeholder text when nothing selected
  * @param {string} props.searchPlaceholder - Placeholder for search input
+ * @param {string} props.id - ID for associating the trigger with a label
  * @param {string} props.className - Additional CSS classes
  * @param {boolean} props.disabled - Whether the component is disabled
  */
@@ -25,6 +26,7 @@ const SearchableSelect = React.forwardRef(
       onValueChange,
       placeholder = 'Select...',
       searchPlaceholder = 'Search...',
+      id,
       className,
       disabled = false,
       triggerClassName,
@@ -133,6 +135,7 @@ const SearchableSelect = React.forwardRef(
     return (
       <div ref={containerRef} className={cn('wsms-relative wsms-w-full', className)}>
         <Button
+          id={id}
           ref={ref}
           variant="outline"
           role="combobox"
