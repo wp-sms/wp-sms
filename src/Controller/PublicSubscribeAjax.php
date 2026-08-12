@@ -43,9 +43,28 @@ class PublicSubscribeAjax extends AjaxControllerAbstract
         $result = SubscriberUtil::subscribe($name, $number, $group_id, $customFields);
 
         if (is_wp_error($result)) {
-            throw new Exception(esc_html($result->get_error_message()));
+            throw new Exception(self::sanitizeValidationErrorMessage($result->get_error_message()));
         }
 
         return wp_send_json_success($result);
+    }
+
+    /**
+     * Sanitize developer-provided subscription validation messages.
+     *
+     * @param string $message Validation error message.
+     *
+     * @return string
+     */
+    public static function sanitizeValidationErrorMessage($message)
+    {
+        return wp_kses($message, [
+            'a'  => [
+                'href'   => true,
+                'target' => true,
+                'rel'    => true,
+            ],
+            'br' => [],
+        ]);
     }
 }
