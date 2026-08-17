@@ -78,6 +78,33 @@ class CustomGatewayTest extends WP_UnitTestCase
         $this->gateway->SendSMS();
     }
 
+    public function test_key_value_post_supports_form_urlencoded_body()
+    {
+        $this->gateway->to               = ['+31600000001'];
+        $this->gateway->is_post_body     = 'yes';
+        $this->gateway->post_body_format = 'form_urlencoded';
+        $this->gateway->http_parameters  = "to:{to}\nmessage:{message}";
+
+        $this->gateway->expects($this->once())
+            ->method('request')
+            ->with(
+                'POST',
+                'https://example.test/send',
+                [],
+                $this->callback(function ($args) {
+                    parse_str($args['body'], $decoded);
+
+                    return $decoded === [
+                        'to'      => '+31600000001',
+                        'message' => 'Hello world',
+                    ] && $args['headers']['Content-Type'] === 'application/x-www-form-urlencoded';
+                })
+            )
+            ->willReturn('ok');
+
+        $this->gateway->SendSMS();
+    }
+
     public function test_key_value_bracket_syntax_produces_json_array()
     {
         $this->gateway->is_post_body    = 'yes';
