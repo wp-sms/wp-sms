@@ -46,6 +46,13 @@ describe('Build output: JS bundles (vite)', () => {
     const content = fs.readFileSync(path.resolve(pub, 'js/frontend.min.js'), 'utf8')
     expect(content).toContain('"use strict"')
   })
+
+  test('frontend bundle renders sanitized subscription validation errors as HTML', () => {
+    expectFile('js/frontend.min.js')
+    const content = fs.readFileSync(path.resolve(pub, 'js/frontend.min.js'), 'utf8')
+
+    expect(content).toMatch(/wpsms-subscribe__message--error[^;]{0,200}\.find\("span"\)\.html\(/)
+  })
 })
 
 describe('Build output: SCSS compilation', () => {
