@@ -1,4 +1,5 @@
 Unreleased
+- **Fix:** Subscription validation messages can now show safe clickable SMS links and line breaks without allowing unsafe markup ([#525](https://github.com/wp-sms/wp-sms/issues/525)).
 - **Fix:** The phone-number normalization wizard now makes the United States easy to find in the default country selector ([#522](https://github.com/wp-sms/wp-sms/issues/522)).
 
 v7.2.7 - 2026-08-08
