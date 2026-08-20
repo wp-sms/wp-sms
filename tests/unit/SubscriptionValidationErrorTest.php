@@ -16,12 +16,15 @@ class SubscriptionValidationErrorTest extends WP_UnitTestCase
 
     public function testStripsUnsafeHtmlAndAttributes()
     {
-        $message   = '<script>alert(1)</script><a href="javascript:alert(1)" onclick="alert(1)">Text START</a>';
+        $message   = '<script>alert(1)</script><img src="x" onerror="alert(1)"><a href="javascript:alert(1)" onclick="alert(1)" style="color:red">Text START</a>';
         $sanitized = PublicSubscribeAjax::sanitizeValidationErrorMessage($message);
 
         $this->assertStringNotContainsString('<script', $sanitized);
+        $this->assertStringNotContainsString('<img', $sanitized);
         $this->assertStringNotContainsString('javascript:', $sanitized);
+        $this->assertStringNotContainsString('onerror', $sanitized);
         $this->assertStringNotContainsString('onclick', $sanitized);
+        $this->assertStringNotContainsString('style=', $sanitized);
         $this->assertStringContainsString('<a href="alert(1)">Text START</a>', $sanitized);
     }
 
