@@ -17,12 +17,12 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_DIR="$(dirname "$SCRIPT_DIR")"
-PLUGIN_SLUG="$(basename "$PLUGIN_DIR")"
+MAIN_PHP="$PLUGIN_DIR/wp-sms.php"
+PLUGIN_SLUG="$(basename "$MAIN_PHP" .php)"
 OUTPUT_DIR="$PLUGIN_DIR/dist"
 BUILD_DIR="/tmp/wp-plugin-dist"
 
 # Get version from main plugin file header
-MAIN_PHP="$PLUGIN_DIR/${PLUGIN_SLUG}.php"
 VERSION=""
 if [ -f "$MAIN_PHP" ]; then
     VERSION=$(grep "Version:" "$MAIN_PHP" | head -1 | sed 's/.*Version:[[:space:]]*//' | sed 's/[^0-9.].*//')
