@@ -25,7 +25,7 @@ test('renders a safe structured SMS action through the public AJAX flow', async 
   const pageErrors = [];
   page.on('pageerror', (error) => pageErrors.push(error.message));
 
-  const form = await openSubscriptionForm(page, '+155****4567');
+  const form = await openSubscriptionForm(page, '+15555554567');
   const [ajaxResponse] = await Promise.all([
     page.waitForResponse((response) => response.url().includes('admin-ajax.php?action=wp_sms_subscribe')),
     form.locator('.js-wpSmsSubmitButton').click(),
@@ -63,7 +63,7 @@ test('renders a safe structured SMS action through the public AJAX flow', async 
 });
 
 test('keeps plain validation errors escaped and backward-compatible', async ({ page }) => {
-  const form = await openSubscriptionForm(page, '+155****4568');
+  const form = await openSubscriptionForm(page, '+15555554568');
   const [ajaxResponse] = await Promise.all([
     page.waitForResponse((response) => response.url().includes('admin-ajax.php?action=wp_sms_subscribe')),
     form.locator('.js-wpSmsSubmitButton').click(),
