@@ -1,6 +1,7 @@
 import { test, expect } from '../../fixtures/test.js';
 
-const smsHref = 'sms:+15555554567?&body=START';
+const smsHref = 'sms:+155****4567?&body=START';
+const realFlowSmsHref = 'sms:+15555554567?body=START';
 const validationMessage = [
   'You are currently unsubscribed.<br><br>',
   `<a href="${smsHref}" target="_blank" rel="noopener">Text START</a>`,
@@ -74,4 +75,50 @@ test('renders a server-sanitized subscription validation link as HTML', async ({
   await expect(message).not.toContainText('<a');
 
   await message.screenshot({ path: test.info().outputPath('subscription-validation-safe-link.png') });
+});
+
+test('sanitizes and renders validation markup through the real WordPress AJAX flow', async ({ page }) => {
+  const pageErrors = [];
+  page.on('pageerror', (error) => pageErrors.push(error.message));
+
+  await page.goto('/?wpsms_e2e_subscription_validation=1');
+  await expect(page.locator('script[src*="/public/js/frontend.min.js"]')).toHaveCount(1);
+  await page.evaluate(() => {
+    window.__wpsmsAttack = false;
+  });
+
+  const form = page.locator('.js-wpSmsSubscribeForm');
+  await expect(form).toBeVisible();
+  await form.locator('.js-wpSmsSubscriberName input').fill('Browser QA real flow');
+  await form.locator('.js-wpSmsSubscriberMobile input').fill('+15555554567');
+
+  const gdprCheckbox = form.locator('.js-wpSmsGdprConfirmation');
+  if (await gdprCheckbox.count()) {
+    await gdprCheckbox.check();
+  }
+
+  const [ajaxResponse] = await Promise.all([
+    page.waitForResponse((response) => response.url().includes('admin-ajax.php?action=wp_sms_subscribe')),
+    form.locator('.js-wpSmsSubmitButton').click(),
+  ]);
+
+  expect(ajaxResponse.status()).toBe(400);
+  const response = await ajaxResponse.json();
+  expect(response.success).toBe(false);
+  expect(response.data).toContain(`<a href="${realFlowSmsHref}"`);
+  expect(response.data).not.toMatch(/<script|<img|onerror|onclick|style=|javascript:/i);
+
+  const message = form.locator('.wpsms-subscribe__message--error');
+  const link = message.getByRole('link', { name: 'Text START' });
+
+  await expect(message).toBeVisible();
+  await expect(link).toHaveAttribute('href', realFlowSmsHref);
+  await expect(message).not.toContainText('<a');
+  await expect(message.locator('script, img')).toHaveCount(0);
+  await expect(link).not.toHaveAttribute('onclick');
+  await expect(link).not.toHaveAttribute('style');
+  await expect.poll(() => page.evaluate(() => window.__wpsmsAttack)).toBe(false);
+  expect(pageErrors).toEqual([]);
+
+  await message.screenshot({ path: test.info().outputPath('subscription-validation-real-flow.png') });
 });

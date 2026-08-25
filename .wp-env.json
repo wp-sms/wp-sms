@@ -8,7 +8,9 @@
     "WP_DEBUG_LOG": true,
     "SCRIPT_DEBUG": true
   },
-  "mappings": {},
+  "mappings": {
+    "wp-content/mu-plugins/wpsms-e2e-subscription-validation.php": "./tests/e2e/fixtures/wpsms-e2e-subscription-validation.php"
+  },
   "port": 8888,
   "testsPort": 8889,
   "env": {
