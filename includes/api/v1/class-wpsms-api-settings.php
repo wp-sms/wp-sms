@@ -512,6 +512,10 @@ class SettingsApi extends RestApi
         foreach ($settings as $key => $value) {
             $sanitizedKey = sanitize_key($key);
 
+            if ($sanitizedKey === 'mobile_county_code' && function_exists('wp_sms_countries')) {
+                $value = wp_sms_countries()->normalizeDialCode($value);
+            }
+
             // Check if this field has a known type (add-on or active gateway)
             if (isset($fieldTypes[$sanitizedKey])) {
                 $sanitized[$sanitizedKey] = $this->sanitizeAddonField($value, $fieldTypes[$sanitizedKey]);
