@@ -825,6 +825,10 @@ class Dashboard extends Singleton
             }
         }
 
+        if (isset($storedSettings['mobile_county_code']) && function_exists('wp_sms_countries')) {
+            $storedSettings['mobile_county_code'] = wp_sms_countries()->normalizeDialCode($storedSettings['mobile_county_code']);
+        }
+
         return $storedSettings;
     }
 
