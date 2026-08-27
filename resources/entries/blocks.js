@@ -124,7 +124,7 @@ let wpSmsSubscribeForm = {
                 submitButton.prop('disabled', false);
                 processingOverlay.hide();
                 let errorMessage = (data.responseJSON && data.responseJSON.data) ? data.responseJSON.data : wpsms_ajax_object.unknown_error;
-                messageContainer.fadeIn().html('<span class="wpsms-subscribe__message wpsms-subscribe__message--error"></span>').find('span').text(errorMessage);
+                messageContainer.fadeIn().html('<span class="wpsms-subscribe__message wpsms-subscribe__message--error"></span>').find('span').html(errorMessage);
             }
         });
 
