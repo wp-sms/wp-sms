@@ -1,3 +1,6 @@
+Unreleased
+- **Fix:** The United States default country code now stays selected after saving and reloading settings ([#535](https://github.com/wp-sms/wp-sms/issues/535)).
+
 v7.2.7 - 2026-08-08
 - **Fix:** Translations work again on WordPress 6.7+.
 - **Fix:** A number isn't added to your subscriber list when its confirmation SMS fails ([#514](https://github.com/wp-sms/wp-sms/issues/514)).
