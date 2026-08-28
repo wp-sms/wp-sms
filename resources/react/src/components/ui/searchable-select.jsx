@@ -51,6 +51,12 @@ const SearchableSelect = React.forwardRef(
       }
     }, [open])
 
+    React.useEffect(() => {
+      if (disabled) {
+        setOpen(false)
+      }
+    }, [disabled])
+
     // Close on click outside
     React.useEffect(() => {
       if (!open) return
@@ -128,6 +134,8 @@ const SearchableSelect = React.forwardRef(
     }, [value, normalizedOptions])
 
     const handleSelect = (optionValue) => {
+      if (disabled) return
+
       onValueChange?.(optionValue)
       setOpen(false)
     }
@@ -195,6 +203,7 @@ const SearchableSelect = React.forwardRef(
                       key={option.value}
                       type="button"
                       onClick={() => handleSelect(option.value)}
+                      disabled={disabled}
                       className={cn(
                         'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded wsms-px-2 wsms-py-1.5 wsms-text-start wsms-text-[13px] wsms-outline-none',
                         'hover:wsms-bg-accent focus:wsms-bg-accent',
