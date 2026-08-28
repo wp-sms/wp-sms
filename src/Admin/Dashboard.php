@@ -640,6 +640,7 @@ class Dashboard extends Singleton
                         'type'        => $field['type'] ?? 'text',
                         'options'     => $field['options'] ?? [],
                         'className'   => $field['className'] ?? '',
+                        'isPassword'  => !empty($field['isPassword']),
                     ];
                 }
             }

@@ -31,4 +31,30 @@ describe('ConfigurationStep', () => {
     expect(field.tagName).toBe('TEXTAREA')
     expect(field).toHaveValue('api_key:xxx\nmessage:{message}')
   })
+
+  test('masks secret gateway fields configured as textareas', () => {
+    render(
+      <ConfigurationStep
+        gatewayName="custom"
+        gatewayCapabilities={{
+          gatewayFields: {
+            http_headers: {
+              id: 'gateway_http_headers',
+              name: 'HTTP Headers',
+              type: 'textarea',
+              isPassword: true,
+            },
+          },
+        }}
+        credentials={{ gateway_http_headers: 'Authorization: Bearer secret-token' }}
+        onCredentialChange={jest.fn()}
+      />
+    )
+
+    const field = screen.getByLabelText('HTTP Headers')
+
+    expect(field.tagName).toBe('INPUT')
+    expect(field).toHaveAttribute('type', 'password')
+    expect(field).toHaveValue('Authorization: Bearer secret-token')
+  })
 })

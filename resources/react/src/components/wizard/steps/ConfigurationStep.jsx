@@ -133,7 +133,11 @@ export default function ConfigurationStep({
                 if (!isFieldVisible(field)) return null
 
                 const fieldValue = credentials[field.id] || ''
-                const isPassword = key === 'password' || field.id.includes('password') || field.id.includes('key')
+                const isPassword =
+                  Boolean(field.isPassword) ||
+                  key === 'password' ||
+                  field.id.includes('password') ||
+                  field.id.includes('key')
                 const isFullWidth = key === 'from' || field.id === 'gateway_sender_id'
 
                 if (field.type === 'select' && field.options) {
@@ -155,7 +159,7 @@ export default function ConfigurationStep({
                   )
                 }
 
-                if (field.type === 'textarea') {
+                if (field.type === 'textarea' && !isPassword) {
                   return (
                     <div key={field.id} className="md:wsms-col-span-2">
                       <TextareaField
