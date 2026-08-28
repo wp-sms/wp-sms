@@ -989,6 +989,7 @@ class SettingsApi extends RestApi
                         'placeholder' => $field['place_holder'] ?? '',
                         'type'        => $field['type'] ?? 'text',
                         'options'     => $field['options'] ?? [],
+                        'isPassword'  => !empty($field['isPassword']),
                     ];
                 }
             }

@@ -30,6 +30,30 @@ class CustomGatewayTest extends WP_UnitTestCase
         $this->gateway->msg     = 'Hello world';
     }
 
+    public function test_http_headers_are_marked_as_secret()
+    {
+        $this->assertTrue($this->gateway->gatewayFields['http_headers']['isPassword']);
+    }
+
+    public function test_http_headers_secret_flag_is_exposed_to_dashboard()
+    {
+        global $sms;
+
+        $previousGateway = $sms ?? null;
+        $sms             = $this->gateway;
+        $dashboard       = \WP_SMS\Admin\Dashboard::instance();
+        $method          = new \ReflectionMethod($dashboard, 'getGatewayCapabilities');
+        $method->setAccessible(true);
+
+        try {
+            $capabilities = $method->invoke($dashboard);
+        } finally {
+            $sms = $previousGateway;
+        }
+
+        $this->assertTrue($capabilities['gatewayFields']['http_headers']['isPassword']);
+    }
+
     public function test_key_value_get_sends_params_as_query_string()
     {
         $this->gateway->http_parameters = "to:{to}\nmessage:{message}";

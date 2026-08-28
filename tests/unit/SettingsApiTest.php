@@ -45,6 +45,21 @@ class SettingsApiTest extends WPSMSTestCase
     }
 
     /**
+     * Test gateway capabilities preserve secret-field metadata
+     */
+    public function testGatewayCapabilitiesPropagatePasswordMetadata()
+    {
+        Option::updateOption('gateway_name', 'custom');
+
+        $request  = new WP_REST_Request('GET', '/wpsms/v1/settings/gateway-capabilities');
+        $response = rest_do_request($request);
+        $data     = $response->get_data();
+
+        $this->assertEquals(200, $response->get_status());
+        $this->assertTrue($data['data']['gatewayFields']['http_headers']['isPassword']);
+    }
+
+    /**
      * Test update settings requires authentication
      */
     public function testUpdateSettingsRequiresAuthentication()

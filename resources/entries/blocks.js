@@ -53,6 +53,56 @@ let wpSmsSubscribeForm = {
         this.mandatoryVerify = jQuery('.js-wpSmsMandatoryVerify').val();
     },
 
+    renderSubscriptionError: function (messageContainer, payload) {
+        let errorMessage = payload;
+        let actions = [];
+
+        if (payload && typeof payload === 'object' && !Array.isArray(payload)) {
+            errorMessage = payload.message;
+            actions = Array.isArray(payload.actions) ? payload.actions : [];
+        }
+
+        let message = jQuery('<span>', {
+            class: 'wpsms-subscribe__message wpsms-subscribe__message--error'
+        }).text(errorMessage || wpsms_ajax_object.unknown_error);
+
+        messageContainer.empty().append(message);
+
+        actions.forEach(function (action) {
+            if (!action || typeof action.label !== 'string' || typeof action.href !== 'string') {
+                return;
+            }
+
+            let scheme = action.href.match(/^([a-z][a-z0-9+.-]*):/i);
+            if (!scheme || !['sms', 'mailto', 'https'].includes(scheme[1].toLowerCase())) {
+                return;
+            }
+
+            let link = jQuery('<a>', {
+                class: 'wpsms-subscribe__message-action',
+                href: action.href
+            }).text(action.label);
+
+            if (['_blank', '_self'].includes(action.target)) {
+                link.attr('target', action.target);
+            }
+
+            if (typeof action.rel === 'string' && action.rel) {
+                let rel = action.rel.split(/\s+/).filter(function (value) {
+                    return ['nofollow', 'noopener', 'noreferrer', 'sponsored', 'ugc'].includes(value);
+                });
+
+                if (rel.length) {
+                    link.attr('rel', [...new Set(rel)].join(' '));
+                }
+            }
+
+            message.append(document.createTextNode(' '), link);
+        });
+
+        messageContainer.fadeIn();
+    },
+
     sendSubscriptionForm: function (element, $this = this) {
         let submitButton = element.find('.js-wpSmsSubmitButton');
         let messageContainer = element.find('.js-wpSmsSubscribeMessage');
@@ -123,8 +173,8 @@ let wpSmsSubscribeForm = {
             error: function (data) {
                 submitButton.prop('disabled', false);
                 processingOverlay.hide();
-                let errorMessage = (data.responseJSON && data.responseJSON.data) ? data.responseJSON.data : wpsms_ajax_object.unknown_error;
-                messageContainer.fadeIn().html('<span class="wpsms-subscribe__message wpsms-subscribe__message--error"></span>').find('span').html(errorMessage);
+                let errorPayload = (data.responseJSON && data.responseJSON.data) ? data.responseJSON.data : wpsms_ajax_object.unknown_error;
+                $this.renderSubscriptionError(messageContainer, errorPayload);
             }
         });
 

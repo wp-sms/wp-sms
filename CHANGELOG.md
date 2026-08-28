@@ -1,4 +1,5 @@
 v7.2.8 - Unreleased
+- **Enhancement:** Subscription validation errors can now include safe structured SMS, email, and web actions while keeping messages as plain text ([#533](https://github.com/wp-sms/wp-sms/issues/533)).
 - **Fix:** The United States default country code now stays selected after saving and reloading settings ([#535](https://github.com/wp-sms/wp-sms/issues/535)).
 - **Fix:** The phone-number normalization wizard now makes the United States easy to find in the default country selector ([#522](https://github.com/wp-sms/wp-sms/issues/522)).
 

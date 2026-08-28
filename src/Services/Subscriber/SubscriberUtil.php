@@ -72,7 +72,9 @@ class SubscriberUtil
                     self::rollbackSubscribers($addedIds);
 
                     // Return response
-                    return new \WP_Error('subscribe', $result['message']);
+                    return isset($result['error']) && is_wp_error($result['error'])
+                        ? $result['error']
+                        : new \WP_Error('subscribe', $result['message']);
                 }
 
                 $addedIds[] = $result['id'];
@@ -102,7 +104,9 @@ class SubscriberUtil
                     self::rollbackSubscribers($addedIds);
 
                     // Return response
-                    return new \WP_Error('subscribe', $result['message']);
+                    return isset($result['error']) && is_wp_error($result['error'])
+                        ? $result['error']
+                        : new \WP_Error('subscribe', $result['message']);
                 }
 
                 $addedIds[] = $result['id'];
