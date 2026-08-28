@@ -264,6 +264,10 @@ class Settings
         // Merge our new settings with the existing
         $output = array_merge($this->options, $input);
 
+        if (isset($output['mobile_county_code']) && function_exists('wp_sms_countries')) {
+            $output['mobile_county_code'] = wp_sms_countries()->normalizeDialCode($output['mobile_county_code']);
+        }
+
         if (!empty($settings[$tab])) {
             foreach ($settings[$tab] as $field_key => $field) {
                 if (is_numeric($field_key)) {

@@ -57,8 +57,10 @@ case "$ENTRIES" in
         ;;
 esac
 
-if ! unzip -p "$ARCHIVE" wp-sms/public/js/frontend.min.js | grep -Eq 'wpsms-subscribe__message--error[^;]{0,200}\.find\("span"\)\.html\('; then
-    printf 'Packaged frontend bundle does not render sanitized subscription errors as HTML.\n' >&2
+PACKAGED_FRONTEND="$(unzip -p "$ARCHIVE" wp-sms/public/js/frontend.min.js)"
+if [[ "$PACKAGED_FRONTEND" != *"renderSubscriptionError"* ]] ||
+   [[ "$PACKAGED_FRONTEND" != *"wpsms-subscribe__message-action"* ]]; then
+    printf 'Packaged frontend bundle does not include structured subscription actions.\n' >&2
     exit 1
 fi
 

@@ -9,7 +9,7 @@
     "SCRIPT_DEBUG": true
   },
   "mappings": {
-    "wp-content/mu-plugins/wpsms-e2e-subscription-validation.php": "./tests/e2e/fixtures/wpsms-e2e-subscription-validation.php"
+    "wp-content/mu-plugins/wpsms-e2e-structured-actions.php": "./tests/e2e/fixtures/wpsms-e2e-structured-actions.php"
   },
   "port": 8888,
   "testsPort": 8889,

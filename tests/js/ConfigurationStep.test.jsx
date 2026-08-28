@@ -31,4 +31,32 @@ describe('ConfigurationStep', () => {
     expect(field.tagName).toBe('TEXTAREA')
     expect(field).toHaveValue('api_key:xxx\nmessage:{message}')
   })
+
+  test('masks multiline secret gateway fields without converting them to inputs', () => {
+    const headers = 'Authorization: Bearer ***\nX-API-Key: ***'
+
+    render(
+      <ConfigurationStep
+        gatewayName="custom"
+        gatewayCapabilities={{
+          gatewayFields: {
+            http_headers: {
+              id: 'gateway_http_headers',
+              name: 'HTTP Headers',
+              type: 'textarea',
+              isPassword: true,
+            },
+          },
+        }}
+        credentials={{ gateway_http_headers: headers }}
+        onCredentialChange={jest.fn()}
+      />
+    )
+
+    const field = screen.getByLabelText('HTTP Headers')
+
+    expect(field.tagName).toBe('TEXTAREA')
+    expect(field).toHaveStyle({ WebkitTextSecurity: 'disc' })
+    expect(field).toHaveValue(headers)
+  })
 })

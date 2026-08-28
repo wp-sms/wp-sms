@@ -35,10 +35,11 @@ class custom extends \WP_SMS\Gateway
                 'desc' => esc_html__('Enter the Send SMS URL for the SMS gateway API where the SMS requests will be sent. This URL is provided by the SMS gateway service.', 'wp-sms'),
             ],
             'http_headers'    => [
-                'id'   => 'gateway_http_headers',
-                'name' => esc_html__('HTTP Headers', 'wp-sms'),
-                'desc' => __('One <code>Header-Name: value</code> per line. Example: <code>Content-Type: application/json</code>, <code>Authorization: Bearer xxx</code>', 'wp-sms'),
-                'type' => 'textarea',
+                'id'         => 'gateway_http_headers',
+                'name'       => esc_html__('HTTP Headers', 'wp-sms'),
+                'desc'       => __('One <code>Header-Name: value</code> per line. Example: <code>Content-Type: application/json</code>, <code>Authorization: Bearer ***', 'wp-sms'),
+                'type'       => 'textarea',
+                'isPassword' => true,
             ],
             'body_format'     => [
                 'id'      => 'gateway_body_format',

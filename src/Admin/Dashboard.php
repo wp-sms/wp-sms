@@ -640,6 +640,7 @@ class Dashboard extends Singleton
                         'type'        => $field['type'] ?? 'text',
                         'options'     => $field['options'] ?? [],
                         'className'   => $field['className'] ?? '',
+                        'isPassword'  => !empty($field['isPassword']),
                     ];
                 }
             }
@@ -823,6 +824,10 @@ class Dashboard extends Singleton
             if (is_int($value) || is_float($value)) {
                 $storedSettings[$key] = (string) $value;
             }
+        }
+
+        if (isset($storedSettings['mobile_county_code']) && function_exists('wp_sms_countries')) {
+            $storedSettings['mobile_county_code'] = wp_sms_countries()->normalizeDialCode($storedSettings['mobile_county_code']);
         }
 
         return $storedSettings;

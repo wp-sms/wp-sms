@@ -43,28 +43,99 @@ class PublicSubscribeAjax extends AjaxControllerAbstract
         $result = SubscriberUtil::subscribe($name, $number, $group_id, $customFields);
 
         if (is_wp_error($result)) {
-            throw new Exception(self::sanitizeValidationErrorMessage($result->get_error_message()));
+            $errorData = $result->get_error_data();
+            $actions   = self::sanitizeValidationActions(
+                is_array($errorData) && isset($errorData['actions']) ? $errorData['actions'] : array()
+            );
+
+            if ($actions) {
+                wp_send_json_error(array(
+                    'message' => esc_html($result->get_error_message()),
+                    'actions' => $actions,
+                ), 400);
+            }
+
+            throw new Exception(esc_html($result->get_error_message()));
         }
 
         return wp_send_json_success($result);
     }
 
     /**
-     * Sanitize developer-provided subscription validation messages.
+     * Validate actions attached to a subscription validation WP_Error.
      *
-     * @param string $message Validation error message.
+     * Developers can return an error from `wp_sms_mobile_number_validity` with
+     * structured action data:
      *
-     * @return string
+     *     new \WP_Error('code', 'Plain message', array(
+     *         'actions' => array(
+     *             array('label' => 'Text START', 'href' => 'sms:+155****4567?body=START', 'type' => 'sms'),
+     *         ),
+     *     ));
+     *
+     * @param mixed $actions Candidate actions.
+     *
+     * @return array
      */
-    public static function sanitizeValidationErrorMessage($message)
+    public static function sanitizeValidationActions($actions)
     {
-        return wp_kses($message, [
-            'a'  => [
-                'href'   => true,
-                'target' => true,
-                'rel'    => true,
-            ],
-            'br' => [],
-        ]);
+        if (!is_array($actions)) {
+            return array();
+        }
+
+        $sanitized = array();
+
+        foreach ($actions as $action) {
+            if (
+                !is_array($action) ||
+                !isset($action['label'], $action['href']) ||
+                !is_scalar($action['label']) ||
+                !is_scalar($action['href'])
+            ) {
+                continue;
+            }
+
+            $label  = sanitize_text_field((string) $action['label']);
+            $href   = trim((string) $action['href']);
+            $scheme = strtolower((string) wp_parse_url($href, PHP_URL_SCHEME));
+
+            if ($label === '' || !in_array($scheme, array('sms', 'mailto', 'https'), true)) {
+                continue;
+            }
+
+            $href = esc_url_raw($href, array('sms', 'mailto', 'https'));
+
+            if ($href === '') {
+                continue;
+            }
+
+            $cleanAction = array(
+                'label' => $label,
+                'href'  => $href,
+                'type'  => $scheme === 'sms' ? 'sms' : 'link',
+            );
+
+            if (isset($action['target']) && is_string($action['target']) && in_array($action['target'], array('_blank', '_self'), true)) {
+                $cleanAction['target'] = $action['target'];
+            }
+
+            $allowedRel = array('nofollow', 'noopener', 'noreferrer', 'sponsored', 'ugc');
+            $rel        = isset($action['rel']) && is_string($action['rel'])
+                ? preg_split('/\s+/', strtolower(sanitize_text_field($action['rel'])))
+                : array();
+            $rel        = array_values(array_unique(array_intersect((array) $rel, $allowedRel)));
+
+            if (isset($cleanAction['target']) && $cleanAction['target'] === '_blank') {
+                $rel = array_values(array_unique(array_merge($rel, array('noopener', 'noreferrer'))));
+            }
+
+            if ($rel) {
+                $cleanAction['rel'] = implode(' ', $rel);
+            }
+
+            $sanitized[] = $cleanAction;
+        }
+
+        return $sanitized;
     }
 }

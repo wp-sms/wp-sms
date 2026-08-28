@@ -61,4 +61,30 @@ describe('CountryStep', () => {
 
     expect(onChange).toHaveBeenCalledWith('+1')
   })
+
+  test('closes the country options when loading starts', () => {
+    const onChange = jest.fn()
+    window.wpSmsSettings = {
+      countries: [],
+      countriesByDialCode: {
+        '+44': 'United Kingdom (UK) (+44)',
+      },
+    }
+    const props = {
+      value: '',
+      onChange,
+      loading: false,
+      onContinue: jest.fn(),
+      onBack: jest.fn(),
+    }
+    const { rerender } = render(<CountryStep {...props} />)
+
+    fireEvent.click(screen.getByRole('combobox', { name: 'Default country code' }))
+    expect(screen.getByRole('button', { name: 'United Kingdom (UK) (+44)' })).toBeInTheDocument()
+
+    rerender(<CountryStep {...props} loading />)
+
+    expect(screen.queryByRole('button', { name: 'United Kingdom (UK) (+44)' })).not.toBeInTheDocument()
+    expect(onChange).not.toHaveBeenCalled()
+  })
 })
