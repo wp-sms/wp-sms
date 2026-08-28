@@ -21,7 +21,7 @@ class SubscriberUtil
      * @param $mobile
      * @param bool $group
      * @param array $customFields
-     * @return array|string
+     * @return array|string|\WP_Error
      */
     public static function subscribe($name, $mobile, $group = false, $customFields = array())
     {

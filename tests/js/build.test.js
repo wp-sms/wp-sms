@@ -46,6 +46,15 @@ describe('Build output: JS bundles (vite)', () => {
     const content = fs.readFileSync(path.resolve(pub, 'js/frontend.min.js'), 'utf8')
     expect(content).toContain('"use strict"')
   })
+
+  test('frontend bundle renders structured subscription actions without an HTML error sink', () => {
+    expectFile('js/frontend.min.js')
+    const content = fs.readFileSync(path.resolve(pub, 'js/frontend.min.js'), 'utf8')
+
+    expect(content).toContain('renderSubscriptionError')
+    expect(content).toContain('wpsms-subscribe__message-action')
+    expect(content).not.toContain('.find("span").html(')
+  })
 })
 
 describe('Build output: SCSS compilation', () => {

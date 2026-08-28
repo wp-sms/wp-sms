@@ -133,6 +133,47 @@ class Countries extends Singleton
     }
 
     /**
+     * Normalize a country identifier to a parser-compatible dial code.
+     *
+     * Accepts the dial-code values used by the legacy settings page and the
+     * React dashboard, as well as ISO country codes submitted by country-based
+     * selectors. Unknown values are returned unchanged.
+     *
+     * @param mixed $value Country dial code or ISO code.
+     *
+     * @return mixed
+     */
+    public function normalizeDialCode($value)
+    {
+        if (!is_scalar($value)) {
+            return $value;
+        }
+
+        $value = trim((string) $value);
+
+        if ($value === '' || $value === '0') {
+            return $value;
+        }
+
+        foreach ($this->countries as $country) {
+            if (
+                isset($country['code'], $country['dialCode']) &&
+                strcasecmp($country['code'], $value) === 0
+            ) {
+                return $country['dialCode'];
+            }
+        }
+
+        $dialCode = '+' . ltrim($value, '+');
+
+        if (array_key_exists($dialCode, $this->getCountriesMerged())) {
+            return $dialCode;
+        }
+
+        return $value;
+    }
+
+    /**
      * Returns country names as an associative array with their dial codes as the key.
      *
      * @return  array   Format: `['dialCode' => 'name', 'dialCode' => 'name', ...]`.

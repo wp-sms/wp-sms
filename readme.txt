@@ -2,7 +2,7 @@
 Contributors: veronalabs, mostafa.s1990, kashani
 Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sms
 Requires at least: 4.1
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
 Stable tag: 7.2.7
 License: GPL-2.0+
