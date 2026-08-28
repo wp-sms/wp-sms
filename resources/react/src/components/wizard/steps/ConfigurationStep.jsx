@@ -159,7 +159,7 @@ export default function ConfigurationStep({
                   )
                 }
 
-                if (field.type === 'textarea' && !isPassword) {
+                if (field.type === 'textarea') {
                   return (
                     <div key={field.id} className="md:wsms-col-span-2">
                       <TextareaField
@@ -169,6 +169,7 @@ export default function ConfigurationStep({
                         onChange={(e) => handleFieldChange(field.id, e.target.value)}
                         placeholder={field.placeholder || ''}
                         rows={field.rows || 4}
+                        style={isPassword ? { WebkitTextSecurity: 'disc' } : undefined}
                       />
                     </div>
                   )
