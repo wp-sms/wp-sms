@@ -6,7 +6,7 @@ use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Exceptions\LicenseException;
 use WP_UnitTestCase;
 
-class Test_ApiCommunicator extends WP_UnitTestCase
+class ApiCommunicatorTest extends WP_UnitTestCase
 {
     /**
      * @dataProvider supported_license_key_provider
