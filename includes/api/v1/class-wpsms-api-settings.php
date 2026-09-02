@@ -1021,8 +1021,12 @@ class SettingsApi extends RestApi
     {
         $registry = \WP_SMS\Services\Gateway\GatewayRegistry::getGateways();
 
-        if (!empty($registry['gateways'])) {
-            foreach ($registry['gateways'] as $gw) {
+        foreach (['gateways', 'premium_gateways'] as $gatewayList) {
+            if (empty($registry[$gatewayList])) {
+                continue;
+            }
+
+            foreach ($registry[$gatewayList] as $gw) {
                 if (isset($gw['slug']) && $gw['slug'] === $value) {
                     return null;
                 }
