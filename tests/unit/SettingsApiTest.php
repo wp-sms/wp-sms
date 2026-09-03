@@ -4,6 +4,7 @@ namespace unit;
 
 use WP_SMS\Api\V1\SettingsApi;
 use WP_SMS\Option;
+use WP_SMS\Services\Gateway\GatewayRegistry;
 use WP_REST_Request;
 
 require_once __DIR__ . '/WPSMSTestCase.php';
@@ -110,6 +111,55 @@ class SettingsApiTest extends WPSMSTestCase
 
         $this->assertEquals(200, $response->get_status());
         $this->assertArrayHasKey('message', $data);
+    }
+
+    /**
+     * Test a premium gateway can be saved through the settings endpoint
+     */
+    public function testUpdateSettingsSavesPremiumGateway()
+    {
+        set_transient(GatewayRegistry::CACHE_KEY_GATEWAYS, [
+            'source'           => 'api',
+            'gateways'         => [],
+            'premium_gateways' => [
+                ['slug' => 'twilio', 'premium' => true],
+            ],
+            'regions'          => [],
+        ], 60);
+
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
+            'settings' => ['gateway_name' => 'twilio'],
+        ]);
+
+        $response = rest_do_request($request);
+
+        $this->assertEquals(200, $response->get_status());
+        $this->assertSame('twilio', Option::getOption('gateway_name'));
+    }
+
+    /**
+     * Test an unknown gateway cannot be saved through the settings endpoint
+     */
+    public function testUpdateSettingsRejectsUnknownGateway()
+    {
+        set_transient(GatewayRegistry::CACHE_KEY_GATEWAYS, [
+            'source'           => 'api',
+            'gateways'         => [],
+            'premium_gateways' => [
+                ['slug' => 'twilio', 'premium' => true],
+            ],
+            'regions'          => [],
+        ], 60);
+
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
+            'settings' => ['gateway_name' => 'missing-gateway'],
+        ]);
+
+        $response = rest_do_request($request);
+        $data     = $response->get_data();
+
+        $this->assertEquals(400, $response->get_status());
+        $this->assertSame('Invalid gateway selected', $data['data']['errors']['gateway_name']);
     }
 
     /**
