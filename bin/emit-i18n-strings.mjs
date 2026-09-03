@@ -12,10 +12,11 @@
  * into `__( cond ? "A" : "B", "wp-sms" )`, where the first argument is no longer
  * a literal — so the scanner drops both labels and translators never see them.
  *
- * This file restates every label as a plain literal call. It is never enqueued
- * and never runs; it exists purely to be read. It must stay JavaScript: the
- * browser-side translation files WordPress generates only cover labels it found
- * in JS, and that is what the dashboard reads at runtime.
+ * This file restates every label as a plain literal call. The generated wrapper
+ * is intentionally not invoked; the file is enqueued as a stable classic-script
+ * anchor so WordPress can load its matching JSON language pack before the React
+ * module. It must stay JavaScript: browser-side translation files only cover
+ * labels WordPress.org found in JS.
  *
  * Run via `npm run build:i18n-strings`, after the dashboard build and before
  * `build:pot`.
@@ -122,7 +123,7 @@ try {
  * admin label as a literal call so WordPress.org's scanner can collect the ones
  * minification hides inside the compiled bundle.
  *
- * Never enqueued, never executed.
+ * Enqueued as a translation anchor; the wrapper is intentionally not invoked.
  */
 ( function ( __, _x, _n, _nx ) {
 ${calls.map((call) => `\t${call}`).join('\n')}

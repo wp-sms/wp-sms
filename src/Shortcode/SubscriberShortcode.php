@@ -19,7 +19,7 @@ class SubscriberShortcode
             'title'       => __('Subscribe SMS', 'wp-sms'),
             'description' => '',
             'groups'      => '',
-            'fields'      => '',
+            'fields'      => [],
         ], $attributes);
 
         // Store raw group IDs for the hidden form field before converting to group objects

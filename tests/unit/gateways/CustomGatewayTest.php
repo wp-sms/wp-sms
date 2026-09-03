@@ -30,6 +30,30 @@ class CustomGatewayTest extends WP_UnitTestCase
         $this->gateway->msg     = 'Hello world';
     }
 
+    public function test_http_headers_are_marked_as_secret()
+    {
+        $this->assertTrue($this->gateway->gatewayFields['http_headers']['isPassword']);
+    }
+
+    public function test_http_headers_secret_flag_is_exposed_to_dashboard()
+    {
+        global $sms;
+
+        $previousGateway = $sms ?? null;
+        $sms             = $this->gateway;
+        $dashboard       = \WP_SMS\Admin\Dashboard::instance();
+        $method          = new \ReflectionMethod($dashboard, 'getGatewayCapabilities');
+        $method->setAccessible(true);
+
+        try {
+            $capabilities = $method->invoke($dashboard);
+        } finally {
+            $sms = $previousGateway;
+        }
+
+        $this->assertTrue($capabilities['gatewayFields']['http_headers']['isPassword']);
+    }
+
     public function test_key_value_get_sends_params_as_query_string()
     {
         $this->gateway->http_parameters = "to:{to}\nmessage:{message}";
@@ -71,6 +95,33 @@ class CustomGatewayTest extends WP_UnitTestCase
                         'to'      => '+31600000001,+31600000002',
                         'message' => 'Hello world',
                     ];
+                })
+            )
+            ->willReturn('ok');
+
+        $this->gateway->SendSMS();
+    }
+
+    public function test_key_value_post_supports_form_urlencoded_body()
+    {
+        $this->gateway->to               = ['+31600000001'];
+        $this->gateway->is_post_body     = 'yes';
+        $this->gateway->post_body_format = 'form_urlencoded';
+        $this->gateway->http_parameters  = "to:{to}\nmessage:{message}";
+
+        $this->gateway->expects($this->once())
+            ->method('request')
+            ->with(
+                'POST',
+                'https://example.test/send',
+                [],
+                $this->callback(function ($args) {
+                    parse_str($args['body'], $decoded);
+
+                    return $decoded === [
+                        'to'      => '+31600000001',
+                        'message' => 'Hello world',
+                    ] && $args['headers']['Content-Type'] === 'application/x-www-form-urlencoded';
                 })
             )
             ->willReturn('ok');

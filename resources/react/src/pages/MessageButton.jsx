@@ -284,9 +284,7 @@ export default function MessageButton() {
     // Update footer text
     const footerTextEl = chatbox.querySelector('.wpsms-chatbox__info--text')
     if (footerTextEl) {
-      // Preserve any existing link
-      const existingLink = footerTextEl.querySelector('a')
-      footerTextEl.textContent = footerText || __('Chat with us on WhatsApp for instant support!', 'wp-sms')
+      footerTextEl.textContent = footerText
 
       // Add footer link if present
       if (footerLinkUrl && footerLinkTitle) {

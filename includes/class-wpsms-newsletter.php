@@ -161,7 +161,11 @@ class Newsletter
         $validate = Helper::checkMobileNumberValidity($mobile, false, true, $group_id);
 
         if (is_wp_error($validate)) {
-            return array('result' => 'error', 'message' => $validate->get_error_message());
+            return array(
+                'result'  => 'error',
+                'message' => $validate->get_error_message(),
+                'error'   => $validate,
+            );
         }
 
         // Store the canonical E.164 form so all downstream lookups, dispatches, and exports
