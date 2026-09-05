@@ -16,13 +16,13 @@ class CustomGatewayTest extends WP_UnitTestCase
     {
         parent::setUp();
 
-        remove_all_filters('wp_sms_from');
-        remove_all_filters('wp_sms_to');
-        remove_all_filters('wp_sms_msg');
-
         $this->gateway = $this->getMockBuilder(custom::class)
             ->onlyMethods(['request', 'log'])
             ->getMock();
+
+        remove_all_filters('wp_sms_from');
+        remove_all_filters('wp_sms_to');
+        remove_all_filters('wp_sms_msg');
 
         $this->gateway->api_url = 'https://example.test/send';
         $this->gateway->from    = 'Sender';
