@@ -243,6 +243,28 @@ class SettingsApiTest extends WPSMSTestCase
     }
 
     /**
+     * Test custom gateway authorization headers are masked and preserved
+     */
+    public function testCustomGatewayHeadersAreMaskedAndPreserved()
+    {
+        $headers = "Authorization: Bearer secret-token\nContent-Type: application/json";
+        Option::updateOption('gateway_http_headers', $headers);
+
+        $response = rest_do_request(new WP_REST_Request('GET', '/wpsms/v1/settings'));
+        $data     = $response->get_data();
+
+        $this->assertEquals(200, $response->get_status());
+        $this->assertSame('••••••••', $data['data']['settings']['gateway_http_headers']);
+
+        $saveResponse = rest_do_request($this->createJsonRequest('POST', '/wpsms/v1/settings', [
+            'settings' => ['gateway_http_headers' => '••••••••'],
+        ]));
+
+        $this->assertEquals(200, $saveResponse->get_status());
+        $this->assertSame($headers, Option::getOption('gateway_http_headers'));
+    }
+
+    /**
      * Test settings validation catches invalid URL
      */
     public function testSettingsValidationCatchesInvalidUrl()

@@ -29,6 +29,7 @@ class SettingsApi extends RestApi
     private $sensitiveFields = [
         'gateway_password',
         'gateway_key',
+        'gateway_http_headers',
     ];
 
     /**
