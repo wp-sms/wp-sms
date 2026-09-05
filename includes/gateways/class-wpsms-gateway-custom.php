@@ -147,7 +147,9 @@ class custom extends \WP_SMS\Gateway
                 }
             }
 
-            if ($this->encode_message && $this->encode_message == 'yes') {
+            $isFormEncodedPost = $this->is_post_body === 'yes' && $this->post_body_format === 'form_urlencoded';
+
+            if ($this->encode_message === 'yes' && !$isFormEncodedPost) {
                 $this->msg = urlencode($this->msg);
             }
 
