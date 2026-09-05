@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Settings, Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { InputField, SelectField } from '@/components/ui/form-field'
+import { InputField, SelectField, TextareaField } from '@/components/ui/form-field'
 import { Tip } from '@/components/ui/ux-helpers'
 import { settingsApi } from '@/api/settingsApi'
 import { getGatewayDisplayName as getGatewayName } from '@/lib/utils'
@@ -133,7 +133,11 @@ export default function ConfigurationStep({
                 if (!isFieldVisible(field)) return null
 
                 const fieldValue = credentials[field.id] || ''
-                const isPassword = key === 'password' || field.id.includes('password') || field.id.includes('key')
+                const isPassword =
+                  Boolean(field.isPassword) ||
+                  key === 'password' ||
+                  field.id.includes('password') ||
+                  field.id.includes('key')
                 const isFullWidth = key === 'from' || field.id === 'gateway_sender_id'
 
                 if (field.type === 'select' && field.options) {
@@ -150,6 +154,22 @@ export default function ConfigurationStep({
                         onValueChange={(value) => handleFieldChange(field.id, value)}
                         placeholder={field.placeholder || `Select ${field.name}`}
                         options={options}
+                      />
+                    </div>
+                  )
+                }
+
+                if (field.type === 'textarea') {
+                  return (
+                    <div key={field.id} className="md:wsms-col-span-2">
+                      <TextareaField
+                        label={field.name}
+                        description={field.desc}
+                        value={fieldValue}
+                        onChange={(e) => handleFieldChange(field.id, e.target.value)}
+                        placeholder={field.placeholder || ''}
+                        rows={field.rows || 4}
+                        style={isPassword ? { WebkitTextSecurity: 'disc' } : undefined}
                       />
                     </div>
                   )

@@ -20,6 +20,7 @@ class custom extends \WP_SMS\Gateway
     public $http_parameters;
     public $raw_payload;
     public $is_post_body;
+    public $post_body_format;
     public $encode_message;
     public $documentUrl = 'https://wsms.io/docs/custom-gateway/';
 
@@ -34,10 +35,11 @@ class custom extends \WP_SMS\Gateway
                 'desc' => esc_html__('Enter the Send SMS URL for the SMS gateway API where the SMS requests will be sent. This URL is provided by the SMS gateway service.', 'wp-sms'),
             ],
             'http_headers'    => [
-                'id'   => 'gateway_http_headers',
-                'name' => esc_html__('HTTP Headers', 'wp-sms'),
-                'desc' => __('One <code>Header-Name: value</code> per line. Example: <code>Content-Type: application/json</code>, <code>Authorization: Bearer xxx</code>', 'wp-sms'),
-                'type' => 'textarea',
+                'id'         => 'gateway_http_headers',
+                'name'       => esc_html__('HTTP Headers', 'wp-sms'),
+                'desc'       => __('One <code>Header-Name: value</code> per line. Example: <code>Content-Type: application/json</code>, <code>Authorization: Bearer ***', 'wp-sms'),
+                'type'       => 'textarea',
+                'isPassword' => true,
             ],
             'body_format'     => [
                 'id'      => 'gateway_body_format',
@@ -72,11 +74,22 @@ class custom extends \WP_SMS\Gateway
             'is_post_body'    => [
                 'id'        => 'gateway_is_post_body',
                 'name'      => 'Send As POST',
-                'desc'      => __('Send HTTP Parameters as a JSON POST body, or as URL query parameters.', 'wp-sms'),
+                'desc'      => __('Send HTTP Parameters as a POST body using the selected encoding, or as URL query parameters.', 'wp-sms'),
                 'type'      => 'select',
                 'options'   => [
                     'no'  => 'No',
                     'yes' => 'Yes',
+                ],
+                'className' => 'js-wpsms-show_if_gateway_body_format_equal_key_value',
+            ],
+            'post_body_format' => [
+                'id'        => 'gateway_post_body_format',
+                'name'      => esc_html__('POST Body Encoding', 'wp-sms'),
+                'desc'      => esc_html__('Choose how Key-Value parameters are encoded when Send As POST is enabled.', 'wp-sms'),
+                'type'      => 'select',
+                'options'   => [
+                    'json'            => 'application/json',
+                    'form_urlencoded' => 'application/x-www-form-urlencoded',
                 ],
                 'className' => 'js-wpsms-show_if_gateway_body_format_equal_key_value',
             ],
@@ -134,7 +147,9 @@ class custom extends \WP_SMS\Gateway
                 }
             }
 
-            if ($this->encode_message && $this->encode_message == 'yes') {
+            $isFormEncodedPost = $this->is_post_body === 'yes' && $this->post_body_format === 'form_urlencoded';
+
+            if ($this->encode_message === 'yes' && !$isFormEncodedPost) {
                 $this->msg = urlencode($this->msg);
             }
 
@@ -159,7 +174,7 @@ class custom extends \WP_SMS\Gateway
                 );
                 $httpMethod = 'POST';
             } else {
-                // Key-Value mode: parse `key:value` lines, replace placeholders, and send as query string or JSON body.
+                // Key-Value mode: parse `key:value` lines, replace placeholders, and send as query parameters or an encoded POST body.
                 $definedParams = [];
                 if ($this->http_parameters) {
                     $lines = explode("\n", $this->http_parameters);
@@ -192,8 +207,24 @@ class custom extends \WP_SMS\Gateway
                 }
 
                 if ($this->is_post_body && $this->is_post_body == 'yes') {
-                    $args['body'] = wp_json_encode($finalParams);
-                    $httpMethod   = 'POST';
+                    if ($this->post_body_format === 'form_urlencoded') {
+                        $args['body'] = http_build_query($finalParams, '', '&');
+
+                        $hasContentType = false;
+                        foreach (array_keys($args['headers']) as $headerName) {
+                            if (strcasecmp($headerName, 'Content-Type') === 0) {
+                                $hasContentType = true;
+                                break;
+                            }
+                        }
+
+                        if (!$hasContentType) {
+                            $args['headers']['Content-Type'] = 'application/x-www-form-urlencoded';
+                        }
+                    } else {
+                        $args['body'] = wp_json_encode($finalParams);
+                    }
+                    $httpMethod = 'POST';
                 } else {
                     $params = $finalParams;
                 }

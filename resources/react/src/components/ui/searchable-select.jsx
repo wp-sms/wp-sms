@@ -14,6 +14,7 @@ import { Input } from './input'
  * @param {Function} props.onValueChange - Callback when selection changes
  * @param {string} props.placeholder - Placeholder text when nothing selected
  * @param {string} props.searchPlaceholder - Placeholder for search input
+ * @param {string} props.id - ID for associating the trigger with a label
  * @param {string} props.className - Additional CSS classes
  * @param {boolean} props.disabled - Whether the component is disabled
  */
@@ -25,6 +26,7 @@ const SearchableSelect = React.forwardRef(
       onValueChange,
       placeholder = 'Select...',
       searchPlaceholder = 'Search...',
+      id,
       className,
       disabled = false,
       triggerClassName,
@@ -48,6 +50,12 @@ const SearchableSelect = React.forwardRef(
         setSearch('')
       }
     }, [open])
+
+    React.useEffect(() => {
+      if (disabled) {
+        setOpen(false)
+      }
+    }, [disabled])
 
     // Close on click outside
     React.useEffect(() => {
@@ -126,6 +134,8 @@ const SearchableSelect = React.forwardRef(
     }, [value, normalizedOptions])
 
     const handleSelect = (optionValue) => {
+      if (disabled) return
+
       onValueChange?.(optionValue)
       setOpen(false)
     }
@@ -133,6 +143,7 @@ const SearchableSelect = React.forwardRef(
     return (
       <div ref={containerRef} className={cn('wsms-relative wsms-w-full', className)}>
         <Button
+          id={id}
           ref={ref}
           variant="outline"
           role="combobox"
@@ -192,6 +203,7 @@ const SearchableSelect = React.forwardRef(
                       key={option.value}
                       type="button"
                       onClick={() => handleSelect(option.value)}
+                      disabled={disabled}
                       className={cn(
                         'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded wsms-px-2 wsms-py-1.5 wsms-text-start wsms-text-[13px] wsms-outline-none',
                         'hover:wsms-bg-accent focus:wsms-bg-accent',

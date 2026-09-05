@@ -12,22 +12,87 @@ class CustomGatewayTest extends WP_UnitTestCase
     /** @var custom */
     protected $gateway;
 
+    /** @var bool */
+    private $hadSmsGlobal;
+
+    /** @var mixed */
+    private $previousSms;
+
+    /** @var array */
+    private $previousFilters = [];
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        remove_all_filters('wp_sms_from');
-        remove_all_filters('wp_sms_to');
-        remove_all_filters('wp_sms_msg');
+        global $sms, $wp_filter;
+
+        $this->hadSmsGlobal = array_key_exists('sms', $GLOBALS);
+        $this->previousSms  = $this->hadSmsGlobal ? $sms : null;
+
+        foreach (['wp_sms_from', 'wp_sms_to', 'wp_sms_msg'] as $hook) {
+            $this->previousFilters[$hook] = isset($wp_filter[$hook]) ? clone $wp_filter[$hook] : null;
+        }
 
         $this->gateway = $this->getMockBuilder(custom::class)
             ->onlyMethods(['request', 'log'])
             ->getMock();
 
+        remove_all_filters('wp_sms_from');
+        remove_all_filters('wp_sms_to');
+        remove_all_filters('wp_sms_msg');
+
+        $sms = $this->gateway;
+
         $this->gateway->api_url = 'https://example.test/send';
         $this->gateway->from    = 'Sender';
         $this->gateway->to      = ['+31600000001', '+31600000002'];
         $this->gateway->msg     = 'Hello world';
+    }
+
+    protected function tearDown(): void
+    {
+        global $sms, $wp_filter;
+
+        foreach ($this->previousFilters as $hook => $filter) {
+            if ($filter === null) {
+                unset($wp_filter[$hook]);
+            } else {
+                $wp_filter[$hook] = $filter;
+            }
+        }
+
+        if ($this->hadSmsGlobal) {
+            $sms = $this->previousSms;
+        } else {
+            unset($GLOBALS['sms']);
+        }
+
+        parent::tearDown();
+    }
+
+    public function test_http_headers_are_marked_as_secret()
+    {
+        $this->assertTrue($this->gateway->gatewayFields['http_headers']['isPassword']);
+    }
+
+    public function test_http_headers_secret_flag_is_exposed_to_dashboard()
+    {
+        global $sms;
+
+        $previousGateway = $sms ?? null;
+        $sms             = $this->gateway;
+        $dashboard       = \WP_SMS\Admin\Dashboard::instance();
+        $method          = new \ReflectionMethod($dashboard, 'getGatewayCapabilities');
+        $method->setAccessible(true);
+
+        try {
+            $capabilities = $method->invoke($dashboard);
+        } finally {
+            $sms = $previousGateway;
+        }
+
+        $this->assertTrue($capabilities['gatewayFields']['http_headers']['isPassword']);
     }
 
     public function test_key_value_get_sends_params_as_query_string()
@@ -71,6 +136,59 @@ class CustomGatewayTest extends WP_UnitTestCase
                         'to'      => '+31600000001,+31600000002',
                         'message' => 'Hello world',
                     ];
+                })
+            )
+            ->willReturn('ok');
+
+        $this->gateway->SendSMS();
+    }
+
+    public function test_key_value_post_supports_form_urlencoded_body()
+    {
+        $this->gateway->to               = ['+31600000001'];
+        $this->gateway->is_post_body     = 'yes';
+        $this->gateway->post_body_format = 'form_urlencoded';
+        $this->gateway->http_parameters  = "to:{to}\nmessage:{message}";
+
+        $this->gateway->expects($this->once())
+            ->method('request')
+            ->with(
+                'POST',
+                'https://example.test/send',
+                [],
+                $this->callback(function ($args) {
+                    parse_str($args['body'], $decoded);
+
+                    return $decoded === [
+                        'to'      => '+31600000001',
+                        'message' => 'Hello world',
+                    ] && $args['headers']['Content-Type'] === 'application/x-www-form-urlencoded';
+                })
+            )
+            ->willReturn('ok');
+
+        $this->gateway->SendSMS();
+    }
+
+    public function test_form_urlencoded_body_does_not_double_encode_message()
+    {
+        $this->gateway->to               = ['+31600000001'];
+        $this->gateway->msg              = 'Hello world & friends + more';
+        $this->gateway->encode_message   = 'yes';
+        $this->gateway->is_post_body     = 'yes';
+        $this->gateway->post_body_format = 'form_urlencoded';
+        $this->gateway->http_parameters  = "to:{to}\nmessage:{message}";
+
+        $this->gateway->expects($this->once())
+            ->method('request')
+            ->with(
+                'POST',
+                'https://example.test/send',
+                [],
+                $this->callback(function ($args) {
+                    parse_str($args['body'], $decoded);
+
+                    return $decoded['message'] === 'Hello world & friends + more';
                 })
             )
             ->willReturn('ok');

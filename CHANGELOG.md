@@ -1,3 +1,9 @@
+v7.2.8 - 2026-09-05
+- **Fix:** Premium gateways like Twilio save without being rejected.
+- **Fix:** The United States stays selected as your default country code ([#535](https://github.com/wp-sms/wp-sms/issues/535)).
+- **Fix:** The setup wizard makes the United States easy to find ([#522](https://github.com/wp-sms/wp-sms/issues/522)).
+- **Enhancement:** Subscription errors can include safe SMS, email, and web actions ([#533](https://github.com/wp-sms/wp-sms/issues/533)).
+
 v7.2.7 - 2026-08-08
 - **Fix:** Translations work again on WordPress 6.7+.
 - **Fix:** A number isn't added to your subscriber list when its confirmation SMS fails ([#514](https://github.com/wp-sms/wp-sms/issues/514)).

@@ -2,9 +2,9 @@
 Contributors: veronalabs, mostafa.s1990, kashani
 Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sms
 Requires at least: 4.1
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 7.2.7
+Stable tag: 7.2.8
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -155,7 +155,13 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
-v7.2.7 - 2026-08-08
+= v7.2.8 - 2026-09-05 =
+- **Fix:** Premium gateways like Twilio save without being rejected.
+- **Fix:** The United States stays selected as your default country code ([#535](https://github.com/wp-sms/wp-sms/issues/535)).
+- **Fix:** The setup wizard makes the United States easy to find ([#522](https://github.com/wp-sms/wp-sms/issues/522)).
+- **Enhancement:** Subscription errors can include safe SMS, email, and web actions ([#533](https://github.com/wp-sms/wp-sms/issues/533)).
+
+= v7.2.7 - 2026-08-08 =
 - **Fix:** Translations work again on WordPress 6.7+.
 - **Fix:** A number isn't added to your subscriber list when its confirmation SMS fails ([#514](https://github.com/wp-sms/wp-sms/issues/514)).
 - **Fix:** A half-finished update no longer takes the site down.

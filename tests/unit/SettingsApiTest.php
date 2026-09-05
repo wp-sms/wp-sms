@@ -4,6 +4,7 @@ namespace unit;
 
 use WP_SMS\Api\V1\SettingsApi;
 use WP_SMS\Option;
+use WP_SMS\Services\Gateway\GatewayRegistry;
 use WP_REST_Request;
 
 require_once __DIR__ . '/WPSMSTestCase.php';
@@ -42,6 +43,21 @@ class SettingsApiTest extends WPSMSTestCase
         $this->assertArrayHasKey('data', $data);
         $this->assertArrayHasKey('settings', $data['data']);
         $this->assertArrayHasKey('proSettings', $data['data']);
+    }
+
+    /**
+     * Test gateway capabilities preserve secret-field metadata
+     */
+    public function testGatewayCapabilitiesPropagatePasswordMetadata()
+    {
+        Option::updateOption('gateway_name', 'custom');
+
+        $request  = new WP_REST_Request('GET', '/wpsms/v1/settings/gateway-capabilities');
+        $response = rest_do_request($request);
+        $data     = $response->get_data();
+
+        $this->assertEquals(200, $response->get_status());
+        $this->assertTrue($data['data']['gatewayFields']['http_headers']['isPassword']);
     }
 
     /**
@@ -98,6 +114,114 @@ class SettingsApiTest extends WPSMSTestCase
     }
 
     /**
+     * Test a premium gateway can be saved through the settings endpoint
+     */
+    public function testUpdateSettingsSavesPremiumGateway()
+    {
+        set_transient(GatewayRegistry::CACHE_KEY_GATEWAYS, [
+            'source'           => 'api',
+            'gateways'         => [],
+            'premium_gateways' => [
+                ['slug' => 'twilio', 'premium' => true],
+            ],
+            'regions'          => [],
+        ], 60);
+
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
+            'settings' => ['gateway_name' => 'twilio'],
+        ]);
+
+        $response = rest_do_request($request);
+
+        $this->assertEquals(200, $response->get_status());
+        $this->assertSame('twilio', Option::getOption('gateway_name'));
+    }
+
+    /**
+     * Test an unknown gateway cannot be saved through the settings endpoint
+     */
+    public function testUpdateSettingsRejectsUnknownGateway()
+    {
+        set_transient(GatewayRegistry::CACHE_KEY_GATEWAYS, [
+            'source'           => 'api',
+            'gateways'         => [],
+            'premium_gateways' => [
+                ['slug' => 'twilio', 'premium' => true],
+            ],
+            'regions'          => [],
+        ], 60);
+
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
+            'settings' => ['gateway_name' => 'missing-gateway'],
+        ]);
+
+        $response = rest_do_request($request);
+        $data     = $response->get_data();
+
+        $this->assertEquals(400, $response->get_status());
+        $this->assertSame('Invalid gateway selected', $data['data']['errors']['gateway_name']);
+    }
+
+    /**
+     * Test the United States country code persists across a save and reload
+     */
+    public function testUnitedStatesCountryCodePersistsAcrossSaveAndReload()
+    {
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
+            'settings' => [
+                'mobile_county_code' => '+1',
+            ],
+        ]);
+
+        $response = rest_do_request($request);
+
+        $this->assertEquals(200, $response->get_status());
+        $this->assertSame('+1', Option::getOption('mobile_county_code'));
+
+        $reloadResponse = rest_do_request(new WP_REST_Request('GET', '/wpsms/v1/settings'));
+        $reloadData = $reloadResponse->get_data();
+
+        $this->assertSame('+1', $reloadData['data']['settings']['mobile_county_code']);
+    }
+
+    /**
+     * Test the United States ISO code is converted to the parser-compatible dial code
+     */
+    public function testUnitedStatesIsoCodeIsNormalizedToDialCode()
+    {
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
+            'settings' => [
+                'mobile_county_code' => 'US',
+            ],
+        ]);
+
+        $response = rest_do_request($request);
+
+        $this->assertEquals(200, $response->get_status());
+        $this->assertSame('+1', Option::getOption('mobile_county_code'));
+    }
+
+    /**
+     * Test the legacy settings page stores the parser-compatible United States dial code
+     */
+    public function testLegacySettingsSaveNormalizesUnitedStatesIsoCode()
+    {
+        update_option('wpsms_settings', [
+            'mobile_county_code' => '0',
+        ]);
+        $_POST['_wp_http_referer'] = 'tab=general';
+
+        $settings = new \WP_SMS\Settings();
+        $saved = $settings->settings_sanitize([
+            'mobile_county_code' => 'US',
+        ]);
+
+        unset($_POST['_wp_http_referer']);
+
+        $this->assertSame('+1', $saved['mobile_county_code']);
+    }
+
+    /**
      * Test sensitive fields are masked in responses
      */
     public function testSensitiveFieldsAreMasked()
@@ -116,6 +240,28 @@ class SettingsApiTest extends WPSMSTestCase
         if (isset($data['data']['settings']['gateway_password'])) {
             $this->assertEquals('••••••••', $data['data']['settings']['gateway_password']);
         }
+    }
+
+    /**
+     * Test custom gateway authorization headers are masked and preserved
+     */
+    public function testCustomGatewayHeadersAreMaskedAndPreserved()
+    {
+        $headers = "Authorization: Bearer secret-token\nContent-Type: application/json";
+        Option::updateOption('gateway_http_headers', $headers);
+
+        $response = rest_do_request(new WP_REST_Request('GET', '/wpsms/v1/settings'));
+        $data     = $response->get_data();
+
+        $this->assertEquals(200, $response->get_status());
+        $this->assertSame('••••••••', $data['data']['settings']['gateway_http_headers']);
+
+        $saveResponse = rest_do_request($this->createJsonRequest('POST', '/wpsms/v1/settings', [
+            'settings' => ['gateway_http_headers' => '••••••••'],
+        ]));
+
+        $this->assertEquals(200, $saveResponse->get_status());
+        $this->assertSame($headers, Option::getOption('gateway_http_headers'));
     }
 
     /**
