@@ -53,6 +53,7 @@ class ApiCommunicatorTest extends WP_UnitTestCase
         return [
             '16-character key' => ['E0SNWPAPWYTHVPNV'],
             '32-character key' => [str_repeat('A', 32)],
+            '41-character key' => [str_repeat('A', 41)],
             'legacy UUID key'  => ['123e4567-e89b-12d3-a456-426614174000'],
         ];
     }
