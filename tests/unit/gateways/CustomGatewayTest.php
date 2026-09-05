@@ -258,7 +258,7 @@ class CustomGatewayTest extends WP_UnitTestCase
                         'from' => 'Sender',
                         'to'   => '+31600000001,+31600000002',
                         'text' => 'Hello world',
-                    ];
+                    ] && ($args['headers']['Content-Type'] ?? null) === 'application/json';
                 })
             )
             ->willReturn('ok');
