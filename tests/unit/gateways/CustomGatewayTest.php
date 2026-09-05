@@ -12,9 +12,27 @@ class CustomGatewayTest extends WP_UnitTestCase
     /** @var custom */
     protected $gateway;
 
+    /** @var bool */
+    private $hadSmsGlobal;
+
+    /** @var mixed */
+    private $previousSms;
+
+    /** @var array */
+    private $previousFilters = [];
+
     protected function setUp(): void
     {
         parent::setUp();
+
+        global $sms, $wp_filter;
+
+        $this->hadSmsGlobal = array_key_exists('sms', $GLOBALS);
+        $this->previousSms  = $this->hadSmsGlobal ? $sms : null;
+
+        foreach (['wp_sms_from', 'wp_sms_to', 'wp_sms_msg'] as $hook) {
+            $this->previousFilters[$hook] = isset($wp_filter[$hook]) ? clone $wp_filter[$hook] : null;
+        }
 
         $this->gateway = $this->getMockBuilder(custom::class)
             ->onlyMethods(['request', 'log'])
@@ -24,10 +42,33 @@ class CustomGatewayTest extends WP_UnitTestCase
         remove_all_filters('wp_sms_to');
         remove_all_filters('wp_sms_msg');
 
+        $sms = $this->gateway;
+
         $this->gateway->api_url = 'https://example.test/send';
         $this->gateway->from    = 'Sender';
         $this->gateway->to      = ['+31600000001', '+31600000002'];
         $this->gateway->msg     = 'Hello world';
+    }
+
+    protected function tearDown(): void
+    {
+        global $sms, $wp_filter;
+
+        foreach ($this->previousFilters as $hook => $filter) {
+            if ($filter === null) {
+                unset($wp_filter[$hook]);
+            } else {
+                $wp_filter[$hook] = $filter;
+            }
+        }
+
+        if ($this->hadSmsGlobal) {
+            $sms = $this->previousSms;
+        } else {
+            unset($GLOBALS['sms']);
+        }
+
+        parent::tearDown();
     }
 
     public function test_http_headers_are_marked_as_secret()
