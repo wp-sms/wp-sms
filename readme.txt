@@ -159,7 +159,12 @@ All premium features + all add-ons in one package.
 - **Fix:** Premium gateways like Twilio save without being rejected.
 - **Fix:** The United States stays selected as your default country code ([#535](https://github.com/wp-sms/wp-sms/issues/535)).
 - **Fix:** The setup wizard makes the United States easy to find ([#522](https://github.com/wp-sms/wp-sms/issues/522)).
+- **Fix:** The Message Button hides an empty footer and displays its copyright text correctly in RTL layouts ([#516](https://github.com/wp-sms/wp-sms/issues/516)).
+- **Fix:** React dashboard translations now load from WordPress.org language packs ([#520](https://github.com/wp-sms/wp-sms/issues/520)).
+- **Fix:** Newsletter shortcodes no longer emit warnings on WordPress 7.1 ([#527](https://github.com/wp-sms/wp-sms/issues/527)).
+- **Fix:** All supported alphanumeric and legacy UUID license-key formats can be validated ([#540](https://github.com/wp-sms/wp-sms/issues/540)).
 - **Enhancement:** Subscription errors can include safe SMS, email, and web actions ([#533](https://github.com/wp-sms/wp-sms/issues/533)).
+- **Enhancement:** Custom gateways support multiline secret headers and form-encoded POST bodies ([#529](https://github.com/wp-sms/wp-sms/issues/529)).
 
 = v7.2.7 - 2026-08-08 =
 - **Fix:** Translations work again on WordPress 6.7+.
