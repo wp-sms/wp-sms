@@ -135,7 +135,29 @@ class CustomGatewayTest extends WP_UnitTestCase
                     return $decoded === [
                         'to'      => '+31600000001,+31600000002',
                         'message' => 'Hello world',
-                    ];
+                    ] && $args['headers']['Content-Type'] === 'application/json';
+                })
+            )
+            ->willReturn('ok');
+
+        $this->gateway->SendSMS();
+    }
+
+    public function test_key_value_post_preserves_custom_content_type_header()
+    {
+        $this->gateway->is_post_body    = 'yes';
+        $this->gateway->http_headers    = 'content-type: application/vnd.api+json';
+        $this->gateway->http_parameters = 'message:{message}';
+
+        $this->gateway->expects($this->once())
+            ->method('request')
+            ->with(
+                'POST',
+                'https://example.test/send',
+                [],
+                $this->callback(function ($args) {
+                    return $args['headers']['content-type'] === 'application/vnd.api+json'
+                        && !isset($args['headers']['Content-Type']);
                 })
             )
             ->willReturn('ok');
