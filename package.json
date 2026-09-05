@@ -9,7 +9,7 @@
     "build:sass": "sass resources/scss/front-styles.scss:public/css/front-styles.css resources/scss/mail.scss:public/css/mail.css resources/scss/admin/admin.scss:public/css/admin.css --style=compressed --no-source-map",
     "build:dashboard": "vite build",
     "build:i18n-strings": "node bin/emit-i18n-strings.mjs",
-    "build:pot": "wp i18n make-pot . languages/wp-sms.pot",
+    "build:pot": "wp i18n make-pot . languages/wp-sms.pot --slug=wp-sms",
     "copy-static": "node bin/copy-static.mjs",
     "dev": "vite",
     "dev:all": "concurrently \"npm run dev:blocks\" \"npm run dev:scripts\" \"npm run dev:sass\" \"npm run dev\"",
