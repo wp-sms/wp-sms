@@ -19,6 +19,7 @@ class CompatibilityMetadataTest extends WP_UnitTestCase
 
         $this->assertSame(1, preg_match('/^"Project-Id-Version: .* ([0-9.]+)\\\\n"$/m', $pot, $matches));
         $this->assertSame(WP_SMS_VERSION, $matches[1]);
+        $this->assertStringContainsString('"X-Domain: wp-sms\\n"', $pot);
         $this->assertStringContainsString(
             '"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-sms\\n"',
             $pot
