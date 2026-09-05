@@ -153,9 +153,17 @@ class custom extends \WP_SMS\Gateway
                 $this->msg = urlencode($this->msg);
             }
 
-            $args       = ['headers' => $headers];
-            $httpMethod = 'GET';
-            $params     = [];
+            $args           = ['headers' => $headers];
+            $httpMethod     = 'GET';
+            $params         = [];
+            $hasContentType = false;
+
+            foreach (array_keys($headers) as $headerName) {
+                if (strcasecmp($headerName, 'Content-Type') === 0) {
+                    $hasContentType = true;
+                    break;
+                }
+            }
 
             if ($this->body_format === 'raw_json' && !empty($this->raw_payload)) {
                 // Raw JSON mode: substitute placeholders inside the JSON payload (JSON-safe escaping) and POST as-is.
@@ -172,6 +180,11 @@ class custom extends \WP_SMS\Gateway
                     [$jsonSafeFrom, $jsonSafeTo, $jsonSafeMsg, implode(',', $recipientsList)],
                     $this->raw_payload
                 );
+
+                if (!$hasContentType) {
+                    $args['headers']['Content-Type'] = 'application/json';
+                }
+
                 $httpMethod = 'POST';
             } else {
                 // Key-Value mode: parse `key:value` lines, replace placeholders, and send as query parameters or an encoded POST body.
@@ -210,19 +223,15 @@ class custom extends \WP_SMS\Gateway
                     if ($this->post_body_format === 'form_urlencoded') {
                         $args['body'] = http_build_query($finalParams, '', '&');
 
-                        $hasContentType = false;
-                        foreach (array_keys($args['headers']) as $headerName) {
-                            if (strcasecmp($headerName, 'Content-Type') === 0) {
-                                $hasContentType = true;
-                                break;
-                            }
-                        }
-
                         if (!$hasContentType) {
                             $args['headers']['Content-Type'] = 'application/x-www-form-urlencoded';
                         }
                     } else {
                         $args['body'] = wp_json_encode($finalParams);
+
+                        if (!$hasContentType) {
+                            $args['headers']['Content-Type'] = 'application/json';
+                        }
                     }
                     $httpMethod = 'POST';
                 } else {
