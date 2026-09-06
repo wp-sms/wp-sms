@@ -119,22 +119,21 @@ class ApiCommunicator
     /**
      * Generate the cache key for a refusal.
      *
-     * Deliberately NOT keyed on the blog ID, the way the success cache above is. The
-     * server judges the address we send it, so the address is the unit a refusal belongs
-     * to — and `home_url()` is exactly what we send.
+     * Keyed on the blog, exactly like the success cache above — deliberately NOT on
+     * `home_url()`.
      *
-     * What that buys, case by case:
+     * Keying a licence cache on the address was tried and cost us: on a multilingual
+     * subdirectory site `home_url()` returns `/en`, `/fr`, `/de`, so one install
+     * multiplied into one cached entry per language and one request per language.
+     * PR #451 removed it in January after that produced 16,000 requests a day from
+     * single sites and 88GB of fail2ban logs. Putting the address back here would
+     * reintroduce the same multiplication on the refusal path — in a change whose entire
+     * purpose is to reduce request volume.
      *
-     * - **Subdirectory multisite** — `home_url()` carries the path, so `example.com/a`
-     *   and `example.com/b` are separate entries. They must be: the server is given the
-     *   full address and may answer differently for each. Each subsite still asks, but
-     *   twice a day rather than 288 times.
-     * - **Subdomain multisite** — each subsite has its own host, so each keeps its own
-     *   entry. It must: the server may well allow one subdomain and refuse another, and a
-     *   shared entry would silence a subsite that was never refused.
-     * - **Multilingual single site** — WPML and Polylang can vary `home_url()` per
-     *   language while the blog ID stays 1. Keying on the address means each variant is
-     *   remembered as the server actually answered it.
+     * The blog ID answers the cases that matter without that cost: every language of one
+     * site shares it, and every subsite of a network has its own. A refusal and the
+     * success it replaces now live under the same unit, so the two can no longer
+     * disagree about whether this install is entitled.
      *
      * @param string $addonSlug  The add-on slug.
      * @param string $licenseKey The license key.
@@ -143,11 +142,14 @@ class ApiCommunicator
      */
     private function getRefusalCacheKey($addonSlug, $licenseKey)
     {
-        return 'wp_sms_license_refusal_' . md5($addonSlug . '_' . $licenseKey . '_' . $this->requestDomain());
+        return 'wp_sms_license_refusal_' . md5($addonSlug . '_' . $licenseKey . '_' . get_current_blog_id());
     }
 
     /**
-     * The address sent to the licence server, and the thing it judges.
+     * The address sent to the licence server.
+     *
+     * Sent on every request so the server can judge it; never used as a cache key, for
+     * the reason set out above.
      *
      * @return string
      */
@@ -360,9 +362,8 @@ class ApiCommunicator
      * Read a remembered refusal.
      *
      * Site transients on multisite, so the row lives in one place rather than in every
-     * subsite's own options table. That is where it is stored, not what is shared — the
-     * key carries the address, and `home_url()` carries the path, so every subsite has
-     * its own entry either way. See {@see getRefusalCacheKey()}.
+     * subsite's own options table, and a renewal on any subsite can reach the rest. The
+     * key carries the blog ID, so each subsite still keeps its own verdict.
      *
      * @param string $refusalKey
      *
@@ -467,11 +468,10 @@ class ApiCommunicator
     /**
      * Note that a refusal exists under this key.
      *
-     * Refusals are keyed on the address the server judged, so one licence collects one
-     * per subsite and per language. Clearing only the address the customer happened to
-     * renew on would leave the other thirty-nine refused for twelve hours — worse than
-     * the five minutes they used to wait. This index is how {@see clearProductInfoCache()}
-     * finds them all.
+     * One licence collects one refusal per subsite. Clearing only the subsite the
+     * customer happened to renew on would leave the other thirty-nine refused for twelve
+     * hours — worse than the five minutes they used to wait. This index is how
+     * {@see clearProductInfoCache()} finds them all.
      *
      * @param string $refusalKey
      *

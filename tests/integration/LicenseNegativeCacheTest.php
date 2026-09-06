@@ -292,63 +292,57 @@ class LicenseNegativeCacheTest extends WP_UnitTestCase
     }
 
     /**
+     * A language variant is the same install and must not ask again.
+     *
+     * On a multilingual subdirectory site `home_url()` returns `/en`, `/fr`, `/de`.
+     * Keying a licence cache on it multiplied one install into one entry and one request
+     * per language; PR #451 removed it in January after that produced 16,000 requests a
+     * day from single sites and 88GB of fail2ban logs. Keying the refusal on the address
+     * would have brought the same multiplication back on this path, in a change whose
+     * whole purpose is to send fewer requests.
+     */
+    public function test_a_language_variant_does_not_ask_again(): void
+    {
+        $this->serve(400);
+
+        $this->ask();
+
+        $french = function () {
+            return 'https://example.test/fr';
+        };
+
+        add_filter('home_url', $french);
+        $this->ask();
+        remove_filter('home_url', $french);
+
+        $this->assertSame(1, $this->requestCount, 'A second language must not produce a second request.');
+    }
+
+    /**
      * A network renews on one subsite. The rest must not stay refused for twelve hours.
      *
-     * Refusals are keyed on the address the server judged, so one licence collects one
-     * per subsite and per language, while the renewal happens at exactly one of them.
-     * Clearing only that one left the others worse off than the five minutes they used
-     * to wait.
+     * The refusal is per blog, and the renewal happens on exactly one of them. Clearing
+     * only that one left the others worse off than the five minutes they used to wait.
      */
-    public function test_clearing_reaches_every_address_the_licence_was_refused_at(): void
+    public function test_clearing_reaches_every_subsite_the_licence_was_refused_at(): void
     {
-        $second = function () {
-            return 'https://second.example.test';
-        };
-
         $this->serve(400);
-
         $this->ask();
-        add_filter('home_url', $second);
-        $this->ask();
-        remove_filter('home_url', $second);
 
-        $this->assertSame(2, $this->requestCount, 'Each address is asked once.');
+        // A refusal recorded by another subsite, indexed the way storeRefusal() does it.
+        $otherKey = $this->refusalKey(self::SLUG, self::KEY) . '_elsewhere';
+        set_transient($otherKey, ['code' => 400, 'attempts' => 0], 12 * HOUR_IN_SECONDS);
 
-        // Renew, as it happens on the first address only.
+        $index   = get_transient('wp_sms_license_refusal_index_' . md5(self::KEY));
+        $index   = is_array($index) ? $index : [];
+        $index[] = $otherKey;
+        set_transient('wp_sms_license_refusal_index_' . md5(self::KEY), $index, DAY_IN_SECONDS);
+
         (new ApiCommunicator())->clearProductInfoCache(self::KEY);
 
-        add_filter('home_url', $second);
-        $this->ask();
-        remove_filter('home_url', $second);
-
-        $this->assertSame(3, $this->requestCount, 'The other address must be released too.');
+        $this->assertFalse(get_transient($otherKey), 'Every indexed refusal must be cleared, not only this one.');
     }
 
-    /**
-     * The server judges the address we send it, so the address is what a refusal belongs
-     * to. On a subdomain network one subsite being refused must not silence another.
-     */
-    public function test_a_different_address_is_asked_about_separately(): void
-    {
-        $this->serve(400);
-
-        $this->ask();
-
-        $other = function () {
-            return 'https://another.example.test';
-        };
-
-        add_filter('home_url', $other);
-        $this->ask();
-        remove_filter('home_url', $other);
-
-        $this->assertSame(2, $this->requestCount, 'A second address must get its own answer.');
-    }
-
-    /**
-     * The previous release stored an object here. An upgrade must treat that as absent
-     * rather than trip over it, or the first check after updating throws.
-     */
     /**
      * The previous release wrote its marker into the SUCCESS key, not a key of its own.
      *
@@ -381,12 +375,11 @@ class LicenseNegativeCacheTest extends WP_UnitTestCase
     /**
      * The key the refusal is stored under, built the way ApiCommunicator builds it.
      *
-     * Duplicated deliberately: the shape of this key is the fix — a refusal belongs to
-     * the address the server judged, not to the blog ID — so a test that asserted it
-     * through the class could not tell a correct key from a wrong one.
+     * Duplicated deliberately: the shape of this key is the fix, so a test that asked
+     * the class for it could not tell a correct key from a wrong one.
      */
     private function refusalKey(string $slug = self::SLUG, string $key = self::KEY): string
     {
-        return 'wp_sms_license_refusal_' . md5($slug . '_' . $key . '_' . home_url());
+        return 'wp_sms_license_refusal_' . md5($slug . '_' . $key . '_' . get_current_blog_id());
     }
 }
