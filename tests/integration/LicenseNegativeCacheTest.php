@@ -187,21 +187,26 @@ class LicenseNegativeCacheTest extends WP_UnitTestCase
      */
     public function test_a_cache_entry_from_the_previous_release_is_ignored(): void
     {
+        // Written through the transient API rather than with SQL: options are cached in
+        // memory, so an UPDATE behind WordPress's back leaves get_transient() still
+        // returning the old value and the test passes for the wrong reason.
+        set_transient($this->refusalKey(), (object) ['_negative_cache' => true], HOUR_IN_SECONDS);
+
         $this->serve(400);
         $this->ask();
 
-        // Rewrite whatever we stored with the old shape.
-        global $wpdb;
-        $wpdb->query(
-            $wpdb->prepare(
-                "UPDATE {$wpdb->options} SET option_value = %s WHERE option_name LIKE %s",
-                serialize((object) ['_negative_cache' => true]),
-                '%_transient_wp_sms_license_refusal_%'
-            )
-        );
+        $this->assertSame(1, $this->requestCount, 'An unrecognised cache entry must not be trusted.');
+    }
 
-        $this->ask();
-
-        $this->assertSame(2, $this->requestCount, 'An unrecognised cache entry must not be trusted.');
+    /**
+     * The key the refusal is stored under, built the way ApiCommunicator builds it.
+     *
+     * Duplicated deliberately: the shape of this key is the fix — a refusal belongs to
+     * the address the server judged, not to the blog ID — so a test that asserted it
+     * through the class could not tell a correct key from a wrong one.
+     */
+    private function refusalKey(string $slug = self::SLUG, string $key = self::KEY): string
+    {
+        return 'wp_sms_license_refusal_' . md5($slug . '_' . $key . '_' . home_url());
     }
 }
