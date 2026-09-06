@@ -212,9 +212,11 @@ class ApiCommunicator
         // is unchanged, and RemoteRequest hands back whatever it finds there — so
         // without this an upgraded site is served `{_negative_cache: true}` as though it
         // were product info, with no download_url and no version on it.
-        if ($this->discardLegacyNegativeEntry($cacheKey)) {
-            return null;
-        }
+        //
+        // Cleared and then ignored, rather than answered with null: the marker means the
+        // old code failed once, up to five minutes ago, and there is no reason to make an
+        // upgraded site wait out WordPress's next update cycle to find out otherwise.
+        $this->discardLegacyNegativeEntry($cacheKey);
 
         $remoteRequest = new RemoteRequest('GET', "{$this->apiUrl}/product/download", [
             'license_key' => $licenseKey,
@@ -265,6 +267,11 @@ class ApiCommunicator
         $code = is_numeric($responseCode) ? (int) $responseCode : 0;
 
         if ($code >= 400 && $code < 500 && ! in_array($code, self::UNDECIDED_CLIENT_CODES, true)) {
+            // An answer, even an unwelcome one, means the server is reachable — so the
+            // outage history goes with it. Without this a site that timed out three
+            // times and then got a clean 400 would wait 40 minutes for its next blip
+            // instead of five.
+            $this->forgetAttempts($refusalKey);
             $this->storeRefusal($refusalKey, self::AUTHORITATIVE_CACHE_DURATION, $code, 0);
 
             return;
@@ -314,11 +321,11 @@ class ApiCommunicator
     }
 
     /**
-     * Read the previous release's marker out of the success cache, and clear it.
+     * Clear the previous release's marker out of the success cache.
      *
      * @param string $cacheKey
      *
-     * @return bool Whether one was found.
+     * @return void
      */
     private function discardLegacyNegativeEntry($cacheKey)
     {
@@ -326,11 +333,7 @@ class ApiCommunicator
 
         if (is_object($cached) && isset($cached->_negative_cache)) {
             delete_transient($cacheKey);
-
-            return true;
         }
-
-        return false;
     }
 
     /**
@@ -356,9 +359,10 @@ class ApiCommunicator
     /**
      * Read a remembered refusal.
      *
-     * Site transients on multisite, so a subdirectory network shares one entry rather
-     * than repeating the same refused request once per subsite. The key already carries
-     * the address, so a subdomain network still keeps its subsites apart.
+     * Site transients on multisite, so the row lives in one place rather than in every
+     * subsite's own options table. That is where it is stored, not what is shared — the
+     * key carries the address, and `home_url()` carries the path, so every subsite has
+     * its own entry either way. See {@see getRefusalCacheKey()}.
      *
      * @param string $refusalKey
      *
@@ -480,16 +484,18 @@ class ApiCommunicator
         }
 
         $indexKey = $this->refusalIndexKey($this->indexedLicenseKey);
-        $index    = (array) $this->readEntry($indexKey);
+        $stored   = $this->readEntry($indexKey);
+        $index    = is_array($stored) ? $stored : [];
 
-        if (in_array($refusalKey, $index, true)) {
-            return;
+        if (! in_array($refusalKey, $index, true)) {
+            $index[] = $refusalKey;
         }
 
-        $index[] = $refusalKey;
-
-        // Outlives the longest refusal it points at, so the index never says a key is
-        // still there after it has gone — a stale entry only costs one wasted delete.
+        // Rewritten on every refusal, not only when the list changes. Setting the TTL
+        // once and letting it count down while the refusals it points at were renewed
+        // was the same mistake as holding the attempt counter inside the refusal: the
+        // index expired first, a later refusal recreated it holding only itself, and a
+        // renewal then freed one address while the rest stayed refused.
         $this->writeEntry($indexKey, $index, self::AUTHORITATIVE_CACHE_DURATION + DAY_IN_SECONDS);
     }
 

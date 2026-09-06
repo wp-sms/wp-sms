@@ -35,6 +35,16 @@ class LicenseNegativeCacheTest extends WP_UnitTestCase
     }
 
     /**
+     * Skip a test that measures a transient's remaining life when it cannot be measured.
+     */
+    private function requireReadableTransientTimeouts(): void
+    {
+        if (wp_using_ext_object_cache()) {
+            $this->markTestSkipped('Transient timeouts are not readable under a persistent object cache.');
+        }
+    }
+
+    /**
      * Answer every licence request with a fixed HTTP code.
      */
     private function serve(int $code, array $body = []): void
@@ -86,21 +96,25 @@ class LicenseNegativeCacheTest extends WP_UnitTestCase
      */
     private function refusalTtl(): int
     {
-        // Read through the same API the code writes with. Querying wp_options directly
-        // returns 0 under a persistent object cache, and on multisite site transients
-        // live in wp_sitemeta — either way three tests would fail for reasons that have
-        // nothing to do with the fix.
-        $option = is_multisite()
-            ? '_site_transient_timeout_' . $this->refusalKey()
-            : '_transient_timeout_' . $this->refusalKey();
+        // There is no public API for "how long is left on this transient", so the
+        // timeout option is read directly — from sitemeta on multisite, where site
+        // transients live. A persistent object cache stores transients outside the
+        // options table entirely and writes no timeout row, so this cannot work there;
+        // {@see setUp()} skips the tests that depend on it rather than letting them fail
+        // for a reason that has nothing to do with the fix.
+        $key = $this->refusalKey();
 
-        $timeout = is_multisite() ? get_site_option($option) : get_option($option);
+        $timeout = is_multisite()
+            ? get_site_option('_site_transient_timeout_' . $key)
+            : get_option('_transient_timeout_' . $key);
 
         return $timeout ? (int) $timeout - time() : 0;
     }
 
     public function test_an_expired_licence_is_asked_about_twice_a_day_not_every_five_minutes(): void
     {
+        $this->requireReadableTransientTimeouts();
+
         $this->serve(400);
 
         // Six asks in a row is what a few page loads used to produce.
@@ -119,6 +133,8 @@ class LicenseNegativeCacheTest extends WP_UnitTestCase
      */
     public function test_a_timeout_is_remembered_only_briefly(): void
     {
+        $this->requireReadableTransientTimeouts();
+
         $this->serveTransportFailure();
 
         $this->ask();
@@ -139,6 +155,8 @@ class LicenseNegativeCacheTest extends WP_UnitTestCase
      */
     public function test_a_response_that_decides_nothing_is_remembered_briefly(int $code): void
     {
+        $this->requireReadableTransientTimeouts();
+
         $this->serve($code);
 
         $this->ask();
@@ -170,6 +188,8 @@ class LicenseNegativeCacheTest extends WP_UnitTestCase
      */
     public function test_repeated_outages_lengthen_the_wait(): void
     {
+        $this->requireReadableTransientTimeouts();
+
         $this->serveTransportFailure();
 
         $this->ask();
@@ -195,22 +215,44 @@ class LicenseNegativeCacheTest extends WP_UnitTestCase
      */
     public function test_a_success_forgets_the_attempt_history(): void
     {
+        $this->requireReadableTransientTimeouts();
+
         $this->serveTransportFailure();
         $this->ask();
         $this->expireRefusal();
         $this->ask();
         $stretched = $this->refusalTtl();
+        $this->assertGreaterThan(ApiCommunicator::NEGATIVE_CACHE_DURATION, $stretched);
 
         $this->deleteRefusal();
         remove_all_filters('pre_http_request');
         $this->serve(200, ['download_url' => 'https://example.test/x.zip']);
         (new ApiCommunicator())->getProductInfo(self::KEY, self::SLUG);
 
+        // The success is cached for a day. Without dropping it the next ask would be
+        // answered from cache, never reach the network, never write a refusal — and the
+        // assertion below would compare against a TTL of zero and pass no matter what
+        // the code did.
+        $this->deleteSuccessCache();
+
         remove_all_filters('pre_http_request');
         $this->serveTransportFailure();
         $this->ask();
 
+        $this->assertSame(4, $this->requestCount, 'The last ask must actually reach the network.');
+        $this->assertGreaterThan(0, $this->refusalTtl());
         $this->assertLessThan($stretched, $this->refusalTtl(), 'A success must reset the backoff.');
+    }
+
+    /**
+     * Drop the day-long success cache, so the next ask goes out.
+     */
+    private function deleteSuccessCache(): void
+    {
+        $method = new \ReflectionMethod(ApiCommunicator::class, 'getProductInfoCacheKey');
+        $method->setAccessible(true);
+
+        delete_transient($method->invoke(new ApiCommunicator(), self::SLUG, self::KEY));
     }
 
     /**
@@ -328,8 +370,12 @@ class LicenseNegativeCacheTest extends WP_UnitTestCase
 
         $result = (new ApiCommunicator())->getProductInfo(self::KEY, self::SLUG);
 
-        $this->assertNull($result, 'The old marker must never be returned as product info.');
-        $this->assertFalse(get_transient($successKey), 'And it must be cleared, so the next check can succeed.');
+        // Cleared and then asked, not answered with null: the marker only means the old
+        // code failed once, up to five minutes ago. Answering null would make an upgraded
+        // site wait out WordPress's next update cycle to learn otherwise.
+        $this->assertSame(1, $this->requestCount, 'The stale marker must not stand in for an answer.');
+        $this->assertIsObject($result);
+        $this->assertSame('https://example.test/x.zip', $result->download_url);
     }
 
     /**
