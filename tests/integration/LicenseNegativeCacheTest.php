@@ -86,16 +86,15 @@ class LicenseNegativeCacheTest extends WP_UnitTestCase
      */
     private function refusalTtl(): int
     {
-        global $wpdb;
+        // Read through the same API the code writes with. Querying wp_options directly
+        // returns 0 under a persistent object cache, and on multisite site transients
+        // live in wp_sitemeta — either way three tests would fail for reasons that have
+        // nothing to do with the fix.
+        $option = is_multisite()
+            ? '_site_transient_timeout_' . $this->refusalKey()
+            : '_transient_timeout_' . $this->refusalKey();
 
-        $prefix = is_multisite() ? '_site_transient_timeout_' : '_transient_timeout_';
-
-        $timeout = $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT option_value FROM {$wpdb->options} WHERE option_name LIKE %s",
-                $prefix . 'wp_sms_license_refusal_%'
-            )
-        );
+        $timeout = is_multisite() ? get_site_option($option) : get_option($option);
 
         return $timeout ? (int) $timeout - time() : 0;
     }
@@ -130,24 +129,114 @@ class LicenseNegativeCacheTest extends WP_UnitTestCase
     }
 
     /**
-     * 429 is the server asking us to slow down. That is about the request, not the
-     * licence, so it must not be cached as though the licence were refused.
+     * Some responses are about the request or the route, not the licence.
+     *
+     * 429 is the server asking us to slow down; a 404 is a route that moved during a
+     * deploy; a 403 is an edge rule with no licence involved. Caching any of them for
+     * twelve hours would black out the fleet until tomorrow, long after the rollback.
+     *
+     * @dataProvider undecided_response_provider
      */
-    public function test_a_rate_limit_backs_off_rather_than_counting_as_an_answer(): void
+    public function test_a_response_that_decides_nothing_is_remembered_briefly(int $code): void
     {
-        $this->serve(429);
+        $this->serve($code);
 
         $this->ask();
 
-        $this->assertLessThanOrEqual(ApiCommunicator::NEGATIVE_CACHE_DURATION, $this->refusalTtl());
-        $this->assertLessThan(HOUR_IN_SECONDS, $this->refusalTtl());
+        // Stated as a wall-clock bound, not as the constant the code uses, so this fails
+        // if the classification changes rather than moving with it.
+        $this->assertGreaterThan(0, $this->refusalTtl());
+        $this->assertLessThanOrEqual(310, $this->refusalTtl(), "HTTP {$code} must not be cached as an answer about the licence.");
+    }
+
+    public function undecided_response_provider(): array
+    {
+        return [
+            'rate limited'      => [429],
+            'route moved'       => [404],
+            'edge rule / WAF'   => [403],
+            'request timeout'   => [408],
+            'server error'      => [500],
+        ];
+    }
+
+    /**
+     * The backoff has to survive the wait it sets, or it is not a backoff.
+     *
+     * The first version kept the counter inside the refusal itself. The refusal expiring
+     * is the only thing that lets another attempt happen, so the counter was always gone
+     * by the time it was read and the delay was a fixed five minutes forever — with the
+     * cap and the clamp above it unreachable.
+     */
+    public function test_repeated_outages_lengthen_the_wait(): void
+    {
+        $this->serveTransportFailure();
+
+        $this->ask();
+        $first = $this->refusalTtl();
+
+        // Let the wait lapse the way time would, without waiting.
+        $this->expireRefusal();
+        $this->ask();
+        $second = $this->refusalTtl();
+
+        $this->expireRefusal();
+        $this->ask();
+        $third = $this->refusalTtl();
+
+        $this->assertSame(3, $this->requestCount);
+        $this->assertGreaterThan($first, $second, 'The second failure must wait longer than the first.');
+        $this->assertGreaterThan($second, $third, 'The third must wait longer again.');
+        $this->assertLessThanOrEqual(ApiCommunicator::MAX_TRANSIENT_CACHE_DURATION, $third);
+    }
+
+    /**
+     * And a licence that answers again starts the next outage from five minutes.
+     */
+    public function test_a_success_forgets_the_attempt_history(): void
+    {
+        $this->serveTransportFailure();
+        $this->ask();
+        $this->expireRefusal();
+        $this->ask();
+        $stretched = $this->refusalTtl();
+
+        $this->deleteRefusal();
+        remove_all_filters('pre_http_request');
+        $this->serve(200, ['download_url' => 'https://example.test/x.zip']);
+        (new ApiCommunicator())->getProductInfo(self::KEY, self::SLUG);
+
+        remove_all_filters('pre_http_request');
+        $this->serveTransportFailure();
+        $this->ask();
+
+        $this->assertLessThan($stretched, $this->refusalTtl(), 'A success must reset the backoff.');
+    }
+
+    /**
+     * Drop the refusal the way its expiry would, leaving the attempt history alone.
+     */
+    private function expireRefusal(): void
+    {
+        $this->deleteRefusal();
+    }
+
+    private function deleteRefusal(): void
+    {
+        if (is_multisite()) {
+            delete_site_transient($this->refusalKey());
+
+            return;
+        }
+
+        delete_transient($this->refusalKey());
     }
 
     /**
      * A customer who renews must not wait out the twelve hours. Validating a licence is
      * the moment we learn something changed, and it clears what we remembered.
      */
-    public function test_validating_a_licence_forgets_the_refusal(): void
+    public function test_clearing_the_cache_forgets_the_refusal(): void
     {
         $this->serve(400);
         $this->ask();
@@ -158,6 +247,39 @@ class LicenseNegativeCacheTest extends WP_UnitTestCase
         $this->ask();
 
         $this->assertSame(2, $this->requestCount, 'Clearing the cache must let the next ask through.');
+    }
+
+    /**
+     * A network renews on one subsite. The rest must not stay refused for twelve hours.
+     *
+     * Refusals are keyed on the address the server judged, so one licence collects one
+     * per subsite and per language, while the renewal happens at exactly one of them.
+     * Clearing only that one left the others worse off than the five minutes they used
+     * to wait.
+     */
+    public function test_clearing_reaches_every_address_the_licence_was_refused_at(): void
+    {
+        $second = function () {
+            return 'https://second.example.test';
+        };
+
+        $this->serve(400);
+
+        $this->ask();
+        add_filter('home_url', $second);
+        $this->ask();
+        remove_filter('home_url', $second);
+
+        $this->assertSame(2, $this->requestCount, 'Each address is asked once.');
+
+        // Renew, as it happens on the first address only.
+        (new ApiCommunicator())->clearProductInfoCache(self::KEY);
+
+        add_filter('home_url', $second);
+        $this->ask();
+        remove_filter('home_url', $second);
+
+        $this->assertSame(3, $this->requestCount, 'The other address must be released too.');
     }
 
     /**
@@ -185,17 +307,29 @@ class LicenseNegativeCacheTest extends WP_UnitTestCase
      * The previous release stored an object here. An upgrade must treat that as absent
      * rather than trip over it, or the first check after updating throws.
      */
-    public function test_a_cache_entry_from_the_previous_release_is_ignored(): void
+    /**
+     * The previous release wrote its marker into the SUCCESS key, not a key of its own.
+     *
+     * That key is unchanged and `RemoteRequest` returns whatever it finds there, so
+     * without a guard an upgraded site is handed `{_negative_cache: true}` as though it
+     * were product info — no download_url, no version. The first version of this test
+     * wrote the marker under the new key, which the old release never used, so it
+     * exercised a state that cannot happen while the one that does went untested.
+     */
+    public function test_the_previous_releases_marker_is_not_served_as_product_info(): void
     {
-        // Written through the transient API rather than with SQL: options are cached in
-        // memory, so an UPDATE behind WordPress's back leaves get_transient() still
-        // returning the old value and the test passes for the wrong reason.
-        set_transient($this->refusalKey(), (object) ['_negative_cache' => true], HOUR_IN_SECONDS);
+        $reflection = new \ReflectionMethod(ApiCommunicator::class, 'getProductInfoCacheKey');
+        $reflection->setAccessible(true);
+        $successKey = $reflection->invoke(new ApiCommunicator(), self::SLUG, self::KEY);
 
-        $this->serve(400);
-        $this->ask();
+        set_transient($successKey, (object) ['_negative_cache' => true], HOUR_IN_SECONDS);
 
-        $this->assertSame(1, $this->requestCount, 'An unrecognised cache entry must not be trusted.');
+        $this->serve(200, ['download_url' => 'https://example.test/x.zip']);
+
+        $result = (new ApiCommunicator())->getProductInfo(self::KEY, self::SLUG);
+
+        $this->assertNull($result, 'The old marker must never be returned as product info.');
+        $this->assertFalse(get_transient($successKey), 'And it must be cleared, so the next check can succeed.');
     }
 
     /**

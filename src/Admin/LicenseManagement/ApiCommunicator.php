@@ -14,6 +14,13 @@ class ApiCommunicator
 {
     use TransientCacheTrait;
 
+    /**
+     * The licence the current call is about, so a refusal can be indexed against it.
+     *
+     * @var string|null
+     */
+    private $indexedLicenseKey;
+
     private $apiUrl = 'https://my.wsms.io/wp-json/wp-license-manager/v1';
 
     /**
@@ -42,6 +49,19 @@ class ApiCommunicator
      * The longest a transport failure is remembered once the backoff has stretched.
      */
     const MAX_TRANSIENT_CACHE_DURATION = 6 * HOUR_IN_SECONDS;
+
+    /**
+     * The 4xx codes that are not an answer about the licence.
+     *
+     * 429 is the server asking us to slow down. A 404 is a route that has moved — rename
+     * the endpoint during a deploy and every install would otherwise cache "refused" for
+     * twelve hours and stay dead until tomorrow, long after the rollback. A 403 is what
+     * an edge rule or a WAF returns, with no licence involved at all. 408 is a timeout
+     * wearing a 4xx.
+     *
+     * Each of these used to heal in five minutes. They still do.
+     */
+    const UNDECIDED_CLIENT_CODES = [403, 404, 408, 429];
 
     /**
      * Get the list of products (add-ons) from the API and cache it for 1 week.
@@ -105,9 +125,10 @@ class ApiCommunicator
      *
      * What that buys, case by case:
      *
-     * - **Subdirectory multisite** — every subsite shares one host, so the whole network
-     *   shares one entry and asks once instead of once per subsite. This is the case that
-     *   turned one refused licence into hundreds of requests an hour.
+     * - **Subdirectory multisite** — `home_url()` carries the path, so `example.com/a`
+     *   and `example.com/b` are separate entries. They must be: the server is given the
+     *   full address and may answer differently for each. Each subsite still asks, but
+     *   twice a day rather than 288 times.
      * - **Subdomain multisite** — each subsite has its own host, so each keeps its own
      *   entry. It must: the server may well allow one subdomain and refuse another, and a
      *   shared entry would silence a subsite that was never refused.
@@ -153,15 +174,17 @@ class ApiCommunicator
         if ($addonSlug) {
             delete_transient($this->getProductInfoCacheKey($addonSlug, $licenseKey));
             $this->deleteRefusal($this->getRefusalCacheKey($addonSlug, $licenseKey));
-
-            return;
+        } else {
+            // Clear cache for all known add-ons when no specific slug provided
+            foreach (array_keys(PluginHelper::$plugins) as $addon) {
+                delete_transient($this->getProductInfoCacheKey($addon, $licenseKey));
+                $this->deleteRefusal($this->getRefusalCacheKey($addon, $licenseKey));
+            }
         }
 
-        // Clear cache for all known add-ons when no specific slug provided
-        foreach (array_keys(PluginHelper::$plugins) as $addon) {
-            delete_transient($this->getProductInfoCacheKey($addon, $licenseKey));
-            $this->deleteRefusal($this->getRefusalCacheKey($addon, $licenseKey));
-        }
+        // And every other address this licence was refused at. A network renews on one
+        // subsite; the rest must not stay refused for the remaining twelve hours.
+        $this->clearAllRefusals($licenseKey);
     }
 
     /**
@@ -178,8 +201,18 @@ class ApiCommunicator
         $cacheKey   = $this->getProductInfoCacheKey($addonSlug, $licenseKey);
         $refusalKey = $this->getRefusalCacheKey($addonSlug, $licenseKey);
 
+        $this->indexedLicenseKey = $licenseKey;
+
         $refusal = $this->getRefusal($refusalKey);
         if ($refusal !== false) {
+            return null;
+        }
+
+        // The release before this one wrote its marker into the *success* key. That key
+        // is unchanged, and RemoteRequest hands back whatever it finds there — so
+        // without this an upgraded site is served `{_negative_cache: true}` as though it
+        // were product info, with no download_url and no version on it.
+        if ($this->discardLegacyNegativeEntry($cacheKey)) {
             return null;
         }
 
@@ -215,9 +248,9 @@ class ApiCommunicator
      * install ask every five minutes forever.
      *
      * - **A 4xx** is the server's considered answer about the licence. Nothing we do in
-     *   five minutes changes it, so it is held for twelve hours. The one exception is
-     *   429, which is the server asking us to slow down — that is about the request, not
-     *   the licence, so it backs off instead.
+     *   five minutes changes it, so it is held for twelve hours — except for the codes in
+     *   {@see self::UNDECIDED_CLIENT_CODES}, which say something about the request or the
+     *   route rather than the licence.
      * - **No code at all** means `wp_remote_request` returned a `WP_Error`: a timeout, a
      *   DNS failure, a refused connection. Nothing has been decided.
      * - **A 5xx** means the server is unwell. Also nothing decided.
@@ -231,16 +264,73 @@ class ApiCommunicator
     {
         $code = is_numeric($responseCode) ? (int) $responseCode : 0;
 
-        if ($code >= 400 && $code < 500 && $code !== 429) {
+        if ($code >= 400 && $code < 500 && ! in_array($code, self::UNDECIDED_CLIENT_CODES, true)) {
             $this->storeRefusal($refusalKey, self::AUTHORITATIVE_CACHE_DURATION, $code, 0);
 
             return;
         }
 
         // Transport failure, 5xx, or 429: try again, but not as often each time.
-        $attempts = $this->refusalAttempts($refusalKey) + 1;
+        $attempts = $this->recordAttempt($refusalKey);
 
         $this->storeRefusal($refusalKey, $this->transientRetryDelay($attempts), $code, $attempts);
+    }
+
+    /**
+     * Count this failure, and return how many there have now been in a row.
+     *
+     * Kept in its own entry, outliving the wait it sets. Holding the counter inside the
+     * refusal itself could not work: the refusal expiring is the only thing that lets
+     * another attempt happen, so by the time we read it back it is always gone and the
+     * count is always one — which made the backoff a fixed five minutes forever.
+     *
+     * The counter is given the longest wait plus an hour, so a site that recovers stops
+     * carrying its history around, and one that does not keeps climbing.
+     *
+     * @param string $refusalKey
+     *
+     * @return int
+     */
+    private function recordAttempt($refusalKey)
+    {
+        $key      = $refusalKey . '_attempts';
+        $attempts = (int) $this->readEntry($key) + 1;
+
+        $this->writeEntry($key, $attempts, self::MAX_TRANSIENT_CACHE_DURATION + HOUR_IN_SECONDS);
+
+        return $attempts;
+    }
+
+    /**
+     * Forget the attempt history, so the next outage starts at five minutes again.
+     *
+     * @param string $refusalKey
+     *
+     * @return void
+     */
+    private function forgetAttempts($refusalKey)
+    {
+        $this->deleteEntry($refusalKey . '_attempts');
+    }
+
+    /**
+     * Read the previous release's marker out of the success cache, and clear it.
+     *
+     * @param string $cacheKey
+     *
+     * @return bool Whether one was found.
+     */
+    private function discardLegacyNegativeEntry($cacheKey)
+    {
+        $cached = get_transient($cacheKey);
+
+        if (is_object($cached) && isset($cached->_negative_cache)) {
+            delete_transient($cacheKey);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -261,20 +351,6 @@ class ApiCommunicator
         $delay    = self::NEGATIVE_CACHE_DURATION * (2 ** $exponent);
 
         return (int) min($delay, self::MAX_TRANSIENT_CACHE_DURATION);
-    }
-
-    /**
-     * How many times in a row this address has failed to get an answer.
-     *
-     * @param string $refusalKey
-     *
-     * @return int
-     */
-    private function refusalAttempts($refusalKey)
-    {
-        $refusal = $this->getRefusal($refusalKey);
-
-        return is_array($refusal) && isset($refusal['attempts']) ? (int) $refusal['attempts'] : 0;
     }
 
     /**
@@ -307,18 +383,12 @@ class ApiCommunicator
      */
     private function storeRefusal($refusalKey, $duration, $code, $attempts)
     {
-        $refusal = [
+        $this->writeEntry($refusalKey, [
             'code'     => (int) $code,
             'attempts' => (int) $attempts,
-        ];
+        ], $duration);
 
-        if (is_multisite()) {
-            set_site_transient($refusalKey, $refusal, $duration);
-
-            return;
-        }
-
-        set_transient($refusalKey, $refusal, $duration);
+        $this->rememberKey($refusalKey);
     }
 
     /**
@@ -328,13 +398,119 @@ class ApiCommunicator
      */
     private function deleteRefusal($refusalKey)
     {
+        $this->deleteEntry($refusalKey);
+        $this->forgetAttempts($refusalKey);
+    }
+
+    /**
+     * Read one entry, network-wide on multisite.
+     *
+     * @param string $key
+     *
+     * @return mixed
+     */
+    private function readEntry($key)
+    {
+        return is_multisite() ? get_site_transient($key) : get_transient($key);
+    }
+
+    /**
+     * @param string $key
+     * @param mixed  $value
+     * @param int    $duration
+     *
+     * @return void
+     */
+    private function writeEntry($key, $value, $duration)
+    {
         if (is_multisite()) {
-            delete_site_transient($refusalKey);
+            set_site_transient($key, $value, $duration);
 
             return;
         }
 
-        delete_transient($refusalKey);
+        set_transient($key, $value, $duration);
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return void
+     */
+    private function deleteEntry($key)
+    {
+        if (is_multisite()) {
+            delete_site_transient($key);
+
+            return;
+        }
+
+        delete_transient($key);
+    }
+
+    /**
+     * The option that lists every refusal key written for a licence.
+     *
+     * @param string $licenseKey
+     *
+     * @return string
+     */
+    private function refusalIndexKey($licenseKey)
+    {
+        return 'wp_sms_license_refusal_index_' . md5($licenseKey);
+    }
+
+    /**
+     * Note that a refusal exists under this key.
+     *
+     * Refusals are keyed on the address the server judged, so one licence collects one
+     * per subsite and per language. Clearing only the address the customer happened to
+     * renew on would leave the other thirty-nine refused for twelve hours — worse than
+     * the five minutes they used to wait. This index is how {@see clearProductInfoCache()}
+     * finds them all.
+     *
+     * @param string $refusalKey
+     *
+     * @return void
+     */
+    private function rememberKey($refusalKey)
+    {
+        if (! isset($this->indexedLicenseKey)) {
+            return;
+        }
+
+        $indexKey = $this->refusalIndexKey($this->indexedLicenseKey);
+        $index    = (array) $this->readEntry($indexKey);
+
+        if (in_array($refusalKey, $index, true)) {
+            return;
+        }
+
+        $index[] = $refusalKey;
+
+        // Outlives the longest refusal it points at, so the index never says a key is
+        // still there after it has gone — a stale entry only costs one wasted delete.
+        $this->writeEntry($indexKey, $index, self::AUTHORITATIVE_CACHE_DURATION + DAY_IN_SECONDS);
+    }
+
+    /**
+     * Clear every refusal recorded for a licence, whichever address recorded it.
+     *
+     * @param string $licenseKey
+     *
+     * @return void
+     */
+    private function clearAllRefusals($licenseKey)
+    {
+        $indexKey = $this->refusalIndexKey($licenseKey);
+
+        foreach ((array) $this->readEntry($indexKey) as $refusalKey) {
+            if (is_string($refusalKey)) {
+                $this->deleteRefusal($refusalKey);
+            }
+        }
+
+        $this->deleteEntry($indexKey);
     }
 
     /**
