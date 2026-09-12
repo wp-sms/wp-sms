@@ -1,4 +1,5 @@
 v7.2.9 - Unreleased
+- **Fix:** Subscription validation errors no longer show HTML entities, so an apostrophe reaches the visitor as an apostrophe ([#547](https://github.com/wp-sms/wp-sms/issues/547)).
 - **Fix:** A site whose licence is expired or suspended no longer contacts the licence server every five minutes. It asks twice a day instead, which is all a refused licence can usefully be asked ([#539](https://github.com/wp-sms/wp-sms/issues/539)).
 
 v7.2.8 - 2026-09-05

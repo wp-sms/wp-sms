@@ -80,4 +80,42 @@ class SubscriptionValidationActionTest extends WP_UnitTestCase
             ),
         ), $actions);
     }
+
+    public function testMessageIsSentAsPlainTextForTheFrontendToEscape()
+    {
+        $plain = PublicSubscribeAjax::formatValidationError(
+            new \WP_Error('opted_out', "You're unsubscribed & can't rejoin yet.")
+        );
+
+        $this->assertSame("You're unsubscribed & can't rejoin yet.", $plain);
+
+        $withActions = PublicSubscribeAjax::formatValidationError(
+            new \WP_Error('opted_out', "You're unsubscribed. Text START to rejoin.", array(
+                'actions' => array(
+                    array('label' => 'Text START', 'href' => 'sms:+15555554567?body=START'),
+                    array('label' => 'Bad', 'href' => 'javascript:alert(1)'),
+                ),
+            ))
+        );
+
+        $this->assertSame(array(
+            'message' => "You're unsubscribed. Text START to rejoin.",
+            'actions' => array(
+                array(
+                    'label' => 'Text START',
+                    'href'  => 'sms:+15555554567?body=START',
+                    'type'  => 'sms',
+                ),
+            ),
+        ), $withActions);
+    }
+
+    public function testRawHtmlInTheMessageIsNeitherRenderedNorDoubleEscaped()
+    {
+        // Left as-is: the frontend shows it literally, which tells the developer
+        // to move the link into the actions array instead of the message.
+        $message = 'Unsubscribed.<br><a href="sms:+1?body=START">Text START</a>';
+
+        $this->assertSame($message, PublicSubscribeAjax::formatValidationError(new \WP_Error('opted_out', $message)));
+    }
 }
