@@ -1,4 +1,8 @@
 v7.2.9 - Unreleased
+- **Fix:** The phone number check no longer says numbers are in good shape when they are not. A number saved with a plus but without the country code, like +7065810032 on a US site, is now listed with its fix (+17065810032) for you to approve. Real international numbers, like a Russian +7 number, are left alone ([#551](https://github.com/wp-sms/wp-sms/issues/551)).
+- **Fix:** The phone number check now also covers WooCommerce order and subscription billing phones, including guest orders and stores using High-Performance Order Storage ([#551](https://github.com/wp-sms/wp-sms/issues/551)).
+- **Fix:** Applying the phone number check to more than 500 numbers in one place updates all of them instead of skipping some.
+- **Fix:** The Minimum Digits and Maximum Digits help text now says how the length is really counted ([#551](https://github.com/wp-sms/wp-sms/issues/551)).
 - **Fix:** The "Visit Website" link on the gateway settings page keeps a gateway's own sign-up parameters (ClickSend, 4jawaly) instead of breaking them with a second question mark, and the gateway picker shows the provider's domain rather than its referral code.
 - **Fix:** Subscription validation errors no longer show HTML entities, so an apostrophe reaches the visitor as an apostrophe ([#547](https://github.com/wp-sms/wp-sms/issues/547)).
 - **Fix:** A site whose licence is expired or suspended no longer contacts the licence server every five minutes. It asks twice a day instead, which is all a refused licence can usefully be asked ([#539](https://github.com/wp-sms/wp-sms/issues/539)).
