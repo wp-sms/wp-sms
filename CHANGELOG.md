@@ -1,4 +1,5 @@
 v7.2.9 - Unreleased
+- **Enhancement:** The Send SMS form markup can be adjusted with the `wp_sms_send_sms_form_html` filter, so add-ons can harden form submission for every way the form is placed.
 - **Fix:** The "Visit Website" link on the gateway settings page keeps a gateway's own sign-up parameters (ClickSend, 4jawaly) instead of breaking them with a second question mark, and the gateway picker shows the provider's domain rather than its referral code.
 - **Fix:** Subscription validation errors no longer show HTML entities, so an apostrophe reaches the visitor as an apostrophe ([#547](https://github.com/wp-sms/wp-sms/issues/547)).
 - **Fix:** A site whose licence is expired or suspended no longer contacts the licence server every five minutes. It asks twice a day instead, which is all a refused licence can usefully be asked ([#539](https://github.com/wp-sms/wp-sms/issues/539)).

@@ -191,10 +191,18 @@ function wp_sms_send_sms_form($attributes = array())
     $current_user     = wp_get_current_user();
 
     if (!$attributes['onlyLoggedUsers'] || ($attributes['onlyLoggedUsers'] && $current_user->ID !== 0 && ($attributes['userRole'] == 'all' || in_array($attributes['userRole'], $current_user->roles)))) {
-        return \WP_SMS\Helper::loadTemplate('send-sms-form.php', [
+        $html = \WP_SMS\Helper::loadTemplate('send-sms-form.php', [
             'attributes' => $attributes,
             'visibility' => $block_visibility
         ]);
+
+        /**
+         * Filters the rendered Send SMS form markup.
+         *
+         * @param string $html       Form markup.
+         * @param array  $attributes Form attributes.
+         */
+        return apply_filters('wp_sms_send_sms_form_html', $html, $attributes);
     }
 }
 
