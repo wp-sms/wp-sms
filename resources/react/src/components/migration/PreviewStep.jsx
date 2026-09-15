@@ -36,7 +36,7 @@ export default function PreviewStep({
   const countryCodeClean = String(countryCodeDisplay).replace(/^\+?/, '')
   const bodyCopy = sprintf(
     __(
-      "We'll add +%s to numbers that are missing it, and normalize a few trunk-prefix variations. Numbers that are already in international format aren't touched."
+      "We'll add +%s to numbers that are missing it, including numbers saved with a + but no country code, and normalize a few trunk-prefix variations. Valid international numbers aren't touched."
     , 'wp-sms'),
     countryCodeClean
   )
