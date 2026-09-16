@@ -166,15 +166,44 @@ class NumberParser
             $phoneNumber = $this->rawPhoneNumber;
         }
 
-        $length    = strlen($phoneNumber);
         $minLength = Option::getOption('mobile_terms_minimum');
         $maxLength = Option::getOption('mobile_terms_maximum');
 
         if ($this->isInternationalInputEnabled || (!$minLength && !$maxLength)) {
+            // Standard E.164 bounds, measured on the full number including its country code.
+            $length = strlen($phoneNumber);
             return $length >= 8 && $length <= 15;
         }
 
+        // The Settings UI describes Minimum/Maximum Digits as "excluding country code", so
+        // strip a leading country code before measuring — otherwise a number the caller
+        // already gave us with a '+' (e.g. a pasted full number) counts those extra digits
+        // against a limit that isn't supposed to include them.
+        $length = strlen($this->stripCountryCode($phoneNumber));
+
         return (!$minLength || $length >= $minLength) && (!$maxLength || $length <= $maxLength);
+    }
+
+    /**
+     * Strips a leading '+' and the site's configured default country code, if present.
+     *
+     * @param string $phoneNumber
+     * @return string
+     */
+    private function stripCountryCode($phoneNumber)
+    {
+        if (strpos($phoneNumber, '+') !== 0) {
+            return $phoneNumber;
+        }
+
+        $digits   = substr($phoneNumber, 1);
+        $ccDigits = ltrim((string) Option::getOption('mobile_county_code'), '+');
+
+        if ($ccDigits !== '' && strpos($digits, $ccDigits) === 0) {
+            return substr($digits, strlen($ccDigits));
+        }
+
+        return $digits;
     }
 
     /**

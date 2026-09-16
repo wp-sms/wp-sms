@@ -50,12 +50,12 @@ class PublicSubscribeAjax extends AjaxControllerAbstract
 
             if ($actions) {
                 wp_send_json_error(array(
-                    'message' => esc_html($result->get_error_message()),
+                    'message' => $result->get_error_message(),
                     'actions' => $actions,
                 ), 400);
             }
 
-            throw new Exception(esc_html($result->get_error_message()));
+            throw new Exception($result->get_error_message());
         }
 
         return wp_send_json_success($result);

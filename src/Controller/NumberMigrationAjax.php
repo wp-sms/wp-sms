@@ -149,6 +149,43 @@ class NumberMigrationAjax extends AjaxControllerAbstract
             ],
         ];
 
+        // Order and subscription billing phones (WooCommerce, and WooCommerce Subscriptions
+        // when active — subscriptions share the same '_billing_phone' meta key / post type
+        // family, so no separate Subscriptions detection is needed).
+        if (class_exists('WooCommerce')) {
+            $sources[] = [
+                'key'         => 'wc_order_billing_phone',
+                'label'       => __('Order & Subscription Billing Phones', 'wp-sms'),
+                'table'       => $wpdb->postmeta,
+                'column'      => 'meta_value',
+                'pk'          => 'meta_id',
+                'name_column' => null,
+                'type'        => 'single',
+                'where_extra' => $wpdb->prepare(
+                    "meta_key = %s AND meta_value != '' AND post_id IN (SELECT ID FROM {$wpdb->posts} WHERE post_type IN ('shop_order', 'shop_subscription'))",
+                    '_billing_phone'
+                ),
+            ];
+
+            // HPOS keeps billing phones in its own addresses table instead of postmeta;
+            // covers guest orders and subscriptions the same way since they share that table.
+            if (
+                get_option('woocommerce_custom_orders_table_enabled')
+                && class_exists('\Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore')
+            ) {
+                $sources[] = [
+                    'key'         => 'wc_hpos_billing_phone',
+                    'label'       => __('Order & Subscription Billing Phones (HPOS)', 'wp-sms'),
+                    'table'       => \Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore::get_addresses_table_name(),
+                    'column'      => 'phone',
+                    'pk'          => 'id',
+                    'name_column' => null,
+                    'type'        => 'single',
+                    'where_extra' => "address_type = 'billing' AND phone != ''",
+                ];
+            }
+        }
+
         // Filter out tables that don't exist (cached for this request)
         static $cache = null;
         if ($cache !== null) {
@@ -194,10 +231,11 @@ class NumberMigrationAjax extends AjaxControllerAbstract
             $whereBase = isset($source['where_extra']) ? $source['where_extra'] : "`{$source['column']}` != ''";
 
             if ($source['type'] === 'single') {
+                $needsMigrationClause = $this->getNeedsMigrationClause("`{$source['column']}`", $countryCode);
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table/column names from hardcoded source registry
                 $total = (int) $wpdb->get_var("SELECT COUNT(*) FROM `{$source['table']}` WHERE {$whereBase}");
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                $needFix = (int) $wpdb->get_var("SELECT COUNT(*) FROM `{$source['table']}` WHERE {$whereBase} AND `{$source['column']}` NOT LIKE '+%'");
+                $needFix = (int) $wpdb->get_var("SELECT COUNT(*) FROM `{$source['table']}` WHERE {$whereBase} AND {$needsMigrationClause}");
                 $alreadyOk = $total - $needFix;
             } else {
                 // CSV type — count total rows and rows needing fix using SQL pattern matching
@@ -223,8 +261,9 @@ class NumberMigrationAjax extends AjaxControllerAbstract
             // so the UI can show concrete patterns ("What kind of numbers need fixing?")
             // without an extra round-trip.
             if (empty($samples) && $needFix > 0 && $source['type'] === 'single') {
+                $needsMigrationClause = $this->getNeedsMigrationClause("`{$source['column']}`", $countryCode);
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                $sampleRows = $wpdb->get_col("SELECT `{$source['column']}` FROM `{$source['table']}` WHERE {$whereBase} AND `{$source['column']}` NOT LIKE '+%' LIMIT 3");
+                $sampleRows = $wpdb->get_col("SELECT `{$source['column']}` FROM `{$source['table']}` WHERE {$whereBase} AND {$needsMigrationClause} LIMIT 3");
                 if (!empty($sampleRows)) {
                     $samples = array_values(array_filter(array_map('strval', $sampleRows)));
                 }
@@ -305,18 +344,20 @@ class NumberMigrationAjax extends AjaxControllerAbstract
 
                 // For usermeta, join with users table for name
                 if ($source['key'] === 'usermeta') {
+                    $needsMigrationClause = $this->getNeedsMigrationClause("t.`{$source['column']}`", $countryCode);
                     $rows = $wpdb->get_results(
                         "SELECT t.{$source['pk']} AS pk_val, t.{$source['column']} AS phone, u.display_name
                          FROM {$source['table']} t
                          LEFT JOIN {$wpdb->users} u ON t.user_id = u.ID
-                         WHERE {$whereBase} AND t.{$source['column']} NOT LIKE '+%'
+                         WHERE {$whereBase} AND {$needsMigrationClause}
                          ORDER BY t.{$source['pk']} ASC"
                     );
                 } else {
+                    $needsMigrationClause = $this->getNeedsMigrationClause("`{$source['column']}`", $countryCode);
                     $rows = $wpdb->get_results(
                         "SELECT {$source['pk']} AS pk_val, {$source['column']} AS phone {$nameSelect}
                          FROM {$source['table']}
-                         WHERE {$whereBase} AND {$source['column']} NOT LIKE '+%'
+                         WHERE {$whereBase} AND {$needsMigrationClause}
                          ORDER BY {$source['pk']} ASC"
                     );
                 }
@@ -423,10 +464,13 @@ class NumberMigrationAjax extends AjaxControllerAbstract
                 set_transient(self::LOCK_TRANSIENT, time(), self::LOCK_TTL_SECONDS);
 
                 if ($source['type'] === 'single') {
+                    // %% because this fragment goes through $wpdb->prepare() below alongside
+                    // the LIMIT/OFFSET placeholders — a literal '%' would be read as one too.
+                    $needsMigrationClause = str_replace('%', '%%', $this->getNeedsMigrationClause("`{$source['column']}`", $countryCode));
                     $rows = $wpdb->get_results($wpdb->prepare(
                         "SELECT {$source['pk']} AS pk_val, {$source['column']} AS phone
                          FROM {$source['table']}
-                         WHERE {$whereBase} AND {$source['column']} NOT LIKE '+%%'
+                         WHERE {$whereBase} AND {$needsMigrationClause}
                          ORDER BY {$source['pk']} ASC LIMIT %d OFFSET %d",
                         self::BATCH_SIZE,
                         $offset
@@ -941,9 +985,16 @@ class NumberMigrationAjax extends AjaxControllerAbstract
     {
         $number = trim($number);
 
-        // Already in E.164
         if (strpos($number, '+') === 0) {
-            return $number;
+            // Already E.164 under this site's default country code — leave it alone.
+            if ($this->isPlausibleE164($number, $countryCode)) {
+                return $number;
+            }
+
+            // Has a leading '+' but the digits after it don't match the default country
+            // code (e.g. '+7065810032' on a +1 site — a raw local number that picked up a
+            // stray '+'). Drop the '+' and re-run it through the normal local-number rules.
+            $number = substr($number, 1);
         }
 
         // Strip non-digit characters
@@ -972,6 +1023,59 @@ class NumberMigrationAjax extends AjaxControllerAbstract
 
         // Plain local number without any prefix
         return $countryCode . $clean;
+    }
+
+    /**
+     * Whether a '+'-prefixed number is plausibly already correct for this site.
+     *
+     * When "International Number Input" is off, this site only ever intends to send to
+     * the configured default country, so a '+' value that doesn't start with that
+     * country's digits (e.g. '+7065810032' on a +1 site, which Twilio reads as Russia)
+     * is treated as a local number that got a stray '+' prepended, not a real E.164 value.
+     *
+     * @param string $number      Value starting with '+'
+     * @param string $countryCode The default country code with '+' prefix (e.g. '+1')
+     * @return bool
+     */
+    private function isPlausibleE164($number, $countryCode)
+    {
+        $digits = ltrim($number, '+');
+        $length = strlen($digits);
+
+        if ($length < 8 || $length > 15) {
+            return false;
+        }
+
+        // In international mode any real country code may legitimately appear, and we
+        // have no per-number validation library to check it against — only the
+        // no-plus-at-all case is treated as needing migration there.
+        if (Option::getOption('international_mobile')) {
+            return true;
+        }
+
+        $ccDigits = ltrim($countryCode, '+');
+
+        return strpos($digits, $ccDigits) === 0;
+    }
+
+    /**
+     * SQL condition matching values in $columnExpr that still need migration, including
+     * '+'-prefixed values whose country code doesn't match the site's default (see
+     * isPlausibleE164()). Digits-only interpolation, safe for a LIKE literal.
+     *
+     * @param string $columnExpr Fully-qualified/backtick-quoted column expression, e.g. "`mobile`" or "t.`mobile`"
+     * @param string $countryCode
+     * @return string
+     */
+    private function getNeedsMigrationClause($columnExpr, $countryCode)
+    {
+        if (Option::getOption('international_mobile')) {
+            return "{$columnExpr} NOT LIKE '+%'";
+        }
+
+        $ccDigits = preg_replace('/[^\d]/', '', $countryCode);
+
+        return "({$columnExpr} NOT LIKE '+%' OR {$columnExpr} NOT LIKE '+{$ccDigits}%')";
     }
 
     /**

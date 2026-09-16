@@ -69,6 +69,28 @@ class NumberParserTest extends WP_UnitTestCase
     }
 
     /**
+     * The Settings UI describes Minimum/Maximum Digits as "excluding country code", so
+     * the check must measure the local part even when the caller already included one.
+     */
+    public function testLengthValidationExcludesCountryCode()
+    {
+        Option::updateOption('mobile_county_code', '+1');
+        Option::updateOption('mobile_terms_minimum', 10);
+        Option::updateOption('mobile_terms_maximum', 10);
+
+        $numberParser = new NumberParser('');
+
+        // 10 local digits with the country code already attached.
+        $this->assertTrue($numberParser->isLengthValid('+12025550199'));
+
+        // Same 10 local digits without a country code.
+        $this->assertTrue($numberParser->isLengthValid('2025550199'));
+
+        // 11 local digits once the country code is excluded — too long.
+        $this->assertFalse($numberParser->isLengthValid('+120255501990'));
+    }
+
+    /**
      * Test country code validation.
      */
     public function testCountryCodeValidation()
