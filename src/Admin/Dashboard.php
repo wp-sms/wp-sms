@@ -10,6 +10,7 @@ use WP_SMS\Admin\LicenseManagement\Plugin\PluginHelper;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Admin\ModalHandler\Modal;
 use WP_SMS\Notice\NoticeManager;
+use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Utils\OptionUtil;
 
 if (!defined('ABSPATH')) {
@@ -205,6 +206,8 @@ class Dashboard extends Singleton
             // Extended data for dashboard pages
             'stats'         => $this->getStats(),
             'capabilities'  => $this->getUserCapabilities(),
+            // Tab => WordPress submenu link, so the app can keep the admin sidebar in sync
+            'adminMenu'     => MenuUtil::getTabSubmenuMap(),
             'features'      => $this->getFeatureFlags(),
             // License data for header badge
             'license'       => $this->getLicenseData(),

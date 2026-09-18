@@ -2,24 +2,82 @@ import React, { createContext, useContext, useReducer, useCallback, useEffect, u
 import isEqual from 'fast-deep-equal'
 import { getWpSettings, deepMerge } from '../lib/utils'
 import { settingsApi } from '../api/settingsApi'
-import { VALID_PAGES } from '../lib/pageRegistry'
+import { VALID_PAGES, canAccessPage, getAccessiblePageIds } from '../lib/pageRegistry'
 
-// Get initial page from URL query params
+const DEFAULT_PAGE = 'send-sms'
+
+// Capabilities PHP localized for the current user (undefined = no restriction)
+function getUserCapabilities() {
+  return window.wpSmsSettings?.capabilities
+}
+
+/**
+ * Resolve the page the user actually lands on.
+ *
+ * An unknown or forbidden page falls back to the first page the user may open.
+ * Returns null when the user may open nothing, which AppShell renders as a
+ * "no access" screen instead of a page.
+ */
+export function resolvePage(page) {
+  const capabilities = getUserCapabilities()
+  if (page && VALID_PAGES.includes(page) && canAccessPage(page, capabilities)) {
+    return page
+  }
+  if (canAccessPage(DEFAULT_PAGE, capabilities)) {
+    return DEFAULT_PAGE
+  }
+  return getAccessiblePageIds(capabilities)[0] ?? null
+}
+
+// Get initial page from URL query params. A tab the user may not open is
+// replaced in the address bar by the page they land on instead.
 function getInitialPageFromUrl() {
-  const params = new URLSearchParams(window.location.search)
-  const tab = params.get('tab')
-  return tab && VALID_PAGES.includes(tab) ? tab : 'send-sms'
+  const url = new URL(window.location.href)
+  const requested = url.searchParams.get('tab')
+  const page = resolvePage(requested)
+
+  if (page && page !== (requested || DEFAULT_PAGE)) {
+    if (page === DEFAULT_PAGE) {
+      url.searchParams.delete('tab')
+    } else {
+      url.searchParams.set('tab', page)
+    }
+    window.history.replaceState({ tab: page }, '', url)
+    syncAdminMenuHighlight(page)
+  }
+
+  return page
+}
+
+// Keep the WordPress admin sidebar pointing at the section that is open
+function syncAdminMenuHighlight(page) {
+  const links = window.wpSmsSettings?.adminMenu
+  const menu = document.getElementById('toplevel_page_wsms')
+  if (!links || !menu) return
+
+  const target = links[page]
+  menu.querySelectorAll('.wp-submenu a').forEach((link) => {
+    const isCurrent = Boolean(target) && link.getAttribute('href') === target
+    link.classList.toggle('current', isCurrent)
+    link.parentElement?.classList.toggle('current', isCurrent)
+    if (isCurrent) {
+      link.setAttribute('aria-current', 'page')
+    } else {
+      link.removeAttribute('aria-current')
+    }
+  })
 }
 
 // Update URL with current tab
 function updateUrlTab(page) {
   const url = new URL(window.location.href)
-  if (page === 'send-sms') {
+  if (page === DEFAULT_PAGE) {
     url.searchParams.delete('tab')
   } else {
     url.searchParams.set('tab', page)
   }
   window.history.pushState({ tab: page }, '', url)
+  syncAdminMenuHighlight(page)
 }
 
 // Map validated field keys to their settings page slug
@@ -267,11 +325,13 @@ export function SettingsProvider({ children }) {
     dispatch({ type: ACTIONS.RESET_CHANGES })
   }, [])
 
-  // Set current page and update URL
+  // Set current page and update URL. A page the user may not open is swapped for
+  // one they may, so in-app links to hidden sections never show a blank screen.
   const setCurrentPage = useCallback((page, updateUrl = true) => {
-    dispatch({ type: ACTIONS.SET_PAGE, payload: page })
-    if (updateUrl) {
-      updateUrlTab(page)
+    const target = resolvePage(page)
+    dispatch({ type: ACTIONS.SET_PAGE, payload: target })
+    if (updateUrl && target) {
+      updateUrlTab(target)
     }
   }, [])
 

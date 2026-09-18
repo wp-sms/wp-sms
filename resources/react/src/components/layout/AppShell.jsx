@@ -10,12 +10,24 @@ import { useSettings } from '@/context/SettingsContext'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Button } from '@/components/ui/button'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Lock } from 'lucide-react'
+import { __ } from '@wordpress/i18n'
 import { cn } from '@/lib/utils'
 import { getPageComponents } from '@/lib/pageRegistry'
 
 // Get page components from centralized registry
 const pages = getPageComponents()
+
+// Shown when the user's role holds none of the WSMS capabilities
+const NoAccess = memo(function NoAccess() {
+  return (
+    <div role="alert" className="wsms-flex wsms-flex-col wsms-items-center wsms-gap-3 wsms-py-16 wsms-text-center">
+      <Lock className="wsms-h-8 wsms-w-8 wsms-text-muted-foreground" strokeWidth={1.5} aria-hidden="true" />
+      <p className="wsms-text-sm wsms-font-medium">{__('You do not have permission to open any WSMS page.', 'wp-sms')}</p>
+      <p className="wsms-text-xs wsms-text-muted-foreground">{__('Ask an administrator to grant your role a WSMS capability.', 'wp-sms')}</p>
+    </div>
+  )
+})
 
 // Memoized loading skeleton - uses PageLoadingSkeleton for consistent data table loading
 const LoadingSkeleton = memo(function LoadingSkeleton() {
@@ -104,6 +116,8 @@ const AppShell = memo(function AppShell() {
               <AdminNotices />
               {isLoading ? (
                 <LoadingSkeleton />
+              ) : currentPage === null ? (
+                <NoAccess />
               ) : (
                 <>
                   {/* Render all visited pages, hide inactive ones to preserve state */}

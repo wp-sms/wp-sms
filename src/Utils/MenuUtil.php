@@ -9,6 +9,28 @@ if (!defined('ABSPATH')) exit;
 class MenuUtil
 {
     private static $parentSlug = 'wsms';
+
+    /**
+     * Tab opened when admin.php?page=wsms has no tab, or an unknown one.
+     */
+    const DEFAULT_TAB = 'send-sms';
+
+    /**
+     * Capabilities that each open at least one page of the WSMS admin.
+     *
+     * A user holding any one of these gets the WSMS menu; the pages inside
+     * it are then filtered per capability (see getSubmenus()).
+     *
+     * @var string[]
+     */
+    public static $capabilities = [
+        'wpsms_sendsms',
+        'wpsms_outbox',
+        'wpsms_inbox',
+        'wpsms_subscribers',
+        'wpsms_setting',
+    ];
+
     /**
      * List of Admin Page Slugs
      *
@@ -24,6 +46,7 @@ class MenuUtil
     public static function init()
     {
         add_action('admin_menu', [__CLASS__, 'registerMenus'], 20);
+        add_filter('submenu_file', [__CLASS__, 'highlightCurrentSubmenu'], 10, 2);
     }
 
     /**
@@ -33,14 +56,210 @@ class MenuUtil
     {
         // Register the single top-level "WSMS" menu pointing to the React dashboard
         $icon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9Ii01IDAgMzYgMzYiPjxwYXRoIGQ9Ik0wIDkuNTM3NTJWMTcuNzMzNUwxOC4yMTAxIDguMTc3NjRWMEwwIDkuNTM3NTJaIiBmaWxsPSIjYTdhYWFkIi8+PHBhdGggZD0iTTAgMjAuNzI5VjI4LjkwNjdMMjYgMTUuMjcxMVY3LjA5MzUxTDAgMjAuNzI5WiIgZmlsbD0iI2E3YWFhZCIvPjxwYXRoIGQ9Ik0yNS45OTcyIDE4LjI2NjZWMjYuMzUyNEw3LjgwNzM0IDM2LjAwMDFMNy43ODcxMSAyNy43MzA2TDI1Ljk5NzIgMTguMjY2NloiIGZpbGw9IiNhN2FhYWQiLz48L3N2Zz4=';
-        add_menu_page('WSMS', 'WSMS', 'wpsms_sendsms', 'wsms', [Dashboard::instance(), 'view'], $icon);
+        add_menu_page('WSMS', 'WSMS', self::getMenuCapability(), self::$parentSlug, [Dashboard::instance(), 'view'], $icon);
+
+        // One real submenu entry per section of the React app, each guarded by its own
+        // capability, so role editors and white-label tools can show or hide them one by one.
+        foreach (self::getSubmenus() as $submenu) {
+            add_submenu_page(self::$parentSlug, $submenu['title'], $submenu['title'], $submenu['capability'], self::getTabUrl($submenu['tab']));
+        }
 
         // Remove the auto-generated submenu item that WordPress creates matching the parent
-        remove_submenu_page('wsms', 'wsms');
+        remove_submenu_page(self::$parentSlug, self::$parentSlug);
 
         // Still fire the filter so add-ons can hook into it for data purposes
         $list = [];
         $list = apply_filters('wp_sms_admin_menu_list', $list);
+    }
+
+    /**
+     * Capability for the top-level WSMS entry: the first plugin capability the
+     * current user holds, so a user limited to, say, the inbox still gets the menu.
+     *
+     * @return string
+     */
+    public static function getMenuCapability()
+    {
+        foreach (self::$capabilities as $capability) {
+            if (current_user_can($capability)) {
+                return $capability;
+            }
+        }
+
+        return self::$capabilities[0];
+    }
+
+    /**
+     * Submenu entries of the WSMS menu.
+     *
+     * Each entry opens one tab of the React app and lists the other tabs it
+     * covers, so the WordPress sidebar can keep it highlighted while the user
+     * moves inside that section. Add-ons extend or trim the list through the
+     * `wp_sms_admin_submenus` filter.
+     *
+     * @return array<string, array{title: string, capability: string, tab: string, tabs: string[]}>
+     */
+    public static function getSubmenus()
+    {
+        $submenus = [
+            'send-sms'    => [
+                'title'      => __('Send SMS', 'wp-sms'),
+                'capability' => 'wpsms_sendsms',
+                'tab'        => 'send-sms',
+                'tabs'       => [],
+            ],
+            'outbox'      => [
+                'title'      => __('Outbox', 'wp-sms'),
+                'capability' => 'wpsms_outbox',
+                'tab'        => 'outbox',
+                'tabs'       => [],
+            ],
+            'subscribers' => [
+                'title'      => __('Subscribers', 'wp-sms'),
+                'capability' => 'wpsms_subscribers',
+                'tab'        => 'subscribers',
+                'tabs'       => [],
+            ],
+            'groups'      => [
+                'title'      => __('Groups', 'wp-sms'),
+                'capability' => 'wpsms_subscribers',
+                'tab'        => 'groups',
+                'tabs'       => [],
+            ],
+            'settings'    => [
+                'title'      => __('Settings', 'wp-sms'),
+                'capability' => 'wpsms_setting',
+                'tab'        => 'overview',
+                'tabs'       => [
+                    'gateway',
+                    'phone',
+                    'message-button',
+                    'notifications',
+                    'authentication',
+                    'newsletter',
+                    'integrations',
+                    'advanced',
+                    'privacy',
+                    'add-ons',
+                    'sms-campaigns',
+                    'cart-abandonment',
+                    'woocommerce-pro',
+                    'two-way-commands',
+                    'two-way-settings',
+                ],
+            ],
+        ];
+
+        if (self::isAddonActive('wp-sms-pro/wp-sms-pro.php')) {
+            $submenus = self::insertAfter($submenus, 'outbox', 'scheduled', [
+                'title'      => __('Scheduled', 'wp-sms'),
+                'capability' => 'wpsms_sendsms',
+                'tab'        => 'scheduled',
+                'tabs'       => [],
+            ]);
+        }
+
+        if (self::isAddonActive('wp-sms-two-way/wp-sms-two-way.php')) {
+            $submenus = self::insertAfter($submenus, 'groups', 'two-way-inbox', [
+                'title'      => __('Inbox', 'wp-sms'),
+                'capability' => 'wpsms_inbox',
+                'tab'        => 'two-way-inbox',
+                'tabs'       => [],
+            ]);
+        }
+
+        return apply_filters('wp_sms_admin_submenus', $submenus);
+    }
+
+    /**
+     * Map every known tab to the submenu URL that should be highlighted for it.
+     *
+     * @return array<string, string>
+     */
+    public static function getTabSubmenuMap()
+    {
+        $map = [];
+
+        foreach (self::getSubmenus() as $submenu) {
+            $url = self::getTabUrl($submenu['tab']);
+
+            $map[$submenu['tab']] = $url;
+            foreach ($submenu['tabs'] as $tab) {
+                $map[$tab] = $url;
+            }
+        }
+
+        return $map;
+    }
+
+    /**
+     * Keep the matching submenu entry highlighted while inside the React app.
+     *
+     * @param string|null $submenuFile
+     * @param string $parentFile
+     * @return string|null
+     */
+    public static function highlightCurrentSubmenu($submenuFile, $parentFile)
+    {
+        if ($parentFile !== self::$parentSlug) {
+            return $submenuFile;
+        }
+
+        $tab = isset($_GET['tab']) ? sanitize_key(wp_unslash($_GET['tab'])) : self::DEFAULT_TAB;
+        $map = self::getTabSubmenuMap();
+
+        return isset($map[$tab]) ? $map[$tab] : $submenuFile;
+    }
+
+    /**
+     * Relative admin URL of a tab, in the form WordPress stores submenu links.
+     *
+     * @param string $tab
+     * @return string
+     */
+    public static function getTabUrl($tab)
+    {
+        return 'admin.php?page=' . self::$parentSlug . '&tab=' . $tab;
+    }
+
+    /**
+     * @param string $plugin Plugin basename.
+     * @return bool
+     */
+    private static function isAddonActive($plugin)
+    {
+        if (!function_exists('is_plugin_active')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        return is_plugin_active($plugin);
+    }
+
+    /**
+     * Insert an entry into an associative array right after a given key.
+     *
+     * @param array $items
+     * @param string $afterKey
+     * @param string $key
+     * @param mixed $value
+     * @return array
+     */
+    private static function insertAfter(array $items, $afterKey, $key, $value)
+    {
+        $result = [];
+
+        foreach ($items as $itemKey => $item) {
+            $result[$itemKey] = $item;
+            if ($itemKey === $afterKey) {
+                $result[$key] = $value;
+            }
+        }
+
+        if (!isset($result[$key])) {
+            $result[$key] = $value;
+        }
+
+        return $result;
     }
 
     /**

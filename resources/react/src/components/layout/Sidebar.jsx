@@ -9,6 +9,14 @@ import { inboxApi } from '@/api/twoWayApi'
 import { useSettings, useSavedSetting } from '@/context/SettingsContext'
 import { getNavigation } from '@/lib/pageRegistry'
 
+// A nav entry is shown when its feature condition holds and the user has its capability.
+// Missing capabilities data (older localized settings, tests) hides nothing.
+function isNavItemVisible(item, conditions, capabilities) {
+  if (item.condition && !conditions[item.condition]) return false
+  if (item.capability && capabilities && capabilities[item.capability] === false) return false
+  return true
+}
+
 // Single-row gateway status; clicking it opens the gateway settings page
 function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
   const [credit, setCredit] = useState(null)
@@ -258,7 +266,7 @@ function NestedNavGroup({ group, currentPage, setCurrentPage }) {
 }
 
 // Collapsible group component
-function NavGroup({ group, currentPage, setCurrentPage, conditions, badges = {} }) {
+function NavGroup({ group, currentPage, setCurrentPage, conditions, capabilities, badges = {} }) {
   // Check if any item in this group is active (including nested groups)
   const hasActiveChild = group.items.some((item) => {
     if (item.type === 'nested-group') {
@@ -277,11 +285,8 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions, badges = {} 
     }
   }, [hasActiveChild])
 
-  // Filter items based on conditions
-  const filteredItems = group.items.filter((item) => {
-    if (!item.condition) return true
-    return conditions[item.condition]
-  })
+  // Filter items based on conditions and the user's capabilities
+  const filteredItems = group.items.filter((item) => isNavItemVisible(item, conditions, capabilities))
 
   // Don't render empty groups
   if (filteredItems.length === 0) return null
@@ -385,7 +390,10 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions, badges = {} 
 
 export default function Sidebar({ onClose, showClose }) {
   const { currentPage, setCurrentPage, isAddonActive } = useSettings()
-  const { gdprEnabled: initialGdprEnabled, hasProAddon } = getWpSettings()
+  const { gdprEnabled: initialGdprEnabled, hasProAddon, capabilities } = getWpSettings()
+
+  // Gateway status calls the credit endpoint, which needs the settings capability
+  const canManageSettings = !capabilities || capabilities.canManageSettings !== false
 
   // Use saved setting so sidebar only reflects persisted gateway (not unsaved dropdown changes)
   const savedGatewayName = useSavedSetting('gateway_name', '')
@@ -434,11 +442,8 @@ export default function Sidebar({ onClose, showClose }) {
   // Get navigation items with translations applied
   const navigation = getNavigation()
 
-  // Filter navigation items based on conditions
-  const filteredNavigation = navigation.filter((item) => {
-    if (!item.condition) return true
-    return conditions[item.condition]
-  })
+  // Filter navigation items based on conditions and the user's capabilities
+  const filteredNavigation = navigation.filter((item) => isNavItemVisible(item, conditions, capabilities))
 
   return (
     <div className="wsms-flex wsms-flex-col wsms-h-full wsms-min-h-0 wsms-bg-card">
@@ -478,6 +483,7 @@ export default function Sidebar({ onClose, showClose }) {
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
                 conditions={conditions}
+                capabilities={capabilities}
                 badges={navBadges}
               />
             ) : (
@@ -493,13 +499,15 @@ export default function Sidebar({ onClose, showClose }) {
       </nav>
 
       {/* Footer: gateway status only — links, rating and version live in BrandingFooter */}
-      <div className="wsms-border-t wsms-border-border wsms-mt-auto wsms-bg-muted/30 wsms-px-3 wsms-py-3.5">
-        <GatewayStatus
-          isConfigured={isGatewayConfigured}
-          gatewayKey={savedGatewayName}
-          onConfigure={() => setCurrentPage('gateway')}
-        />
-      </div>
+      {canManageSettings && (
+        <div className="wsms-border-t wsms-border-border wsms-mt-auto wsms-bg-muted/30 wsms-px-3 wsms-py-3.5">
+          <GatewayStatus
+            isConfigured={isGatewayConfigured}
+            gatewayKey={savedGatewayName}
+            onConfigure={() => setCurrentPage('gateway')}
+          />
+        </div>
+      )}
     </div>
   )
 }

@@ -1,4 +1,6 @@
 v7.2.9 - Unreleased
+- **New:** The WSMS menu lists Send SMS, Outbox, Subscribers, Groups, Settings and, with the add-ons, Scheduled and Inbox as real WordPress submenu entries, each behind its own capability. Role editors and white-label tools can now show a client the inbox without the gateway settings ([#549](https://github.com/wp-sms/wp-sms/issues/549)).
+- **New:** The dashboard sidebar only shows the pages the signed-in user's role may open, and a link to a hidden page lands on one they may ([#549](https://github.com/wp-sms/wp-sms/issues/549)).
 - **Fix:** The phone number check no longer says numbers are in good shape when they are not. A number saved with a plus but without the country code, like +7065810032 on a US site, is now listed with its fix (+17065810032) for you to approve. Real international numbers, like a Russian +7 number, are left alone ([#551](https://github.com/wp-sms/wp-sms/issues/551)).
 - **Fix:** The phone number check now also covers WooCommerce order and subscription billing phones, including guest orders and stores using High-Performance Order Storage ([#551](https://github.com/wp-sms/wp-sms/issues/551)).
 - **Fix:** Applying the phone number check to more than 500 numbers in one place updates all of them instead of skipping some.

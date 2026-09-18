@@ -60,6 +60,8 @@ import Overview from '@/pages/Overview'
  *   - group: Parent group ID (if type is 'group-item')
  *   - order: Sort order within its level/group
  * - condition: Optional visibility condition (checked by Sidebar)
+ * - capability: Key of window.wpSmsSettings.capabilities that must be true for the
+ *   current user to see and open the page (see canAccessPage)
  */
 export const pageDefinitions = {
   // ===== MESSAGING =====
@@ -68,18 +70,21 @@ export const pageDefinitions = {
     icon: Send,
     component: SendSms, // Eager loaded - first page users see
     nav: { type: 'item', order: 1 },
+    capability: 'canSendSms',
   },
   'outbox': {
     label: () => __('Outbox', 'wp-sms'),
     icon: Inbox,
     component: lazy(() => import('@/pages/Outbox')),
     nav: { type: 'item', order: 2 },
+    capability: 'canViewOutbox',
   },
   'scheduled': {
     label: () => __('Scheduled', 'wp-sms'),
     icon: CalendarClock,
     component: lazy(() => import('@/pages/Scheduled')),
     nav: { type: 'item', order: 2.5 },
+    capability: 'canSendSms',
     condition: 'hasProAddon',
   },
 
@@ -89,12 +94,14 @@ export const pageDefinitions = {
     icon: Users,
     component: lazy(() => import('@/pages/Subscribers')),
     nav: { type: 'item', order: 3 },
+    capability: 'canManageSubscribers',
   },
   'groups': {
     label: () => __('Groups', 'wp-sms'),
     icon: FolderOpen,
     component: lazy(() => import('@/pages/Groups')),
     nav: { type: 'item', order: 4 },
+    capability: 'canManageSubscribers',
   },
 
   // ===== PRIVACY =====
@@ -103,6 +110,7 @@ export const pageDefinitions = {
     icon: Shield,
     component: lazy(() => import('@/pages/Privacy')),
     nav: { type: 'item', order: 5 },
+    capability: 'canManageSettings',
     condition: 'gdprEnabled',
   },
 
@@ -112,6 +120,7 @@ export const pageDefinitions = {
     icon: Blocks,
     component: lazy(() => import('@/pages/AddOns')),
     nav: { type: 'item', order: 6 },
+    capability: 'canManageSettings',
   },
 
   // ===== SETTINGS (grouped) =====
@@ -120,36 +129,42 @@ export const pageDefinitions = {
     icon: LayoutDashboard,
     component: Overview, // Eager loaded
     nav: { type: 'group-item', group: 'settings', order: 1 },
+    capability: 'canManageSettings',
   },
   'gateway': {
     label: () => __('Gateway', 'wp-sms'),
     icon: Radio,
     component: lazy(() => import('@/pages/Gateway')),
     nav: { type: 'group-item', group: 'settings', order: 2 },
+    capability: 'canManageSettings',
   },
   'phone': {
     label: () => __('Phone', 'wp-sms'),
     icon: Phone,
     component: lazy(() => import('@/pages/PhoneConfig')),
     nav: { type: 'group-item', group: 'settings', order: 3 },
+    capability: 'canManageSettings',
   },
   'message-button': {
     label: () => __('Message Button', 'wp-sms'),
     icon: MessageSquare,
     component: lazy(() => import('@/pages/MessageButton')),
     nav: { type: 'group-item', group: 'settings', order: 4 },
+    capability: 'canManageSettings',
   },
   'notifications': {
     label: () => __('Notifications', 'wp-sms'),
     icon: Bell,
     component: lazy(() => import('@/pages/Notifications')),
     nav: { type: 'group-item', group: 'settings', order: 5 },
+    capability: 'canManageSettings',
   },
   'authentication': {
     label: () => __('Authentication', 'wp-sms'),
     icon: Shield,
     component: lazy(() => import('@/pages/Authentication')),
     nav: { type: 'group-item', group: 'settings', order: 5.5 },
+    capability: 'canManageSettings',
     condition: 'hasProAddon',
   },
   'newsletter': {
@@ -157,18 +172,21 @@ export const pageDefinitions = {
     icon: Mail,
     component: lazy(() => import('@/pages/Newsletter')),
     nav: { type: 'group-item', group: 'settings', order: 6 },
+    capability: 'canManageSettings',
   },
   'integrations': {
     label: () => __('Integrations', 'wp-sms'),
     icon: Puzzle,
     component: lazy(() => import('@/pages/Integrations')),
     nav: { type: 'group-item', group: 'settings', order: 7 },
+    capability: 'canManageSettings',
   },
   'advanced': {
     label: () => __('Advanced', 'wp-sms'),
     icon: Settings,
     component: lazy(() => import('@/pages/Advanced')),
     nav: { type: 'group-item', group: 'settings', order: 8 },
+    capability: 'canManageSettings',
   },
 
   // ===== WOOCOMMERCE PRO (add-on) =====
@@ -177,6 +195,7 @@ export const pageDefinitions = {
     icon: Megaphone,
     component: lazy(() => import('@/pages/SmsCampaigns')),
     nav: { type: 'group-item', group: 'woocommerce-pro', order: 1 },
+    capability: 'canManageSettings',
     condition: 'hasWooCommercePro',
   },
   'cart-abandonment': {
@@ -184,6 +203,7 @@ export const pageDefinitions = {
     icon: RotateCcw,
     component: lazy(() => import('@/pages/CartAbandonment')),
     nav: { type: 'group-item', group: 'woocommerce-pro', order: 2 },
+    capability: 'canManageSettings',
     condition: 'hasWooCommercePro',
   },
   'woocommerce-pro': {
@@ -191,6 +211,7 @@ export const pageDefinitions = {
     icon: Settings,
     component: lazy(() => import('@/pages/WooCommercePro')),
     nav: { type: 'group-item', group: 'woocommerce-pro', order: 3 },
+    capability: 'canManageSettings',
     condition: 'hasWooCommercePro',
   },
 
@@ -200,6 +221,7 @@ export const pageDefinitions = {
     icon: Inbox,
     component: lazy(() => import('@/pages/TwoWayInbox')),
     nav: { type: 'group-item', group: 'two-way', order: 1 },
+    capability: 'canViewInbox',
     condition: 'hasTwoWay',
   },
   'two-way-commands': {
@@ -207,6 +229,7 @@ export const pageDefinitions = {
     icon: Terminal,
     component: lazy(() => import('@/pages/TwoWayCommands')),
     nav: { type: 'group-item', group: 'two-way', order: 2 },
+    capability: 'canManageSettings',
     condition: 'hasTwoWay',
   },
   'two-way-settings': {
@@ -214,6 +237,7 @@ export const pageDefinitions = {
     icon: Settings,
     component: lazy(() => import('@/pages/TwoWaySettings')),
     nav: { type: 'group-item', group: 'two-way', order: 3 },
+    capability: 'canManageSettings',
     condition: 'hasTwoWay',
   },
 }
@@ -293,6 +317,7 @@ export function getNavigation() {
       label: page.label(),
       icon: page.icon,
       condition: page.condition,
+      capability: page.capability,
       badgeLabel: page.badgeLabel,
     })
   }
@@ -333,6 +358,7 @@ export function getNavigation() {
         label: page.label(),
         icon: page.icon,
         condition: page.condition,
+        capability: page.capability,
         badgeLabel: page.badgeLabel,
       })),
     })
@@ -346,6 +372,27 @@ export function getNavigation() {
  */
 export function isValidPage(pageId) {
   return pageId in pageDefinitions
+}
+
+/**
+ * Check whether the current user may open a page.
+ *
+ * `capabilities` is the object PHP localizes from Dashboard::getUserCapabilities().
+ * When it is missing (older localized data, tests) every page stays open, so a
+ * capability only ever removes access, never grants it.
+ */
+export function canAccessPage(pageId, capabilities) {
+  const page = pageDefinitions[pageId]
+  if (!page) return false
+  if (!page.capability || !capabilities) return true
+  return capabilities[page.capability] !== false
+}
+
+/**
+ * Page IDs the current user may open, in registry order.
+ */
+export function getAccessiblePageIds(capabilities) {
+  return getValidPageIds().filter((pageId) => canAccessPage(pageId, capabilities))
 }
 
 /**
