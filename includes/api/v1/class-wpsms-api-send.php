@@ -9,7 +9,10 @@ use DateInterval;
 use WP_SMS\Gateway;
 use WP_SMS\Helper;
 use WP_SMS\Newsletter;
+use WP_SMS\Notification\Handler\SubscriberNotification;
+use WP_SMS\Notification\Handler\WordPressUserNotification;
 use WP_SMS\Notification\NotificationFactory;
+use WP_SMS\Option;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -571,6 +574,11 @@ class SendSmsApi extends \WP_SMS\RestApi
                 return self::response(esc_html__('Scheduled SMS requires the WP SMS Pro add-on. Please install and activate the add-on to use this feature.', 'wp-sms'), 400);
             }
 
+            // Personalise the message per recipient when it uses subscriber or user variables
+            if ($this->messageHasRecipientVariables($message)) {
+                return $this->sendPersonalisedMessage($message, $recipients, $recipientNumbers, $mediaUrls, $flash, $sender);
+            }
+
             // Send SMS immediately
             $notification = NotificationFactory::getHandler(null, null);
             $response = $notification->send(
@@ -596,6 +604,221 @@ class SendSmsApi extends \WP_SMS\RestApi
         } catch (\Throwable $e) {
             return self::response($e->getMessage(), 400);
         }
+    }
+
+    /**
+     * Get the subscriber and user variables that can be personalised per recipient.
+     *
+     * @return array
+     */
+    private function getRecipientVariables()
+    {
+        return array_merge(
+            array_keys((new SubscriberNotification())->getVariables()),
+            array_keys((new WordPressUserNotification())->getVariables())
+        );
+    }
+
+    /**
+     * Check whether the message uses any subscriber or user variable.
+     *
+     * @param string $message
+     * @return bool
+     */
+    private function messageHasRecipientVariables($message)
+    {
+        foreach ($this->getRecipientVariables() as $variable) {
+            if (strpos($message, $variable) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Send a message that contains subscriber or user variables.
+     *
+     * Each recipient gets the message with its own values. Recipients that end up with
+     * the same text are sent together, so a variable such as %subscriber_group% still
+     * goes out in one request per group. Variables that cannot be resolved for a number
+     * (for example %subscriber_name% for a manually entered number) are removed rather
+     * than sent as-is.
+     *
+     * @param string $message
+     * @param array $recipients Recipients request data
+     * @param array $recipientNumbers Unique recipient numbers
+     * @param array $mediaUrls
+     * @param bool $flash
+     * @param string $sender
+     * @return \WP_REST_Response
+     * @throws Exception
+     */
+    private function sendPersonalisedMessage($message, $recipients, $recipientNumbers, $mediaUrls, $flash, $sender)
+    {
+        $subscriberIds = [];
+        $userIds       = [];
+
+        // Subscribers of the selected groups, first match wins for a number
+        if (!empty($recipients['groups']) && is_array($recipients['groups'])) {
+            foreach (Newsletter::getSubscribers($recipients['groups'], true, ['ID', 'mobile']) as $subscriber) {
+                $key = Helper::normalizeToE164WithShortCodeGuard($subscriber->mobile);
+                if (!isset($subscriberIds[$key])) {
+                    $subscriberIds[$key] = $subscriber->ID;
+                }
+            }
+        }
+
+        // WordPress users from the selected roles and users
+        $roleIds     = !empty($recipients['roles']) && is_array($recipients['roles']) ? $recipients['roles'] : [];
+        $selectedIds = !empty($recipients['users']) && is_array($recipients['users']) ? array_map('absint', $recipients['users']) : [];
+
+        if ($roleIds || $selectedIds) {
+            $mobileFieldKey = Helper::getUserMobileFieldName();
+            $queries        = [];
+
+            if ($roleIds) {
+                $queries[] = ['role__in' => $roleIds];
+            }
+
+            if ($selectedIds) {
+                $queries[] = ['include' => $selectedIds];
+            }
+
+            foreach ($queries as $query) {
+                $args = array_merge([
+                    'meta_query'  => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+                        [
+                            'key'     => $mobileFieldKey,
+                            'value'   => '',
+                            'compare' => '!=',
+                        ],
+                    ],
+                    'count_total' => false,
+                ], $query);
+
+                /** This filter is documented in src/Helper.php */
+                $args = apply_filters('wp_sms_mobile_numbers_query_args', $args);
+
+                foreach (get_users($args) as $user) {
+                    $mobile = get_user_meta($user->ID, $mobileFieldKey, true);
+                    if (empty($mobile)) {
+                        continue;
+                    }
+
+                    $key = Helper::normalizeToE164WithShortCodeGuard($mobile);
+                    if (!isset($userIds[$key])) {
+                        $userIds[$key] = $user->ID;
+                    }
+                }
+            }
+        }
+
+        // Render the message for each recipient and group numbers by the final text
+        $variables = $this->getRecipientVariables();
+        $batches   = [];
+
+        foreach ($recipientNumbers as $number) {
+            $key  = Helper::normalizeToE164WithShortCodeGuard($number);
+            $text = $message;
+
+            if (isset($subscriberIds[$key])) {
+                $text = (new SubscriberNotification($subscriberIds[$key]))->getOutputMessage($text);
+            }
+
+            if (isset($userIds[$key])) {
+                $text = (new WordPressUserNotification($userIds[$key]))->getOutputMessage($text);
+            }
+
+            // Do not send placeholders that have no value for this recipient
+            $text = str_replace($variables, '', $text);
+
+            $batches[$text][] = $number;
+        }
+
+        $bulkDispatchLimit = apply_filters('wp_sms_bulk_dispatch_limit', 20);
+        $useQueue          = Option::getOption('sms_delivery_method') == 'api_queued_send' || count($recipientNumbers) >= $bulkDispatchLimit;
+        $notification      = NotificationFactory::getHandler(null, null);
+        $sentCount         = 0;
+        $lastError         = null;
+
+        foreach ($batches as $text => $numbers) {
+            $text = (string)$text;
+
+            if (trim($text) === '') {
+                continue;
+            }
+
+            // Large sends go to the background queue, one message per number, like other bulk sends
+            if ($useQueue) {
+                $queue = WPSms()->getRemoteRequestQueue();
+                $text  = $notification->getOutputMessage($text);
+
+                foreach ($numbers as $number) {
+                    $singleArgument = [
+                        'to'               => Helper::normalizeToE164WithShortCodeGuard($number),
+                        'msg'              => $text,
+                        'is_flash'         => $flash,
+                        'from'             => $sender,
+                        'mediaUrls'        => $mediaUrls,
+                        'messageVariables' => [],
+                    ];
+
+                    /** This filter is documented in src/BackgroundProcess/SmsDispatcher.php */
+                    $singleArgument = apply_filters('wp_sms_single_dispatch_arguments', $singleArgument);
+
+                    $queue->push_to_queue(['parameters' => $singleArgument])->save();
+                }
+
+                $sentCount += count($numbers);
+                continue;
+            }
+
+            $response = $notification->send($text, $numbers, $mediaUrls, $flash, $sender);
+
+            if (is_wp_error($response)) {
+                $lastError = $response->get_error_message();
+                continue;
+            }
+
+            if ($response === false || $response === null) {
+                $lastError = esc_html__('Failed to send SMS. An unexpected error occurred. Please try again or check your gateway settings.', 'wp-sms');
+                continue;
+            }
+
+            $sentCount += count($numbers);
+        }
+
+        if ($useQueue && $sentCount > 0) {
+            WPSms()->getRemoteRequestQueue()->dispatch();
+
+            return self::response(esc_html__('SMS delivery is in progress as a background task; please review the Outbox for updates.', 'wp-sms'), 200, [
+                'recipient_count' => $sentCount,
+                'credit'          => Gateway::credit()
+            ]);
+        }
+
+        if ($sentCount === 0) {
+            throw new Exception($lastError ? $lastError : esc_html__('Could not find any mobile numbers.', 'wp-sms'));
+        }
+
+        if ($lastError) {
+            return self::response(sprintf(
+                // translators: 1: number of recipients that received the message, 2: total recipients, 3: gateway error message
+                esc_html__('Sent to %1$d of %2$d recipients. Some messages failed: %3$s', 'wp-sms'),
+                $sentCount,
+                count($recipientNumbers),
+                $lastError
+            ), 200, [
+                'recipient_count' => $sentCount,
+                'credit'          => Gateway::credit()
+            ]);
+        }
+
+        return self::response(esc_html__('Successfully sent SMS!', 'wp-sms'), 200, [
+            'recipient_count' => $sentCount,
+            'credit'          => Gateway::credit()
+        ]);
     }
 
     /**
