@@ -156,6 +156,9 @@ All premium features + all add-ons in one package.
 
 == Changelog ==
 = v7.2.9 - Unreleased =
+- **New:** Sending to subscriber groups now warns you when the same number appears more than once, within a group or across groups. The popup lists each duplicate with the subscriber names and groups, so you can fix them or send once per number.
+- **New:** Each group in the Send SMS recipient picker opens to show its members, so you can untick anyone you want to skip before sending.
+- **Fix:** The same number written in different formats, like 07911 123456 and +447911123456, now gets one message instead of two.
 - **Fix:** Gravity Forms and other integrations no longer show as "Not Installed" when the plugin sits in a renamed folder, for example after a manual ZIP upload. Their settings on the Integrations page show again ([#560](https://github.com/wp-sms/wp-sms/issues/560)).
 - **Fix:** New post SMS is sent when Content Types is left empty. An empty field now means all post types, as the settings page says. Before, nothing was sent. This applies to the author notification too ([#561](https://github.com/wp-sms/wp-sms/issues/561)).
 - **Fix:** The phone number check no longer says numbers are in good shape when they are not. A number saved with a plus but without the country code, like +7065810032 on a US site, is now listed with its fix (+17065810032) for you to approve. Real international numbers, like a Russian +7 number, are left alone ([#551](https://github.com/wp-sms/wp-sms/issues/551)).
