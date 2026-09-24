@@ -156,6 +156,8 @@ All premium features + all add-ons in one package.
 
 == Changelog ==
 = v7.2.9 - Unreleased =
+- **Fix:** Gravity Forms and other integrations no longer show as "Not Installed" when the plugin sits in a renamed folder, for example after a manual ZIP upload. Their settings on the Integrations page show again ([#560](https://github.com/wp-sms/wp-sms/issues/560)).
+- **Fix:** New post SMS is sent when Content Types is left empty. An empty field now means all post types, as the settings page says. Before, nothing was sent. This applies to the author notification too ([#561](https://github.com/wp-sms/wp-sms/issues/561)).
 - **Fix:** The phone number check no longer says numbers are in good shape when they are not. A number saved with a plus but without the country code, like +7065810032 on a US site, is now listed with its fix (+17065810032) for you to approve. Real international numbers, like a Russian +7 number, are left alone ([#551](https://github.com/wp-sms/wp-sms/issues/551)).
 - **Fix:** The phone number check now also covers WooCommerce order and subscription billing phones, including guest orders and stores using High-Performance Order Storage ([#551](https://github.com/wp-sms/wp-sms/issues/551)).
 - **Fix:** Applying the phone number check to more than 500 numbers in one place updates all of them instead of skipping some.
