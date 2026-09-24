@@ -116,6 +116,20 @@ class SendSmsApi extends \WP_SMS\RestApi
             )
         ));
 
+        // Group members endpoint for the Send SMS page (member picker and duplicate check)
+        register_rest_route($this->namespace . '/v1', '/send/group-members', array(
+            array(
+                'methods'             => \WP_REST_Server::CREATABLE,
+                'callback'            => array($this, 'getGroupMembersCallback'),
+                'permission_callback' => function () {
+                    return current_user_can('wpsms_sendsms');
+                },
+                'args'                => [
+                    'groups' => ['required' => true, 'type' => 'array', 'items' => ['type' => 'integer']],
+                ],
+            )
+        ));
+
         // User search endpoint for recipient selector
         register_rest_route($this->namespace . '/v1', '/users/search', array(
             array(
@@ -420,9 +434,9 @@ class SendSmsApi extends \WP_SMS\RestApi
 
             $recipientNumbers = [];
 
-            // Get numbers from groups (subscribers)
+            // Get numbers from groups (subscribers), minus members the admin deselected
             if (!empty($recipients['groups']) && is_array($recipients['groups'])) {
-                $groupNumbers = Newsletter::getSubscribers($recipients['groups'], true);
+                $groupNumbers = $this->getGroupNumbers($recipients);
                 $recipientNumbers = array_merge($recipientNumbers, $groupNumbers);
             }
 
@@ -448,8 +462,8 @@ class SendSmsApi extends \WP_SMS\RestApi
             // Allow add-ons to add recipient numbers (e.g., WooCommerce, BuddyPress)
             $recipientNumbers = apply_filters('wpsms_api_recipient_numbers', $recipientNumbers, $recipients, []);
 
-            // Remove duplicates
-            $recipientNumbers = array_unique($recipientNumbers);
+            // Remove duplicates, including the same number written in different formats
+            $recipientNumbers = $this->uniqueNumbers($recipientNumbers);
 
             if (count($recipientNumbers) === 0) {
                 throw new Exception(esc_html__('Could not find any mobile numbers.', 'wp-sms'));
@@ -620,7 +634,7 @@ class SendSmsApi extends \WP_SMS\RestApi
 
             // Count from groups (subscribers)
             if (!empty($recipients['groups']) && is_array($recipients['groups'])) {
-                $groupNumbers = Newsletter::getSubscribers($recipients['groups'], true);
+                $groupNumbers = $this->getGroupNumbers($recipients);
                 $counts['groups'] = count($groupNumbers);
                 $allNumbers = array_merge($allNumbers, $groupNumbers);
             }
@@ -659,7 +673,7 @@ class SendSmsApi extends \WP_SMS\RestApi
             $allNumbers = apply_filters('wpsms_api_recipient_numbers', $allNumbers, $recipients, $counts);
 
             // Total unique count
-            $counts['total'] = count(array_unique($allNumbers));
+            $counts['total'] = count($this->uniqueNumbers($allNumbers));
 
             return self::response('', 200, $counts);
         } catch (\Throwable $e) {
@@ -717,6 +731,99 @@ class SendSmsApi extends \WP_SMS\RestApi
         } catch (\Throwable $e) {
             return self::response($e->getMessage(), 400);
         }
+    }
+
+    /**
+     * Get the active members of the given groups for the Send SMS page.
+     *
+     * Each member carries its normalized number so the page can spot the same
+     * number appearing more than once, within a group or across groups.
+     *
+     * @param WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function getGroupMembersCallback(WP_REST_Request $request)
+    {
+        try {
+            $groupIds = array_filter(array_map('absint', (array)$request->get_param('groups')));
+
+            if (empty($groupIds)) {
+                return self::response('', 200, ['members' => []]);
+            }
+
+            $groupNames = [];
+            foreach (Newsletter::getGroups($groupIds) as $group) {
+                $groupNames[$group->ID] = $group->name;
+            }
+
+            $members = [];
+            foreach (Newsletter::getSubscribers($groupIds, true, ['ID', 'name', 'mobile', 'group_ID']) as $subscriber) {
+                $members[] = [
+                    'id'         => (int)$subscriber->ID,
+                    'name'       => $subscriber->name,
+                    'mobile'     => $subscriber->mobile,
+                    'normalized' => Helper::normalizeToE164WithShortCodeGuard($subscriber->mobile),
+                    'group_id'   => (int)$subscriber->group_ID,
+                    'group_name' => isset($groupNames[$subscriber->group_ID]) ? $groupNames[$subscriber->group_ID] : '',
+                ];
+            }
+
+            return self::response('', 200, ['members' => $members]);
+        } catch (\Throwable $e) {
+            return self::response($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get the numbers of the selected groups' active subscribers, leaving out
+     * the subscribers the admin deselected on the Send SMS page.
+     *
+     * @param array $recipients Recipients request data
+     * @return array
+     */
+    private function getGroupNumbers($recipients)
+    {
+        $excluded = !empty($recipients['excludedSubscribers']) && is_array($recipients['excludedSubscribers'])
+            ? array_map('absint', $recipients['excludedSubscribers'])
+            : [];
+
+        if (empty($excluded)) {
+            return Newsletter::getSubscribers($recipients['groups'], true);
+        }
+
+        $numbers = [];
+        foreach (Newsletter::getSubscribers($recipients['groups'], true, ['ID', 'mobile']) as $subscriber) {
+            if (!in_array((int)$subscriber->ID, $excluded, true)) {
+                $numbers[] = $subscriber->mobile;
+            }
+        }
+
+        return $numbers;
+    }
+
+    /**
+     * Remove duplicate numbers, treating different formats of the same number
+     * (for example 07911 123456 and +447911123456) as one.
+     *
+     * @param array $numbers
+     * @return array
+     */
+    private function uniqueNumbers($numbers)
+    {
+        $unique = [];
+
+        foreach ($numbers as $number) {
+            if ($number === null || $number === '') {
+                continue;
+            }
+
+            $key = Helper::normalizeToE164WithShortCodeGuard(trim((string)$number));
+            if (!isset($unique[$key])) {
+                $unique[$key] = $number;
+            }
+        }
+
+        return array_values($unique);
     }
 }
 
