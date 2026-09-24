@@ -17,6 +17,23 @@ import { useCountryCheck } from '@/hooks/useCountryCheck'
 import { cn, getGatewayDisplayName, getWpSettings } from '@/lib/utils'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 
+// Variables filled in per recipient when sending (subscriber groups and WordPress users)
+const SUBSCRIBER_VARIABLES = [
+  { variable: '%subscriber_name%', description: __('Subscriber name', 'wp-sms') },
+  { variable: '%subscriber_mobile%', description: __('Subscriber mobile number', 'wp-sms') },
+  { variable: '%subscriber_group%', description: __('Subscriber group', 'wp-sms') },
+  { variable: '%subscriber_date%', description: __('Subscription date', 'wp-sms') },
+  { variable: '%unsubscribe_url%', description: __('Unsubscribe link', 'wp-sms') },
+]
+
+const USER_VARIABLES = [
+  { variable: '%display_name%', description: __('WordPress user display name', 'wp-sms') },
+  { variable: '%first_name%', description: __('WordPress user first name', 'wp-sms') },
+  { variable: '%last_name%', description: __('WordPress user last name', 'wp-sms') },
+]
+
+const RECIPIENT_VARIABLE_PATTERN = /%(subscriber_[a-z_]+|unsubscribe_url|user_[a-z]+|date_register|display_name|first_name|last_name)%/
+
 export default function SendSms() {
   const { setCurrentPage, getSetting } = useSettings()
   const checkCountryRestriction = useCountryCheck()
@@ -119,6 +136,13 @@ export default function SendSms() {
     }
     fetchCredit()
   }, [])
+
+  // Subscriber variables are always offered, user variables once roles or users are selected
+  const composerVariables = [
+    ...SUBSCRIBER_VARIABLES,
+    ...(recipients.roles.length > 0 || (recipients.users?.length || 0) > 0 ? USER_VARIABLES : []),
+  ]
+  const usesRecipientVariables = RECIPIENT_VARIABLE_PATTERN.test(message)
 
   // Validation
   const smsInfo = calculateSmsInfo(message)
@@ -325,7 +349,16 @@ export default function SendSms() {
               placeholder={__('Type your message here...', 'wp-sms')}
               rows={8}
               maxSegments={10}
+              variables={composerVariables}
             />
+
+            {usesRecipientVariables && (
+              <p className="wsms-mt-2 wsms-text-[11px] wsms-text-muted-foreground">
+                {scheduleEnabled
+                  ? __('Personal variables are only filled in when you send now. Scheduled and repeating messages are sent as written.', 'wp-sms')
+                  : __('Each recipient gets their own copy with the variables filled in. Variables with no value for a recipient are left out.', 'wp-sms')}
+              </p>
+            )}
 
             {/* Options Row - Only show if gateway supports options */}
             {(gatewaySupportsFlash || gatewaySupportsMedia) && (

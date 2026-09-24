@@ -89,19 +89,53 @@ const MessageComposer = React.forwardRef(
       maxSegments = 10,
       showWarning = true,
       rows = 5,
+      variables = [],
       ...props
     },
     ref
   ) => {
+    const textareaRef = React.useRef(null)
     const smsInfo = calculateSmsInfo(value)
     const isOverLimit = smsInfo.segments > maxSegments
     const showUnicodeWarning = showWarning && smsInfo.isUnicode && value.length > 0
+
+    // Keep the forwarded ref working while using our own ref for variable insertion
+    const setTextareaRef = React.useCallback((node) => {
+      textareaRef.current = node
+      if (typeof ref === 'function') {
+        ref(node)
+      } else if (ref) {
+        ref.current = node
+      }
+    }, [ref])
+
+    // Normalize variables to objects with { variable, description }
+    const normalizedVars = React.useMemo(() =>
+      variables.map((v) => (typeof v === 'string' ? { variable: v, description: '' } : v)),
+      [variables]
+    )
+
+    const handleInsertVariable = React.useCallback((variable) => {
+      const textarea = textareaRef.current
+      const start = textarea?.selectionStart ?? value.length
+      const end = textarea?.selectionEnd ?? value.length
+
+      onChange?.(value.slice(0, start) + variable + value.slice(end))
+
+      // Restore focus and put the cursor after the inserted variable
+      requestAnimationFrame(() => {
+        if (!textarea) return
+        textarea.focus()
+        const newCursorPos = start + variable.length
+        textarea.setSelectionRange(newCursorPos, newCursorPos)
+      })
+    }, [value, onChange])
 
     return (
       <div className={cn('wsms-space-y-2', className)} {...props}>
         <div>
           <Textarea
-            ref={ref}
+            ref={setTextareaRef}
             value={value}
             onChange={(e) => onChange?.(e.target.value)}
             placeholder={placeholder}
@@ -136,6 +170,32 @@ const MessageComposer = React.forwardRef(
             </span>
           </div>
         </div>
+
+        {/* Variable chips */}
+        {normalizedVars.length > 0 && (
+          <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-1.5">
+            <span className="wsms-text-xs wsms-text-muted-foreground wsms-me-1">{__('Insert:', 'wp-sms')}</span>
+            {normalizedVars.map(({ variable, description }) => (
+              <button
+                key={variable}
+                type="button"
+                onClick={() => handleInsertVariable(variable)}
+                title={description || undefined}
+                disabled={disabled}
+                className={cn(
+                  'wsms-inline-flex wsms-items-center wsms-rounded wsms-border wsms-border-border',
+                  'wsms-px-1.5 wsms-py-0.5 wsms-text-[11px] wsms-font-mono',
+                  'wsms-text-muted-foreground wsms-bg-muted/30',
+                  'hover:wsms-bg-primary/10 hover:wsms-border-primary hover:wsms-text-primary',
+                  'wsms-transition-colors wsms-cursor-pointer',
+                  'focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20'
+                )}
+              >
+                {variable}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Warning messages */}
         {showUnicodeWarning && (
