@@ -1132,6 +1132,37 @@ class Dashboard extends Singleton
     }
 
     /**
+     * Find an installed plugin by its main file name when its folder was renamed.
+     *
+     * Prefers an active match, so a stray inactive copy does not hide the real one.
+     *
+     * @param array  $installedPlugins Result of get_plugins()
+     * @param string $expectedFile     Expected path, e.g. "gravityforms/gravityforms.php"
+     * @return string The matching installed path, or $expectedFile when none is found
+     */
+    private function findInstalledPluginFile($installedPlugins, $expectedFile)
+    {
+        $mainFile = basename($expectedFile);
+        $match    = $expectedFile;
+
+        foreach (array_keys($installedPlugins) as $file) {
+            if (strpos($file, '/') === false || basename($file) !== $mainFile) {
+                continue;
+            }
+
+            if (is_plugin_active($file)) {
+                return $file;
+            }
+
+            if ($match === $expectedFile) {
+                $match = $file;
+            }
+        }
+
+        return $match;
+    }
+
+    /**
      * Get third-party plugin status for integrations page
      *
      * Checks whether integration-related plugins are installed and active.
@@ -1267,6 +1298,11 @@ class Dashboard extends Singleton
         $installedPlugins = get_plugins();
 
         foreach ($plugins as $key => $plugin) {
+            // The plugin may sit in a differently named folder (e.g. "gravityforms-2.9" after a manual upload)
+            if (!isset($installedPlugins[$plugin['file']])) {
+                $plugin['file'] = $this->findInstalledPluginFile($installedPlugins, $plugin['file']);
+            }
+
             $isInstalled = isset($installedPlugins[$plugin['file']]);
             $isActive = is_plugin_active($plugin['file']);
 
