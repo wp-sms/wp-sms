@@ -412,6 +412,11 @@ class Notifications
     {
         $specified_post_types = Option::getOption($optionName) ?: [];
 
+        // An empty selection means "All post types", as the settings page shows
+        if (empty($specified_post_types)) {
+            return array_values(array_diff(get_post_types(['public' => true]), ['attachment']));
+        }
+
         foreach ($specified_post_types as $key => $post_type) {
             $value                      = explode('|', $post_type)[1];
             $specified_post_types[$key] = $value;
