@@ -1,12 +1,19 @@
-v7.2.9 - Unreleased
-- **Fix:** The phone number check no longer says numbers are in good shape when they are not. A number saved with a plus but without the country code, like +7065810032 on a US site, is now listed with its fix (+17065810032) for you to approve. Real international numbers, like a Russian +7 number, are left alone ([#551](https://github.com/wp-sms/wp-sms/issues/551)).
-- **Fix:** The phone number check now also covers WooCommerce order and subscription billing phones, including guest orders and stores using High-Performance Order Storage ([#551](https://github.com/wp-sms/wp-sms/issues/551)).
-- **Fix:** Applying the phone number check to more than 500 numbers in one place updates all of them instead of skipping some.
-- **Fix:** The Minimum Digits and Maximum Digits help text now says how the length is really counted ([#551](https://github.com/wp-sms/wp-sms/issues/551)).
-- **Enhancement:** The Send SMS form markup can be adjusted with the `wp_sms_send_sms_form_html` filter, so add-ons can harden form submission for every way the form is placed.
-- **Fix:** The "Visit Website" link on the gateway settings page keeps a gateway's own sign-up parameters (ClickSend, 4jawaly) instead of breaking them with a second question mark, and the gateway picker shows the provider's domain rather than its referral code.
-- **Fix:** Subscription validation errors no longer show HTML entities, so an apostrophe reaches the visitor as an apostrophe ([#547](https://github.com/wp-sms/wp-sms/issues/547)).
-- **Fix:** A site whose licence is expired or suspended no longer contacts the licence server every five minutes. It asks twice a day instead, which is all a refused licence can usefully be asked ([#539](https://github.com/wp-sms/wp-sms/issues/539)).
+v7.2.9 - 2026-10-01
+- **New:** Send SMS warns you when the same number appears more than once in the selected groups, and lists each duplicate with its subscriber name and group.
+- **New:** Each group in the Send SMS recipient picker opens to show its members, so you can untick anyone you want to skip.
+- **Enhancement:** Subscriber and user variables like `%subscriber_name%` are filled in for each recipient when sending to groups from the Send SMS page.
+- **Enhancement:** The Send SMS form markup can be adjusted with the `wp_sms_send_sms_form_html` filter.
+- **Enhancement:** The sms77 gateway now connects to seven.io, its new name ([#558](https://github.com/wp-sms/wp-sms/issues/558)).
+- **Fix:** The same number written in different formats, like 07911 123456 and +447911123456, gets one message instead of two.
+- **Fix:** Gravity Forms and other integrations no longer show as "Not Installed" when the plugin sits in a renamed folder ([#560](https://github.com/wp-sms/wp-sms/issues/560)).
+- **Fix:** New post SMS is sent when Content Types is left empty, as the settings page says ([#561](https://github.com/wp-sms/wp-sms/issues/561)).
+- **Fix:** The phone number check finds numbers saved with a plus but no country code, like +7065810032 on a US site, and offers the fix (+17065810032) ([#551](https://github.com/wp-sms/wp-sms/issues/551)).
+- **Fix:** The phone number check also covers WooCommerce order and subscription billing phones, including guest orders and HPOS stores ([#551](https://github.com/wp-sms/wp-sms/issues/551)).
+- **Fix:** Applying the phone number check to more than 500 numbers updates all of them.
+- **Fix:** The Minimum Digits and Maximum Digits help text explains how the length is counted ([#551](https://github.com/wp-sms/wp-sms/issues/551)).
+- **Fix:** The "Visit Website" link on the gateway settings page keeps the gateway's own sign-up parameters.
+- **Fix:** Subscription validation errors no longer show HTML entities, so an apostrophe shows as an apostrophe ([#547](https://github.com/wp-sms/wp-sms/issues/547)).
+- **Fix:** A site with an expired or suspended licence checks the licence server twice a day instead of every five minutes ([#539](https://github.com/wp-sms/wp-sms/issues/539)).
 
 v7.2.8 - 2026-09-05
 - **Fix:** Premium gateways like Twilio save without being rejected.
