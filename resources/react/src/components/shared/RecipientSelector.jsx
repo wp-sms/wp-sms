@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n'
 import * as React from 'react'
-import { Users, UserCog, User, Phone, X, Search, Plus, Loader2, ShoppingCart, UserCircle } from 'lucide-react'
+import { Users, UserCog, User, Phone, X, Search, Plus, Loader2, ShoppingCart, UserCircle, ChevronDown, ChevronRight } from 'lucide-react'
 import { cn, getWpSettings } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -51,13 +51,58 @@ const RecipientSelector = React.forwardRef(
     const [selectedUserDetails, setSelectedUserDetails] = React.useState({})
     const [additionalTypeCounts, setAdditionalTypeCounts] = React.useState({})
     const [isLoadingAdditionalCounts, setIsLoadingAdditionalCounts] = React.useState({})
+    const [expandedGroups, setExpandedGroups] = React.useState({})
+    const [groupMembers, setGroupMembers] = React.useState({})
+    const [loadingMembers, setLoadingMembers] = React.useState({})
     const { groups = [], roles = [], additionalRecipientTypes = [] } = getWpSettings()
+    const excludedSubscribers = value.excludedSubscribers || []
 
     const handleGroupToggle = (groupId) => {
-      const newGroups = value.groups.includes(groupId)
+      const isRemoving = value.groups.includes(groupId)
+      const newGroups = isRemoving
         ? value.groups.filter((id) => id !== groupId)
         : [...value.groups, groupId]
-      onChange?.({ ...value, groups: newGroups })
+
+      // Forget deselected members of a group that is no longer selected
+      let newExcluded = excludedSubscribers
+      if (isRemoving && groupMembers[groupId]) {
+        const memberIds = groupMembers[groupId].map((member) => member.id)
+        newExcluded = excludedSubscribers.filter((id) => !memberIds.includes(id))
+      }
+
+      onChange?.({ ...value, groups: newGroups, excludedSubscribers: newExcluded })
+    }
+
+    // Expand a group to see and pick its members
+    const handleGroupExpand = async (groupId) => {
+      const isExpanded = !!expandedGroups[groupId]
+      setExpandedGroups((prev) => ({ ...prev, [groupId]: !isExpanded }))
+
+      if (isExpanded || groupMembers[groupId] || loadingMembers[groupId]) return
+
+      setLoadingMembers((prev) => ({ ...prev, [groupId]: true }))
+      try {
+        const members = await smsApi.getGroupMembers([groupId])
+        setGroupMembers((prev) => ({ ...prev, [groupId]: members }))
+      } catch (error) {
+        console.error('Failed to load group members:', error)
+        setGroupMembers((prev) => ({ ...prev, [groupId]: [] }))
+      } finally {
+        setLoadingMembers((prev) => ({ ...prev, [groupId]: false }))
+      }
+    }
+
+    const handleMemberToggle = (memberId) => {
+      const newExcluded = excludedSubscribers.includes(memberId)
+        ? excludedSubscribers.filter((id) => id !== memberId)
+        : [...excludedSubscribers, memberId]
+      onChange?.({ ...value, excludedSubscribers: newExcluded })
+    }
+
+    const handleSelectAllMembers = (groupId, selectAll) => {
+      const memberIds = (groupMembers[groupId] || []).map((member) => member.id)
+      const others = excludedSubscribers.filter((id) => !memberIds.includes(id))
+      onChange?.({ ...value, excludedSubscribers: selectAll ? others : [...others, ...memberIds] })
     }
 
     const handleRoleToggle = (roleId) => {
@@ -331,32 +376,127 @@ const RecipientSelector = React.forwardRef(
                   {/* Subscriber Groups */}
                   {filteredGroups.map((group) => {
                     const isSelected = value.groups.includes(group.id)
+                    const isExpanded = !!expandedGroups[group.id]
+                    const members = groupMembers[group.id]
+                    const isLoadingMembers = !!loadingMembers[group.id]
+                    const excludedInGroup = members
+                      ? members.filter((member) => excludedSubscribers.includes(member.id)).length
+                      : 0
                     return (
-                      <label
-                        key={group.id}
-                        className={cn(
-                          'wsms-flex wsms-items-center wsms-gap-2.5 wsms-px-2.5 wsms-py-2 wsms-rounded-md',
-                          'wsms-cursor-pointer wsms-transition-colors',
-                          'hover:wsms-bg-muted/50',
-                          isSelected && 'wsms-bg-primary/5'
+                      <div key={group.id}>
+                        <div
+                          className={cn(
+                            'wsms-flex wsms-items-center wsms-gap-2.5 wsms-px-2.5 wsms-py-2 wsms-rounded-md',
+                            'wsms-transition-colors',
+                            'hover:wsms-bg-muted/50',
+                            isSelected && 'wsms-bg-primary/5'
+                          )}
+                        >
+                          <label className="wsms-flex wsms-flex-1 wsms-min-w-0 wsms-items-center wsms-gap-2.5 wsms-cursor-pointer">
+                            <Checkbox
+                              checked={isSelected}
+                              onCheckedChange={() => handleGroupToggle(group.id)}
+                              disabled={disabled}
+                              aria-label={group.name}
+                            />
+                            <Users className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
+                            <span className="wsms-flex-1 wsms-text-[12px] wsms-text-foreground wsms-truncate">
+                              {group.name}
+                            </span>
+                            {group.count !== undefined && (
+                              <span className="wsms-text-[11px] wsms-text-muted-foreground">
+                                {isSelected && excludedInGroup > 0 && members
+                                  ? `${members.length - excludedInGroup}/${members.length}`
+                                  : group.count}
+                              </span>
+                            )}
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => handleGroupExpand(group.id)}
+                            disabled={disabled}
+                            aria-expanded={isExpanded}
+                            aria-label={isExpanded ? __('Hide members', 'wp-sms') : __('Show members', 'wp-sms')}
+                            title={isExpanded ? __('Hide members', 'wp-sms') : __('Show members', 'wp-sms')}
+                            className="wsms-p-0.5 wsms-rounded wsms-text-muted-foreground hover:wsms-bg-accent hover:wsms-text-foreground"
+                          >
+                            {isExpanded ? (
+                              <ChevronDown className="wsms-h-3.5 wsms-w-3.5" />
+                            ) : (
+                              <ChevronRight className="wsms-h-3.5 wsms-w-3.5 rtl:wsms-scale-x-[-1]" />
+                            )}
+                          </button>
+                        </div>
+
+                        {/* Group members */}
+                        {isExpanded && (
+                          <div className="wsms-ms-7 wsms-me-1 wsms-mb-1 wsms-border-s-2 wsms-border-border wsms-ps-2">
+                            {isLoadingMembers ? (
+                              <div className="wsms-flex wsms-items-center wsms-justify-center wsms-py-3">
+                                <Loader2 className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-animate-spin" />
+                              </div>
+                            ) : !members || members.length === 0 ? (
+                              <p className="wsms-py-2 wsms-text-[11px] wsms-text-muted-foreground">
+                                {__('No active subscribers in this group', 'wp-sms')}
+                              </p>
+                            ) : (
+                              <>
+                                <div className="wsms-flex wsms-items-center wsms-justify-between wsms-py-1">
+                                  <p className="wsms-text-[10px] wsms-text-muted-foreground">
+                                    {isSelected
+                                      ? __('Untick members who should not get this message', 'wp-sms')
+                                      : __('Select the group to pick members', 'wp-sms')}
+                                  </p>
+                                  {isSelected && (
+                                    <div className="wsms-flex wsms-gap-2">
+                                      <button
+                                        type="button"
+                                        onClick={() => handleSelectAllMembers(group.id, true)}
+                                        disabled={disabled}
+                                        className="wsms-text-[10px] wsms-text-primary hover:wsms-underline"
+                                      >
+                                        {__('All', 'wp-sms')}
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleSelectAllMembers(group.id, false)}
+                                        disabled={disabled}
+                                        className="wsms-text-[10px] wsms-text-primary hover:wsms-underline"
+                                      >
+                                        {__('None', 'wp-sms')}
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="wsms-space-y-0.5 wsms-max-h-[180px] wsms-overflow-y-auto">
+                                  {members.map((member) => (
+                                    <label
+                                      key={member.id}
+                                      className={cn(
+                                        'wsms-flex wsms-items-center wsms-gap-2 wsms-px-2 wsms-py-1 wsms-rounded-md',
+                                        isSelected ? 'wsms-cursor-pointer hover:wsms-bg-muted/50' : 'wsms-opacity-60'
+                                      )}
+                                    >
+                                      <Checkbox
+                                        checked={isSelected && !excludedSubscribers.includes(member.id)}
+                                        onCheckedChange={() => handleMemberToggle(member.id)}
+                                        disabled={disabled || !isSelected}
+                                        aria-label={member.name || member.mobile}
+                                      />
+                                      <span className="wsms-flex-1 wsms-text-[11px] wsms-text-foreground wsms-truncate">
+                                        {member.name || __('(no name)', 'wp-sms')}
+                                      </span>
+                                      <span className="wsms-text-[11px] wsms-font-mono wsms-text-muted-foreground" dir="ltr">
+                                        {member.mobile}
+                                      </span>
+                                    </label>
+                                  ))}
+                                </div>
+                              </>
+                            )}
+                          </div>
                         )}
-                      >
-                        <Checkbox
-                          checked={isSelected}
-                          onCheckedChange={() => handleGroupToggle(group.id)}
-                          disabled={disabled}
-                          aria-label={group.name}
-                        />
-                        <Users className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
-                        <span className="wsms-flex-1 wsms-text-[12px] wsms-text-foreground wsms-truncate">
-                          {group.name}
-                        </span>
-                        {group.count !== undefined && (
-                          <span className="wsms-text-[11px] wsms-text-muted-foreground">
-                            {group.count}
-                          </span>
-                        )}
-                      </label>
+                      </div>
                     )
                   })}
 

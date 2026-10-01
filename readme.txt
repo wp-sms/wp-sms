@@ -4,7 +4,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 7.2.8
+Stable tag: 7.2.9
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -155,11 +155,31 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
+= v7.2.9 - 2026-10-01 =
+- **New:** Send SMS warns you about duplicate numbers in the selected groups.
+- **New:** Pick or skip individual members of a group on the Send SMS page.
+- **Enhancement:** Variables like `%subscriber_name%` are filled in for each recipient when sending to groups.
+- **Enhancement:** New `wp_sms_send_sms_form_html` filter for the Send SMS form.
+- **Enhancement:** The sms77 gateway now uses seven.io ([#558](https://github.com/wp-sms/wp-sms/issues/558)).
+- **Fix:** A number written in two formats gets one message, not two.
+- **Fix:** Gravity Forms and other integrations no longer show "Not Installed" when the plugin folder is renamed ([#560](https://github.com/wp-sms/wp-sms/issues/560)).
+- **Fix:** New post SMS is sent when Content Types is left empty ([#561](https://github.com/wp-sms/wp-sms/issues/561)).
+- **Fix:** The phone number check catches numbers missing the country code and covers WooCommerce billing phones ([#551](https://github.com/wp-sms/wp-sms/issues/551)).
+- **Fix:** The phone number check updates all numbers, even more than 500.
+- **Fix:** The "Visit Website" link on the gateway settings page works again.
+- **Fix:** Subscription error messages no longer show HTML codes ([#547](https://github.com/wp-sms/wp-sms/issues/547)).
+- **Fix:** Sites with an expired licence no longer check the licence server every five minutes ([#539](https://github.com/wp-sms/wp-sms/issues/539)).
+
 = v7.2.8 - 2026-09-05 =
 - **Fix:** Premium gateways like Twilio save without being rejected.
 - **Fix:** The United States stays selected as your default country code ([#535](https://github.com/wp-sms/wp-sms/issues/535)).
 - **Fix:** The setup wizard makes the United States easy to find ([#522](https://github.com/wp-sms/wp-sms/issues/522)).
+- **Fix:** The Message Button hides an empty footer and displays its copyright text correctly in RTL layouts ([#516](https://github.com/wp-sms/wp-sms/issues/516)).
+- **Fix:** React dashboard translations now load from WordPress.org language packs ([#520](https://github.com/wp-sms/wp-sms/issues/520)).
+- **Fix:** Newsletter shortcodes no longer emit warnings on WordPress 7.1 ([#527](https://github.com/wp-sms/wp-sms/issues/527)).
+- **Fix:** All supported alphanumeric and legacy UUID license-key formats can be validated ([#540](https://github.com/wp-sms/wp-sms/issues/540)).
 - **Enhancement:** Subscription errors can include safe SMS, email, and web actions ([#533](https://github.com/wp-sms/wp-sms/issues/533)).
+- **Enhancement:** Custom gateways support multiline secret headers and form-encoded POST bodies ([#529](https://github.com/wp-sms/wp-sms/issues/529)).
 
 = v7.2.7 - 2026-08-08 =
 - **Fix:** Translations work again on WordPress 6.7+.

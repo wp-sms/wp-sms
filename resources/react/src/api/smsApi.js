@@ -136,6 +136,17 @@ export const smsApi = {
   },
 
   /**
+   * Get the active members of subscriber groups
+   * @param {Array<string|number>} groups - Group IDs
+   * @returns {Promise<object[]>} Members with id, name, mobile, normalized, group_id, group_name
+   */
+  async getGroupMembers(groups = []) {
+    if (!groups.length) return []
+    const response = await apiClient.post('send/group-members', { groups: groups.map((id) => Number(id)) })
+    return response.data?.members || []
+  },
+
+  /**
    * Search users for recipient selector
    * @param {string} search - Search query (name, email, or user ID)
    * @param {number} perPage - Number of results to return

@@ -43,22 +43,45 @@ class PublicSubscribeAjax extends AjaxControllerAbstract
         $result = SubscriberUtil::subscribe($name, $number, $group_id, $customFields);
 
         if (is_wp_error($result)) {
-            $errorData = $result->get_error_data();
-            $actions   = self::sanitizeValidationActions(
-                is_array($errorData) && isset($errorData['actions']) ? $errorData['actions'] : array()
-            );
+            $payload = self::formatValidationError($result);
 
-            if ($actions) {
-                wp_send_json_error(array(
-                    'message' => esc_html($result->get_error_message()),
-                    'actions' => $actions,
-                ), 400);
+            if (is_array($payload)) {
+                wp_send_json_error($payload, 400);
             }
 
-            throw new Exception(esc_html($result->get_error_message()));
+            throw new Exception($payload);
         }
 
         return wp_send_json_success($result);
+    }
+
+    /**
+     * Turn a subscription validation error into what the form's JavaScript renders.
+     *
+     * The message is sent as plain text, not HTML-escaped: the frontend puts it in
+     * the page with jQuery's .text(), which escapes on its own. Escaping here as
+     * well used to double it, so an apostrophe reached the visitor as &#039;.
+     *
+     * @param \WP_Error $error
+     *
+     * @return string|array The message alone, or message plus validated actions.
+     */
+    public static function formatValidationError(\WP_Error $error)
+    {
+        $message   = (string) $error->get_error_message();
+        $errorData = $error->get_error_data();
+        $actions   = self::sanitizeValidationActions(
+            is_array($errorData) && isset($errorData['actions']) ? $errorData['actions'] : array()
+        );
+
+        if ($actions) {
+            return array(
+                'message' => $message,
+                'actions' => $actions,
+            );
+        }
+
+        return $message;
     }
 
     /**

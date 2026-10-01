@@ -278,6 +278,40 @@ export function getGatewayLogo(gateway) {
 }
 
 /**
+ * Add UTM parameters to an outbound URL without breaking a query string the URL
+ * already carries (a gateway's referral link such as https://clicksend.com/?u=579947).
+ * @param {string} url - Absolute URL
+ * @param {object} utm - { source, medium, campaign }
+ * @returns {string} URL with utm_* set, or the input untouched when it does not parse
+ */
+export function appendUtm(url, { source, medium, campaign }) {
+  if (!url) return ''
+  try {
+    const u = new URL(url)
+    u.searchParams.set('utm_source', source)
+    u.searchParams.set('utm_medium', medium)
+    u.searchParams.set('utm_campaign', campaign)
+    return u.toString()
+  } catch {
+    return url
+  }
+}
+
+/**
+ * Host name of a URL for display, without scheme, "www." or query string
+ * @param {string} url - Absolute URL
+ * @returns {string} e.g. "clicksend.com", or '' when the URL does not parse
+ */
+export function displayHost(url) {
+  if (!url) return ''
+  try {
+    return new URL(url).hostname.replace(/^www\./, '')
+  } catch {
+    return url.replace(/^https?:\/\/(www\.)?/, '').replace(/[?#].*$/, '').replace(/\/$/, '')
+  }
+}
+
+/**
  * Convert a 2-letter country code to a flag emoji
  * @param {string} code - ISO 3166-1 alpha-2 country code
  * @returns {string} Flag emoji or empty string

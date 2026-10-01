@@ -255,7 +255,7 @@ export default function PhoneConfig() {
                   value={minLength}
                   onChange={(e) => setMinLength(e.target.value)}
                   placeholder="10"
-                  description={__('Minimum number of digits required (excluding country code).', 'wp-sms')}
+                  description={__('Shortest number allowed, counted as the user types it. A country code the user types counts too.', 'wp-sms')}
                 />
                 <InputField
                   label={__('Maximum Digits', 'wp-sms')}
@@ -263,7 +263,7 @@ export default function PhoneConfig() {
                   value={maxLength}
                   onChange={(e) => setMaxLength(e.target.value)}
                   placeholder="15"
-                  description={__('Maximum number of digits allowed (excluding country code).', 'wp-sms')}
+                  description={__('Longest number allowed, counted as the user types it. A country code the user types counts too.', 'wp-sms')}
                 />
               </div>
             </>

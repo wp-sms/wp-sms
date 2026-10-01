@@ -14,7 +14,7 @@
     "php": ">=7.4"
   },
   "require-dev": {
-    "veronalabs/wp-scoper": "^1.2.4",
+    "veronalabs/wp-scoper": "^1.4.2",
     "fakerphp/faker": "^1.23"
   },
   "autoload": {

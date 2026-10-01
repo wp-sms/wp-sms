@@ -207,22 +207,26 @@ class custom extends \WP_SMS\Gateway
                 }
 
                 if ($this->is_post_body && $this->is_post_body == 'yes') {
+                    $hasContentType = false;
+                    foreach (array_keys($args['headers']) as $headerName) {
+                        if (strcasecmp($headerName, 'Content-Type') === 0) {
+                            $hasContentType = true;
+                            break;
+                        }
+                    }
+
                     if ($this->post_body_format === 'form_urlencoded') {
                         $args['body'] = http_build_query($finalParams, '', '&');
-
-                        $hasContentType = false;
-                        foreach (array_keys($args['headers']) as $headerName) {
-                            if (strcasecmp($headerName, 'Content-Type') === 0) {
-                                $hasContentType = true;
-                                break;
-                            }
-                        }
 
                         if (!$hasContentType) {
                             $args['headers']['Content-Type'] = 'application/x-www-form-urlencoded';
                         }
                     } else {
                         $args['body'] = wp_json_encode($finalParams);
+
+                        if (!$hasContentType) {
+                            $args['headers']['Content-Type'] = 'application/json';
+                        }
                     }
                     $httpMethod = 'POST';
                 } else {

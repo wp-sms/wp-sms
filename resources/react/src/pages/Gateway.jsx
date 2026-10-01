@@ -10,7 +10,7 @@ import { SearchableSelect } from '@/components/ui/searchable-select'
 import { Tip, CollapsibleSection, HelpLink, SectionDivider } from '@/components/ui/ux-helpers'
 import { useSettings, useSetting } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
-import { getWpSettings, cn, getGatewayDisplayName, getGatewayLogo, countryCodeToFlag } from '@/lib/utils'
+import { getWpSettings, cn, getGatewayDisplayName, getGatewayLogo, countryCodeToFlag, appendUtm } from '@/lib/utils'
 import { GatewayCard, GatewayCardMinimal, PremiumSearchResults, MoreGatewaysNotice } from '@/components/GatewayCard'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 
@@ -347,7 +347,7 @@ export default function Gateway() {
                   )}
                   {getGateway(gatewayName)?.website && (
                     <a
-                      href={`${getGateway(gatewayName).website}?utm_source=wsms&utm_medium=plugin&utm_campaign=gateway-settings`}
+                      href={appendUtm(getGateway(gatewayName).website, { source: 'wsms', medium: 'plugin', campaign: 'gateway-settings' })}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-text-primary hover:wsms-text-primary/80"
@@ -689,17 +689,7 @@ export default function Gateway() {
               )}
               {gatewayDocumentUrl && (
                 <a
-                  href={(() => {
-                    try {
-                      const u = new URL(gatewayDocumentUrl)
-                      u.searchParams.set('utm_source', 'wp-sms')
-                      u.searchParams.set('utm_medium', 'link')
-                      u.searchParams.set('utm_campaign', 'settings')
-                      return u.toString()
-                    } catch {
-                      return gatewayDocumentUrl
-                    }
-                  })()}
+                  href={appendUtm(gatewayDocumentUrl, { source: 'wp-sms', medium: 'link', campaign: 'settings' })}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[13px] wsms-text-primary hover:wsms-text-primary/80 wsms-font-medium"

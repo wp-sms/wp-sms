@@ -9,7 +9,10 @@ use DateInterval;
 use WP_SMS\Gateway;
 use WP_SMS\Helper;
 use WP_SMS\Newsletter;
+use WP_SMS\Notification\Handler\SubscriberNotification;
+use WP_SMS\Notification\Handler\WordPressUserNotification;
 use WP_SMS\Notification\NotificationFactory;
+use WP_SMS\Option;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -113,6 +116,20 @@ class SendSmsApi extends \WP_SMS\RestApi
                 'permission_callback' => function () {
                     return current_user_can('wpsms_sendsms');
                 },
+            )
+        ));
+
+        // Group members endpoint for the Send SMS page (member picker and duplicate check)
+        register_rest_route($this->namespace . '/v1', '/send/group-members', array(
+            array(
+                'methods'             => \WP_REST_Server::CREATABLE,
+                'callback'            => array($this, 'getGroupMembersCallback'),
+                'permission_callback' => function () {
+                    return current_user_can('wpsms_sendsms');
+                },
+                'args'                => [
+                    'groups' => ['required' => true, 'type' => 'array', 'items' => ['type' => 'integer']],
+                ],
             )
         ));
 
@@ -420,9 +437,9 @@ class SendSmsApi extends \WP_SMS\RestApi
 
             $recipientNumbers = [];
 
-            // Get numbers from groups (subscribers)
+            // Get numbers from groups (subscribers), minus members the admin deselected
             if (!empty($recipients['groups']) && is_array($recipients['groups'])) {
-                $groupNumbers = Newsletter::getSubscribers($recipients['groups'], true);
+                $groupNumbers = $this->getGroupNumbers($recipients);
                 $recipientNumbers = array_merge($recipientNumbers, $groupNumbers);
             }
 
@@ -448,8 +465,8 @@ class SendSmsApi extends \WP_SMS\RestApi
             // Allow add-ons to add recipient numbers (e.g., WooCommerce, BuddyPress)
             $recipientNumbers = apply_filters('wpsms_api_recipient_numbers', $recipientNumbers, $recipients, []);
 
-            // Remove duplicates
-            $recipientNumbers = array_unique($recipientNumbers);
+            // Remove duplicates, including the same number written in different formats
+            $recipientNumbers = $this->uniqueNumbers($recipientNumbers);
 
             if (count($recipientNumbers) === 0) {
                 throw new Exception(esc_html__('Could not find any mobile numbers.', 'wp-sms'));
@@ -571,6 +588,11 @@ class SendSmsApi extends \WP_SMS\RestApi
                 return self::response(esc_html__('Scheduled SMS requires the WP SMS Pro add-on. Please install and activate the add-on to use this feature.', 'wp-sms'), 400);
             }
 
+            // Personalise the message per recipient when it uses subscriber or user variables
+            if ($this->messageHasRecipientVariables($message)) {
+                return $this->sendPersonalisedMessage($message, $recipients, $recipientNumbers, $mediaUrls, $flash, $sender);
+            }
+
             // Send SMS immediately
             $notification = NotificationFactory::getHandler(null, null);
             $response = $notification->send(
@@ -599,6 +621,221 @@ class SendSmsApi extends \WP_SMS\RestApi
     }
 
     /**
+     * Get the subscriber and user variables that can be personalised per recipient.
+     *
+     * @return array
+     */
+    private function getRecipientVariables()
+    {
+        return array_merge(
+            array_keys((new SubscriberNotification())->getVariables()),
+            array_keys((new WordPressUserNotification())->getVariables())
+        );
+    }
+
+    /**
+     * Check whether the message uses any subscriber or user variable.
+     *
+     * @param string $message
+     * @return bool
+     */
+    private function messageHasRecipientVariables($message)
+    {
+        foreach ($this->getRecipientVariables() as $variable) {
+            if (strpos($message, $variable) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Send a message that contains subscriber or user variables.
+     *
+     * Each recipient gets the message with its own values. Recipients that end up with
+     * the same text are sent together, so a variable such as %subscriber_group% still
+     * goes out in one request per group. Variables that cannot be resolved for a number
+     * (for example %subscriber_name% for a manually entered number) are removed rather
+     * than sent as-is.
+     *
+     * @param string $message
+     * @param array $recipients Recipients request data
+     * @param array $recipientNumbers Unique recipient numbers
+     * @param array $mediaUrls
+     * @param bool $flash
+     * @param string $sender
+     * @return \WP_REST_Response
+     * @throws Exception
+     */
+    private function sendPersonalisedMessage($message, $recipients, $recipientNumbers, $mediaUrls, $flash, $sender)
+    {
+        $subscriberIds = [];
+        $userIds       = [];
+
+        // Subscribers of the selected groups, first match wins for a number
+        if (!empty($recipients['groups']) && is_array($recipients['groups'])) {
+            foreach (Newsletter::getSubscribers($recipients['groups'], true, ['ID', 'mobile']) as $subscriber) {
+                $key = Helper::normalizeToE164WithShortCodeGuard($subscriber->mobile);
+                if (!isset($subscriberIds[$key])) {
+                    $subscriberIds[$key] = $subscriber->ID;
+                }
+            }
+        }
+
+        // WordPress users from the selected roles and users
+        $roleIds     = !empty($recipients['roles']) && is_array($recipients['roles']) ? $recipients['roles'] : [];
+        $selectedIds = !empty($recipients['users']) && is_array($recipients['users']) ? array_map('absint', $recipients['users']) : [];
+
+        if ($roleIds || $selectedIds) {
+            $mobileFieldKey = Helper::getUserMobileFieldName();
+            $queries        = [];
+
+            if ($roleIds) {
+                $queries[] = ['role__in' => $roleIds];
+            }
+
+            if ($selectedIds) {
+                $queries[] = ['include' => $selectedIds];
+            }
+
+            foreach ($queries as $query) {
+                $args = array_merge([
+                    'meta_query'  => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+                        [
+                            'key'     => $mobileFieldKey,
+                            'value'   => '',
+                            'compare' => '!=',
+                        ],
+                    ],
+                    'count_total' => false,
+                ], $query);
+
+                /** This filter is documented in src/Helper.php */
+                $args = apply_filters('wp_sms_mobile_numbers_query_args', $args);
+
+                foreach (get_users($args) as $user) {
+                    $mobile = get_user_meta($user->ID, $mobileFieldKey, true);
+                    if (empty($mobile)) {
+                        continue;
+                    }
+
+                    $key = Helper::normalizeToE164WithShortCodeGuard($mobile);
+                    if (!isset($userIds[$key])) {
+                        $userIds[$key] = $user->ID;
+                    }
+                }
+            }
+        }
+
+        // Render the message for each recipient and group numbers by the final text
+        $variables = $this->getRecipientVariables();
+        $batches   = [];
+
+        foreach ($recipientNumbers as $number) {
+            $key  = Helper::normalizeToE164WithShortCodeGuard($number);
+            $text = $message;
+
+            if (isset($subscriberIds[$key])) {
+                $text = (new SubscriberNotification($subscriberIds[$key]))->getOutputMessage($text);
+            }
+
+            if (isset($userIds[$key])) {
+                $text = (new WordPressUserNotification($userIds[$key]))->getOutputMessage($text);
+            }
+
+            // Do not send placeholders that have no value for this recipient
+            $text = str_replace($variables, '', $text);
+
+            $batches[$text][] = $number;
+        }
+
+        $bulkDispatchLimit = apply_filters('wp_sms_bulk_dispatch_limit', 20);
+        $useQueue          = Option::getOption('sms_delivery_method') == 'api_queued_send' || count($recipientNumbers) >= $bulkDispatchLimit;
+        $notification      = NotificationFactory::getHandler(null, null);
+        $sentCount         = 0;
+        $lastError         = null;
+
+        foreach ($batches as $text => $numbers) {
+            $text = (string)$text;
+
+            if (trim($text) === '') {
+                continue;
+            }
+
+            // Large sends go to the background queue, one message per number, like other bulk sends
+            if ($useQueue) {
+                $queue = WPSms()->getRemoteRequestQueue();
+                $text  = $notification->getOutputMessage($text);
+
+                foreach ($numbers as $number) {
+                    $singleArgument = [
+                        'to'               => Helper::normalizeToE164WithShortCodeGuard($number),
+                        'msg'              => $text,
+                        'is_flash'         => $flash,
+                        'from'             => $sender,
+                        'mediaUrls'        => $mediaUrls,
+                        'messageVariables' => [],
+                    ];
+
+                    /** This filter is documented in src/BackgroundProcess/SmsDispatcher.php */
+                    $singleArgument = apply_filters('wp_sms_single_dispatch_arguments', $singleArgument);
+
+                    $queue->push_to_queue(['parameters' => $singleArgument])->save();
+                }
+
+                $sentCount += count($numbers);
+                continue;
+            }
+
+            $response = $notification->send($text, $numbers, $mediaUrls, $flash, $sender);
+
+            if (is_wp_error($response)) {
+                $lastError = $response->get_error_message();
+                continue;
+            }
+
+            if ($response === false || $response === null) {
+                $lastError = esc_html__('Failed to send SMS. An unexpected error occurred. Please try again or check your gateway settings.', 'wp-sms');
+                continue;
+            }
+
+            $sentCount += count($numbers);
+        }
+
+        if ($useQueue && $sentCount > 0) {
+            WPSms()->getRemoteRequestQueue()->dispatch();
+
+            return self::response(esc_html__('SMS delivery is in progress as a background task; please review the Outbox for updates.', 'wp-sms'), 200, [
+                'recipient_count' => $sentCount,
+                'credit'          => Gateway::credit()
+            ]);
+        }
+
+        if ($sentCount === 0) {
+            throw new Exception($lastError ? $lastError : esc_html__('Could not find any mobile numbers.', 'wp-sms'));
+        }
+
+        if ($lastError) {
+            return self::response(sprintf(
+                // translators: 1: number of recipients that received the message, 2: total recipients, 3: gateway error message
+                esc_html__('Sent to %1$d of %2$d recipients. Some messages failed: %3$s', 'wp-sms'),
+                $sentCount,
+                count($recipientNumbers),
+                $lastError
+            ), 200, [
+                'recipient_count' => $sentCount,
+                'credit'          => Gateway::credit()
+            ]);
+        }
+
+        return self::response(esc_html__('Successfully sent SMS!', 'wp-sms'), 200, [
+            'recipient_count' => $sentCount,
+            'credit'          => Gateway::credit()
+        ]);
+    }
+
+    /**
      * Get recipient count for new settings UI
      *
      * @param WP_REST_Request $request
@@ -620,7 +857,7 @@ class SendSmsApi extends \WP_SMS\RestApi
 
             // Count from groups (subscribers)
             if (!empty($recipients['groups']) && is_array($recipients['groups'])) {
-                $groupNumbers = Newsletter::getSubscribers($recipients['groups'], true);
+                $groupNumbers = $this->getGroupNumbers($recipients);
                 $counts['groups'] = count($groupNumbers);
                 $allNumbers = array_merge($allNumbers, $groupNumbers);
             }
@@ -659,7 +896,7 @@ class SendSmsApi extends \WP_SMS\RestApi
             $allNumbers = apply_filters('wpsms_api_recipient_numbers', $allNumbers, $recipients, $counts);
 
             // Total unique count
-            $counts['total'] = count(array_unique($allNumbers));
+            $counts['total'] = count($this->uniqueNumbers($allNumbers));
 
             return self::response('', 200, $counts);
         } catch (\Throwable $e) {
@@ -717,6 +954,99 @@ class SendSmsApi extends \WP_SMS\RestApi
         } catch (\Throwable $e) {
             return self::response($e->getMessage(), 400);
         }
+    }
+
+    /**
+     * Get the active members of the given groups for the Send SMS page.
+     *
+     * Each member carries its normalized number so the page can spot the same
+     * number appearing more than once, within a group or across groups.
+     *
+     * @param WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function getGroupMembersCallback(WP_REST_Request $request)
+    {
+        try {
+            $groupIds = array_filter(array_map('absint', (array)$request->get_param('groups')));
+
+            if (empty($groupIds)) {
+                return self::response('', 200, ['members' => []]);
+            }
+
+            $groupNames = [];
+            foreach (Newsletter::getGroups($groupIds) as $group) {
+                $groupNames[$group->ID] = $group->name;
+            }
+
+            $members = [];
+            foreach (Newsletter::getSubscribers($groupIds, true, ['ID', 'name', 'mobile', 'group_ID']) as $subscriber) {
+                $members[] = [
+                    'id'         => (int)$subscriber->ID,
+                    'name'       => $subscriber->name,
+                    'mobile'     => $subscriber->mobile,
+                    'normalized' => Helper::normalizeToE164WithShortCodeGuard($subscriber->mobile),
+                    'group_id'   => (int)$subscriber->group_ID,
+                    'group_name' => isset($groupNames[$subscriber->group_ID]) ? $groupNames[$subscriber->group_ID] : '',
+                ];
+            }
+
+            return self::response('', 200, ['members' => $members]);
+        } catch (\Throwable $e) {
+            return self::response($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get the numbers of the selected groups' active subscribers, leaving out
+     * the subscribers the admin deselected on the Send SMS page.
+     *
+     * @param array $recipients Recipients request data
+     * @return array
+     */
+    private function getGroupNumbers($recipients)
+    {
+        $excluded = !empty($recipients['excludedSubscribers']) && is_array($recipients['excludedSubscribers'])
+            ? array_map('absint', $recipients['excludedSubscribers'])
+            : [];
+
+        if (empty($excluded)) {
+            return Newsletter::getSubscribers($recipients['groups'], true);
+        }
+
+        $numbers = [];
+        foreach (Newsletter::getSubscribers($recipients['groups'], true, ['ID', 'mobile']) as $subscriber) {
+            if (!in_array((int)$subscriber->ID, $excluded, true)) {
+                $numbers[] = $subscriber->mobile;
+            }
+        }
+
+        return $numbers;
+    }
+
+    /**
+     * Remove duplicate numbers, treating different formats of the same number
+     * (for example 07911 123456 and +447911123456) as one.
+     *
+     * @param array $numbers
+     * @return array
+     */
+    private function uniqueNumbers($numbers)
+    {
+        $unique = [];
+
+        foreach ($numbers as $number) {
+            if ($number === null || $number === '') {
+                continue;
+            }
+
+            $key = Helper::normalizeToE164WithShortCodeGuard(trim((string)$number));
+            if (!isset($unique[$key])) {
+                $unique[$key] = $number;
+            }
+        }
+
+        return array_values($unique);
     }
 }
 

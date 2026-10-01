@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RecipientSelector } from '@/components/shared/RecipientSelector'
 import { MessageComposer, calculateSmsInfo } from '@/components/shared/MessageComposer'
 import { SmsPreviewDialog } from '@/components/shared/SmsPreviewDialog'
+import { DuplicateNumbersDialog, findDuplicateNumbers } from '@/components/shared/DuplicateNumbersDialog'
 import { MediaSelector } from '@/components/shared/MediaSelector'
 import { Tip } from '@/components/ui/ux-helpers'
 import { smsApi } from '@/api/smsApi'
@@ -16,6 +17,23 @@ import { useSettings } from '@/context/SettingsContext'
 import { useCountryCheck } from '@/hooks/useCountryCheck'
 import { cn, getGatewayDisplayName, getWpSettings } from '@/lib/utils'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
+
+// Variables filled in per recipient when sending (subscriber groups and WordPress users)
+const SUBSCRIBER_VARIABLES = [
+  { variable: '%subscriber_name%', description: __('Subscriber name', 'wp-sms') },
+  { variable: '%subscriber_mobile%', description: __('Subscriber mobile number', 'wp-sms') },
+  { variable: '%subscriber_group%', description: __('Subscriber group', 'wp-sms') },
+  { variable: '%subscriber_date%', description: __('Subscription date', 'wp-sms') },
+  { variable: '%unsubscribe_url%', description: __('Unsubscribe link', 'wp-sms') },
+]
+
+const USER_VARIABLES = [
+  { variable: '%display_name%', description: __('WordPress user display name', 'wp-sms') },
+  { variable: '%first_name%', description: __('WordPress user first name', 'wp-sms') },
+  { variable: '%last_name%', description: __('WordPress user last name', 'wp-sms') },
+]
+
+const RECIPIENT_VARIABLE_PATTERN = /%(subscriber_[a-z_]+|unsubscribe_url|user_[a-z]+|date_register|display_name|first_name|last_name)%/
 
 export default function SendSms() {
   const { setCurrentPage, getSetting } = useSettings()
@@ -63,6 +81,9 @@ export default function SendSms() {
   const [showPreviewDialog, setShowPreviewDialog] = useState(false)
   const [dialogStatus, setDialogStatus] = useState('preview')
   const [dialogResultMessage, setDialogResultMessage] = useState('')
+  const [duplicateNumbers, setDuplicateNumbers] = useState([])
+  const [showDuplicateDialog, setShowDuplicateDialog] = useState(false)
+  const [isCheckingDuplicates, setIsCheckingDuplicates] = useState(false)
 
   // Sync sender ID when settings change (e.g., after saving gateway settings)
   useEffect(() => {
@@ -120,6 +141,13 @@ export default function SendSms() {
     fetchCredit()
   }, [])
 
+  // Subscriber variables are always offered, user variables once roles or users are selected
+  const composerVariables = [
+    ...SUBSCRIBER_VARIABLES,
+    ...(recipients.roles.length > 0 || (recipients.users?.length || 0) > 0 ? USER_VARIABLES : []),
+  ]
+  const usesRecipientVariables = RECIPIENT_VARIABLE_PATTERN.test(message)
+
   // Validation
   const smsInfo = calculateSmsInfo(message)
   const hasMessage = message.trim().length > 0
@@ -161,14 +189,41 @@ export default function SendSms() {
     setDialogResultMessage('')
   }, [])
 
-  // Handle preview button click
-  const handlePreview = useCallback(() => {
-    if (canSend) {
-      setDialogStatus('preview')
-      setDialogResultMessage('')
-      setShowPreviewDialog(true)
+  // Open the review dialog
+  const openPreview = useCallback(() => {
+    setShowDuplicateDialog(false)
+    setDialogStatus('preview')
+    setDialogResultMessage('')
+    setShowPreviewDialog(true)
+  }, [])
+
+  // Handle preview button click: check the selected groups for duplicate numbers first
+  const handlePreview = useCallback(async () => {
+    if (!canSend) return
+
+    if (recipients.groups.length > 0) {
+      setIsCheckingDuplicates(true)
+      try {
+        const excluded = recipients.excludedSubscribers || []
+        const members = (await smsApi.getGroupMembers(recipients.groups))
+          .filter((member) => !excluded.includes(member.id))
+        const duplicates = findDuplicateNumbers(members)
+
+        if (duplicates.length > 0) {
+          setDuplicateNumbers(duplicates)
+          setShowDuplicateDialog(true)
+          return
+        }
+      } catch (error) {
+        // The check is informational only; the send still removes duplicates
+        console.error('Failed to check duplicate numbers:', error)
+      } finally {
+        setIsCheckingDuplicates(false)
+      }
     }
-  }, [canSend])
+
+    openPreview()
+  }, [canSend, recipients, openPreview])
 
   // Handle confirmed send
   const handleConfirmedSend = useCallback(async () => {
@@ -325,7 +380,16 @@ export default function SendSms() {
               placeholder={__('Type your message here...', 'wp-sms')}
               rows={8}
               maxSegments={10}
+              variables={composerVariables}
             />
+
+            {usesRecipientVariables && (
+              <p className="wsms-mt-2 wsms-text-[11px] wsms-text-muted-foreground">
+                {scheduleEnabled
+                  ? __('Personal variables are only filled in when you send now. Scheduled and repeating messages are sent as written.', 'wp-sms')
+                  : __('Each recipient gets their own copy with the variables filled in. Variables with no value for a recipient are left out.', 'wp-sms')}
+              </p>
+            )}
 
             {/* Options Row - Only show if gateway supports options */}
             {(gatewaySupportsFlash || gatewaySupportsMedia) && (
@@ -603,10 +667,10 @@ export default function SendSms() {
             )}
             <Button
               onClick={handlePreview}
-              disabled={!canSend}
+              disabled={!canSend || isCheckingDuplicates}
               className="wsms-gap-2 wsms-w-full lg:wsms-w-auto"
             >
-              {isLoadingCount ? (
+              {isLoadingCount || isCheckingDuplicates ? (
                 <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
               ) : (
                 <Eye className="wsms-h-4 wsms-w-4" />
@@ -616,6 +680,14 @@ export default function SendSms() {
           </div>
         </div>
       </Card>
+
+      {/* Duplicate Numbers Dialog */}
+      <DuplicateNumbersDialog
+        open={showDuplicateDialog}
+        onOpenChange={setShowDuplicateDialog}
+        duplicates={duplicateNumbers}
+        onContinue={openPreview}
+      />
 
       {/* Preview Dialog */}
       <SmsPreviewDialog

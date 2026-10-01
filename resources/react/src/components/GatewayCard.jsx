@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n'
 import React from 'react'
 import { CheckCircle, Lock } from 'lucide-react'
-import { cn, getGatewayLogo } from '@/lib/utils'
+import { cn, displayHost, getGatewayLogo } from '@/lib/utils'
 
 /**
  * Full gateway card — used when API data is available (logo, features, premium badge)
@@ -37,7 +37,7 @@ export function GatewayCard({ gateway, isSelected, isCurrent, onClick, showFeatu
         <span className="wsms-truncate wsms-block">{gateway.name}</span>
         {gateway.website && (
           <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-truncate wsms-block">
-            {gateway.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+            {displayHost(gateway.website)}
           </span>
         )}
       </div>

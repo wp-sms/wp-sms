@@ -6,6 +6,7 @@ use WP_SMS\Helper;
 use WP_SMS\Option;
 use WP_SMS\Components\NumberParser;
 use WP_SMS\Components\DateTime;
+use WP_SMS\Components\PhoneNumberMetadata;
 
 if (!defined('ABSPATH')) exit;
 
@@ -53,23 +54,36 @@ class NumberMigrationAjax extends AjaxControllerAbstract
     }
 
     /**
+     * Sources cached for the lifetime of this controller instance.
+     *
+     * @var array|null
+     */
+    private $phoneSourcesCache = null;
+
+    /**
      * Returns the list of all phone sources to scan/migrate.
      *
      * Each source defines:
      *   - key:           Unique identifier for this source
      *   - label:         Human-readable label
-     *   - table:         Table name (without prefix, or 'usermeta' for the WP table)
+     *   - table:         Table name (with prefix)
      *   - column:        Column containing the phone number
-     *   - pk:            Primary key column
-     *   - name_column:   Column for display name (optional)
+     *   - pk:            Integer primary key column
+     *   - name_column:   SQL expression for the display name, evaluated against alias `t` (optional)
      *   - type:          'single' for one number per row, 'csv' for comma-separated recipients
-     *   - where_extra:   Extra WHERE clause (without leading AND)
+     *   - where_extra:   Extra WHERE clause (without leading AND), evaluated against alias `t`
+     *   - object_column: Column holding the owning user/post/order ID, used to clear caches (optional)
+     *   - cache:         'user', 'post' or 'order': which object cache to clear after a write (optional)
      *
      * @return array
      */
     private function getPhoneSources()
     {
         global $wpdb;
+
+        if ($this->phoneSourcesCache !== null) {
+            return $this->phoneSourcesCache;
+        }
 
         $mobileField = Helper::getUserMobileFieldName();
 
@@ -80,18 +94,20 @@ class NumberMigrationAjax extends AjaxControllerAbstract
                 'table'       => "{$wpdb->prefix}sms_subscribes",
                 'column'      => 'mobile',
                 'pk'          => 'ID',
-                'name_column' => 'name',
+                'name_column' => 't.name',
                 'type'        => 'single',
             ],
             [
-                'key'         => 'usermeta',
-                'label'       => __('User Mobile Numbers', 'wp-sms'),
-                'table'       => $wpdb->usermeta,
-                'column'      => 'meta_value',
-                'pk'          => 'umeta_id',
-                'name_column' => null,
-                'type'        => 'single',
-                'where_extra' => $wpdb->prepare("meta_key = %s AND meta_value != ''", $mobileField),
+                'key'           => 'usermeta',
+                'label'         => __('User Mobile Numbers', 'wp-sms'),
+                'table'         => $wpdb->usermeta,
+                'column'        => 'meta_value',
+                'pk'            => 'umeta_id',
+                'name_column'   => null,
+                'type'          => 'single',
+                'where_extra'   => $wpdb->prepare("t.meta_key = %s AND t.meta_value != ''", $mobileField),
+                'object_column' => 'user_id',
+                'cache'         => 'user',
             ],
             [
                 'key'         => 'otp',
@@ -149,18 +165,233 @@ class NumberMigrationAjax extends AjaxControllerAbstract
             ],
         ];
 
-        // Filter out tables that don't exist (cached for this request)
-        static $cache = null;
-        if ($cache !== null) {
-            return $cache;
-        }
+        $sources = array_merge($sources, $this->getWooCommerceSources());
 
-        $cache = array_filter($sources, function ($source) use ($wpdb) {
+        // Filter out tables that don't exist
+        $this->phoneSourcesCache = array_values(array_filter($sources, function ($source) use ($wpdb) {
             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             return $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $source['table'])) === $source['table'];
-        });
+        }));
 
-        return $cache;
+        return $this->phoneSourcesCache;
+    }
+
+    /**
+     * WooCommerce order and subscription billing phones. Orders and subscriptions
+     * (shop_subscription) are both orders, stored either as posts + postmeta or in the
+     * HPOS tables (wc_orders + wc_order_addresses).
+     *
+     * When HPOS is on, the HPOS tables are the real data. If compatibility sync is also
+     * on, the posts copy is included too, so switching back to posts storage later does
+     * not bring the old numbers back.
+     *
+     * @return array
+     */
+    private function getWooCommerceSources()
+    {
+        global $wpdb;
+
+        if (!class_exists('WooCommerce')) {
+            return [];
+        }
+
+        $hposEnabled = false;
+        if (class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class)) {
+            try {
+                $hposEnabled = \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
+            } catch (\Throwable $e) {
+                $hposEnabled = false;
+            }
+        }
+        $syncEnabled = get_option('woocommerce_custom_orders_table_data_sync_enabled') === 'yes';
+
+        $types = [
+            'shop_order'        => [
+                'key'   => 'wc_orders',
+                'label' => __('WooCommerce Orders', 'wp-sms'),
+            ],
+            'shop_subscription' => [
+                'key'   => 'wc_subscriptions',
+                'label' => __('WooCommerce Subscriptions', 'wp-sms'),
+            ],
+        ];
+
+        $sources = [];
+
+        foreach ($types as $orderType => $info) {
+            if ($hposEnabled) {
+                $sources[] = [
+                    'key'           => $info['key'],
+                    'label'         => $info['label'],
+                    'table'         => "{$wpdb->prefix}wc_order_addresses",
+                    'column'        => 'phone',
+                    'pk'            => 'id',
+                    'name_column'   => "TRIM(CONCAT('#', t.order_id, ' ', COALESCE(t.first_name, ''), ' ', COALESCE(t.last_name, '')))",
+                    'type'          => 'single',
+                    'where_extra'   => $wpdb->prepare(
+                        "t.address_type = 'billing' AND t.phone IS NOT NULL AND t.phone != '' AND t.order_id IN (SELECT o.id FROM {$wpdb->prefix}wc_orders o WHERE o.type = %s)",
+                        $orderType
+                    ),
+                    'object_column' => 'order_id',
+                    'cache'         => 'order',
+                ];
+            }
+
+            if (!$hposEnabled || $syncEnabled) {
+                $sources[] = [
+                    'key'           => $hposEnabled ? $info['key'] . '_posts_copy' : $info['key'] . '_legacy',
+                    'label'         => $hposEnabled
+                        /* translators: %s: source label, e.g. "WooCommerce Orders" */
+                        ? sprintf(__('%s (compatibility copy)', 'wp-sms'), $info['label'])
+                        : $info['label'],
+                    'table'         => $wpdb->postmeta,
+                    'column'        => 'meta_value',
+                    'pk'            => 'meta_id',
+                    'name_column'   => "CONCAT('#', t.post_id)",
+                    'type'          => 'single',
+                    'where_extra'   => $wpdb->prepare(
+                        "t.meta_key = '_billing_phone' AND t.meta_value != '' AND t.post_id IN (SELECT p.ID FROM {$wpdb->posts} p WHERE p.post_type = %s)",
+                        $orderType
+                    ),
+                    'object_column' => 'post_id',
+                    'cache'         => 'post',
+                ];
+            }
+        }
+
+        return $sources;
+    }
+
+    /**
+     * Base WHERE clause for a source, evaluated against alias `t`.
+     *
+     * @param array $source
+     * @return string
+     */
+    private function getSourceWhere($source)
+    {
+        if (isset($source['where_extra'])) {
+            return $source['where_extra'];
+        }
+
+        return "t.`{$source['column']}` IS NOT NULL AND t.`{$source['column']}` != ''";
+    }
+
+    /**
+     * Fetch one batch of rows from a source, keyed on the primary key so rows that change
+     * during a run can never shift later batches.
+     *
+     * @param array  $source
+     * @param int    $afterPk     Return rows with a primary key above this value
+     * @param string $extraWhere  Optional extra condition (without leading AND)
+     * @return array Rows with pk_val, phone, display_name and object_id
+     */
+    private function fetchSourceBatch($source, $afterPk, $extraWhere = '')
+    {
+        global $wpdb;
+
+        $where = $this->getSourceWhere($source);
+        if ($extraWhere !== '') {
+            $where .= " AND ({$extraWhere})";
+        }
+
+        $join       = '';
+        $nameSelect = "'' AS display_name";
+        if ($source['key'] === 'usermeta') {
+            $join       = "LEFT JOIN {$wpdb->users} u ON t.user_id = u.ID";
+            $nameSelect = 'u.display_name AS display_name';
+        } elseif (!empty($source['name_column'])) {
+            $nameSelect = "{$source['name_column']} AS display_name";
+        }
+
+        $objectSelect = !empty($source['object_column']) ? "t.`{$source['object_column']}` AS object_id" : '0 AS object_id';
+
+        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table/column names from hardcoded source registry
+        return $wpdb->get_results($wpdb->prepare(
+            "SELECT t.`{$source['pk']}` AS pk_val, t.`{$source['column']}` AS phone, {$nameSelect}, {$objectSelect}
+             FROM `{$source['table']}` t {$join}
+             WHERE {$where} AND t.`{$source['pk']}` > %d
+             ORDER BY t.`{$source['pk']}` ASC
+             LIMIT %d",
+            (int) $afterPk,
+            self::BATCH_SIZE
+        ));
+        // phpcs:enable
+    }
+
+    /**
+     * Returns the migrated value for a row, or null when the row doesn't need to be
+     * listed. Numbers without a leading + are always listed (legacy local format);
+     * numbers with a + are listed only when migrateNumber() proposes a fix.
+     *
+     * @param array  $source
+     * @param string $value
+     * @param string $countryCode
+     * @return string|null
+     */
+    private function getRowMigration($source, $value, $countryCode)
+    {
+        $value = (string) $value;
+
+        if ($source['type'] === 'csv') {
+            $numbers  = array_map('trim', explode(',', $value));
+            $migrated = array_map(function ($n) use ($countryCode) {
+                return $n !== '' ? $this->migrateNumber($n, $countryCode) : $n;
+            }, $numbers);
+            $migratedStr = implode(',', $migrated);
+
+            return $migratedStr !== $value ? $migratedStr : null;
+        }
+
+        $migrated = $this->migrateNumber($value, $countryCode);
+
+        if (strpos($value, '+') !== 0) {
+            return $migrated;
+        }
+
+        return $migrated !== $value ? $migrated : null;
+    }
+
+    /**
+     * Clear the object cache for the user, post or order that owns a changed row, so a
+     * persistent object cache doesn't keep serving the old number.
+     *
+     * @param array $source   Source definition (or backup entry) with a 'cache' key
+     * @param int   $objectId
+     */
+    private function clearObjectCache($source, $objectId)
+    {
+        $objectId = (int) $objectId;
+        if ($objectId <= 0 || empty($source['cache'])) {
+            return;
+        }
+
+        switch ($source['cache']) {
+            case 'user':
+                wp_cache_delete($objectId, 'user_meta');
+                break;
+            case 'post':
+                clean_post_cache($objectId);
+                break;
+            case 'order':
+                if (function_exists('wc_get_container')) {
+                    try {
+                        $container = wc_get_container();
+                        if (class_exists(\Automattic\WooCommerce\Caches\OrderCache::class)) {
+                            $container->get(\Automattic\WooCommerce\Caches\OrderCache::class)->remove($objectId);
+                        }
+                        if (class_exists(\Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore::class)) {
+                            $dataStore = $container->get(\Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore::class);
+                            if (method_exists($dataStore, 'clear_cached_data')) {
+                                $dataStore->clear_cached_data([$objectId]);
+                            }
+                        }
+                    } catch (\Throwable $e) {
+                        // Cache clearing is best effort.
+                    }
+                }
+                break;
+        }
     }
 
     /**
@@ -190,24 +421,44 @@ class NumberMigrationAjax extends AjaxControllerAbstract
         $totalAlreadyOk  = 0;
         $samples         = [];
 
+        $plusSamples = [];
+
         foreach ($sources as $source) {
-            $whereBase = isset($source['where_extra']) ? $source['where_extra'] : "`{$source['column']}` != ''";
+            $whereBase = $this->getSourceWhere($source);
+            $column    = "t.`{$source['column']}`";
+
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table/column names from hardcoded source registry
+            $total = (int) $wpdb->get_var("SELECT COUNT(*) FROM `{$source['table']}` t WHERE {$whereBase}");
 
             if ($source['type'] === 'single') {
-                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table/column names from hardcoded source registry
-                $total = (int) $wpdb->get_var("SELECT COUNT(*) FROM `{$source['table']}` WHERE {$whereBase}");
+                // Every value without a leading + needs the country code.
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                $needFix = (int) $wpdb->get_var("SELECT COUNT(*) FROM `{$source['table']}` WHERE {$whereBase} AND `{$source['column']}` NOT LIKE '+%'");
-                $alreadyOk = $total - $needFix;
+                $needFix = (int) $wpdb->get_var("SELECT COUNT(*) FROM `{$source['table']}` t WHERE {$whereBase} AND {$column} NOT LIKE '+%'");
+                $plusFilter = "{$column} LIKE '+%'";
             } else {
-                // CSV type — count total rows and rows needing fix using SQL pattern matching
+                // A CSV row needs fixing if it contains a number not starting with + (the field itself doesn't start with + OR a comma is followed by a non-+ char)
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                $total = (int) $wpdb->get_var("SELECT COUNT(*) FROM `{$source['table']}` WHERE `{$source['column']}` IS NOT NULL AND `{$source['column']}` != ''");
-                // A CSV row needs fixing if it contains a number not starting with + (i.e., the field itself doesn't start with + OR contains a comma followed by a non-+ char)
-                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                $needFix = (int) $wpdb->get_var("SELECT COUNT(*) FROM `{$source['table']}` WHERE `{$source['column']}` IS NOT NULL AND `{$source['column']}` != '' AND (`{$source['column']}` NOT LIKE '+%' OR `{$source['column']}` REGEXP ',[^+]')");
-                $alreadyOk = $total - $needFix;
+                $needFix = (int) $wpdb->get_var("SELECT COUNT(*) FROM `{$source['table']}` t WHERE {$whereBase} AND ({$column} NOT LIKE '+%' OR {$column} REGEXP ',[^+]')");
+                $plusFilter = "{$column} LIKE '+%' AND {$column} NOT REGEXP ',[^+]'";
             }
+
+            // Values that already start with + can still be wrong, e.g. +7065810032 on a +1 site
+            // (a US number saved with a plus but no country code, which gateways read as Russia).
+            // Those need the phone metadata, so they're checked in PHP, one batch at a time.
+            $lastPk = 0;
+            while ($rows = $this->fetchSourceBatch($source, $lastPk, $plusFilter)) {
+                foreach ($rows as $row) {
+                    $lastPk = (int) $row->pk_val;
+                    if ($this->getRowMigration($source, $row->phone, $countryCode) !== null) {
+                        $needFix++;
+                        if (count($plusSamples) < 3 && $source['type'] === 'single') {
+                            $plusSamples[] = (string) $row->phone;
+                        }
+                    }
+                }
+            }
+
+            $alreadyOk = $total - $needFix;
 
             $scanResults[$source['key']] = [
                 'label'      => $source['label'],
@@ -219,16 +470,20 @@ class NumberMigrationAjax extends AjaxControllerAbstract
             $totalNeedFix   += $needFix;
             $totalAlreadyOk += $alreadyOk;
 
-            // Pull up to 3 example "before" values from the first source with need_fix > 0
+            // Pull up to 3 example "before" values from the first source with local-format numbers
             // so the UI can show concrete patterns ("What kind of numbers need fixing?")
             // without an extra round-trip.
             if (empty($samples) && $needFix > 0 && $source['type'] === 'single') {
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                $sampleRows = $wpdb->get_col("SELECT `{$source['column']}` FROM `{$source['table']}` WHERE {$whereBase} AND `{$source['column']}` NOT LIKE '+%' LIMIT 3");
+                $sampleRows = $wpdb->get_col("SELECT {$column} FROM `{$source['table']}` t WHERE {$whereBase} AND {$column} NOT LIKE '+%' LIMIT 3");
                 if (!empty($sampleRows)) {
                     $samples = array_values(array_filter(array_map('strval', $sampleRows)));
                 }
             }
+        }
+
+        if (empty($samples) && !empty($plusSamples)) {
+            $samples = $plusSamples;
         }
 
         $backup             = get_option(self::BACKUP_OPTION_KEY);
@@ -298,31 +553,15 @@ class NumberMigrationAjax extends AjaxControllerAbstract
         $allRows = [];
 
         foreach ($sources as $source) {
-            $whereBase = isset($source['where_extra']) ? $source['where_extra'] : "{$source['column']} != ''";
-
-            if ($source['type'] === 'single') {
-                $nameSelect = $source['name_column'] ? ", {$source['name_column']} AS display_name" : ", '' AS display_name";
-
-                // For usermeta, join with users table for name
-                if ($source['key'] === 'usermeta') {
-                    $rows = $wpdb->get_results(
-                        "SELECT t.{$source['pk']} AS pk_val, t.{$source['column']} AS phone, u.display_name
-                         FROM {$source['table']} t
-                         LEFT JOIN {$wpdb->users} u ON t.user_id = u.ID
-                         WHERE {$whereBase} AND t.{$source['column']} NOT LIKE '+%'
-                         ORDER BY t.{$source['pk']} ASC"
-                    );
-                } else {
-                    $rows = $wpdb->get_results(
-                        "SELECT {$source['pk']} AS pk_val, {$source['column']} AS phone {$nameSelect}
-                         FROM {$source['table']}
-                         WHERE {$whereBase} AND {$source['column']} NOT LIKE '+%'
-                         ORDER BY {$source['pk']} ASC"
-                    );
-                }
-
+            $lastPk = 0;
+            while ($rows = $this->fetchSourceBatch($source, $lastPk)) {
                 foreach ($rows as $row) {
-                    $migrated = $this->migrateNumber($row->phone, $countryCode);
+                    $lastPk   = (int) $row->pk_val;
+                    $migrated = $this->getRowMigration($source, $row->phone, $countryCode);
+                    if ($migrated === null) {
+                        continue;
+                    }
+
                     $allRows[] = [
                         'source'   => $source['key'],
                         'label'    => $source['label'],
@@ -332,34 +571,6 @@ class NumberMigrationAjax extends AjaxControllerAbstract
                         'migrated' => $migrated,
                         'changed'  => $row->phone !== $migrated,
                     ];
-                }
-            } else {
-                // CSV type
-                $rows = $wpdb->get_results(
-                    "SELECT {$source['pk']} AS pk_val, {$source['column']} AS phone
-                     FROM {$source['table']}
-                     WHERE {$source['column']} IS NOT NULL AND {$source['column']} != ''
-                     ORDER BY {$source['pk']} ASC"
-                );
-
-                foreach ($rows as $row) {
-                    $numbers  = array_map('trim', explode(',', $row->phone));
-                    $migrated = array_map(function ($n) use ($countryCode) {
-                        return !empty($n) ? $this->migrateNumber($n, $countryCode) : $n;
-                    }, $numbers);
-                    $migratedStr = implode(',', $migrated);
-
-                    if ($row->phone !== $migratedStr) {
-                        $allRows[] = [
-                            'source'   => $source['key'],
-                            'label'    => $source['label'],
-                            'id'       => (int) $row->pk_val,
-                            'name'     => '',
-                            'original' => $row->phone,
-                            'migrated' => $migratedStr,
-                            'changed'  => true,
-                        ];
-                    }
                 }
             }
         }
@@ -412,90 +623,51 @@ class NumberMigrationAjax extends AjaxControllerAbstract
         $errors = [];
 
         foreach ($sources as $source) {
-            $whereBase  = isset($source['where_extra']) ? $source['where_extra'] : "{$source['column']} != ''";
             $count      = 0;
             $backupRows = [];
-            $offset     = 0;
+            $lastPk     = 0;
 
+            // Keyset pagination (pk > last seen): rows updated in one batch can't shift
+            // the next batch the way LIMIT/OFFSET over a shrinking result set did.
             while (true) {
                 // Refresh the lock TTL per batch so a legitimately long-running migration
                 // on a huge dataset can't let another admin acquire the lock mid-flight.
                 set_transient(self::LOCK_TRANSIENT, time(), self::LOCK_TTL_SECONDS);
 
-                if ($source['type'] === 'single') {
-                    $rows = $wpdb->get_results($wpdb->prepare(
-                        "SELECT {$source['pk']} AS pk_val, {$source['column']} AS phone
-                         FROM {$source['table']}
-                         WHERE {$whereBase} AND {$source['column']} NOT LIKE '+%%'
-                         ORDER BY {$source['pk']} ASC LIMIT %d OFFSET %d",
-                        self::BATCH_SIZE,
-                        $offset
-                    ));
-                } else {
-                    // CSV type — get all rows with non-empty recipients
-                    $rows = $wpdb->get_results($wpdb->prepare(
-                        "SELECT {$source['pk']} AS pk_val, {$source['column']} AS phone
-                         FROM {$source['table']}
-                         WHERE {$source['column']} IS NOT NULL AND {$source['column']} != ''
-                         ORDER BY {$source['pk']} ASC LIMIT %d OFFSET %d",
-                        self::BATCH_SIZE,
-                        $offset
-                    ));
-                }
-
+                $rows = $this->fetchSourceBatch($source, $lastPk);
                 if (empty($rows)) break;
 
                 foreach ($rows as $row) {
-                    if ($source['type'] === 'csv') {
-                        $numbers  = array_map('trim', explode(',', $row->phone));
-                        $migrated = array_map(function ($n) use ($countryCode) {
-                            return !empty($n) ? $this->migrateNumber($n, $countryCode) : $n;
-                        }, $numbers);
-                        $migratedStr = implode(',', $migrated);
+                    $lastPk   = (int) $row->pk_val;
+                    $migrated = $this->getRowMigration($source, $row->phone, $countryCode);
 
-                        if ($migratedStr === $row->phone) continue;
+                    if ($migrated === null || $migrated === $row->phone) continue;
 
-                        $backupRows[] = [
-                            'pk'       => (int) $row->pk_val,
-                            'original' => $row->phone,
-                            'migrated' => $migratedStr,
-                        ];
-
-                        $result = $wpdb->update(
-                            $source['table'],
-                            [$source['column'] => $migratedStr],
-                            [$source['pk'] => $row->pk_val],
-                            ['%s'],
-                            ['%d']
-                        );
-                    } else {
-                        $migrated = $this->migrateNumber($row->phone, $countryCode);
-
-                        if ($migrated === $row->phone) continue;
-
-                        $backupRows[] = [
-                            'pk'       => (int) $row->pk_val,
-                            'original' => $row->phone,
-                            'migrated' => $migrated,
-                        ];
-
-                        $result = $wpdb->update(
-                            $source['table'],
-                            [$source['column'] => $migrated],
-                            [$source['pk'] => $row->pk_val],
-                            ['%s'],
-                            ['%d']
-                        );
+                    $backupRow = [
+                        'pk'       => (int) $row->pk_val,
+                        'original' => $row->phone,
+                        'migrated' => $migrated,
+                    ];
+                    if (!empty($source['object_column'])) {
+                        $backupRow['object_id'] = (int) $row->object_id;
                     }
+                    $backupRows[] = $backupRow;
+
+                    $result = $wpdb->update(
+                        $source['table'],
+                        [$source['column'] => $migrated],
+                        [$source['pk'] => $row->pk_val],
+                        ['%s'],
+                        ['%d']
+                    );
 
                     if ($result !== false) {
                         $count++;
+                        $this->clearObjectCache($source, $row->object_id);
                     } else {
                         $errors[] = sprintf('%s #%d: %s', $source['label'], $row->pk_val, $wpdb->last_error);
                     }
                 }
-
-                $offset += self::BATCH_SIZE;
             }
 
             if (!empty($backupRows)) {
@@ -503,6 +675,7 @@ class NumberMigrationAjax extends AjaxControllerAbstract
                     'table'  => $source['table'],
                     'column' => $source['column'],
                     'pk'     => $source['pk'],
+                    'cache'  => isset($source['cache']) ? $source['cache'] : null,
                     'rows'   => $backupRows,
                 ];
             }
@@ -586,7 +759,7 @@ class NumberMigrationAjax extends AjaxControllerAbstract
     {
         $current = Option::getOption('admin_mobile_number');
 
-        if (empty($current) || strpos((string) $current, '+') === 0) {
+        if (empty($current)) {
             return ['changed' => false];
         }
 
@@ -646,9 +819,6 @@ class NumberMigrationAjax extends AjaxControllerAbstract
                 if ($n === '') {
                     return $n;
                 }
-                if (strpos($n, '+') === 0) {
-                    return $n;
-                }
                 return $this->migrateNumber($n, $countryCode);
             }, $numbers);
 
@@ -696,10 +866,6 @@ class NumberMigrationAjax extends AjaxControllerAbstract
             $migrated = [];
             foreach ($decoded as $k => $v) {
                 if (!is_string($v) || $v === '') {
-                    $migrated[$k] = $v;
-                    continue;
-                }
-                if (strpos($v, '+') === 0) {
                     $migrated[$k] = $v;
                     continue;
                 }
@@ -853,6 +1019,9 @@ class NumberMigrationAjax extends AjaxControllerAbstract
 
                     if ($result !== false) {
                         $totalReverted++;
+                        if (!empty($item['object_id'])) {
+                            $this->clearObjectCache($tableBackup, $item['object_id']);
+                        }
                     } else {
                         $errors[] = sprintf('%s #%d: %s', $sourceKey, $item['pk'], $wpdb->last_error);
                     }
@@ -933,17 +1102,23 @@ class NumberMigrationAjax extends AjaxControllerAbstract
     /**
      * Apply migration rules to convert a local number to E.164.
      *
+     * Numbers that already start with + are left alone unless they are clearly missing the
+     * site's country code: the value is not a valid number for the country its digits point
+     * at, and adding the default country code makes it a valid number for that country.
+     * Example on a +1 site: +7065810032 (reads as an invalid Russian number) becomes
+     * +17065810032, while a real Russian number like +79161234567 is not touched.
+     *
      * @param string $number     The original number
      * @param string $countryCode The country code with + prefix (e.g., '+1')
      * @return string The migrated number in E.164 format
      */
     private function migrateNumber($number, $countryCode)
     {
-        $number = trim($number);
+        $original = $number;
+        $number   = trim($number);
 
-        // Already in E.164
         if (strpos($number, '+') === 0) {
-            return $number;
+            return $this->fixInternationalNumber($original, $number, $countryCode);
         }
 
         // Strip non-digit characters
@@ -972,6 +1147,49 @@ class NumberMigrationAjax extends AjaxControllerAbstract
 
         // Plain local number without any prefix
         return $countryCode . $clean;
+    }
+
+    /**
+     * Propose a fix for a number that starts with + but is missing the default country code.
+     * Returns $original unchanged whenever the fix isn't certain.
+     *
+     * @param string $original    The stored value, untouched
+     * @param string $number      The trimmed value, starting with +
+     * @param string $countryCode The default country code with + prefix
+     * @return string
+     */
+    private function fixInternationalNumber($original, $number, $countryCode)
+    {
+        if (!PhoneNumberMetadata::isAvailable()) {
+            return $original;
+        }
+
+        $digits   = preg_replace('/\D/', '', $number);
+        $ccDigits = preg_replace('/\D/', '', (string) $countryCode);
+
+        if ($digits === '' || $ccDigits === '' || !PhoneNumberMetadata::hasCallingCode($ccDigits)) {
+            return $original;
+        }
+
+        // A real number for its own country is never changed.
+        if (PhoneNumberMetadata::isValidNumber($digits)) {
+            return $original;
+        }
+
+        // "+7065810032": the digits after + are a national number of the default country.
+        // "+07065810032": same, with the national trunk prefix left in.
+        $candidates = [$digits];
+        if ($digits[0] === '0') {
+            $candidates[] = substr($digits, 1);
+        }
+
+        foreach ($candidates as $national) {
+            if ($national !== '' && PhoneNumberMetadata::isValidForCallingCode($ccDigits, $national)) {
+                return '+' . $ccDigits . $national;
+            }
+        }
+
+        return $original;
     }
 
     /**

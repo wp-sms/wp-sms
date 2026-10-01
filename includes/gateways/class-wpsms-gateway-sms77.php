@@ -6,12 +6,14 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 class sms77 extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://gateway.sms77.de/";
-    public $tariff = "http://www.sms77.de";
+    private $wsdl_link = "https://gateway.seven.io/api/";
+    public $tariff = "https://www.seven.io";
     public $unitrial = false;
     public $unit;
     public $flash = "enable";
     public $isflash = false;
+    public $bulk_send = true;
+    public $supportIncoming = false;
 
     public function __construct()
     {
@@ -65,7 +67,7 @@ class sms77 extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $result = $this->request('GET', $this->wsdl_link . '?p=' . urlencode($this->has_key) . '&text=' . urlencode($this->msg) . '&to=' . implode(",",$this->to) . '&type=quality&from=' . urlencode($this->from), [], [], false);
+        $result = $this->request('GET', $this->wsdl_link . 'sms?p=' . urlencode($this->has_key) . '&text=' . urlencode($this->msg) . '&to=' . implode(",",$this->to) . '&type=quality&from=' . urlencode($this->from), [], [], false);
 
         if ($error = $this->get_error($result)) {
             return new \WP_Error('send-sms', $error);
@@ -94,7 +96,7 @@ class sms77 extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
         }
 
-        $response = wp_remote_get($this->wsdl_link . 'balance.php?p=' . urlencode($this->has_key));
+        $response = wp_remote_get($this->wsdl_link . 'balance?p=' . urlencode($this->has_key));
 
         if (is_wp_error($response)) {
             return new \WP_Error('account-credit', $response->get_error_message());
