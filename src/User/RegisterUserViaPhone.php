@@ -41,6 +41,13 @@ class RegisterUserViaPhone
 
         add_filter('wp_send_new_user_notification_to_user', '__return_false');
 
+        // The number is already verified by the SMS code. WP Armour's honeypot checks $_POST for its hidden field, which this
+        // REST request never carries, so it would reject every new user with "Spamming or your Javascript is disabled".
+        $honeypotPriority = has_filter('registration_errors', 'wpa_wpregistration_extra_validation');
+        if ($honeypotPriority !== false) {
+            remove_filter('registration_errors', 'wpa_wpregistration_extra_validation', $honeypotPriority);
+        }
+
         try {
             $this->userId = register_new_user(
                 $this->generateUniqueUsername(),
@@ -48,6 +55,10 @@ class RegisterUserViaPhone
             );
         } finally {
             remove_filter('wp_send_new_user_notification_to_user', '__return_false');
+
+            if ($honeypotPriority !== false) {
+                add_filter('registration_errors', 'wpa_wpregistration_extra_validation', $honeypotPriority, 3);
+            }
         }
 
         return $this->userId;
