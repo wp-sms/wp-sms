@@ -1,3 +1,6 @@
+v7.2.10 - Unreleased
+- **Fix:** SMS.dk shows its API Key field again and sends again. The gateway's slug changed to `smsdk` in the gateway list, and the plugin now loads it under that name ([#568](https://github.com/wp-sms/wp-sms/issues/568)). Sites that already use `prosmsdk` keep working. The field label typo "API Iey" is fixed.
+
 v7.2.9 - 2026-10-01
 - **New:** Send SMS warns you about duplicate numbers in the selected groups.
 - **New:** Pick or skip individual members of a group on the Send SMS page.
