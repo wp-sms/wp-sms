@@ -12,6 +12,12 @@ class GatewayRegistry
     const CACHE_KEY_GATEWAYS = 'wpsms_gateway_registry';
     const CACHE_KEY_REGIONS = 'wpsms_gateway_regions';
     const CACHE_DURATION = 43200; // 12 hours
+    /**
+     * Gateways moved from Pro into the free plugin. They are free from the release
+     * that ships them, whatever an older registry entry or cache says.
+     */
+    const MOVED_TO_FREE = ['messente'];
+
     const GATEWAY_METADATA_OVERRIDES = [
         'instantalerts' => [
             'name'        => 'Spring Edge',
@@ -30,13 +36,14 @@ class GatewayRegistry
         $cached = get_transient(self::CACHE_KEY_GATEWAYS);
 
         if ($cached !== false) {
-            return apply_filters('wpsms_gateway_registry', self::applyMetadataOverrides($cached));
+            return apply_filters('wpsms_gateway_registry', self::applyMetadataOverrides(self::promoteMovedGateways($cached)));
         }
 
         $result = self::fetchFromApi();
 
         if ($result !== null) {
             $result = self::appendLocalGateways($result);
+            $result = self::promoteMovedGateways($result);
             $result = self::filterPremiumGateways($result);
             $result = self::applyMetadataOverrides($result);
             set_transient(self::CACHE_KEY_GATEWAYS, $result, self::CACHE_DURATION);
@@ -247,6 +254,51 @@ class GatewayRegistry
             $entry         = self::buildFallbackEntry($slug, false);
             $entry['name'] = $config['name'];
             array_unshift($data['gateways'], $entry);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Treat the gateways in MOVED_TO_FREE as free, whatever the registry says.
+     *
+     * They are free from the release that ships them, without waiting for the
+     * registry, and a cached list from an older version is corrected too. Only
+     * listed gateways move: the registry stays the source of truth for the rest.
+     *
+     * @param array $data
+     * @return array
+     */
+    private static function promoteMovedGateways($data)
+    {
+        $isBundled = function ($slug) {
+            return in_array($slug, self::MOVED_TO_FREE, true)
+                && is_file(WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $slug . '.php');
+        };
+
+        if (!empty($data['gateways']) && is_array($data['gateways'])) {
+            foreach ($data['gateways'] as &$gateway) {
+                if (!empty($gateway['premium']) && $isBundled($gateway['slug'] ?? '')) {
+                    $gateway['premium'] = false;
+                }
+            }
+            unset($gateway);
+        }
+
+        if (!empty($data['premium_gateways']) && is_array($data['premium_gateways'])) {
+            $stillPremium = [];
+
+            foreach ($data['premium_gateways'] as $gateway) {
+                if ($isBundled($gateway['slug'] ?? '')) {
+                    $gateway['premium'] = false;
+                    $data['gateways'][] = $gateway;
+                } else {
+                    $stillPremium[] = $gateway;
+                }
+            }
+
+            $data['premium_gateways'] = $stillPremium;
+            $data['premium_count']    = count($stillPremium);
         }
 
         return $data;
