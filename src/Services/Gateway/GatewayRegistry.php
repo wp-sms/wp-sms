@@ -30,13 +30,14 @@ class GatewayRegistry
         $cached = get_transient(self::CACHE_KEY_GATEWAYS);
 
         if ($cached !== false) {
-            return apply_filters('wpsms_gateway_registry', self::applyMetadataOverrides($cached));
+            return apply_filters('wpsms_gateway_registry', self::applyMetadataOverrides(self::promoteBundledGateways($cached)));
         }
 
         $result = self::fetchFromApi();
 
         if ($result !== null) {
             $result = self::appendLocalGateways($result);
+            $result = self::promoteBundledGateways($result);
             $result = self::filterPremiumGateways($result);
             $result = self::applyMetadataOverrides($result);
             set_transient(self::CACHE_KEY_GATEWAYS, $result, self::CACHE_DURATION);
@@ -247,6 +248,51 @@ class GatewayRegistry
             $entry         = self::buildFallbackEntry($slug, false);
             $entry['name'] = $config['name'];
             array_unshift($data['gateways'], $entry);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Treat a gateway that ships with this plugin as free, whatever the registry says.
+     *
+     * A gateway moved from Pro into the free plugin is free from the release that
+     * bundles its file, without waiting for the registry, and a cached list from
+     * an older version is corrected too.
+     *
+     * @param array $data
+     * @return array
+     */
+    private static function promoteBundledGateways($data)
+    {
+        $isBundled = function ($slug) {
+            return $slug !== '' && (is_file(WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $slug . '.php')
+                    || is_file(WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-_' . $slug . '.php'));
+        };
+
+        if (!empty($data['gateways']) && is_array($data['gateways'])) {
+            foreach ($data['gateways'] as &$gateway) {
+                if (!empty($gateway['premium']) && $isBundled($gateway['slug'] ?? '')) {
+                    $gateway['premium'] = false;
+                }
+            }
+            unset($gateway);
+        }
+
+        if (!empty($data['premium_gateways']) && is_array($data['premium_gateways'])) {
+            $stillPremium = [];
+
+            foreach ($data['premium_gateways'] as $gateway) {
+                if ($isBundled($gateway['slug'] ?? '')) {
+                    $gateway['premium'] = false;
+                    $data['gateways'][] = $gateway;
+                } else {
+                    $stillPremium[] = $gateway;
+                }
+            }
+
+            $data['premium_gateways'] = $stillPremium;
+            $data['premium_count']    = count($stillPremium);
         }
 
         return $data;
