@@ -1,3 +1,8 @@
+v7.2.10 - Unreleased
+- **New:** Messente is now in the free plugin. You no longer need WSMS Pro to send SMS through Messente. Sites that already use it through Pro keep their settings.
+- **Fix:** Messages sent through Messente keep spaces, symbols and non-English text, and the account balance shows the real amount instead of 0.
+- **Fix:** SMS.dk shows its API Key field again and sends again. The gateway's slug changed to `smsdk` in the gateway list, and the plugin now loads it under that name ([#568](https://github.com/wp-sms/wp-sms/issues/568)). Sites that already use `prosmsdk` keep working. The field label typo "API Iey" is fixed.
+
 v7.2.9 - 2026-10-01
 - **New:** Send SMS warns you about duplicate numbers in the selected groups.
 - **New:** Pick or skip individual members of a group on the Send SMS page.
