@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 class globalvoice extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://rest.global-voice.net/rest/";
+    protected $wsdl_link = "https://rest.global-voice.net/rest/";
     public $tariff = "https://global-voice.net/";
     public $unitrial = true;
     public $unit;
