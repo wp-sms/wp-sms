@@ -234,6 +234,13 @@ class GatewayRegistry
                 'name'      => esc_html__('Test Gateway', 'wp-sms'),
                 'condition' => defined('WP_DEBUG') && WP_DEBUG,
             ],
+            // New in 7.2.10. Listed from the plugin itself so it shows before the
+            // registry adds it; the registry entry then supplies its logo and details.
+            'smsense' => [
+                'file'      => 'class-wpsms-gateway-smsense.php',
+                'name'      => 'SMSense',
+                'condition' => true,
+            ],
         ];
 
         $existingSlugs = array_column($data['gateways'], 'slug');
