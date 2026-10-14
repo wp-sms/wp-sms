@@ -1,4 +1,4 @@
-v7.2.10 - 2026-10-12
+v7.2.10 - 2026-10-14
 - **New:** Messente is now in the free plugin. You no longer need WSMS Pro to send SMS through Messente. Sites that already use it through Pro keep their settings.
 - **New:** SMSense gateway (smsense.com, global coverage by Global Voice) is available in the free plugin.
 - **Fix:** Messages sent through Messente keep spaces, symbols and non-English text, and the account balance shows the real amount instead of 0.

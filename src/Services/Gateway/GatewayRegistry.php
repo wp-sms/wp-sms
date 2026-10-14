@@ -276,30 +276,46 @@ class GatewayRegistry
                 && is_file(WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $slug . '.php');
         };
 
-        if (!empty($data['gateways']) && is_array($data['gateways'])) {
-            foreach ($data['gateways'] as &$gateway) {
-                if (!empty($gateway['premium']) && $isBundled($gateway['slug'] ?? '')) {
-                    $gateway['premium'] = false;
-                }
+        $data['gateways']         = isset($data['gateways']) && is_array($data['gateways']) ? $data['gateways'] : [];
+        $data['premium_gateways'] = isset($data['premium_gateways']) && is_array($data['premium_gateways']) ? $data['premium_gateways'] : [];
+        $freeSlugs                = [];
+
+        foreach ($data['gateways'] as &$gateway) {
+            $slug = $gateway['slug'] ?? '';
+
+            if ($isBundled($slug)) {
+                $gateway['premium'] = false;
             }
-            unset($gateway);
+
+            $freeSlugs[] = $slug;
         }
+        unset($gateway);
 
-        if (!empty($data['premium_gateways']) && is_array($data['premium_gateways'])) {
-            $stillPremium = [];
+        $stillPremium = [];
 
-            foreach ($data['premium_gateways'] as $gateway) {
-                if ($isBundled($gateway['slug'] ?? '')) {
+        foreach ($data['premium_gateways'] as $gateway) {
+            $slug = $gateway['slug'] ?? '';
+
+            if ($isBundled($slug)) {
+                if (!in_array($slug, $freeSlugs, true)) {
                     $gateway['premium'] = false;
                     $data['gateways'][] = $gateway;
-                } else {
-                    $stillPremium[] = $gateway;
+                    $freeSlugs[]         = $slug;
                 }
+            } else {
+                $stillPremium[] = $gateway;
             }
-
-            $data['premium_gateways'] = $stillPremium;
-            $data['premium_count']    = count($stillPremium);
         }
+
+        foreach (self::MOVED_TO_FREE as $slug) {
+            if ($isBundled($slug) && !in_array($slug, $freeSlugs, true)) {
+                $data['gateways'][] = self::buildFallbackEntry($slug, false);
+                $freeSlugs[]         = $slug;
+            }
+        }
+
+        $data['premium_gateways'] = $stillPremium;
+        $data['premium_count']    = count($stillPremium);
 
         return $data;
     }

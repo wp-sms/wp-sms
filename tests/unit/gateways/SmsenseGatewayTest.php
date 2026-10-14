@@ -12,6 +12,7 @@ class SmsenseGatewayTest extends WP_UnitTestCase
 {
     private $requests = [];
     private $previousSms;
+    private $httpInterceptor;
 
     protected function setUp(): void
     {
@@ -23,9 +24,12 @@ class SmsenseGatewayTest extends WP_UnitTestCase
 
     protected function tearDown(): void
     {
-        remove_all_filters('pre_http_request');
+        if ($this->httpInterceptor) {
+            remove_filter('pre_http_request', $this->httpInterceptor, 10);
+        }
         $GLOBALS['sms'] = $this->previousSms;
         $this->requests = [];
+        $this->httpInterceptor = null;
 
         parent::tearDown();
     }
@@ -92,7 +96,7 @@ class SmsenseGatewayTest extends WP_UnitTestCase
 
     private function interceptHttp()
     {
-        add_filter('pre_http_request', function ($pre, $args, $url) {
+        $this->httpInterceptor = function ($pre, $args, $url) {
             $this->requests[] = ['url' => $url, 'args' => $args];
 
             if (substr($url, -strlen('/account')) === '/account') {
@@ -102,6 +106,8 @@ class SmsenseGatewayTest extends WP_UnitTestCase
             }
 
             return ['body' => $body, 'response' => ['code' => 200], 'headers' => [], 'cookies' => []];
-        }, 10, 3);
+        };
+
+        add_filter('pre_http_request', $this->httpInterceptor, 10, 3);
     }
 }

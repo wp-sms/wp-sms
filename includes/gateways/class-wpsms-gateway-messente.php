@@ -53,17 +53,6 @@ class messente extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the credit.
-        $credit = $this->GetCredit();
-
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
-
-            return $credit;
-        }
-
         try {
             // Clean numbers
             $numbers = array();

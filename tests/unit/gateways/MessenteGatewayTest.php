@@ -11,13 +11,17 @@ require_once dirname(__DIR__, 3) . '/includes/gateways/class-wpsms-gateway-messe
 class MessenteGatewayTest extends WP_UnitTestCase
 {
     private $requests = [];
+    private $httpInterceptor;
 
     protected function tearDown(): void
     {
         delete_transient(GatewayRegistry::CACHE_KEY_GATEWAYS);
-        remove_all_filters('pre_http_request');
+        if ($this->httpInterceptor) {
+            remove_filter('pre_http_request', $this->httpInterceptor, 10);
+        }
         remove_all_filters('wpsms_gateway_registry');
         $this->requests = [];
+        $this->httpInterceptor = null;
 
         parent::tearDown();
     }
@@ -43,6 +47,23 @@ class MessenteGatewayTest extends WP_UnitTestCase
         $this->assertFalse($registry['gateways'][0]['premium']);
         $this->assertSame(['twilio'], array_column($registry['premium_gateways'], 'slug'));
         $this->assertSame(1, $registry['premium_count']);
+    }
+
+    public function test_cached_registry_without_messente_adds_bundled_gateway()
+    {
+        set_transient(GatewayRegistry::CACHE_KEY_GATEWAYS, [
+            'source'           => 'api',
+            'gateways'         => [
+                ['slug' => 'test-gateway', 'name' => 'Test Gateway', 'premium' => false],
+            ],
+            'premium_gateways' => [],
+            'premium_count'    => 0,
+            'regions'          => [],
+        ], 60);
+
+        $registry = GatewayRegistry::getGateways();
+
+        $this->assertContains('messente', array_column($registry['gateways'], 'slug'));
     }
 
     public function test_balance_is_read_from_ok_response()
@@ -78,16 +99,38 @@ class MessenteGatewayTest extends WP_UnitTestCase
         $this->assertSame('+3725551234,+3725559999', $query['to']);
     }
 
-    private function interceptHttp()
+    public function test_balance_failure_does_not_prevent_sending()
     {
-        add_filter('pre_http_request', function ($pre, $args, $url) {
+        $this->interceptHttp(true);
+
+        $gateway           = new messente();
+        $gateway->username = 'user';
+        $gateway->password = 'secret';
+        $gateway->from     = 'VeronaLabs';
+        $gateway->to       = ['+3725551234'];
+        $gateway->msg      = 'Hello';
+
+        $this->assertSame('OK msg-id', $gateway->SendSMS());
+        $this->assertCount(1, $this->requests);
+        $this->assertStringContainsString('/send_sms/', $this->requests[0]);
+    }
+
+    private function interceptHttp($failBalance = false)
+    {
+        $this->httpInterceptor = function ($pre, $args, $url) use ($failBalance) {
             $this->requests[] = $url;
 
             if (strpos($url, 'get_balance') !== false) {
+                if ($failBalance) {
+                    return new \WP_Error('balance-unavailable', 'Balance unavailable');
+                }
+
                 return ['body' => 'OK 12.34', 'response' => ['code' => 200], 'headers' => [], 'cookies' => []];
             }
 
             return ['body' => 'OK msg-id', 'response' => ['code' => 200], 'headers' => [], 'cookies' => []];
-        }, 10, 3);
+        };
+
+        add_filter('pre_http_request', $this->httpInterceptor, 10, 3);
     }
 }
