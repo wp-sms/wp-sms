@@ -1,14 +1,14 @@
-﻿=== WSMS (formerly WP SMS) – SMS & MMS Notifications with OTP and 2FA for WooCommerce ===
+﻿=== WSMS (formerly WP SMS): SMS and OTP for WordPress and WooCommerce ===
 Contributors: veronalabs, mostafa.s1990, kashani
 Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sms
 Requires at least: 4.1
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 7.2.9
+Stable tag: 7.2.10
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Send SMS/MMS notifications, OTP & 2FA messages, and WooCommerce updates with support for multiple gateways and plugin integrations.
+Send SMS/MMS notifications, OTP login and 2FA messages, and WooCommerce order updates through 150+ SMS gateways.
 
 == Description ==
 [WSMS](https://wsms.io/?utm_source=wporg&utm_medium=link&utm_campaign=website) lets you send SMS/MMS notifications, one-time passwords (OTP), and two-factor authentication (2FA) messages straight from WordPress. It supports a wide range of SMS gateways and integrates with popular e-commerce and form builder plugins.
@@ -155,6 +155,13 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
+= v7.2.10 - 2026-10-14 =
+- **New:** Messente is now in the free plugin. You no longer need WSMS Pro to send SMS through Messente. Sites that already use it through Pro keep their settings.
+- **New:** SMSense gateway (smsense.com, global coverage by Global Voice) is available in the free plugin.
+- **Fix:** Messages sent through Messente keep spaces, symbols and non-English text, and the account balance shows the real amount instead of 0.
+- **Fix:** SMS.dk shows its API Key field again and sends again. The gateway's slug changed to `smsdk` in the gateway list, and the plugin now loads it under that name ([#568](https://github.com/wp-sms/wp-sms/issues/568)). Sites that already use `prosmsdk` keep working. The field label typo "API Iey" is fixed.
+- **Fix:** Kavenegar receives phone numbers and sender numbers that start with "+" correctly. The "+" was sent as a space.
+
 = v7.2.9 - 2026-10-01 =
 - **New:** Send SMS warns you about duplicate numbers in the selected groups.
 - **New:** Pick or skip individual members of a group on the Send SMS page.

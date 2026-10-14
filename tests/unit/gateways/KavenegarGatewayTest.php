@@ -56,6 +56,31 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         $this->assertEquals(200, $response->return->status);
     }
 
+    /** ✅ Test: a "+" in the number and sender is encoded, not sent as a space */
+    public function test_send_simple_sms_encodes_plus_signs()
+    {
+        remove_all_filters('wp_sms_to');
+        remove_all_filters('wp_sms_from');
+        remove_all_filters('wp_sms_msg');
+
+        $this->gateway->to   = ['+989121234567'];
+        $this->gateway->from = '+9810004346';
+        $this->gateway->msg  = 'Test Message';
+
+        $this->gateway->expects($this->once())
+            ->method('request')
+            ->with(
+                'GET',
+                $this->stringContains('/v1/DUMMY_KEY/sms/send.json'),
+                $this->callback(function ($params) {
+                    return $params['receptor'] === '%2B989121234567' && $params['sender'] === '%2B9810004346';
+                })
+            )
+            ->willReturn($this->makeResponse(200, 'OK'));
+
+        $this->assertFalse(is_wp_error($this->gateway->SendSMS()));
+    }
+
     /** ✅ Test: template SMS sending should succeed */
     public function test_send_template_sms_success()
     {

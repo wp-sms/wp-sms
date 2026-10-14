@@ -252,13 +252,15 @@ class kavenegar extends Gateway
      */
     private function sendSimpleSMS()
     {
+        // add_query_arg() does not encode values, so a "+" in a number would
+        // reach Kavenegar as a space. Encode every value here.
         $params = [
-            'receptor' => implode(",", $this->to),
+            'receptor' => rawurlencode(implode(",", $this->to)),
             'message' => rawurlencode($this->msg),
         ];
 
         if (!empty($this->from)) {
-            $params['sender'] = $this->from;
+            $params['sender'] = rawurlencode($this->from);
         }
 
         return $this->request('GET', $this->buildUrl('send'), $params);
@@ -294,9 +296,9 @@ class kavenegar extends Gateway
                 : $v;
         }, $valuesUsed, $tokensUsed);
 
-        $tokenParams = array_combine($tokensUsed, $valuesUsed);
+        $tokenParams = array_combine($tokensUsed, array_map('rawurlencode', $valuesUsed));
 
-        $paramsBase = ['template' => $this->templateId] + $tokenParams;
+        $paramsBase = ['template' => rawurlencode($this->templateId)] + $tokenParams;
 
         $results = [];
         $successes = 0;
@@ -304,7 +306,7 @@ class kavenegar extends Gateway
 
         foreach ($this->to as $receptor) {
             $params = $paramsBase;
-            $params['receptor'] = $receptor;
+            $params['receptor'] = rawurlencode($receptor);
 
             $resp = $this->request('GET', $this->buildUrl('lookup', 'verify'), $params);
 
