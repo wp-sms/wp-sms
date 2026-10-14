@@ -8,7 +8,7 @@ Stable tag: 7.2.10
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Send SMS/MMS notifications, OTP & 2FA messages, and WooCommerce updates with support for multiple gateways and plugin integrations.
+Send SMS/MMS notifications, OTP login and 2FA messages, and WooCommerce order updates through 150+ SMS gateways.
 
 == Description ==
 [WSMS](https://wsms.io/?utm_source=wporg&utm_medium=link&utm_campaign=website) lets you send SMS/MMS notifications, one-time passwords (OTP), and two-factor authentication (2FA) messages straight from WordPress. It supports a wide range of SMS gateways and integrates with popular e-commerce and form builder plugins.
