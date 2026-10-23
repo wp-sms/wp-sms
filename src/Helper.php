@@ -346,36 +346,54 @@ class Helper
     /**
      * Get customer mobile number by order id
      *
+     * The number saved on the order comes first: it is the one the customer gave
+     * for this order. The customer's profile number is only a fallback for orders
+     * that carry none, so an order notification never goes to an older or
+     * different number from the account (#563).
+     *
      * @param $orderId
      * @return string|void
      * @throws Exception
      */
     public static function getWooCommerceCustomerNumberByOrderId($orderId)
     {
-        $userId = get_post_meta($orderId, '_customer_user', true);
+        $fieldName = self::getUserMobileFieldName();
+        $order     = function_exists('wc_get_order') ? \wc_get_order($orderId) : false;
 
+        if ($order) {
+            // The order object works with both order storages (posts and HPOS).
+            $mobile = $fieldName === 'billing_phone' && method_exists($order, 'get_billing_phone')
+                ? $order->get_billing_phone()
+                : $order->get_meta($fieldName, true);
+
+            // Backward compatibility, the context of order meta is different with customer
+            if (!$mobile && $fieldName !== 'billing_phone') {
+                $mobile = $order->get_meta('_' . $fieldName, true);
+            }
+
+            if ($mobile) {
+                return $mobile;
+            }
+
+            $userId = $order->get_customer_id();
+        } else {
+            $mobile = get_post_meta($orderId, $fieldName, true);
+
+            // Backward compatibility, the context of order meta is different with customer
+            if (!$mobile) {
+                $mobile = get_post_meta($orderId, '_' . $fieldName, true);
+            }
+
+            if ($mobile) {
+                return $mobile;
+            }
+
+            $userId = get_post_meta($orderId, '_customer_user', true);
+        }
+
+        // The order has no number: fall back to the customer's profile.
         if ($userId) {
-            $customerMobileNumber = self::getUserMobileNumberByUserId($userId, ['order_id' => $orderId]);
-
-            if ($customerMobileNumber) {
-                return $customerMobileNumber;
-            }
-        }
-
-        $mobile = get_post_meta($orderId, self::getUserMobileFieldName(), true);
-
-        // Backward compatibility, the context of order meta is different with customer
-        if (!$mobile) {
-            $mobile = get_post_meta($orderId, '_' . self::getUserMobileFieldName(), true);
-        }
-
-        // Backward compatibility with new custom WooCommerce order table.
-        if (!$mobile && function_exists('wc_get_order')) {
-            $order = \wc_get_order($orderId);
-
-            if ($order && method_exists($order, 'get_billing_phone')) {
-                $mobile = $order->get_billing_phone();
-            }
+            return self::getUserMobileNumberByUserId($userId, ['order_id' => $orderId]);
         }
 
         return $mobile;
