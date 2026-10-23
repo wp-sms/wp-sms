@@ -1,3 +1,6 @@
+v7.2.11 - unreleased
+- **Fix:** WooCommerce order SMS go to the phone number saved on the order. A different number on the customer's account, or in the current browsing session, no longer takes its place ([#563](https://github.com/wp-sms/wp-sms/issues/563)).
+
 v7.2.10 - 2026-10-14
 - **New:** Messente is now in the free plugin. You no longer need WSMS Pro to send SMS through Messente. Sites that already use it through Pro keep their settings.
 - **New:** SMSense gateway (smsense.com, global coverage by Global Voice) is available in the free plugin.

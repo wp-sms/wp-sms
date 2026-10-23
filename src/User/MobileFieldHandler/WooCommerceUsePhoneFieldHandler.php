@@ -28,8 +28,9 @@ class WooCommerceUsePhoneFieldHandler extends AbstractFieldHandler
             $mobileNumber = get_user_meta($userId, '_billing_phone', true);
         }
 
-        // backward compatibility
-        if (!$mobileNumber && isset(WC()->session)) {
+        // Backward compatibility. The session belongs to whoever is browsing right now, so it is
+        // never used for an order: an order notification could otherwise go to someone else (#563).
+        if (!$mobileNumber && empty($args['order_id']) && isset(WC()->session)) {
             $customerSessionData = WC()->session->get('customer');
 
             if (isset($customerSessionData['phone'])) {
