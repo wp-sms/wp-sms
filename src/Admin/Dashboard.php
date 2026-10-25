@@ -282,8 +282,10 @@ class Dashboard extends Singleton
                 return __('no default country code is set', 'wp-sms');
             case 'invalid_number':
                 // NumberParser uses this code both for text that is not a number and for a
-                // number without "+" while International Number Input is on.
-                return OptionUtil::get('international_mobile') && strpos(ltrim($value), '+') !== 0
+                // number without "+" while International Number Input is on. Like NumberParser,
+                // look at the digits and "+" only, so text such as "John" is not a number.
+                $digits = preg_replace('/[^0-9+]/', '', $value);
+                return Option::getOption('international_mobile') && $digits !== '' && strpos($digits, '+') !== 0
                     ? __('missing the country code', 'wp-sms')
                     : __('not a phone number', 'wp-sms');
             default:
