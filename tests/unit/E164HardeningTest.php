@@ -162,6 +162,7 @@ class E164HardeningTest extends WP_UnitTestCase
         $result = Helper::tryNormalizeToE164('not-a-number');
         $this->assertFalse($result['success']);
         $this->assertNotEmpty($result['reason']);
+        $this->assertSame('invalid_number', $result['code']);
     }
 
     public function testTryNormalizeToE164ShortCodePassesAsSuccess()

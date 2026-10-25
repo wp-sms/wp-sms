@@ -716,16 +716,16 @@ class Helper
      * value on failure with no signal, which makes silent failures invisible to admins.
      *
      * @param string $value
-     * @return array{value: string, success: bool, reason: string|null}
+     * @return array{value: string, success: bool, reason: string|null, code: string|null}
      */
     public static function tryNormalizeToE164($value)
     {
         if (!is_string($value) || $value === '') {
-            return ['value' => (string) $value, 'success' => false, 'reason' => 'empty'];
+            return ['value' => (string) $value, 'success' => false, 'reason' => 'empty', 'code' => 'empty'];
         }
 
         if (self::isShortCode($value)) {
-            return ['value' => $value, 'success' => true, 'reason' => null];
+            return ['value' => $value, 'success' => true, 'reason' => null, 'code' => null];
         }
 
         $parser = new \WP_SMS\Components\NumberParser($value);
@@ -736,10 +736,11 @@ class Helper
                 'value'   => $value,
                 'success' => false,
                 'reason'  => $valid->get_error_message(),
+                'code'    => $valid->get_error_code(),
             ];
         }
 
-        return ['value' => $valid, 'success' => true, 'reason' => null];
+        return ['value' => $valid, 'success' => true, 'reason' => null, 'code' => null];
     }
 
     const RECENT_FAILURES_OPTION = 'wpsms_recent_phone_failures';

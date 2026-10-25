@@ -4,6 +4,7 @@ v7.2.11 - unreleased
 - **Enhancement:** Kavenegar errors explain what to do, for example when the sender line cannot send to a number or the template name is wrong. Failed template messages now show the reason.
 - **Enhancement:** Kavenegar sends long messages and lists of more than 200 numbers without errors.
 - **Enhancement:** Clearer Kavenegar setup guide in the gateway settings.
+- **Enhancement:** The "Recent phone normalization failures" notice lists only numbers that would still fail with the current settings, shows each number once with the reason (for example "wrong number of digits"), and disappears when none are left.
 
 v7.2.10 - 2026-10-14
 - **New:** Messente is now in the free plugin. You no longer need WSMS Pro to send SMS through Messente. Sites that already use it through Pro keep their settings.
