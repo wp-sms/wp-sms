@@ -177,4 +177,24 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         $this->assertSame('a b c d e f g h i', $clean->invoke($this->gateway, 'a b c d e f g h i', 'token20'));
         $this->assertSame(100, mb_strlen($clean->invoke($this->gateway, str_repeat('x', 150), 'token')));
     }
+
+    /** ✅ Test: a failed template send says why it failed */
+    public function test_failed_template_send_explains_the_reason()
+    {
+        remove_all_filters('wp_sms_to');
+        remove_all_filters('wp_sms_msg');
+
+        $this->gateway->to               = ['2025550101'];
+        $this->gateway->msg              = 'Hello %name%|order';
+        $this->gateway->messageVariables = ['%name%' => 'fake'];
+
+        $this->gateway->method('request')
+            ->willReturn($this->makeResponse(424, 'template not found'));
+
+        $response = $this->gateway->SendSMS();
+
+        $this->assertTrue(is_wp_error($response));
+        $this->assertStringContainsString('424', $response->get_error_message());
+        $this->assertStringContainsString('Template not found', $response->get_error_message());
+    }
 }

@@ -313,7 +313,7 @@ class kavenegar extends Gateway
                 $results[] = [
                     'to' => $receptor,
                     'status' => 'error',
-                    'message' => $resp->return->message,
+                    'message' => $this->withHint($resp->return->status . ' ' . $resp->return->message),
                     'raw' => $resp,
                 ];
                 continue;
@@ -354,6 +354,7 @@ class kavenegar extends Gateway
         $failCount = 0;
         $successNumbers = [];
         $failedNumbers = [];
+        $errors = [];
 
         foreach ($response['results'] as $item) {
             $toOne = $item['to'] ?? $this->to;
@@ -367,6 +368,9 @@ class kavenegar extends Gateway
                 }
             } else {
                 $failCount++;
+                if (!empty($item['message'])) {
+                    $errors[] = $item['message'];
+                }
                 if (is_array($toOne)) {
                     $failedNumbers = array_merge($failedNumbers, $toOne);
                 } else {
@@ -385,6 +389,11 @@ class kavenegar extends Gateway
             $successList,
             $failedList
         );
+
+        // Say why the failed numbers failed; one line per distinct reason.
+        if ($errors) {
+            $summary .= "\nError: " . implode("\nError: ", array_unique($errors));
+        }
 
         $status = $response['status'] ?? 0;
 
@@ -454,9 +463,10 @@ class kavenegar extends Gateway
             '424' => __('Template not found. Check the template name after "|" and that Kavenegar has approved it.', 'wp-sms'),
             '431' => __('A template value has a character Kavenegar does not accept.', 'wp-sms'),
             '432' => __('The template in your Kavenegar panel has no %token.', 'wp-sms'),
+            '501' => __('This Kavenegar account can only send to its owner\'s phone number. Ask Kavenegar to activate the account for other numbers.', 'wp-sms'),
         ];
 
-        if (preg_match('/\b(4\d\d)\b/', $message, $match) && isset($hints[$match[1]])) {
+        if (preg_match('/\b([45]\d\d)\b/', $message, $match) && isset($hints[$match[1]])) {
             return $message . ' - ' . $hints[$match[1]];
         }
 
