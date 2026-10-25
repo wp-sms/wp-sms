@@ -53,7 +53,7 @@ class rayo extends \WP_SMS\Gateway
 
         $this->has_key        = true;
         $this->validateNumber = 'International format with the country code, e.g. +306912345678 or 306912345678';
-        $this->help           = 'Create an API key in your Rayo account under Actions > Settings. The Sender ID must be one you have registered with Rayo; ask Rayo support to set it up for the countries you send to.';
+        $this->help           = 'Create an API key in your Rayo account under Advanced > Settings. The Sender ID must be one you have registered with Rayo; ask Rayo support to set it up for the countries you send to.';
 
         $this->gatewayFields = [
             'platform' => [
@@ -69,7 +69,7 @@ class rayo extends \WP_SMS\Gateway
             'has_key'  => [
                 'id'   => 'gateway_key',
                 'name' => 'API Key',
-                'desc' => 'Your Rayo API key (Actions > Settings in your Rayo account).',
+                'desc' => 'Your Rayo API key (Advanced > Settings in your Rayo account).',
             ],
             'from'     => [
                 'id'           => 'gateway_sender_id',
@@ -269,7 +269,7 @@ class rayo extends \WP_SMS\Gateway
         }
 
         $hints = [
-            401 => __('The API key is not valid or not active. Check it in your Rayo account under Actions > Settings.', 'wp-sms'),
+            401 => __('The API key is not valid or not active. Check it in your Rayo account under Advanced > Settings.', 'wp-sms'),
             422 => __('Rayo refused the request. Most often the Sender ID is not registered in your Rayo account.', 'wp-sms'),
         ];
 
