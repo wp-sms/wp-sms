@@ -55,7 +55,8 @@ class RayoGatewayTest extends WP_UnitTestCase
 
     private function gateway($platform = 'rayo.gr')
     {
-        $gateway           = new rayo();
+        // log() is mocked: a failed send would otherwise email the admin, which needs built assets.
+        $gateway           = $this->getMockBuilder(rayo::class)->onlyMethods(['log'])->getMock();
         $gateway->has_key  = 'key-123';
         $gateway->from     = 'MYSHOP';
         $gateway->platform = $platform;
