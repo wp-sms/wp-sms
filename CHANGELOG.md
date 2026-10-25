@@ -1,5 +1,9 @@
 v7.2.11 - unreleased
 - **Fix:** WooCommerce order SMS go to the phone number saved on the order. A different number on the customer's account, or in the current browsing session, no longer takes its place ([#563](https://github.com/wp-sms/wp-sms/issues/563)).
+- **Fix:** Kavenegar template (pattern) messages with a space in the first three values, such as a full name, are sent again. Kavenegar refused them because the space became an underscore.
+- **Enhancement:** Kavenegar errors explain what to do, for example when the sender line cannot send to a number or the template name is wrong.
+- **Enhancement:** Kavenegar sends long messages and lists of more than 200 numbers without errors.
+- **Enhancement:** Clearer Kavenegar setup guide in the gateway settings.
 
 v7.2.10 - 2026-10-14
 - **New:** Messente is now in the free plugin. You no longer need WSMS Pro to send SMS through Messente. Sites that already use it through Pro keep their settings.
