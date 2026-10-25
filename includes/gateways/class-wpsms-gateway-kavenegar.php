@@ -466,7 +466,7 @@ class kavenegar extends Gateway
             '501' => __('This Kavenegar account can only send to its owner\'s phone number. Ask Kavenegar to activate the account for other numbers.', 'wp-sms'),
         ];
 
-        if (preg_match('/\b([45]\d\d)\b/', $message, $match) && isset($hints[$match[1]])) {
+        if (preg_match('/\b([45]\d\d)\b/', $message, $match) && isset($hints[$match[1]]) && strpos($message, $hints[$match[1]]) === false) {
             return $message . ' - ' . $hints[$match[1]];
         }
 
