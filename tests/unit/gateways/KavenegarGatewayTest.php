@@ -33,7 +33,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         ];
     }
 
-    /** ✅ Test: simple SMS sending should succeed */
+    /** ✅ Test: simple SMS sending should succeed (POST, values in the body) */
     public function test_send_simple_sms_success()
     {
         $this->gateway->to  = ['2025550100', '2025550101'];
@@ -42,10 +42,12 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         $this->gateway->expects($this->once())
             ->method('request')
             ->with(
-                'GET',
+                'POST',
                 $this->stringContains('/v1/DUMMY_KEY/sms/send.json'),
+                [],
                 $this->callback(function ($params) {
-                    return isset($params['receptor'], $params['message']);
+                    return isset($params['body']['receptor'], $params['body']['message'])
+                        && $params['body']['receptor'] === '2025550100,2025550101';
                 })
             )
             ->willReturn($this->makeResponse(200, 'OK'));
@@ -56,7 +58,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         $this->assertEquals(200, $response->return->status);
     }
 
-    /** ✅ Test: a "+" in the number and sender is encoded, not sent as a space */
+    /** ✅ Test: a "+" in the number and sender reaches the body as is (WordPress form-encodes the body) */
     public function test_send_simple_sms_encodes_plus_signs()
     {
         remove_all_filters('wp_sms_to');
@@ -70,10 +72,11 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         $this->gateway->expects($this->once())
             ->method('request')
             ->with(
-                'GET',
+                'POST',
                 $this->stringContains('/v1/DUMMY_KEY/sms/send.json'),
+                [],
                 $this->callback(function ($params) {
-                    return $params['receptor'] === '%2B989121234567' && $params['sender'] === '%2B9810004346';
+                    return $params['body']['receptor'] === '+989121234567' && $params['body']['sender'] === '+9810004346';
                 })
             )
             ->willReturn($this->makeResponse(200, 'OK'));
@@ -123,5 +126,75 @@ class KavenegarGatewayTest extends WP_UnitTestCase
 
         $this->assertObjectHasProperty('summary', $response);
         $this->assertSame(['success' => 2, 'failure' => 0], (array)$response->summary);
+    }
+
+    /** ✅ Test: more than 200 numbers are sent in calls of at most 200 (Kavenegar error 414 above that) */
+    public function test_send_simple_sms_splits_into_batches_of_200()
+    {
+        remove_all_filters('wp_sms_to');
+
+        $this->gateway->to = array_map(function ($i) {
+            return '20255' . str_pad((string)$i, 5, '0', STR_PAD_LEFT);
+        }, range(1, 201));
+
+        $sizes = [];
+        $this->gateway->expects($this->exactly(2))
+            ->method('request')
+            ->willReturnCallback(function ($method, $url, $args, $params) use (&$sizes) {
+                $sizes[] = count(explode(',', $params['body']['receptor']));
+                return $this->makeResponse(200, 'OK');
+            });
+
+        $this->assertFalse(is_wp_error($this->gateway->SendSMS()));
+        $this->assertSame([200, 1], $sizes);
+    }
+
+    /** ✅ Test: error 412 gets a plain hint about the sender line */
+    public function test_invalid_sender_error_gets_a_hint()
+    {
+        $this->gateway->to = ['2025550100'];
+
+        $this->gateway->method('request')
+            ->willThrowException(new \Exception('Failed to get success response, 412 invalid sender'));
+
+        $response = $this->gateway->SendSMS();
+
+        $this->assertTrue(is_wp_error($response));
+        $this->assertStringContainsString('412', $response->get_error_message());
+        $this->assertStringContainsString('sender line', $response->get_error_message());
+    }
+
+    /** ✅ Test: template values follow Kavenegar's token rules (error 431 otherwise) */
+    public function test_template_values_follow_kavenegar_token_rules()
+    {
+        $clean = new \ReflectionMethod($this->gateway, 'cleanToken');
+        $clean->setAccessible(true);
+
+        $this->assertSame('AliReza', $clean->invoke($this->gateway, 'Ali Reza', 'token'));
+        $this->assertSame('SAVE10', $clean->invoke($this->gateway, 'SAVE_10', 'token2'));
+        $this->assertSame('line1line2', $clean->invoke($this->gateway, "line1\nline2", 'token3'));
+        $this->assertSame('a b c d e fgh', $clean->invoke($this->gateway, 'a b c d e f g h', 'token10'));
+        $this->assertSame('a b c d e f g h i', $clean->invoke($this->gateway, 'a b c d e f g h i', 'token20'));
+        $this->assertSame(100, mb_strlen($clean->invoke($this->gateway, str_repeat('x', 150), 'token')));
+    }
+
+    /** ✅ Test: a failed template send says why it failed */
+    public function test_failed_template_send_explains_the_reason()
+    {
+        remove_all_filters('wp_sms_to');
+        remove_all_filters('wp_sms_msg');
+
+        $this->gateway->to               = ['2025550101'];
+        $this->gateway->msg              = 'Hello %name%|order';
+        $this->gateway->messageVariables = ['%name%' => 'fake'];
+
+        $this->gateway->method('request')
+            ->willReturn($this->makeResponse(424, 'template not found'));
+
+        $response = $this->gateway->SendSMS();
+
+        $this->assertTrue(is_wp_error($response));
+        $this->assertStringContainsString('424', $response->get_error_message());
+        $this->assertStringContainsString('Template not found', $response->get_error_message());
     }
 }

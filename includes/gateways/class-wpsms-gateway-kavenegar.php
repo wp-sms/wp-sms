@@ -84,8 +84,8 @@ class kavenegar extends Gateway
             'from' => [
                 'id' => 'gateway_sender_id',
                 'name' => __('Sender Number', 'wp-sms'),
-                'place_holder' => __('e.g., 0018018949161', 'wp-sms'),
-                'desc' => __('Number or sender ID shown on recipient’s device.', 'wp-sms'),
+                'place_holder' => __('e.g., 10001234567890', 'wp-sms'),
+                'desc' => __('Your line number from the Kavenegar panel.', 'wp-sms'),
             ],
             'has_key' => [
                 'id' => 'gateway_key',
@@ -96,35 +96,15 @@ class kavenegar extends Gateway
 
         $this->help = '
 <div dir="rtl">
-  <h3>ارسال پیامک با الگو (پترن) — راهنمای تنظیم و استفاده از متغیرها</h3>
-  <p>
-    این قابلیت برای پیام‌هایی مانند ارسال رمز عبور، کد تأیید عضویت، شماره فاکتور، کد تخفیف و سایر اطلاع‌رسانی‌ها کاربرد دارد.
-  </p>
+  <p><strong>شماره ارسال کننده:</strong> شماره خط خود را از پنل کاوه نگار وارد کنید (مثلا 1000xxxxxxxxxx).</p>
+  <p><strong>ارسال با الگو (اختیاری، برای کد تایید و اطلاع رسانی):</strong></p>
   <ol>
-    <li>
-      <strong>ثبت و تأیید الگو در سامانه پیامکی</strong><br>
-      ابتدا در پنل پیامک، یک الگو (پترن) جدید ایجاد کرده و متن آن را با متغیرهای شماره‌گذاری‌شده تنظیم کنید.
-      این متغیرها باید به ترتیب با نام‌های زیر تعریف شوند:<br>
-      <code>token</code>, <code>token2</code>, <code>token3</code>, <code>token10</code>, <code>token20</code><br>
-      نمونه متن در سامانه پیامکی:<br>
-      <code style="direction: rtl">
-  سلام &lrm;%token%&lrm;، سفارش &lrm;%token2%&lrm; با موفقیت ثبت شد.
-    </code>
-    </li>
-    <li>
-      <strong>درج متن پیامک و کد الگو در افزونه</strong><br>
-      در افزونه، همان متن را با متغیرهای پلاگین وارد کنید (مثلاً <code>%billing_first_name%</code> و <code>%order_id%</code>) 
-      و در انتهای پیامک، پس از علامت «|»، کد الگو را بنویسید.<br>
-      نمونه در افزونه:<br>
-      <code style="direction: rtl">سلام %billing_first_name%، سفارش %order_id% با موفقیت ثبت شد.|2343</code>
-    </li>
+    <li>در پنل کاوه نگار یک الگو بسازید و به جای هر مقدار، به ترتیب <code>%token</code>، <code>%token2</code>، <code>%token3</code>، <code>%token10</code> و <code>%token20</code> بنویسید.<br>
+      مثال: <code>سلام %token، سفارش %token2 ثبت شد.</code></li>
+    <li>در افزونه همان پیام را با متغیرهای افزونه بنویسید و در انتها بعد از <code>|</code> نام الگو را بگذارید.<br>
+      مثال: <code>سلام %billing_first_name%، سفارش %order_id% ثبت شد.|order-confirm</code></li>
   </ol>
-  <p><strong>نکات مهم</strong></p>
-  <ul>
-    <li>در صورتی که <code style="direction: rtl">|کد</code> را قرار ندهید، پیام به‌صورت <em>ارسال معمولی</em> (بدون استفاده از پترن) ارسال می‌شود.</li>
-    <li>ترتیب متغیرها در پیامک باید دقیقاً مطابق ترتیب <code>token</code>ها در سامانه پیامکی باشد.</li>
-    <li>حداکثر پنج متغیر قابل استفاده است: <code>token</code>, <code>token2</code>, <code>token3</code>, <code>token10</code>, <code>token20</code>.</li>
-  </ul>
+  <p>اولین متغیر پیام جای <code>%token</code> می نشیند، دومی جای <code>%token2</code> و همین طور تا پنج متغیر. <code>%token</code> تا <code>%token3</code> فاصله نمی پذیرند و فاصله ها حذف می شوند؛ مقدار چند کلمه ای (مثل نام کامل) را چهارم یا پنجم بگذارید. بدون <code>|</code> و نام الگو، پیام به صورت عادی ارسال می شود.</p>
 </div>';
     }
 
@@ -199,7 +179,7 @@ class kavenegar extends Gateway
             }
 
             if ($response->return->status != 200) {
-                throw new Exception($response->return->message);
+                throw new Exception($response->return->status . ' ' . $response->return->message);
             }
 
             $this->log($this->from, $this->msg, $this->to, $response);
@@ -214,9 +194,10 @@ class kavenegar extends Gateway
             return $response;
 
         } catch (Exception $e) {
-            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+            $message = $this->withHint($e->getMessage());
+            $this->log($this->from, $this->msg, $this->to, $message, 'error');
 
-            return new WP_Error('send-sms-error', $e->getMessage());
+            return new WP_Error('send-sms-error', $message);
         }
     }
 
@@ -252,18 +233,28 @@ class kavenegar extends Gateway
      */
     private function sendSimpleSMS()
     {
-        // add_query_arg() does not encode values, so a "+" in a number would
-        // reach Kavenegar as a space. Encode every value here.
-        $params = [
-            'receptor' => rawurlencode(implode(",", $this->to)),
-            'message' => rawurlencode($this->msg),
-        ];
+        // Kavenegar takes at most 200 receptors per call (error 414). POST keeps
+        // long messages out of the URL.
+        $response = null;
 
-        if (!empty($this->from)) {
-            $params['sender'] = rawurlencode($this->from);
+        foreach (array_chunk($this->to, 200) as $receptors) {
+            $body = [
+                'receptor' => implode(',', $receptors),
+                'message'  => $this->msg,
+            ];
+
+            if (!empty($this->from)) {
+                $body['sender'] = $this->from;
+            }
+
+            $response = $this->request('POST', $this->buildUrl('send'), [], ['body' => $body]);
+
+            if ($response->return->status != 200) {
+                return $response;
+            }
         }
 
-        return $this->request('GET', $this->buildUrl('send'), $params);
+        return $response;
     }
 
     /**
@@ -290,11 +281,7 @@ class kavenegar extends Gateway
         $tokensUsed = array_slice($tokens, 0, $count);
         $valuesUsed = array_slice($messageValues, 0, $count);
 
-        $valuesUsed = array_map(function ($v, $t) {
-            return in_array($t, ['token', 'token2', 'token3'])
-                ? str_replace(' ', '_', $v)
-                : $v;
-        }, $valuesUsed, $tokensUsed);
+        $valuesUsed = array_map([$this, 'cleanToken'], $valuesUsed, $tokensUsed);
 
         $tokenParams = array_combine($tokensUsed, array_map('rawurlencode', $valuesUsed));
 
@@ -308,15 +295,14 @@ class kavenegar extends Gateway
             $params = $paramsBase;
             $params['receptor'] = rawurlencode($receptor);
 
-            $resp = $this->request('GET', $this->buildUrl('lookup', 'verify'), $params);
-
-            if (is_wp_error($resp)) {
+            try {
+                $resp = $this->request('GET', $this->buildUrl('lookup', 'verify'), $params);
+            } catch (Exception $e) {
                 $failures++;
                 $results[] = [
                     'to' => $receptor,
                     'status' => 'error',
-                    'errorType' => 'wp_error',
-                    'message' => $resp->get_error_message(),
+                    'message' => $this->withHint($e->getMessage()),
                     'raw' => null,
                 ];
                 continue;
@@ -327,7 +313,7 @@ class kavenegar extends Gateway
                 $results[] = [
                     'to' => $receptor,
                     'status' => 'error',
-                    'message' => $resp->return->message,
+                    'message' => $this->withHint($resp->return->status . ' ' . $resp->return->message),
                     'raw' => $resp,
                 ];
                 continue;
@@ -368,6 +354,7 @@ class kavenegar extends Gateway
         $failCount = 0;
         $successNumbers = [];
         $failedNumbers = [];
+        $errors = [];
 
         foreach ($response['results'] as $item) {
             $toOne = $item['to'] ?? $this->to;
@@ -381,6 +368,9 @@ class kavenegar extends Gateway
                 }
             } else {
                 $failCount++;
+                if (!empty($item['message'])) {
+                    $errors[] = $item['message'];
+                }
                 if (is_array($toOne)) {
                     $failedNumbers = array_merge($failedNumbers, $toOne);
                 } else {
@@ -399,6 +389,11 @@ class kavenegar extends Gateway
             $successList,
             $failedList
         );
+
+        // Say why the failed numbers failed; one line per distinct reason.
+        if ($errors) {
+            $summary .= "\nError: " . implode("\nError: ", array_unique($errors));
+        }
 
         $status = $response['status'] ?? 0;
 
@@ -424,5 +419,57 @@ class kavenegar extends Gateway
 
         // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
         throw new Exception($summary);
+    }
+
+    /**
+     * Make a template value acceptable to Kavenegar's verify/lookup.
+     *
+     * token, token2 and token3 take no spaces; token10 takes up to 5 and token20 up to 8.
+     * Line breaks and underscores are refused everywhere (error 431). Max 100 characters.
+     *
+     * @param string $value
+     * @param string $token
+     * @return string
+     */
+    private function cleanToken($value, $token)
+    {
+        $value = trim(str_replace('_', ' ', (string)$value));
+        $value = preg_replace('/\s+/u', ' ', $value);
+
+        $maxSpaces = ['token10' => 5, 'token20' => 8];
+        $words = explode(' ', $value);
+        $keep = isset($maxSpaces[$token]) ? $maxSpaces[$token] + 1 : 1;
+
+        if (count($words) > $keep) {
+            $value = implode(' ', array_slice($words, 0, $keep - 1)) . ($keep > 1 ? ' ' : '') . implode('', array_slice($words, $keep - 1));
+        }
+
+        return mb_substr($value, 0, 100);
+    }
+
+    /**
+     * Add a plain explanation to the Kavenegar errors site owners hit most.
+     *
+     * @param string $message
+     * @return string
+     */
+    private function withHint($message)
+    {
+        $hints = [
+            '403' => __('The API key is not valid. Copy it again from your Kavenegar panel.', 'wp-sms'),
+            '411' => __('The recipient number is not valid.', 'wp-sms'),
+            '412' => __('This sender line cannot send to this number. Lines starting with 0018 only send outside Iran; use your domestic line from the Kavenegar panel.', 'wp-sms'),
+            '418' => __('Your Kavenegar credit is too low.', 'wp-sms'),
+            '424' => __('Template not found. Check the template name after "|" and that Kavenegar has approved it.', 'wp-sms'),
+            '431' => __('A template value has a character Kavenegar does not accept.', 'wp-sms'),
+            '432' => __('The template in your Kavenegar panel has no %token.', 'wp-sms'),
+            '501' => __('This Kavenegar account can only send to its owner\'s phone number. Ask Kavenegar to activate the account for other numbers.', 'wp-sms'),
+        ];
+
+        if (preg_match('/\b([45]\d\d)\b/', $message, $match) && isset($hints[$match[1]]) && strpos($message, $hints[$match[1]]) === false) {
+            return $message . ' - ' . $hints[$match[1]];
+        }
+
+        return $message;
     }
 }
