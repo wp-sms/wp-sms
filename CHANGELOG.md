@@ -5,6 +5,7 @@ v7.2.11 - unreleased
 - **Enhancement:** Kavenegar sends long messages and lists of more than 200 numbers without errors.
 - **Enhancement:** Clearer Kavenegar setup guide in the gateway settings.
 - **Enhancement:** The "Recent phone normalization failures" notice lists only numbers that would still fail with the current settings, shows each number once with the reason (for example "wrong number of digits"), and disappears when none are left.
+- **Fix:** The "configure the Mobile field option" notice shows only when WooCommerce is active, and now says which setting to change: "Collect Phone Numbers From" must use a WooCommerce billing option for order SMS.
 
 v7.2.10 - 2026-10-14
 - **New:** Messente is now in the free plugin. You no longer need WSMS Pro to send SMS through Messente. Sites that already use it through Pro keep their settings.
