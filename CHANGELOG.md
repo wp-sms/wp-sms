@@ -1,4 +1,5 @@
 v7.2.11 - unreleased
+- **New:** Rayo SMS gateway (Rayo.gr and RayoSMS.com, Greece and Europe) is available in the free plugin, with a test mode that sends nothing and uses no credits.
 - **Fix:** WooCommerce order SMS go to the phone number saved on the order. A different number on the customer's account, or in the current browsing session, no longer takes its place ([#563](https://github.com/wp-sms/wp-sms/issues/563)).
 - **Fix:** Kavenegar template (pattern) messages with a space in the first three values, such as a full name, are sent again. Kavenegar refused them because the space became an underscore.
 - **Enhancement:** Kavenegar errors explain what to do, for example when the sender line cannot send to a number or the template name is wrong. Failed template messages now show the reason.
