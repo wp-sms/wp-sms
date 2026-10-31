@@ -1,4 +1,4 @@
-﻿=== WSMS (formerly WP SMS): SMS and OTP for WordPress and WooCommerce ===
+﻿=== WSMS (formerly WP SMS): SMS Notifications, OTP Login and WooCommerce SMS ===
 Contributors: veronalabs, mostafa.s1990, kashani
 Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sms
 Requires at least: 4.1
@@ -8,10 +8,10 @@ Stable tag: 7.2.10
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Send SMS/MMS notifications, OTP login and 2FA messages, and WooCommerce order updates through 150+ SMS gateways.
+Send SMS notifications, OTP login and 2FA codes, and WooCommerce order SMS from WordPress through 260+ SMS gateways.
 
 == Description ==
-[WSMS](https://wsms.io/?utm_source=wporg&utm_medium=link&utm_campaign=website) lets you send SMS/MMS notifications, one-time passwords (OTP), and two-factor authentication (2FA) messages straight from WordPress. It supports a wide range of SMS gateways and integrates with popular e-commerce and form builder plugins.
+[WSMS](https://wsms.io/?utm_source=wporg&utm_medium=link&utm_campaign=website) is a WordPress SMS plugin. It sends SMS/MMS notifications, one-time passwords (OTP), and two-factor authentication (2FA) messages straight from WordPress, through 260+ SMS gateways such as Twilio, Vonage, Plivo and Clickatell. It works with WooCommerce, Contact Form 7, Gravity Forms, Elementor Forms and 20+ other plugins.
 
 **Use WSMS to:**
 - Keep customers updated on WooCommerce orders
@@ -24,7 +24,8 @@ Send SMS/MMS notifications, OTP login and 2FA messages, and WooCommerce order up
 
 ## ✨ Key Features
 - **Send SMS/MMS:** Send messages through your choice of supported SMS gateways.
-- **E-Commerce & Form Integration:** Seamlessly integrates with popular e-commerce platforms and form builders.
+- **WooCommerce SMS (All-in-One):** Send order status SMS to customers and new order alerts to admins.
+- **Form SMS:** Send an SMS when a Contact Form 7, Formidable or Forminator form is submitted (Gravity Forms, Elementor Forms, Fluent Forms and Quform with All-in-One).
 - **OTP & 2FA:** Add extra login security with one-time passwords and two-factor authentication.
 - **Mobile Login:** Let users log in with their mobile number.
 - **Admin Alerts:** Get notified when new users register, posts are published, or WordPress updates are available.
@@ -32,11 +33,11 @@ Send SMS/MMS notifications, OTP login and 2FA messages, and WooCommerce order up
 - **Two-Way SMS (All-in-One):** Receive and reply to SMS messages inside WordPress.
 - **Bulk & Scheduled SMS:** Send to multiple recipients at once, immediately or on schedule.
 - **Third-Party Integration:** Connect with external services and automation platforms.
-- **Messaging Button:** Let visitors reach you instantly via messaging channels.
+- **Messaging Button:** A floating chat button so visitors can reach you on WhatsApp, Telegram, Facebook, SMS, email or a phone call.
 - **GDPR Compliant:** Built with privacy and compliance in mind.
 
 ## 📡 Supported SMS Gateways
-WSMS connects to 270+ SMS gateways worldwide. Popular supported gateways by region include:
+WSMS connects to 260+ SMS gateways worldwide. Popular supported gateways by region include:
 
 - **Global:** Twilio, Vonage, Plivo, Clickatell, MessageBird, Infobip, Sinch, ClickSend, AWS SNS, Telnyx, GatewayAPI, BulkGate, SMSGlobal, LabsMobile, Octopush, Fortytwo, SMS.to, EasySendSMS, Mitto, Dexatel
 - **GCC:** Unifonic, Taqnyat, Msegat, OurSMS, Deewan, JawalBSMS, 4jawaly, Zain
@@ -48,6 +49,13 @@ WSMS connects to 270+ SMS gateways worldwide. Popular supported gateways by regi
 - **Any other provider:** Use the built-in **Custom Gateway** to connect any SMS API (custom HTTP headers, parameters, and raw JSON body supported).
 
 👉 [See the full list of supported SMS gateways](https://wsms.io/gateways?utm_source=wporg&utm_medium=link&utm_campaign=gateways)
+
+## 🔌 Integrations
+**Free:** Contact Form 7, Formidable Forms, Forminator, Zapier.
+
+**With All-in-One:** WooCommerce (order status SMS, admin order alerts, SMS campaigns, cart abandonment SMS, back-in-stock SMS, mobile verification at checkout), Gravity Forms, Elementor Forms, Fluent Forms, Quform, Easy Digital Downloads, Ultimate Member, Simple Membership, Paid Memberships Pro, BuddyPress, FluentCRM, Fluent Support, Awesome Support, WP Job Manager, BookingPress, Bookly, WooCommerce Bookings, WooCommerce Appointments and WP Booking Calendar.
+
+👉 [See all integrations](https://wsms.io/integrations?utm_source=wporg&utm_medium=link&utm_campaign=integrations)
 
 ## 💎 Upgrade to WSMS All-in-One
 Unlock additional features with **All-in-One** — the plan that gives you access to all premium add-ons in one package.
@@ -114,7 +122,30 @@ All source code for minified JavaScript and CSS is included in the plugin under 
 Any WordPress site that wants to enhance communication with users, customers, or subscribers via SMS. Perfect for businesses, bloggers, and e-commerce stores.
 
 = Which SMS gateways does WSMS support? =
-WSMS supports 270+ SMS gateways worldwide. This includes global providers such as GatewayAPI, BulkGate, SMSGlobal, LabsMobile, Octopush, SMSAPI, EasySendSMS, SMS.to, and Fortytwo; GCC providers such as Unifonic, Msegat, OurSMS, Deewan, and JawalBSMS; Middle East providers such as Kavenegar, MeliPayamak, FaraPayamak, Ghasedak, FarazSMS, Verimor, and Bulutfon; Asia-Pacific providers such as Fast2SMS, SMSGatewayHub, GuniSMS, and DirectSend; and European providers such as SMSC, UniSender, Comilio, Primotexto, CPSMS, and SureSMS. Premium gateways such as Twilio, Vonage, Plivo, Clickatell, and Taqnyat are available with the All-in-One add-on. You can also connect any other provider using the built-in Custom Gateway. See the [full list of supported gateways](https://wsms.io/gateways?utm_source=wporg&utm_medium=link&utm_campaign=gateways).
+WSMS supports 260+ SMS gateways worldwide. This includes global providers such as GatewayAPI, BulkGate, SMSGlobal, LabsMobile, Octopush, SMSAPI, EasySendSMS, SMS.to, and Fortytwo; GCC providers such as Unifonic, Msegat, OurSMS, Deewan, and JawalBSMS; Middle East providers such as Kavenegar, MeliPayamak, FaraPayamak, Ghasedak, FarazSMS, Verimor, and Bulutfon; Asia-Pacific providers such as Fast2SMS, SMSGatewayHub, GuniSMS, and DirectSend; and European providers such as SMSC, UniSender, Comilio, Primotexto, CPSMS, and SureSMS. Premium gateways such as Twilio, Vonage, Plivo, Clickatell, and Taqnyat are available with the All-in-One add-on. You can also connect any other provider using the built-in Custom Gateway. See the [full list of supported gateways](https://wsms.io/gateways?utm_source=wporg&utm_medium=link&utm_campaign=gateways).
+
+= Is WSMS free? =
+Yes. The free plugin sends SMS through 160+ gateways, with Contact Form 7 SMS, SMS newsletters, admin alerts, bulk SMS and the Messaging Button. All-in-One adds WooCommerce SMS, OTP login and 2FA, premium gateways such as Twilio, two-way SMS and the premium integrations. You only pay your SMS gateway for the messages you send.
+
+= How do I send WooCommerce order SMS? =
+WooCommerce SMS comes with All-in-One. After setting up your gateway, go to **WSMS → WooCommerce Pro → Settings**. Pick which order statuses (Processing, Completed, On-Hold, Cancelled, Failed and more) send an SMS to the customer, and turn on the new order alert for admins.
+
+= Can I add OTP login or two-factor authentication (2FA)? =
+Yes, with All-in-One. It adds login with SMS (a mobile number and a one-time code), two-factor authentication with SMS on the normal login form, and mobile verification at WooCommerce checkout. Settings are under **WSMS → Settings → Authentication**.
+
+= Does WSMS work with Twilio? =
+Yes. Twilio, Vonage, Plivo, Clickatell and the other premium gateways come with All-in-One. Choose your gateway in **WSMS → Settings → Gateway** and enter the API details from your gateway account.
+
+= Can I send an SMS when a Contact Form 7 form is submitted? =
+Yes, in the free plugin. Open the form in Contact Form 7 and fill in the SMS Notifications tab to text the admin, the person who filled in the form, or both. Formidable Forms and Forminator work the same way.
+
+= Does WSMS support WhatsApp? =
+The Messaging Button adds a WhatsApp chat button to your site. Sending WhatsApp messages depends on your gateway: some supported gateways send WhatsApp as well as SMS. See the [gateway list](https://wsms.io/gateways?utm_source=wporg&utm_medium=link&utm_campaign=gateways) for which ones.
+
+= My SMS was not delivered. What should I check? =
+1. Open **WSMS → Outbox**. Each message shows its status and the Gateway Response, the exact reply from your gateway.
+2. Make sure numbers include the country code (for example +44 or +1). You can set a default country under **WSMS → Settings → Phone**.
+3. Check that your gateway account has credit and that your Sender ID is approved by the gateway. Many countries require registered Sender IDs.
 
 = Is technical knowledge required? =
 No. WSMS is beginner-friendly and well-documented.
@@ -149,8 +180,8 @@ All premium features + all add-ons in one package.
 8. Gateways Configuration
 9. Notifications Management
 10. Login With SMS
-11. Gutenburg Block: SMS Newsletter Form
-12. Gutenburg Block: Send SMS Form via website
+11. Gutenberg Block: SMS Newsletter Form
+12. Gutenberg Block: Send SMS Form via website
 13. Message Button
 14. SMS Stats Dashboard Widget
 
