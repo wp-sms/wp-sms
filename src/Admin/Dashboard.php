@@ -237,9 +237,9 @@ class Dashboard extends Singleton
         $sendsNow     = [];
 
         foreach ($failures as $failure) {
-            $value = isset($failure['original_value']) ? (string) $failure['original_value'] : '';
-            $digits = preg_replace('/[^0-9+]/', '', \WP_SMS\Components\NumberParser::toEnglishNumerals($value));
-            $key = $digits !== '' ? $digits : $value;
+            $value      = isset($failure['original_value']) ? (string) $failure['original_value'] : '';
+            $normalized = (new \WP_SMS\Components\NumberParser($value))->getNormalizedNumber();
+            $key        = $normalized !== '' ? $normalized : $value;
 
             if ($value === '' || isset($sendsNow[$key])) {
                 continue;

@@ -70,6 +70,17 @@ class DashboardTest extends WP_UnitTestCase
         $this->assertStringContainsString('3 times', $notice['message']);
     }
 
+    public function testFailureNoticeCombinesEquivalentInternationalPrefixes(): void
+    {
+        Option::updateOption('international_mobile_only_countries', ['US']);
+
+        $notice = $this->failureNotice(['00442025550188', '+442025550188'], true);
+
+        $this->assertStringContainsString('1 phone number could not be normalized', $notice['message']);
+        $this->assertSame(1, substr_count($notice['message'], 'country not allowed'));
+        $this->assertStringContainsString('2 times', $notice['message']);
+    }
+
     private function failureNotice(array $values, bool $internationalInput = false): ?array
     {
         wp_set_current_user(self::factory()->user->create(['role' => 'administrator']));
