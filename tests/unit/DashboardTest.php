@@ -53,6 +53,14 @@ class DashboardTest extends WP_UnitTestCase
         $this->assertStringContainsString('<code>2025550188</code> (missing the country code)', $notice['message']);
     }
 
+    public function testFailureNoticeReadsPersianDigitsWithInternationalInputOn(): void
+    {
+        // ۲۰۲۵۵۵۰۱۸۸ is 2025550188 written in Persian digits.
+        $notice = $this->failureNotice(['۲۰۲۵۵۵۰۱۸۸'], true);
+
+        $this->assertStringContainsString('(missing the country code)', $notice['message']);
+    }
+
     private function failureNotice(array $values, bool $internationalInput = false): ?array
     {
         wp_set_current_user(self::factory()->user->create(['role' => 'administrator']));

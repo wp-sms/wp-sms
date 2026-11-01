@@ -46,7 +46,7 @@ class AdminHandlerOrderReceiverTest extends WP_UnitTestCase
 
     public function tearDown(): void
     {
-        unset($_GET['post'], $_GET['id'], $_GET['page']);
+        unset($_GET['post'], $_GET['id'], $_GET['page'], $_GET['action']);
         $GLOBALS['current_screen'] = null;
 
         parent::tearDown();
@@ -92,10 +92,21 @@ class AdminHandlerOrderReceiverTest extends WP_UnitTestCase
     {
         wp_set_current_user(self::factory()->user->create(['role' => 'administrator']));
         set_current_screen('woocommerce_page_wc-orders');
+        $_GET['page']   = 'wc-orders';
+        $_GET['action'] = 'edit';
+        $_GET['id']     = (string) $this->order->get_id();
+
+        $this->assertSame($this->order->get_id(), $this->editableOrderId(), $this->why());
+    }
+
+    public function testTheHposOrderListWithAnIdGetsNoOrder()
+    {
+        wp_set_current_user(self::factory()->user->create(['role' => 'administrator']));
+        set_current_screen('woocommerce_page_wc-orders');
         $_GET['page'] = 'wc-orders';
         $_GET['id']   = (string) $this->order->get_id();
 
-        $this->assertSame($this->order->get_id(), $this->editableOrderId(), $this->why());
+        $this->assertSame(0, $this->editableOrderId());
     }
 
     public function testAnIdThatIsNotAnOrderGetsNothing()

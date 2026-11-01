@@ -297,7 +297,9 @@ class AdminHandler extends BaseAssets
         }
 
         if ($screen->id !== 'shop_order') {
-            $order_id = isset($_GET['id']) ? absint($_GET['id']) : 0;
+            // The same screen lists orders; only its edit view is one order.
+            $isEdit   = isset($_GET['action']) && $_GET['action'] === 'edit';
+            $order_id = $isEdit && isset($_GET['id']) ? absint($_GET['id']) : 0;
         } else {
             $order_id = isset($_GET['post']) ? absint($_GET['post']) : 0;
         }
