@@ -26,10 +26,16 @@ class AdminHandlerOrderReceiverTest extends WP_UnitTestCase
             $this->markTestSkipped('WooCommerce is not loaded.');
         }
 
-        // The test site loads WooCommerce without running its installer, so its
-        // roles and capabilities (shop_manager, manage_woocommerce) are missing.
-        // create_roles() is safe to repeat: it only adds what is missing.
-        \WC_Install::create_roles();
+        // The test site loads WooCommerce without running its installer, so the
+        // roles may lack WooCommerce's capabilities (WooCommerce 11 does not add
+        // them from create_roles() here). Give the two order-managing roles the
+        // capability WooCommerce checks before opening an order.
+        if (!get_role('shop_manager')) {
+            add_role('shop_manager', 'Shop manager', ['read' => true]);
+        }
+        foreach (['administrator', 'shop_manager'] as $role) {
+            get_role($role)->add_cap('manage_woocommerce');
+        }
 
         $this->order = wc_create_order();
         $this->order->set_billing_phone('+15550100199');
