@@ -261,9 +261,9 @@ class rayo extends \WP_SMS\Gateway
 
         $detail = '';
         if (is_object($body)) {
-            if (!empty($body->error)) {
+            if (!empty($body->error) && is_scalar($body->error)) {
                 $detail = $body->error;
-            } elseif (!empty($body->result->resultDescription)) {
+            } elseif (!empty($body->result->resultDescription) && is_scalar($body->result->resultDescription)) {
                 $detail = $body->result->resultDescription;
             }
         }

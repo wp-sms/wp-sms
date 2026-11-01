@@ -284,7 +284,7 @@ class Dashboard extends Singleton
                 // NumberParser uses this code both for text that is not a number and for a
                 // number without "+" while International Number Input is on. Like NumberParser,
                 // look at the digits and "+" only, so text such as "John" is not a number.
-                $digits = preg_replace('/[^0-9+]/', '', $value);
+                $digits = preg_replace('/[^0-9+]/', '', \WP_SMS\Components\NumberParser::toEnglishNumerals($value));
                 return Option::getOption('international_mobile') && $digits !== '' && strpos($digits, '+') !== 0
                     ? __('missing the country code', 'wp-sms')
                     : __('not a phone number', 'wp-sms');
