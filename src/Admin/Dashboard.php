@@ -238,22 +238,25 @@ class Dashboard extends Singleton
 
         foreach ($failures as $failure) {
             $value = isset($failure['original_value']) ? (string) $failure['original_value'] : '';
-            if ($value === '' || isset($sendsNow[$value])) {
+            $digits = preg_replace('/[^0-9+]/', '', \WP_SMS\Components\NumberParser::toEnglishNumerals($value));
+            $key = $digits !== '' ? $digits : $value;
+
+            if ($value === '' || isset($sendsNow[$key])) {
                 continue;
             }
 
-            if (isset($stillFailing[$value])) {
-                $stillFailing[$value]['count']++;
+            if (isset($stillFailing[$key])) {
+                $stillFailing[$key]['count']++;
                 continue;
             }
 
             $check = \WP_SMS\Helper::tryNormalizeToE164($value);
             if ($check['success']) {
-                $sendsNow[$value] = true;
+                $sendsNow[$key] = true;
                 continue;
             }
 
-            $stillFailing[$value] = [
+            $stillFailing[$key] = [
                 'value'  => $value,
                 'source' => isset($failure['source']) ? (string) $failure['source'] : 'unknown',
                 'reason' => $this->describeNormalizationFailure($value, $check['code']),

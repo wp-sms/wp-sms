@@ -61,6 +61,15 @@ class DashboardTest extends WP_UnitTestCase
         $this->assertStringContainsString('(missing the country code)', $notice['message']);
     }
 
+    public function testFailureNoticeCombinesEquivalentNumberFormats(): void
+    {
+        $notice = $this->failureNotice(['۲۰۲۵۵۵۰۱۸۸', '2025550188', '202-555-0188'], true);
+
+        $this->assertStringContainsString('1 phone number could not be normalized', $notice['message']);
+        $this->assertSame(1, substr_count($notice['message'], 'missing the country code'));
+        $this->assertStringContainsString('3 times', $notice['message']);
+    }
+
     private function failureNotice(array $values, bool $internationalInput = false): ?array
     {
         wp_set_current_user(self::factory()->user->create(['role' => 'administrator']));
