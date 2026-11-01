@@ -202,5 +202,6 @@ class MobileNumberUtilsTest extends WP_UnitTestCase
         $order->save();
 
         $this->assertSame($orderPhone, Helper::getWooCommerceCustomerNumberByOrderId($order->get_id()));
+        $this->assertSame($orderPhone, Helper::getUserMobileNumberByUserId($userId, ['order_id' => $order->get_id()]));
     }
 }

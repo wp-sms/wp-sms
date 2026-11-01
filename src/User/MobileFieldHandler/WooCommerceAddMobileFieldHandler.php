@@ -42,9 +42,28 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
         //add_action('wp_enqueue_scripts', [$this, 'checkoutMobileFieldInlineStyle']);
     }
 
-    public function getMobileNumberByUserId($userId)
+    public function getMobileNumberByUserId($userId, $args = [])
     {
-        $mobileNumber = get_user_meta($userId, $this->getUserMobileFieldName(), true);
+        $mobileNumber = '';
+
+        if (!empty($args['order_id']) && function_exists('wc_get_order')) {
+            $order = wc_get_order($args['order_id']);
+
+            if ($order) {
+                $fieldName   = $this->getUserMobileFieldName();
+                $mobileNumber = $order->get_meta($fieldName, true);
+
+                // Backward compatibility: older orders stored this field with an underscore.
+                if (!$mobileNumber) {
+                    $mobileNumber = $order->get_meta('_' . $fieldName, true);
+                }
+            }
+        }
+
+        if (!$mobileNumber) {
+            $mobileNumber = get_user_meta($userId, $this->getUserMobileFieldName(), true);
+        }
+
         return apply_filters('wp_sms_user_mobile_number', $mobileNumber, $userId);
     }
 
