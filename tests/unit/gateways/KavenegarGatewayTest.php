@@ -195,6 +195,35 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         $this->assertSame(100, mb_strlen($clean->invoke($this->gateway, str_repeat('x', 150), 'token')));
     }
 
+    /** ✅ Test: a partial template send preserves delivered recipients and reports only failures */
+    public function test_partial_template_send_preserves_successes()
+    {
+        $this->gateway->to               = ['2025550101', '2025550102', '2025550103'];
+        $this->gateway->msg              = 'Hello %name%|order';
+        $this->gateway->messageVariables = ['%name%' => 'Jane Smith'];
+
+        $this->gateway->expects($this->exactly(3))
+            ->method('request')
+            ->willReturnOnConsecutiveCalls(
+                $this->makeResponse(200, 'OK'),
+                $this->makeResponse(424, 'template not found'),
+                $this->makeResponse(200, 'OK')
+            );
+
+        $this->gateway->expects($this->exactly(2))
+            ->method('log')
+            ->withConsecutive(
+                [$this->anything(), $this->anything(), ['2025550101', '2025550103'], $this->anything(), 'success'],
+                [$this->anything(), $this->anything(), ['2025550102'], $this->anything(), 'error']
+            );
+
+        $response = $this->gateway->SendSMS();
+
+        $this->assertNotWPError($response);
+        $this->assertSame(206, $response->status);
+        $this->assertSame(['success' => 2, 'failure' => 1], (array)$response->summary);
+    }
+
     /** ✅ Test: a failed template send says why it failed */
     public function test_failed_template_send_explains_the_reason()
     {

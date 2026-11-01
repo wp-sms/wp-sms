@@ -338,10 +338,11 @@ class kavenegar extends Gateway
 
     /**
      * Handle and log template (batch) send response.
-     * Throws Exception on partial/full failure with comma-separated failed numbers.
+     * Returns the aggregate response for full or partial success and throws only
+     * when every recipient failed.
      *
      * @param array $response
-     * @return object  Casted object on full success
+     * @return object
      * @throws Exception
      */
     private function handleTemplateSendResponseOrThrow($response)
@@ -396,10 +397,9 @@ class kavenegar extends Gateway
         }
 
         $status = $response['status'] ?? 0;
+        $obj    = (object)$response;
 
         if ($status == 1) {
-            $obj = (object)$response;
-
             $this->log($this->from, $this->msg, $this->to, $summary);
 
             /**
@@ -413,8 +413,19 @@ class kavenegar extends Gateway
         }
 
         if ($status == 206) {
-            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-            throw new Exception($summary);
+            // Keep successful and failed recipients in separate outbox rows. Treating
+            // the aggregate as a whole-send error can cause delivered messages to be retried.
+            $this->log($this->from, $this->msg, $successNumbers, $summary);
+            $this->log($this->from, $this->msg, $failedNumbers, $summary, 'error');
+
+            /**
+             * Fires after one or more SMS messages are sent.
+             *
+             * @param object $response API response object.
+             */
+            do_action('wp_sms_send', $obj);
+
+            return $obj;
         }
 
         // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
