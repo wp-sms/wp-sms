@@ -12,10 +12,13 @@ class RayoGatewayTest extends WP_UnitTestCase
     private $requests = [];
     private $httpInterceptor;
     private $reply;
+    private $originalGateway;
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->originalGateway = $GLOBALS['sms'] ?? null;
 
         remove_all_filters('wp_sms_to');
         remove_all_filters('wp_sms_from');
@@ -50,6 +53,12 @@ class RayoGatewayTest extends WP_UnitTestCase
         remove_filter('pre_http_request', $this->httpInterceptor, 10);
         $this->requests = [];
 
+        if ($this->originalGateway === null) {
+            unset($GLOBALS['sms']);
+        } else {
+            $GLOBALS['sms'] = $this->originalGateway;
+        }
+
         parent::tearDown();
     }
 
@@ -62,6 +71,7 @@ class RayoGatewayTest extends WP_UnitTestCase
         $gateway->platform = $platform;
         $gateway->to       = ['+306912345678', '00306912345679', '306912345670'];
         $gateway->msg      = 'Hello from WSMS';
+        $GLOBALS['sms']    = $gateway;
 
         return $gateway;
     }
