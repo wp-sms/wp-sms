@@ -88,6 +88,16 @@ class AdminHandlerOrderReceiverTest extends WP_UnitTestCase
         $this->assertSame($this->order->get_id(), $this->editableOrderId(), $this->why());
     }
 
+    public function testClassicAddOrderScreenWithAPostIdGetsNoOrder()
+    {
+        wp_set_current_user(self::factory()->user->create(['role' => 'administrator']));
+        set_current_screen('shop_order');
+        get_current_screen()->action = 'add';
+        $_GET['post'] = (string) $this->order->get_id();
+
+        $this->assertSame(0, $this->editableOrderId());
+    }
+
     public function testAdministratorOnTheHposOrderScreenGetsTheOrder()
     {
         wp_set_current_user(self::factory()->user->create(['role' => 'administrator']));

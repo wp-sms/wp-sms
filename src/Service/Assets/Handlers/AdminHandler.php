@@ -301,7 +301,9 @@ class AdminHandler extends BaseAssets
             $isEdit   = isset($_GET['action']) && $_GET['action'] === 'edit';
             $order_id = $isEdit && isset($_GET['id']) ? absint($_GET['id']) : 0;
         } else {
-            $order_id = isset($_GET['post']) ? absint($_GET['post']) : 0;
+            // WordPress uses the same screen id for post.php and post-new.php.
+            // A crafted ?post= on the add screen must not expose an existing order.
+            $order_id = $screen->action !== 'add' && isset($_GET['post']) ? absint($_GET['post']) : 0;
         }
 
         if (!$order_id || !wc_get_order($order_id)) {
