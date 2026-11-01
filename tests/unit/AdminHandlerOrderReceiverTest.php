@@ -79,7 +79,7 @@ class AdminHandlerOrderReceiverTest extends WP_UnitTestCase
         set_current_screen('shop_order');
         $_GET['post'] = (string) $this->order->get_id();
 
-        $this->assertSame($this->order->get_id(), $this->editableOrderId());
+        $this->assertSame($this->order->get_id(), $this->editableOrderId(), $this->why());
     }
 
     public function testAdministratorOnTheHposOrderScreenGetsTheOrder()
@@ -89,7 +89,7 @@ class AdminHandlerOrderReceiverTest extends WP_UnitTestCase
         $_GET['page'] = 'wc-orders';
         $_GET['id']   = (string) $this->order->get_id();
 
-        $this->assertSame($this->order->get_id(), $this->editableOrderId());
+        $this->assertSame($this->order->get_id(), $this->editableOrderId(), $this->why());
     }
 
     public function testAnIdThatIsNotAnOrderGetsNothing()
@@ -112,6 +112,25 @@ class AdminHandlerOrderReceiverTest extends WP_UnitTestCase
         $data = (string) wp_scripts()->get_data('wpsms-admin', 'data');
         $this->assertStringContainsString('"receiver":""', $data);
         $this->assertStringNotContainsString('15550100199', $data);
+    }
+
+    /**
+     * What the checks saw, printed when an expected order id comes back 0.
+     *
+     * @return string
+     */
+    private function why()
+    {
+        $id = $this->order->get_id();
+
+        return sprintf(
+            'screen=%s manage_woocommerce=%s edit_shop_order=%s order_found=%s wc=%s',
+            get_current_screen() ? get_current_screen()->id : 'none',
+            var_export(current_user_can('manage_woocommerce'), true),
+            var_export(current_user_can('edit_shop_order', $id), true),
+            var_export((bool) wc_get_order($id), true),
+            defined('WC_VERSION') ? WC_VERSION : '?'
+        );
     }
 
     /**
