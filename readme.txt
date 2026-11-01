@@ -4,7 +4,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 7.2.10
+Stable tag: 7.2.11
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -186,6 +186,17 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
+= v7.2.11 - 2026-11-02 =
+- **Security:** The admin page script no longer carries a WooCommerce customer's phone number outside the order screen. Only users who can edit an order see its customer's number there. Thanks to Harry Nguyen for reporting this privately.
+- **New:** Rayo SMS gateway (Rayo.gr and RayoSMS.com, Greece and Europe) is available in the free plugin, with a test mode that sends nothing and uses no credits.
+- **Fix:** WooCommerce order SMS go to the phone number saved on the order. A different number on the customer's account, or in the current browsing session, no longer takes its place ([#563](https://github.com/wp-sms/wp-sms/issues/563)).
+- **Fix:** Kavenegar template (pattern) messages with a space in the first three values, such as a full name, are sent again. Kavenegar refused them because the space became an underscore.
+- **Enhancement:** Kavenegar errors explain what to do, for example when the sender line cannot send to a number or the template name is wrong. Failed template messages now show the reason.
+- **Enhancement:** Kavenegar sends long messages and lists of more than 200 numbers without errors.
+- **Enhancement:** Clearer Kavenegar setup guide in the gateway settings.
+- **Enhancement:** The "Recent phone normalization failures" notice lists only numbers that would still fail with the current settings, shows each number once with the reason (for example "wrong number of digits"), and disappears when none are left.
+- **Fix:** The "configure the Mobile field option" notice shows only when WooCommerce is active, and now says which setting to change: "Collect Phone Numbers From" must use a WooCommerce billing option for order SMS.
+
 = v7.2.10 - 2026-10-14 =
 - **New:** Messente is now in the free plugin. You no longer need WSMS Pro to send SMS through Messente. Sites that already use it through Pro keep their settings.
 - **New:** SMSense gateway (smsense.com, global coverage by Global Voice) is available in the free plugin.

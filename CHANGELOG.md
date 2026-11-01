@@ -1,4 +1,5 @@
-v7.2.11 - unreleased
+v7.2.11 - 2026-11-02
+- **Security:** The admin page script no longer carries a WooCommerce customer's phone number outside the order screen. Only users who can edit an order see its customer's number there. Thanks to Harry Nguyen for reporting this privately.
 - **New:** Rayo SMS gateway (Rayo.gr and RayoSMS.com, Greece and Europe) is available in the free plugin, with a test mode that sends nothing and uses no credits.
 - **Fix:** WooCommerce order SMS go to the phone number saved on the order. A different number on the customer's account, or in the current browsing session, no longer takes its place ([#563](https://github.com/wp-sms/wp-sms/issues/563)).
 - **Fix:** Kavenegar template (pattern) messages with a space in the first three values, such as a full name, are sent again. Kavenegar refused them because the space became an underscore.
