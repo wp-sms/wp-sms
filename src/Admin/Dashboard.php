@@ -229,7 +229,7 @@ class Dashboard extends Singleton
      * the current settings and a short reason is attached.
      *
      * @param array $failures Entries from Helper::getRecentNormalizationFailures(), newest first.
-     * @return array<int, array{value: string, source: string, reason: string, count: int}>
+     * @return array<int, array{value: string, sources: array<int, string>, reason: string, count: int}>
      */
     private function getStillFailingNumbers($failures)
     {
@@ -238,6 +238,7 @@ class Dashboard extends Singleton
 
         foreach ($failures as $failure) {
             $value      = isset($failure['original_value']) ? (string) $failure['original_value'] : '';
+            $source     = isset($failure['source']) ? (string) $failure['source'] : 'unknown';
             $normalized = (new \WP_SMS\Components\NumberParser($value))->getNormalizedNumber();
             $key        = $normalized !== '' ? $normalized : $value;
 
@@ -247,6 +248,9 @@ class Dashboard extends Singleton
 
             if (isset($stillFailing[$key])) {
                 $stillFailing[$key]['count']++;
+                if ($source !== '' && $source !== 'unknown' && !in_array($source, $stillFailing[$key]['sources'], true)) {
+                    $stillFailing[$key]['sources'][] = $source;
+                }
                 continue;
             }
 
@@ -257,10 +261,10 @@ class Dashboard extends Singleton
             }
 
             $stillFailing[$key] = [
-                'value'  => $value,
-                'source' => isset($failure['source']) ? (string) $failure['source'] : 'unknown',
-                'reason' => $this->describeNormalizationFailure($value, $check['code']),
-                'count'  => 1,
+                'value'   => $value,
+                'sources' => $source !== '' && $source !== 'unknown' ? [$source] : [],
+                'reason'  => $this->describeNormalizationFailure($value, $check['code']),
+                'count'   => 1,
             ];
         }
 
@@ -481,8 +485,8 @@ class Dashboard extends Singleton
                         /* translators: %d: how many times the same number failed */
                         $details[] = sprintf(_n('%d time', '%d times', $failure['count'], 'wp-sms'), $failure['count']);
                     }
-                    if ($failure['source'] !== '' && $failure['source'] !== 'unknown') {
-                        $details[] = $failure['source'];
+                    if (!empty($failure['sources'])) {
+                        $details[] = implode(', ', $failure['sources']);
                     }
 
                     // renderPhoneHtml wraps in <bdi> so RTL admin layouts keep the leading

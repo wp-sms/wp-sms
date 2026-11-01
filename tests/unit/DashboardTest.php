@@ -81,15 +81,34 @@ class DashboardTest extends WP_UnitTestCase
         $this->assertStringContainsString('2 times', $notice['message']);
     }
 
-    private function failureNotice(array $values, bool $internationalInput = false): ?array
+    public function testFailureNoticePreservesKnownSourcesForGroupedNumbers(): void
+    {
+        $notice = $this->failureNotice(
+            ['2025550188', '202-555-0188', '۲۰۲۵۵۵۰۱۸۸'],
+            true,
+            ['unknown', 'cf7:42', 'gravityforms:7']
+        );
+
+        $this->assertStringContainsString('3 times', $notice['message']);
+        $this->assertStringContainsString('cf7:42', $notice['message']);
+        $this->assertStringContainsString('gravityforms:7', $notice['message']);
+        $this->assertStringNotContainsString('unknown', $notice['message']);
+    }
+
+    private function failureNotice(array $values, bool $internationalInput = false, array $sources = []): ?array
     {
         wp_set_current_user(self::factory()->user->create(['role' => 'administrator']));
         // 2025550123 sends only with a default country code, as on a configured site.
         Option::updateOption('mobile_county_code', '+1');
         Option::updateOption('international_mobile', $internationalInput);
-        update_option(Helper::RECENT_FAILURES_OPTION, array_map(function ($value) {
-            return ['original_value' => $value, 'source' => 'unknown', 'timestamp' => time(), 'reason' => null];
-        }, $values));
+        update_option(Helper::RECENT_FAILURES_OPTION, array_map(function ($value, $index) use ($sources) {
+            return [
+                'original_value' => $value,
+                'source'         => $sources[$index] ?? 'unknown',
+                'timestamp'      => time(),
+                'reason'         => null,
+            ];
+        }, $values, array_keys($values)));
 
         $method = new ReflectionMethod(Dashboard::instance(), 'getAdminNotices');
         $method->setAccessible(true);
