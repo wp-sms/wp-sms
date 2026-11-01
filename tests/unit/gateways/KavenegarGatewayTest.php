@@ -12,6 +12,9 @@ class KavenegarGatewayTest extends WP_UnitTestCase
     /** @var kavenegar */
     protected $gateway;
 
+    /** @var mixed */
+    private $originalGateway;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -20,9 +23,23 @@ class KavenegarGatewayTest extends WP_UnitTestCase
             ->onlyMethods(['request', 'log'])
             ->getMock();
 
+        $this->originalGateway = $GLOBALS['sms'] ?? null;
+        $GLOBALS['sms']        = $this->gateway;
+
         $this->gateway->has_key = 'DUMMY_KEY';
         $this->gateway->from    = '5000';
         $this->gateway->msg     = 'Test Message';
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->originalGateway === null) {
+            unset($GLOBALS['sms']);
+        } else {
+            $GLOBALS['sms'] = $this->originalGateway;
+        }
+
+        parent::tearDown();
     }
 
     private function makeResponse($status = 200, $message = 'OK', $entries = [])
