@@ -144,6 +144,18 @@ class RayoGatewayTest extends WP_UnitTestCase
         $this->assertStringContainsString('no credits', $response->get_error_message());
     }
 
+    public function test_non_scalar_result_code_is_a_clean_error()
+    {
+        $this->reply = function () {
+            return [200, ['result' => ['resultCode' => (object) ['unexpected' => 'value']]]];
+        };
+
+        $response = $this->gateway()->SendSMS();
+
+        $this->assertWPError($response);
+        $this->assertStringContainsString('Rayo error 200', $response->get_error_message());
+    }
+
     public function test_missing_key_or_sender_is_reported_without_a_request()
     {
         $gateway          = $this->gateway();

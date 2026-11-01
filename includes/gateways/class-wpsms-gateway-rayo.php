@@ -254,7 +254,7 @@ class rayo extends \WP_SMS\Gateway
         $body = json_decode(wp_remote_retrieve_body($response));
 
         if ($code >= 200 && $code < 300 && is_object($body)) {
-            if (!$checkResultCode || (isset($body->result->resultCode) && (string)$body->result->resultCode === '1')) {
+            if (!$checkResultCode || (isset($body->result->resultCode) && is_scalar($body->result->resultCode) && (string)$body->result->resultCode === '1')) {
                 return $body;
             }
         }
