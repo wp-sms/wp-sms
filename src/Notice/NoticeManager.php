@@ -79,7 +79,8 @@ class NoticeManager extends AbstractNotice
     {
         $mobileFieldStatus = Option::getOption('add_mobile_field');
 
-        if ($mobileFieldStatus !== 'add_mobile_field_in_wc_billing' && $mobileFieldStatus !== 'use_phone_field_in_wc_billing') {
+        // WooCommerce order SMS reads the number from billing, so a profile-only mobile field does not reach customers.
+        if (class_exists('WooCommerce') && $mobileFieldStatus !== 'add_mobile_field_in_wc_billing' && $mobileFieldStatus !== 'use_phone_field_in_wc_billing') {
             $phoneLink = sprintf(
                 '<a href="%s">%s</a>',
                 esc_url(admin_url('admin.php?page=wsms&tab=phone')),
@@ -87,7 +88,7 @@ class NoticeManager extends AbstractNotice
             );
             $this->registerNotice('woocommerce_mobile_field', sprintf(
                 /* translators: %s: link to Phone settings page */
-                __('You need to configure the Mobile field option in %s to send SMS to customers.', 'wp-sms'),
+                __('WooCommerce order SMS needs a billing phone number. In %s, set "Collect Phone Numbers From" to one of the WooCommerce options.', 'wp-sms'),
                 $phoneLink
             ), true, 'admin.php?page=wsms&tab=phone');
         }

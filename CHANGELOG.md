@@ -1,3 +1,12 @@
+v7.2.11 - 2026-11-02
+- **Security:** Admin pages no longer show a WooCommerce customer's phone number to users who cannot edit that order. Thanks to Harry Nguyen for reporting it.
+- **New:** Rayo SMS gateway (Greece and Europe) in the free plugin, with a test mode that sends nothing.
+- **Fix:** WooCommerce order SMS use the phone number on the order. The customer's account number is used only when the order has none ([#563](https://github.com/wp-sms/wp-sms/issues/563)).
+- **Fix:** Kavenegar template messages send again when one of the first three values has a space. Kavenegar allows no spaces there, so "Jane Smith" is sent as "JaneSmith"; use the fourth or fifth value for text with spaces.
+- **Enhancement:** Kavenegar shows clearer errors, sends long messages, and handles more than 200 numbers.
+- **Enhancement:** The phone failures notice lists only numbers that still fail, once each, with the reason.
+- **Fix:** The WooCommerce mobile field notice shows only when WooCommerce is active, and names the setting to change.
+
 v7.2.10 - 2026-10-14
 - **New:** Messente is now in the free plugin. You no longer need WSMS Pro to send SMS through Messente. Sites that already use it through Pro keep their settings.
 - **New:** SMSense gateway (smsense.com, global coverage by Global Voice) is available in the free plugin.

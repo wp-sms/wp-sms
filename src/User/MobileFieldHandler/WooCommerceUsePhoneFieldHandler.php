@@ -21,28 +21,32 @@ class WooCommerceUsePhoneFieldHandler extends AbstractFieldHandler
 
     public function getMobileNumberByUserId($userId, $args = [])
     {
-        $mobileNumber = get_user_meta($userId, $this->getUserMobileFieldName(), true);
+        $mobileNumber = '';
+
+        if (!empty($args['order_id'])) {
+            $order = wc_get_order($args['order_id']);
+
+            if ($order && method_exists($order, 'get_billing_phone')) {
+                $mobileNumber = $order->get_billing_phone();
+            }
+        }
+
+        if (!$mobileNumber) {
+            $mobileNumber = get_user_meta($userId, $this->getUserMobileFieldName(), true);
+        }
 
         // backward compatibility
         if (!$mobileNumber) {
             $mobileNumber = get_user_meta($userId, '_billing_phone', true);
         }
 
-        // backward compatibility
-        if (!$mobileNumber && isset(WC()->session)) {
+        // Backward compatibility. The session belongs to whoever is browsing right now, so it is
+        // never used for an order: an order notification could otherwise go to someone else (#563).
+        if (!$mobileNumber && empty($args['order_id']) && isset(WC()->session)) {
             $customerSessionData = WC()->session->get('customer');
 
             if (isset($customerSessionData['phone'])) {
                 $mobileNumber = $customerSessionData['phone'];
-            }
-        }
-
-        // Backward compatibility with new custom WooCommerce order table.
-        if (!$mobileNumber and isset($args['order_id'])) {
-            $order = wc_get_order($args['order_id']);
-
-            if ($order && method_exists($order, 'get_billing_phone')) {
-                $mobileNumber = $order->get_billing_phone();
             }
         }
 

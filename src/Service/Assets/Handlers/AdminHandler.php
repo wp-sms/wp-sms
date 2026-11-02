@@ -140,16 +140,8 @@ class AdminHandler extends BaseAssets
         wp_enqueue_script('wpsms-select2', $this->getUrl('js/select2.min.js'), [], $this->getVersion(), false);
 
         // Main admin script
-        $order_id = 0;
-
-        // Backward compatibility with new custom WooCommerce order table.
-        if (isset($_GET['page']) && $_GET['page'] == 'wc-orders' && isset($_GET['id'])) {
-            $order_id = sanitize_text_field($_GET['id']);
-        } elseif (isset($_GET['post']) && $_GET['post']) {
-            $order_id = sanitize_text_field($_GET['post']);
-        }
-
-        $customer_mobile = \WP_SMS\Helper::getWooCommerceCustomerNumberByOrderId($order_id);
+        $order_id        = $this->getEditableOrderId();
+        $customer_mobile = $order_id ? \WP_SMS\Helper::getWooCommerceCustomerNumberByOrderId($order_id) : '';
 
         $admin_script_deps = ['jquery', 'wp-color-picker', 'jquery-ui-spinner', 'wp-sms-global-script'];
         $statsWidget       = new \WP_SMS\Widget\Widgets\StatsWidget();
@@ -280,5 +272,49 @@ class AdminHandler extends BaseAssets
             'search'                       => __('Search ...', 'wp-sms'),
             'users_with_number'            => __('Users have the mobile number.', 'wp-sms')
         ];
+    }
+
+    /**
+     * The order whose customer number the "Send SMS" box on the WooCommerce
+     * order screen may show, or 0.
+     *
+     * The number is only resolved on the order edit screen (legacy post screen
+     * or the HPOS wc-orders screen), and only for a user WooCommerce itself lets
+     * edit that order. Any other admin page, or a user without that right, gets 0, so a `?post=` or `?id=` in the URL of another screen
+     * can no longer read a customer's phone number.
+     *
+     * @return int
+     */
+    private function getEditableOrderId()
+    {
+        if (!function_exists('get_current_screen') || !function_exists('wc_get_order')) {
+            return 0;
+        }
+
+        $screen = get_current_screen();
+        if (!$screen || !in_array($screen->id, ['shop_order', 'woocommerce_page_wc-orders', 'admin_page_wc-orders'], true)) {
+            return 0;
+        }
+
+        if ($screen->id !== 'shop_order') {
+            // The same screen lists orders; only its edit view is one order.
+            $isEdit   = isset($_GET['action']) && $_GET['action'] === 'edit';
+            $order_id = $isEdit && isset($_GET['id']) ? absint($_GET['id']) : 0;
+        } else {
+            // WordPress uses the same screen id for post.php and post-new.php.
+            // A crafted ?post= on the add screen must not expose an existing order.
+            $order_id = $screen->action !== 'add' && isset($_GET['post']) ? absint($_GET['post']) : 0;
+        }
+
+        if (!$order_id || !wc_get_order($order_id)) {
+            return 0;
+        }
+
+        // The same check WooCommerce runs before it opens the order screen.
+        if (!current_user_can('edit_shop_order', $order_id) && !current_user_can('manage_woocommerce')) {
+            return 0;
+        }
+
+        return $order_id;
     }
 }

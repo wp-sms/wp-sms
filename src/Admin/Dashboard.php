@@ -222,6 +222,85 @@ class Dashboard extends Singleton
     }
 
     /**
+     * The logged normalization failures that would still fail today, one entry per number.
+     *
+     * The log keeps every failed send, so the same number can appear several times and a
+     * number can stop failing once the settings change. Each number is checked again with
+     * the current settings and a short reason is attached.
+     *
+     * @param array $failures Entries from Helper::getRecentNormalizationFailures(), newest first.
+     * @return array<int, array{value: string, sources: array<int, string>, reason: string, count: int}>
+     */
+    private function getStillFailingNumbers($failures)
+    {
+        $stillFailing = [];
+        $sendsNow     = [];
+
+        foreach ($failures as $failure) {
+            $value      = isset($failure['original_value']) ? (string) $failure['original_value'] : '';
+            $source     = isset($failure['source']) ? (string) $failure['source'] : 'unknown';
+            $normalized = (new \WP_SMS\Components\NumberParser($value))->getNormalizedNumber();
+            $key        = $normalized !== '' ? $normalized : $value;
+
+            if ($value === '' || isset($sendsNow[$key])) {
+                continue;
+            }
+
+            if (isset($stillFailing[$key])) {
+                $stillFailing[$key]['count']++;
+                if ($source !== '' && $source !== 'unknown' && !in_array($source, $stillFailing[$key]['sources'], true)) {
+                    $stillFailing[$key]['sources'][] = $source;
+                }
+                continue;
+            }
+
+            $check = \WP_SMS\Helper::tryNormalizeToE164($value);
+            if ($check['success']) {
+                $sendsNow[$key] = true;
+                continue;
+            }
+
+            $stillFailing[$key] = [
+                'value'   => $value,
+                'sources' => $source !== '' && $source !== 'unknown' ? [$source] : [],
+                'reason'  => $this->describeNormalizationFailure($value, $check['code']),
+                'count'   => 1,
+            ];
+        }
+
+        return array_values($stillFailing);
+    }
+
+    /**
+     * A short, plain reason for a number that cannot be normalized.
+     *
+     * @param string      $value
+     * @param string|null $code Error code from Helper::tryNormalizeToE164().
+     * @return string
+     */
+    private function describeNormalizationFailure($value, $code)
+    {
+        switch ($code) {
+            case 'invalid_length':
+                return __('wrong number of digits', 'wp-sms');
+            case 'invalid_country_code':
+                return __('country not allowed in Phone settings', 'wp-sms');
+            case 'missing_country_code':
+                return __('no default country code is set', 'wp-sms');
+            case 'invalid_number':
+                // NumberParser uses this code both for text that is not a number and for a
+                // number without "+" while International Number Input is on. Like NumberParser,
+                // look at the digits and "+" only, so text such as "John" is not a number.
+                $digits = preg_replace('/[^0-9+]/', '', \WP_SMS\Components\NumberParser::toEnglishNumerals($value));
+                return Option::getOption('international_mobile') && $digits !== '' && strpos($digits, '+') !== 0
+                    ? __('missing the country code', 'wp-sms')
+                    : __('not a phone number', 'wp-sms');
+            default:
+                return __('not a valid phone number', 'wp-sms');
+        }
+    }
+
+    /**
      * Collect active admin notices for the React dashboard
      *
      * Reads static notices registered by NoticeManager and the anonymous data
@@ -391,19 +470,31 @@ class Dashboard extends Singleton
         // is empty so we don't add noise on healthy sites. The "dismiss" button (rendered
         // automatically by the React notice component) clears the underlying log via a hook
         // in the dismissNotice REST handler — see AdminNoticesApi::dismissNotice.
-        $recentFailures = \WP_SMS\Helper::getRecentNormalizationFailures();
-        if (
-            current_user_can('manage_options') &&
-            !empty($recentFailures)
-        ) {
+        //
+        // Each logged number is checked again with the current settings. One that would send
+        // now (for example after the default country code was set) is left out, so the notice
+        // lists only numbers that still fail and disappears once none do.
+        $recentFailures = current_user_can('manage_options')
+            ? $this->getStillFailingNumbers(\WP_SMS\Helper::getRecentNormalizationFailures())
+            : [];
+        if (!empty($recentFailures)) {
             $preview = implode('<br>', array_map(
                 function ($failure) {
+                    $details = [$failure['reason']];
+                    if ($failure['count'] > 1) {
+                        /* translators: %d: how many times the same number failed */
+                        $details[] = sprintf(_n('%d time', '%d times', $failure['count'], 'wp-sms'), $failure['count']);
+                    }
+                    if (!empty($failure['sources'])) {
+                        $details[] = implode(', ', $failure['sources']);
+                    }
+
                     // renderPhoneHtml wraps in <bdi> so RTL admin layouts keep the leading
                     // `+` on the left of the digits.
                     return sprintf(
                         '<code>%s</code> (%s)',
-                        \WP_SMS\Helper::renderPhoneHtml($failure['original_value']),
-                        esc_html($failure['source'])
+                        \WP_SMS\Helper::renderPhoneHtml($failure['value']),
+                        esc_html(implode(', ', $details))
                     );
                 },
                 array_slice($recentFailures, 0, 5)
