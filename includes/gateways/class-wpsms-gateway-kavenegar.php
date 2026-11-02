@@ -94,6 +94,8 @@ class kavenegar extends Gateway
             ],
         ];
 
+        $this->documentUrl = 'https://wsms.io/fa/docs/kavenegar-gateway-setup/';
+
         $this->help = '
 <div dir="rtl">
   <p><strong>شماره ارسال کننده:</strong> شماره خط خود را از پنل کاوه نگار وارد کنید (مثلا 1000xxxxxxxxxx).</p>
@@ -102,8 +104,10 @@ class kavenegar extends Gateway
     <li>در پنل کاوه نگار یک الگو بسازید و به جای هر مقدار، به ترتیب <code>%token</code>، <code>%token2</code>، <code>%token3</code>، <code>%token10</code> و <code>%token20</code> بنویسید.<br>
       مثال: <code>سلام %token، سفارش %token2 ثبت شد.</code></li>
     <li>در افزونه همان پیام را با متغیرهای افزونه بنویسید و در انتها بعد از <code>|</code> نام الگو را بگذارید.<br>
-      مثال: <code>سلام %billing_first_name%، سفارش %order_id% ثبت شد.|order-confirm</code></li>
+      مثال: <code>سلام %billing_first_name%، سفارش %order_id% ثبت شد.|order-confirm</code><br>
+      بعد از <code>|</code> از ستون «نام الگو» در پنل استفاده کنید (مثلا <code>order</code>)، نه شناسه عددی.</li>
   </ol>
+  <p>الگو فقط برای پیام های خودکار دارای متغیر کار می کند، مانند کد ورود و پیامک های ووکامرس. ارسال دستی و گروهی را بدون <code>|</code> بنویسید.</p>
   <p>اولین متغیر پیام جای <code>%token</code> می نشیند، دومی جای <code>%token2</code> و همین طور تا پنج متغیر. <code>%token</code> تا <code>%token3</code> فاصله نمی پذیرند و فاصله ها حذف می شوند؛ مقدار چند کلمه ای (مثل نام کامل) را چهارم یا پنجم بگذارید. بدون <code>|</code> و نام الگو، پیام به صورت عادی ارسال می شود.</p>
 </div>';
     }
@@ -162,7 +166,15 @@ class kavenegar extends Gateway
         $this->setTemplateIdAndMessageBody();
 
         try {
-            if (!empty($this->templateId) && !empty($this->messageVariables)) {
+            if (!empty($this->templateId) && empty($this->messageVariables)) {
+                // Lookup needs at least %token, and only automatic messages carry values for
+                // it. Sending anyway would drop everything after "|" without saying so.
+                $response = new WP_Error('template-needs-variables', sprintf(
+                    /* translators: %s: the text after "|" in the message */
+                    __('Not sent. "%s" after "|" asks for a Kavenegar template, but templates only work on automatic messages with variables, such as sign-in codes and WooCommerce messages. Remove the "|" part to send this as a normal SMS.', 'wp-sms'),
+                    $this->templateId
+                ));
+            } elseif (!empty($this->templateId)) {
                 $response = $this->sendTemplateSMS();
             } else {
                 $response = $this->sendSimpleSMS();
@@ -471,7 +483,7 @@ class kavenegar extends Gateway
             '411' => __('The recipient number is not valid.', 'wp-sms'),
             '412' => __('This sender line cannot send to this number. Lines starting with 0018 only send outside Iran; use your domestic line from the Kavenegar panel.', 'wp-sms'),
             '418' => __('Your Kavenegar credit is too low.', 'wp-sms'),
-            '424' => __('Template not found. Check the template name after "|" and that Kavenegar has approved it.', 'wp-sms'),
+            '424' => __('Template not found. After "|" use the template name from your Kavenegar panel (for example order), not its number, and check that Kavenegar has approved it.', 'wp-sms'),
             '431' => __('A template value has a character Kavenegar does not accept.', 'wp-sms'),
             '432' => __('The template in your Kavenegar panel has no %token.', 'wp-sms'),
             '501' => __('This Kavenegar account can only send to its owner\'s phone number. Ask Kavenegar to activate the account for other numbers.', 'wp-sms'),

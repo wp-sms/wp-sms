@@ -146,6 +146,20 @@ class KavenegarGatewayTest extends WP_UnitTestCase
     }
 
     /** ✅ Test: more than 200 numbers are sent in calls of at most 200 (Kavenegar error 414 above that) */
+    public function test_a_template_without_variables_is_refused_and_nothing_is_sent()
+    {
+        $this->gateway->to  = ['09120000000'];
+        $this->gateway->msg = 'Hello everyone|order';
+
+        $this->gateway->expects($this->never())->method('request');
+
+        $result = $this->gateway->SendSMS();
+
+        $this->assertInstanceOf(\WP_Error::class, $result);
+        $this->assertSame('template-needs-variables', $result->get_error_code());
+        $this->assertStringContainsString('"order"', $result->get_error_message());
+    }
+
     public function test_send_simple_sms_splits_into_batches_of_200()
     {
         remove_all_filters('wp_sms_to');
