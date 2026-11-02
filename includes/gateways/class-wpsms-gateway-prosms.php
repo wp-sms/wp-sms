@@ -9,6 +9,8 @@ use WP_Error;
 
 class prosms extends \WP_SMS\Gateway
 {
+    public $documentUrl = 'https://wsms.io/docs/prosms-gateway-setup';
+
     private $wsdl_link = 'https://api.prosms.se/v1';
     public $tariff = 'https://prosms.se/';
     public $flash = false;

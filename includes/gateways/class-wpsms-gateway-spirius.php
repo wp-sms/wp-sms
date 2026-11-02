@@ -6,6 +6,8 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 class spirius extends \WP_SMS\Gateway
 {
+    public $documentUrl = 'https://wsms.io/docs/spirius-gateway-setup';
+
     private $wsdl_link = "https://get.spiricom.spirius.com:55001/cgi-bin/";
     public $tariff = "http://www.spirius.com/";
     public $unitrial = false;

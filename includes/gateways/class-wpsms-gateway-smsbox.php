@@ -12,7 +12,7 @@ class smsbox extends \WP_SMS\Gateway
     public $unit;
     public $flash = "disabled";
     public $isflash = false;
-    public $documentUrl = 'https://wsms.io/docs/gateway-configuration';
+    public $documentUrl = 'https://wsms.io/docs/smsbox-gateway-setup';
     public $gatewayFields = [
         'from'    => [
             'id'           => 'gateway_sender_id',

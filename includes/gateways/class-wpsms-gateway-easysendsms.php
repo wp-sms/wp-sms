@@ -9,6 +9,8 @@ use WP_Error;
 
 class easysendsms extends \WP_SMS\Gateway
 {
+    public $documentUrl = 'https://wsms.io/docs/easysendsms-gateway-setup';
+
     private $wsdl_link = "https://api.easysendsms.app";
     public $tariff = "https://easysendsms.com/";
     public $unitrial = false;

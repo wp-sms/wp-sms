@@ -9,6 +9,8 @@ use WP_Error;
 
 class oursms extends \WP_SMS\Gateway
 {
+    public $documentUrl = 'https://wsms.io/docs/oursms-gateway-setup';
+
     private $wsdl_link = "https://api.oursms.com/api-a";
     public $tariff = "https://www.oursms.net";
     public $unitrial = false;

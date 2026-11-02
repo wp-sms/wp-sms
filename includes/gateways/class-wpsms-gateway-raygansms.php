@@ -6,6 +6,8 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 class raygansms extends \WP_SMS\Gateway
 {
+    public $documentUrl = 'https://wsms.io/fa/docs/raygansms-gateway-setup';
+
     private $wsdl_link = "http://smspanel.trez.ir/api/";
     public $tariff = "https://raygansms.com/";
     public $unitrial = true;

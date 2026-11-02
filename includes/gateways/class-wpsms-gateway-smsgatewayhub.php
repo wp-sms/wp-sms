@@ -8,6 +8,8 @@ use WP_SMS\Helper;
 
 class smsgatewayhub extends \WP_SMS\Gateway
 {
+    public $documentUrl = 'https://wsms.io/docs/smsgatewayhub-gateway-setup';
+
     private $wsdl_link = "https://www.smsgatewayhub.com/api/mt";
     public $tariff = "https://www.smsgatewayhub.com";
     public $unitrial = false;

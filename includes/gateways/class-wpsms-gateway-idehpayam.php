@@ -6,6 +6,8 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 class idehpayam extends \WP_SMS\Gateway
 {
+    public $documentUrl = 'https://wsms.io/fa/docs/idehpayam-gateway-setup';
+
     private $wsdl_link = "http://87.107.124.66/webservice/send.php?wsdl";
     public $tariff = "https://www.idehpayam.com/";
     public $unitrial = true;
