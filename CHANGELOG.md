@@ -1,3 +1,6 @@
+v7.2.12 - unreleased
+- **Fix:** Kavenegar: a message with "|template" but no variables, such as a hand-written send, now stops with a clear error instead of going out as a normal SMS without the text after "|". The "template not found" error says to use the template name, not its number.
+
 v7.2.11 - 2026-11-02
 - **Security:** Admin pages no longer show a WooCommerce customer's phone number to users who cannot edit that order. Thanks to Harry Nguyen for reporting it.
 - **New:** Rayo SMS gateway (Greece and Europe), with a test mode that sends nothing.
