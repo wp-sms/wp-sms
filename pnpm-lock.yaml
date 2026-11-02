@@ -98,13 +98,13 @@ importers:
         version: 14.6.1(@testing-library/dom@10.4.1)
       '@vitejs/plugin-react':
         specifier: ^4.3.0
-        version: 4.7.0(supports-color@8.1.1)(vite@6.4.5(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1))
+        version: 4.7.0(supports-color@8.1.1)(vite@6.4.4(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1))
       '@wordpress/browserslist-config':
         specifier: ^6.40.0
         version: 6.40.0
       '@wordpress/components':
         specifier: ^23.8.0
-        version: 23.9.0(@babel/helper-module-imports@7.29.7(supports-color@8.1.1))(@babel/types@7.29.7)(@types/react@18.3.26)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@8.1.1)(vite@6.4.5(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1))
+        version: 23.9.0(@babel/helper-module-imports@7.29.7(supports-color@8.1.1))(@babel/types@7.29.7)(@types/react@18.3.26)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@8.1.1)(vite@6.4.4(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1))
       '@wordpress/dependency-extraction-webpack-plugin':
         specifier: ^5.6.0
         version: 5.9.0(webpack@5.102.1)
@@ -149,7 +149,7 @@ importers:
         version: 6.4.5(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1)
       vite-plugin-compression:
         specifier: ^0.5.1
-        version: 0.5.1(supports-color@8.1.1)(vite@6.4.5(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1))
+        version: 0.5.1(supports-color@8.1.1)(vite@6.4.4(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1))
 
 packages:
 
@@ -6788,8 +6788,8 @@ packages:
   node-addon-api@7.1.1:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
 
-  node-forge@1.3.1:
-    resolution: {integrity: sha512-dPEtOeMvF9VMcYV/1Wb8CPoVAXtp6MKMlcbAt4ddqmGqUJ6fQZFXkNZNkNlfevtNkGtaSoXf/vNNNSvgrdXwtA==}
+  node-forge@1.4.2:
+    resolution: {integrity: sha512-rRtAR5XLJ8gCKd9du4qrKAsgCG1ObGP4gLeNJMa4vYSeq4bmBMOJk5IHkrviBV0q7uoAJlVd8HEQYQSVUb4FGQ==}
     engines: {node: '>= 6.13.0'}
 
   node-gyp@8.4.1:
@@ -13227,7 +13227,7 @@ snapshots:
       '@use-gesture/core': 10.3.1
       react: 18.3.1
 
-  '@vitejs/plugin-react@4.7.0(supports-color@8.1.1)(vite@6.4.5(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1))':
+  '@vitejs/plugin-react@4.7.0(supports-color@8.1.1)(vite@6.4.4(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1))':
     dependencies:
       '@babel/core': 7.29.7(supports-color@8.1.1)
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.29.7(supports-color@8.1.1))
@@ -13358,7 +13358,7 @@ snapshots:
 
   '@wordpress/browserslist-config@6.40.0': {}
 
-  '@wordpress/components@23.9.0(@babel/helper-module-imports@7.29.7(supports-color@8.1.1))(@babel/types@7.29.7)(@types/react@18.3.26)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@8.1.1)(vite@6.4.5(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1))':
+  '@wordpress/components@23.9.0(@babel/helper-module-imports@7.29.7(supports-color@8.1.1))(@babel/types@7.29.7)(@types/react@18.3.26)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@8.1.1)(vite@6.4.4(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1))':
     dependencies:
       '@babel/runtime': 7.29.2
       '@emotion/cache': 11.14.0
@@ -13408,7 +13408,7 @@ snapshots:
       remove-accents: 0.4.4
       use-lilius: 2.0.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       uuid: 8.3.2
-      valtio: 1.7.0(@babel/helper-module-imports@7.29.7(supports-color@8.1.1))(@babel/types@7.29.7)(babel-plugin-macros@3.1.0)(react@18.3.1)(vite@6.4.5(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1))
+      valtio: 1.7.0(@babel/helper-module-imports@7.29.7(supports-color@8.1.1))(@babel/types@7.29.7)(babel-plugin-macros@3.1.0)(react@18.3.1)(vite@6.4.4(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1))
     transitivePeerDependencies:
       - '@babel/helper-module-imports'
       - '@babel/types'
@@ -17963,7 +17963,7 @@ snapshots:
   node-addon-api@7.1.1:
     optional: true
 
-  node-forge@1.3.1: {}
+  node-forge@1.4.2: {}
 
   node-gyp@8.4.1(supports-color@8.1.1):
     dependencies:
@@ -19152,7 +19152,7 @@ snapshots:
   selfsigned@2.4.1:
     dependencies:
       '@types/node-forge': 1.3.14
-      node-forge: 1.3.1
+      node-forge: 1.4.2
 
   semver@5.7.2: {}
 
@@ -20154,7 +20154,7 @@ snapshots:
 
   validate-npm-package-name@5.0.1: {}
 
-  valtio@1.7.0(@babel/helper-module-imports@7.29.7(supports-color@8.1.1))(@babel/types@7.29.7)(babel-plugin-macros@3.1.0)(react@18.3.1)(vite@6.4.5(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1)):
+  valtio@1.7.0(@babel/helper-module-imports@7.29.7(supports-color@8.1.1))(@babel/types@7.29.7)(babel-plugin-macros@3.1.0)(react@18.3.1)(vite@6.4.4(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1)):
     dependencies:
       proxy-compare: 2.3.0
       use-sync-external-store: 1.2.0(react@18.3.1)
@@ -20167,7 +20167,7 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite-plugin-compression@0.5.1(supports-color@8.1.1)(vite@6.4.5(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1)):
+  vite-plugin-compression@0.5.1(supports-color@8.1.1)(vite@6.4.4(@types/node@24.10.1)(jiti@1.21.7)(sass@1.95.1)(terser@5.44.1)(yaml@2.8.1)):
     dependencies:
       chalk: 4.1.2
       debug: 4.4.3(supports-color@8.1.1)
