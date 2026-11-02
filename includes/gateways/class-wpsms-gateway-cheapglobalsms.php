@@ -6,6 +6,8 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 class cheapglobalsms extends \WP_SMS\Gateway
 {
+    public $documentUrl = 'https://wsms.io/docs/cheapglobalsms-gateway-setup';
+
     private $wsdl_link = "http://cheapglobalsms.com/api_v1";
     public $tariff = "https://cheapglobalsms.com";
     public $unitrial = false;

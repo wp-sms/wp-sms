@@ -9,6 +9,8 @@ use WP_Error;
 
 class signalads extends \WP_SMS\Gateway
 {
+    public $documentUrl = 'https://wsms.io/docs/signalads-gateway-setup';
+
     private $wsdl_link = "http://panel.signalads.com/rest/api/v1";
     public $tariff = "https://signalads.com";
     public $unitrial = true;

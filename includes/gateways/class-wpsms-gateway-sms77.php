@@ -6,6 +6,8 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 class sms77 extends \WP_SMS\Gateway
 {
+    public $documentUrl = 'https://wsms.io/docs/sms77-gateway-setup';
+
     private $wsdl_link = "https://gateway.seven.io/api/";
     public $tariff = "https://www.seven.io";
     public $unitrial = false;

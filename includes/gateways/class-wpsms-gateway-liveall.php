@@ -6,6 +6,8 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 class liveall extends \WP_SMS\Gateway
 {
+    public $documentUrl = 'https://wsms.io/docs/liveall-gateway-setup';
+
     private $wsdl_link = 'https://sms.liveall.eu/apiext';
     public $tariff = "https://www.liveall.eu";
     public $unitrial = false;
