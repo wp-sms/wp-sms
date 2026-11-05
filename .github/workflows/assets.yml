@@ -1,0 +1,67 @@
+name: Readme and assets
+
+# Pushes readme.txt and the .wordpress-org images (banners, icon, screenshots) to WordPress.org
+# when they change on master, without a new plugin version. The plugin code on WordPress.org is
+# untouched.
+#
+# Runs only when the readme's Stable tag is already released. While a new version is being
+# prepared on master, its readme waits for the release, which ships it with the code.
+#
+# Uses the same `wordpress-org` environment as deploy.yml; its rules must allow master.
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - readme.txt
+      - .wordpress-org/**
+  workflow_dispatch:
+
+# One writer to the WordPress.org SVN at a time, shared with deploy.yml.
+concurrency:
+  group: deploy-wordpress-org
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  assets:
+    name: Update readme and assets on WordPress.org
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: wordpress-org
+      url: https://wordpress.org/plugins/wp-sms/
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v6
+
+      - name: The readme's Stable tag is already released
+        id: released
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG=$(grep -m1 -oE '^Stable tag: [0-9.]+' readme.txt | awk '{print $3}')
+          if grep -qiE '^= *Unreleased *=' readme.txt; then
+            echo "::notice::readme.txt has an Unreleased section; it goes out with the next release."
+            echo "ok=no" >> "$GITHUB_OUTPUT"
+          elif gh release view "v$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            echo "ok=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::Stable tag $TAG is not released yet; the readme goes out with that release."
+            echo "ok=no" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Pinned to a commit: this step holds the WordPress.org password.
+      - name: Push readme and assets
+        if: steps.released.outputs.ok == 'yes'
+        uses: 10up/action-wordpress-plugin-asset-update@2480306f6f693672726d08b5917ea114cb2825f7
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: wp-sms
+          ASSETS_DIR: .wordpress-org
+          IGNORE_OTHER_FILES: true

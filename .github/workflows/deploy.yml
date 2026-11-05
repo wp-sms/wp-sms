@@ -1,14 +1,66 @@
 name: Deploy to WordPress.org
 
+# Publishing a GitHub release tagged vX.Y.Z (not a pre-release) checks the release, runs the
+# full test suite, builds the plugin, pushes it to WordPress.org over SVN and attaches the ZIP
+# to the release. Pushing a tag alone deploys nothing.
+#
+# Readme and listing images change without a release through assets.yml.
+#
+# The deploy job uses the `wordpress-org` environment (Settings > Environments), which should
+# allow only v* tags and master, and hold secrets SVN_USERNAME and SVN_PASSWORD. Until they are
+# moved there, the repository secrets of the same names are used.
+
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [published]
+
+# One writer to the WordPress.org SVN at a time, shared with assets.yml.
+concurrency:
+  group: deploy-wordpress-org
+  cancel-in-progress: false
+
+permissions:
+  contents: read
 
 jobs:
+  guard:
+    name: Check the release
+    if: ${{ !github.event.release.prerelease }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Tag, plugin version and Stable tag agree, and the tag is on master
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::$TAG is not a vX.Y.Z tag"; exit 1; }
+          PLUGIN=$(grep -m1 -oE '^ \* Version: [0-9.]+' wp-sms.php | awk '{print $3}')
+          STABLE=$(grep -m1 -oE '^Stable tag: [0-9.]+' readme.txt | awk '{print $3}')
+          [ "v$PLUGIN" = "$TAG" ] || { echo "::error::Release $TAG but wp-sms.php says $PLUGIN"; exit 1; }
+          [ "v$STABLE" = "$TAG" ] || { echo "::error::Release $TAG but readme.txt Stable tag says $STABLE"; exit 1; }
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/master || { echo "::error::$TAG is not on master"; exit 1; }
+
+  test:
+    name: Tests before deploy
+    needs: guard
+    uses: ./.github/workflows/testing.yml
+
   deploy:
     name: Deploy plugin
+    needs: test
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: wordpress-org
+      url: https://wordpress.org/plugins/wp-sms/
+    permissions:
+      contents: write
 
     steps:
       - name: Check out source code
@@ -40,9 +92,20 @@ jobs:
       - name: Build assets
         run: pnpm build
 
+      # Pinned to a commit: this step holds the WordPress.org password.
       - name: WordPress Plugin Deploy
-        uses: 10up/action-wordpress-plugin-deploy@stable
+        id: wporg
+        uses: 10up/action-wordpress-plugin-deploy@54bd289b8525fd23a5c365ec369185f2966529c2
+        with:
+          generate-zip: true
         env:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SLUG: wp-sms
+
+      - name: Attach the ZIP to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+          ZIP: ${{ steps.wporg.outputs.zip-path }}
+        run: gh release upload "$TAG" "$ZIP" --clobber

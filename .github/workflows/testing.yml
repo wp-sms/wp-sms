@@ -5,6 +5,8 @@ on:
     branches:
       - master
       - development
+  # deploy.yml runs this same suite before anything reaches WordPress.org.
+  workflow_call:
 
 jobs:
   phpunit:
