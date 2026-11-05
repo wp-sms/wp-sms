@@ -4,8 +4,9 @@ name: Readme and assets
 # when they change on master, without a new plugin version. The plugin code on WordPress.org is
 # untouched.
 #
-# Runs only when the readme's Stable tag is already released. While a new version is being
-# prepared on master, its readme waits for the release, which ships it with the code.
+# Runs only when the readme's Stable tag already exists on WordPress.org, is not behind the
+# version live there, and the readme has no Unreleased notes. Otherwise the readme waits for the
+# release, which ships it with the code.
 #
 # Uses the same `wordpress-org` environment as deploy.yml; its rules must allow master.
 
@@ -16,11 +17,6 @@ on:
       - readme.txt
       - .wordpress-org/**
   workflow_dispatch:
-
-# One writer to the WordPress.org SVN at a time, shared with deploy.yml.
-concurrency:
-  group: deploy-wordpress-org
-  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -34,31 +30,47 @@ jobs:
     environment:
       name: wordpress-org
       url: https://wordpress.org/plugins/wp-sms/
+    # One writer to the WordPress.org SVN at a time, shared with deploy.yml. `queue: max` keeps
+    # this run from replacing a waiting release deploy.
+    concurrency:
+      group: deploy-wordpress-org
+      cancel-in-progress: false
+      queue: max
+    # Every step here is pinned to a commit: this job holds the WordPress.org password.
     steps:
       - name: Check out source code
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
 
-      - name: The readme's Stable tag is already released
-        id: released
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: The readme is safe to publish
+        id: check
         run: |
           set -euo pipefail
-          TAG=$(grep -m1 -oE '^Stable tag: [0-9.]+' readme.txt | awk '{print $3}')
-          if grep -qiE '^= *Unreleased *=' readme.txt; then
-            echo "::notice::readme.txt has an Unreleased section; it goes out with the next release."
-            echo "ok=no" >> "$GITHUB_OUTPUT"
-          elif gh release view "v$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
-            echo "ok=yes" >> "$GITHUB_OUTPUT"
-          else
-            echo "::notice::Stable tag $TAG is not released yet; the readme goes out with that release."
-            echo "ok=no" >> "$GITHUB_OUTPUT"
+          STABLE=$(sed -n 's/^Stable tag:[[:space:]]*//p' readme.txt | head -n 1 | tr -d '\r ')
+          [[ "$STABLE" =~ ^[0-9]+(\.[0-9]+){1,3}$ ]] || { echo "::error::readme.txt Stable tag is '$STABLE'"; exit 1; }
+          if grep -qiE '^=.*Unreleased.*=' readme.txt; then
+            echo "::notice::readme.txt has Unreleased notes; it goes out with the next release."
+            echo "ok=no" >> "$GITHUB_OUTPUT"; exit 0
           fi
+          CODE=$(curl -s -o /dev/null -w '%{http_code}' "https://plugins.svn.wordpress.org/wp-sms/tags/$STABLE/")
+          case "$CODE" in
+            200) ;;
+            404) echo "::notice::Stable tag $STABLE is not on WordPress.org yet; the readme goes out with that release."
+                 echo "ok=no" >> "$GITHUB_OUTPUT"; exit 0 ;;
+            *)   echo "::error::Could not check tags/$STABLE on WordPress.org (HTTP $CODE)"; exit 1 ;;
+          esac
+          LIVE=$(curl -fsS https://api.wordpress.org/plugins/info/1.0/wp-sms.json | jq -r .version)
+          [[ "$LIVE" =~ ^[0-9]+(\.[0-9]+)+$ ]] || { echo "::error::Could not read the live version ('$LIVE')"; exit 1; }
+          if [ "$(printf '%s\n%s\n' "$LIVE" "$STABLE" | sort -V | tail -n 1)" != "$STABLE" ]; then
+            echo "::error::Stable tag $STABLE is behind the live version $LIVE; this looks like a re-run of an old commit."
+            exit 1
+          fi
+          echo "ok=yes" >> "$GITHUB_OUTPUT"
 
-      # Pinned to a commit: this step holds the WordPress.org password.
       - name: Push readme and assets
-        if: steps.released.outputs.ok == 'yes'
-        uses: 10up/action-wordpress-plugin-asset-update@2480306f6f693672726d08b5917ea114cb2825f7
+        if: steps.check.outputs.ok == 'yes'
+        uses: 10up/action-wordpress-plugin-asset-update@2480306f6f693672726d08b5917ea114cb2825f7 # 2.2.0
         env:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
