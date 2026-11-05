@@ -4,6 +4,7 @@ set -euo pipefail
 
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 ASSETS_WORKFLOW="$ROOT/.github/workflows/assets.yml"
+DEPLOY_WORKFLOW="$ROOT/.github/workflows/deploy.yml"
 
 fail() {
     echo "FAIL: $*" >&2
@@ -85,5 +86,46 @@ run_assets_guard 7.2.10 7.2.11 fail
 run_assets_guard 7.2.11 7.2.11 fail \
     aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa \
     bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+run_deploy_guard() {
+    local candidate=$1
+    local live=$2
+    local expected=$3
+    local tmp rc output
+
+    tmp=$(mktemp -d)
+    extract_run_step "$DEPLOY_WORKFLOW" "Release is still safe to deploy" > "$tmp/step.sh"
+    grep -q '[^[:space:]]' "$tmp/step.sh" || fail "deploy safety step is missing"
+
+    {
+        cat <<EOF
+curl() {
+    printf 'Stable tag: %s\n' "$live"
+}
+EOF
+        cat "$tmp/step.sh"
+    } > "$tmp/guard.sh"
+
+    set +e
+    output=$(TAG="v$candidate" bash "$tmp/guard.sh" 2>&1)
+    rc=$?
+    set -e
+
+    case "$expected" in
+        pass)
+            [[ $rc -eq 0 ]] || fail "deploy guard rejected candidate=$candidate live=$live: $output"
+            ;;
+        fail)
+            [[ $rc -ne 0 ]] || fail "deploy guard authorized candidate=$candidate live=$live"
+            ;;
+        *) fail "unknown expectation: $expected" ;;
+    esac
+
+    rm -rf "$tmp"
+}
+
+run_deploy_guard 7.2.12 7.2.11 pass
+run_deploy_guard 7.2.12 7.2.12 pass
+run_deploy_guard 7.2.12 7.2.13 fail
 
 echo "Release workflow regression tests passed."

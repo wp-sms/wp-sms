@@ -135,6 +135,21 @@ jobs:
           name: plugin
           path: dist
 
+      # The earlier guard runs before tests and the shared SVN queue. Check again while this job
+      # owns the writer lock so two releases cannot enter the queue and deploy in downgrade order.
+      - name: Release is still safe to deploy
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          VERSION=${TAG#v}
+          LIVE=$(curl -fsS https://plugins.svn.wordpress.org/wp-sms/trunk/readme.txt | sed -n 's/^Stable tag:[[:space:]]*//p' | head -n 1 | tr -d '\r ')
+          [[ "$LIVE" =~ ^[0-9]+(\.[0-9]+)+$ ]] || { echo "::error::Could not read the current WordPress.org trunk version ('$LIVE')"; exit 1; }
+          if [ "$(printf '%s\n%s\n' "$LIVE" "$VERSION" | sort -V | tail -n 1)" != "$VERSION" ]; then
+            echo "::error::Release $TAG is behind WordPress.org trunk version $LIVE"
+            exit 1
+          fi
+
       - name: WordPress Plugin Deploy
         uses: 10up/action-wordpress-plugin-deploy@54bd289b8525fd23a5c365ec369185f2966529c2 # 2.3.0
         env:
