@@ -41,6 +41,12 @@ jobs:
           [ "v$PLUGIN" = "$TAG" ] || { echo "::error::Release $TAG but the wp-sms.php header says '$PLUGIN'"; exit 1; }
           [ "v$CONSTANT" = "$TAG" ] || { echo "::error::Release $TAG but WP_SMS_VERSION says '$CONSTANT'"; exit 1; }
           [ "v$STABLE" = "$TAG" ] || { echo "::error::Release $TAG but readme.txt Stable tag says '$STABLE'"; exit 1; }
+          LIVE=$(curl -fsS https://api.wordpress.org/plugins/info/1.0/wp-sms.json | jq -r .version)
+          [[ "$LIVE" =~ ^[0-9]+(\.[0-9]+)+$ ]] || { echo "::error::Could not read the live version ('$LIVE')"; exit 1; }
+          if [ "$(printf '%s\n%s\n' "$LIVE" "$PLUGIN" | sort -V | tail -n 1)" != "$PLUGIN" ]; then
+            echo "::error::Release $TAG is behind the live WordPress.org version $LIVE"
+            exit 1
+          fi
           git merge-base --is-ancestor "$GITHUB_SHA" origin/master || { echo "::error::$TAG is not on master"; exit 1; }
 
   test:
