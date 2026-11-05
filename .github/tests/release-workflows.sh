@@ -29,6 +29,8 @@ run_assets_guard() {
     local stable=$1
     local live=$2
     local expected=$3
+    local event_sha=${4:-1111111111111111111111111111111111111111}
+    local master_sha=${5:-1111111111111111111111111111111111111111}
     local tmp rc output
 
     tmp=$(mktemp -d)
@@ -44,6 +46,13 @@ curl() {
         printf '{"version":"%s"}' "$live"
     fi
 }
+git() {
+    if [[ "\$*" == "ls-remote origin refs/heads/master" ]]; then
+        printf '%s\trefs/heads/master\n' "$master_sha"
+    else
+        command git "\$@"
+    fi
+}
 EOF
         extract_run_step "$ASSETS_WORKFLOW" "The readme is safe to publish"
     } > "$tmp/guard.sh"
@@ -51,6 +60,7 @@ EOF
     set +e
     output=$(cd "$tmp/workspace" && \
         GITHUB_OUTPUT="$tmp/github-output" \
+        GITHUB_SHA="$event_sha" \
         bash "$tmp/guard.sh" 2>&1)
     rc=$?
     set -e
@@ -72,5 +82,8 @@ EOF
 run_assets_guard 7.2.11 7.2.11 pass
 run_assets_guard 7.2.12 7.2.11 fail
 run_assets_guard 7.2.10 7.2.11 fail
+run_assets_guard 7.2.11 7.2.11 fail \
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa \
+    bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 
 echo "Release workflow regression tests passed."

@@ -47,6 +47,9 @@ jobs:
         id: check
         run: |
           set -euo pipefail
+          MASTER_SHA=$(git ls-remote origin refs/heads/master | awk 'NR == 1 { print $1 }')
+          [[ "$MASTER_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::Could not read the current master commit"; exit 1; }
+          [ "$GITHUB_SHA" = "$MASTER_SHA" ] || { echo "::error::This run is for stale master commit $GITHUB_SHA; current master is $MASTER_SHA"; exit 1; }
           STABLE=$(sed -n 's/^Stable tag:[[:space:]]*//p' readme.txt | head -n 1 | tr -d '\r ')
           [[ "$STABLE" =~ ^[0-9]+(\.[0-9]+){1,3}$ ]] || { echo "::error::readme.txt Stable tag is '$STABLE'"; exit 1; }
           if grep -qiE '^=.*Unreleased.*=' readme.txt; then
