@@ -128,4 +128,17 @@ run_deploy_guard 7.2.12 7.2.11 pass
 run_deploy_guard 7.2.12 7.2.12 pass
 run_deploy_guard 7.2.12 7.2.13 fail
 
+check_pinned_actions() {
+    local workflow use
+
+    for workflow in "$ASSETS_WORKFLOW" "$DEPLOY_WORKFLOW" "$ROOT/.github/workflows/testing.yml"; do
+        while IFS= read -r use; do
+            [[ "$use" == ./* ]] && continue
+            [[ "$use" =~ @[0-9a-f]{40}$ ]] || fail "$workflow uses a mutable action reference: $use"
+        done < <(sed -nE 's/^[[:space:]]*uses:[[:space:]]*([^[:space:]#]+).*/\1/p' "$workflow")
+    done
+}
+
+check_pinned_actions
+
 echo "Release workflow regression tests passed."
