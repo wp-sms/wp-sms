@@ -1,32 +1,84 @@
 name: Deploy to WordPress.org
 
+# Publishing a full GitHub release (or promoting a pre-release to one) checks the release, runs
+# the test suite, builds the plugin with no secrets available, pushes that build to WordPress.org
+# over SVN and attaches the ZIP to the release. Pushing a tag alone deploys nothing.
+#
+# Readme and listing images change without a release through assets.yml.
+#
+# The deploy job uses the `wordpress-org` environment (Settings > Environments), which should
+# allow only v* tags and master, and hold secrets SVN_USERNAME and SVN_PASSWORD. Until they are
+# moved there, the repository secrets of the same names are used.
+
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [released]
+
+permissions:
+  contents: read
 
 jobs:
-  deploy:
-    name: Deploy plugin
+  guard:
+    name: Check the release
     runs-on: ubuntu-latest
-
+    timeout-minutes: 5
     steps:
       - name: Check out source code
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Tag and every version agree, and the tag is on master
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          [[ "$TAG" =~ ^v[0-9]+(\.[0-9]+){1,3}$ ]] || { echo "::error::$TAG is not a release tag such as v7.3 or v7.2.12"; exit 1; }
+          PLUGIN=$(sed -n 's/^ \* Version:[[:space:]]*//p' wp-sms.php | head -n 1 | tr -d '\r ')
+          CONSTANT=$(sed -nE "s/^define\('WP_SMS_VERSION', '([^']+)'\);.*/\1/p" wp-sms.php | head -n 1)
+          STABLE=$(sed -n 's/^Stable tag:[[:space:]]*//p' readme.txt | head -n 1 | tr -d '\r ')
+          [ "v$PLUGIN" = "$TAG" ] || { echo "::error::Release $TAG but the wp-sms.php header says '$PLUGIN'"; exit 1; }
+          [ "v$CONSTANT" = "$TAG" ] || { echo "::error::Release $TAG but WP_SMS_VERSION says '$CONSTANT'"; exit 1; }
+          [ "v$STABLE" = "$TAG" ] || { echo "::error::Release $TAG but readme.txt Stable tag says '$STABLE'"; exit 1; }
+          LIVE=$(curl -fsS https://api.wordpress.org/plugins/info/1.0/wp-sms.json | jq -r .version)
+          [[ "$LIVE" =~ ^[0-9]+(\.[0-9]+)+$ ]] || { echo "::error::Could not read the live version ('$LIVE')"; exit 1; }
+          if [ "$(printf '%s\n%s\n' "$LIVE" "$PLUGIN" | sort -V | tail -n 1)" != "$PLUGIN" ]; then
+            echo "::error::Release $TAG is behind the live WordPress.org version $LIVE"
+            exit 1
+          fi
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/master || { echo "::error::$TAG is not on master"; exit 1; }
+
+  test:
+    name: Tests before deploy
+    needs: guard
+    uses: ./.github/workflows/testing.yml
+
+  # No secrets here: dependency install and build scripts never run beside the SVN password.
+  build:
+    name: Build plugin
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
           php-version: '7.4'
           tools: wp-cli
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
           version: 9
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '20'
           cache: 'pnpm'
@@ -40,9 +92,95 @@ jobs:
       - name: Build assets
         run: pnpm build
 
+      - name: Stage the plugin and its ZIP
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          mkdir -p dist/wp-sms
+          rsync -a --exclude-from=.distignore --exclude=/dist ./ dist/wp-sms/
+          (cd dist && zip -qr "wp-sms-${TAG#v}.zip" wp-sms)
+
+      - name: Keep the build for the next jobs
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: plugin
+          path: dist
+          include-hidden-files: true
+          retention-days: 7
+
+  deploy:
+    name: Deploy plugin
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: wordpress-org
+      url: https://wordpress.org/plugins/wp-sms/
+    # One writer to the WordPress.org SVN at a time, shared with assets.yml. `queue: max` keeps a
+    # waiting deploy from being replaced by a later run in the group.
+    concurrency:
+      group: deploy-wordpress-org
+      cancel-in-progress: false
+      queue: max
+    # Every step here is pinned to a commit: this job holds the WordPress.org password.
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Get the build
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
+        with:
+          name: plugin
+          path: dist
+
+      # The earlier guard runs before tests and the shared SVN queue. Check again while this job
+      # owns the writer lock so two releases cannot enter the queue and deploy in downgrade order.
+      - name: Release is still safe to deploy
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          VERSION=${TAG#v}
+          LIVE=$(curl -fsS https://plugins.svn.wordpress.org/wp-sms/trunk/readme.txt | sed -n 's/^Stable tag:[[:space:]]*//p' | head -n 1 | tr -d '\r ')
+          [[ "$LIVE" =~ ^[0-9]+(\.[0-9]+)+$ ]] || { echo "::error::Could not read the current WordPress.org trunk version ('$LIVE')"; exit 1; }
+          if [ "$(printf '%s\n%s\n' "$LIVE" "$VERSION" | sort -V | tail -n 1)" != "$VERSION" ]; then
+            echo "::error::Release $TAG is behind WordPress.org trunk version $LIVE"
+            exit 1
+          fi
+
       - name: WordPress Plugin Deploy
-        uses: 10up/action-wordpress-plugin-deploy@stable
+        uses: 10up/action-wordpress-plugin-deploy@54bd289b8525fd23a5c365ec369185f2966529c2 # 2.3.0
         env:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SLUG: wp-sms
+          BUILD_DIR: dist/wp-sms
+
+  attach-zip:
+    name: Attach the ZIP to the release
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Get the build
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
+        with:
+          name: plugin
+          path: dist
+
+      # No --clobber: a re-run never replaces the ZIP an existing release already has.
+      - name: Upload the ZIP
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          ZIP="wp-sms-${TAG#v}.zip"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -qxF "$ZIP"; then
+            echo "::notice::$ZIP is already on the release."
+          else
+            gh release upload "$TAG" "dist/$ZIP" --repo "$GITHUB_REPOSITORY"
+          fi

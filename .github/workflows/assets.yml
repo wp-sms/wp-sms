@@ -1,0 +1,82 @@
+name: Readme and assets
+
+# Pushes readme.txt and the .wordpress-org images (banners, icon, screenshots) to WordPress.org
+# when they change on master, without a new plugin version. The plugin code on WordPress.org is
+# untouched.
+#
+# Runs only when the readme's Stable tag already exists on WordPress.org, exactly matches the
+# version live there, and the readme has no Unreleased notes. Otherwise the readme waits for the
+# release, which ships it with the code.
+#
+# Uses the same `wordpress-org` environment as deploy.yml; its rules must allow master.
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - readme.txt
+      - .wordpress-org/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  assets:
+    name: Update readme and assets on WordPress.org
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: wordpress-org
+      url: https://wordpress.org/plugins/wp-sms/
+    # One writer to the WordPress.org SVN at a time, shared with deploy.yml. `queue: max` keeps
+    # this run from replacing a waiting release deploy.
+    concurrency:
+      group: deploy-wordpress-org
+      cancel-in-progress: false
+      queue: max
+    # Every step here is pinned to a commit: this job holds the WordPress.org password.
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: The readme is safe to publish
+        id: check
+        run: |
+          set -euo pipefail
+          MASTER_SHA=$(git ls-remote origin refs/heads/master | awk 'NR == 1 { print $1 }')
+          [[ "$MASTER_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::Could not read the current master commit"; exit 1; }
+          [ "$GITHUB_SHA" = "$MASTER_SHA" ] || { echo "::error::This run is for stale master commit $GITHUB_SHA; current master is $MASTER_SHA"; exit 1; }
+          STABLE=$(sed -n 's/^Stable tag:[[:space:]]*//p' readme.txt | head -n 1 | tr -d '\r ')
+          [[ "$STABLE" =~ ^[0-9]+(\.[0-9]+){1,3}$ ]] || { echo "::error::readme.txt Stable tag is '$STABLE'"; exit 1; }
+          if grep -qiE '^=.*Unreleased.*=' readme.txt; then
+            echo "::notice::readme.txt has Unreleased notes; it goes out with the next release."
+            echo "ok=no" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          CODE=$(curl -s -o /dev/null -w '%{http_code}' "https://plugins.svn.wordpress.org/wp-sms/tags/$STABLE/")
+          case "$CODE" in
+            200) ;;
+            404) echo "::notice::Stable tag $STABLE is not on WordPress.org yet; the readme goes out with that release."
+                 echo "ok=no" >> "$GITHUB_OUTPUT"; exit 0 ;;
+            *)   echo "::error::Could not check tags/$STABLE on WordPress.org (HTTP $CODE)"; exit 1 ;;
+          esac
+          LIVE=$(curl -fsS https://api.wordpress.org/plugins/info/1.0/wp-sms.json | jq -r .version)
+          [[ "$LIVE" =~ ^[0-9]+(\.[0-9]+)+$ ]] || { echo "::error::Could not read the live version ('$LIVE')"; exit 1; }
+          if [ "$STABLE" != "$LIVE" ]; then
+            echo "::error::Stable tag $STABLE does not match the live version $LIVE; assets cannot publish a release."
+            exit 1
+          fi
+          echo "ok=yes" >> "$GITHUB_OUTPUT"
+
+      - name: Push readme and assets
+        if: steps.check.outputs.ok == 'yes'
+        uses: 10up/action-wordpress-plugin-asset-update@2480306f6f693672726d08b5917ea114cb2825f7 # 2.2.0
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: wp-sms
+          ASSETS_DIR: .wordpress-org
+          IGNORE_OTHER_FILES: true
