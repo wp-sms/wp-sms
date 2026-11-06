@@ -6,6 +6,8 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 class payamresan extends \WP_SMS\Gateway
 {
+    public $documentUrl = 'https://wsms.io/fa/docs/payamresan-gateway-setup';
+
     private $wsdl_link = "http://www.payam-resan.com/";
     public $tariff = "http://www.payam-resan.com/CMS/";
     public $unitrial = false;

@@ -26,7 +26,7 @@ class rayo extends \WP_SMS\Gateway
     ];
 
     public $tariff = "https://www.rayo.gr/";
-    public $documentUrl = 'https://wsms.io/docs/gateway-configuration';
+    public $documentUrl = 'https://wsms.io/docs/rayo-gateway-setup';
     public $unitrial = true;
     public $unit;
     public $flash = "disabled";

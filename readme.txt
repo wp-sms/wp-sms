@@ -4,7 +4,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 7.2.11
+Stable tag: 7.2.12
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,6 +12,8 @@ Send SMS notifications, OTP login and 2FA codes, and WooCommerce order SMS from 
 
 == Description ==
 [WSMS](https://wsms.io/?utm_source=wporg&utm_medium=link&utm_campaign=website) is a WordPress SMS plugin. It sends SMS/MMS notifications, one-time passwords (OTP), and two-factor authentication (2FA) messages straight from WordPress, through 260+ SMS gateways such as Twilio, Vonage, Plivo and Clickatell. It works with WooCommerce, Contact Form 7, Gravity Forms, Elementor Forms and 20+ other plugins.
+
+https://youtu.be/QKHF5ftxHNs
 
 **Use WSMS to:**
 - Keep customers updated on WooCommerce orders
@@ -82,6 +84,8 @@ Unlock additional features with **All-in-One** — the plan that gives you acces
 WooCommerce, GravityForms, Elementor, Contact Form 7, Twilio, WhatsApp, Clickatell, BulkSMS, Plivo, Zapier, Bitly, and other product names mentioned are trademarks of their respective owners. WSMS is not affiliated with, endorsed by, or sponsored by these companies.
 
 == Installation ==
+
+https://youtu.be/RaLey0bNQBY
 
 = Step 1: Install the Plugin =
 1. Go to **Plugins → Add New** in WordPress admin.
@@ -186,6 +190,10 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
+= v7.2.12 - 2026-11-06 =
+- **Enhancement:** Setup guide links for 19 more gateways.
+- **Fix:** Kavenegar: a template message without variables now shows a clear error.
+
 = v7.2.11 - 2026-11-02 =
 - **Security:** Admin pages no longer show a WooCommerce customer's phone number to users who cannot edit that order. Thanks to Harry Nguyen for reporting it.
 - **New:** Rayo SMS gateway (Greece and Europe), with a test mode that sends nothing.

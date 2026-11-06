@@ -10,6 +10,8 @@ use WP_SMS\Gateway;
 
 class farazsms extends Gateway
 {
+    public $documentUrl = 'https://wsms.io/fa/docs/farazsms-gateway-setup';
+
     /**
      * API Base URL.
      *

@@ -6,6 +6,8 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 class asanak extends \WP_SMS\Gateway
 {
+    public $documentUrl = 'https://wsms.io/fa/docs/asanak-gateway-setup';
+
     private $wsdl_link = "http://panel.asanak.ir/webservice/v1rest/sendsms";
     public $tariff = "http://asanak.ir/";
     public $unitrial = false;

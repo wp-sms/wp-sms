@@ -10,6 +10,8 @@ use WP_SMS\Gateway;
 
 class _160au extends Gateway
 {
+    public $documentUrl = 'https://wsms.io/docs/160au-gateway-setup';
+
     private $wsdl_link = "https://www.160.com.au/api/sms.asmx/";
     public $unitrial = false;
     public $unit;

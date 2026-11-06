@@ -1,3 +1,7 @@
+v7.2.12 - 2026-11-06
+- **Enhancement:** Setup guide links for 19 more gateways.
+- **Fix:** Kavenegar: a template message without variables now shows a clear error.
+
 v7.2.11 - 2026-11-02
 - **Security:** Admin pages no longer show a WooCommerce customer's phone number to users who cannot edit that order. Thanks to Harry Nguyen for reporting it.
 - **New:** Rayo SMS gateway (Greece and Europe), with a test mode that sends nothing.

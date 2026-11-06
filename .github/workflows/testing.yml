@@ -5,17 +5,31 @@ on:
     branches:
       - master
       - development
+  # deploy.yml runs this same suite before anything reaches WordPress.org.
+  workflow_call:
 
 jobs:
+  release-workflows:
+    name: Validate release workflows
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Run release workflow regression tests
+        run: bash .github/tests/release-workflows.sh
+
   phpunit:
     name: Run tests
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       matrix:
         php-version: ['8.4', '8.3', '8.2', '8.1', '8.0', '7.4']
     services:
       database:
-        image: mysql:latest
+        image: mysql:8.4
         env:
           MYSQL_DATABASE: wordpress_tests
           MYSQL_ROOT_PASSWORD: root
@@ -23,10 +37,10 @@ jobs:
           - 3306:3306
     steps:
       - name: Check out source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
           php-version: ${{ matrix.php-version }}
           tools: phpunit-polyfills:1.1, wp-cli

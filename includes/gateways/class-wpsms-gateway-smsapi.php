@@ -9,6 +9,8 @@ use WP_Error;
 
 class smsapi extends \WP_SMS\Gateway
 {
+    public $documentUrl = 'https://wsms.io/docs/smsapi-gateway-setup';
+
     private $wsdl_link = "https://api.smsapi.pl";
     public $tariff = "https://smsapi.pl";
     public $unitrial = false;

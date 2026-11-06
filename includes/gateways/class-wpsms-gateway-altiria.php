@@ -11,6 +11,8 @@ use WP_SMS\Helper;
 
 class altiria extends Gateway
 {
+    public $documentUrl = 'https://wsms.io/docs/altiria-gateway-setup';
+
     private $wsdl_link = "https://www.altiria.net:8443/apirest/ws";
     public $tariff = "http://www.altiria.net";
     public $unitrial = true;
