@@ -4,7 +4,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 7.2.11
+Stable tag: 7.2.12
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -190,6 +190,10 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
+= v7.2.12 - 2026-11-06 =
+- **Enhancement:** Setup guide links for 19 more gateways.
+- **Fix:** Kavenegar: a template message without variables now shows a clear error.
+
 = v7.2.11 - 2026-11-02 =
 - **Security:** Admin pages no longer show a WooCommerce customer's phone number to users who cannot edit that order. Thanks to Harry Nguyen for reporting it.
 - **New:** Rayo SMS gateway (Greece and Europe), with a test mode that sends nothing.

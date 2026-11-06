@@ -1,4 +1,4 @@
-v7.2.12 - unreleased
+v7.2.12 - 2026-11-06
 - **Enhancement:** Setup guide links for 19 more gateways.
 - **Fix:** Kavenegar: a template message without variables now shows a clear error.
 
