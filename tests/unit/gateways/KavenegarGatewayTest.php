@@ -160,6 +160,28 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         $this->assertStringContainsString('"order"', $result->get_error_message());
     }
 
+    /** ✅ Test: a template from an earlier message does not stick to the next normal message */
+    public function test_a_template_from_an_earlier_message_does_not_carry_over()
+    {
+        remove_all_filters('wp_sms_to');
+        remove_all_filters('wp_sms_from');
+        remove_all_filters('wp_sms_msg');
+
+        $this->gateway->to  = ['09120000000'];
+        $this->gateway->msg = 'Hello everyone|order';
+        $this->assertSame('template-needs-variables', $this->gateway->SendSMS()->get_error_code());
+
+        $this->gateway->msg = 'Hello again';
+
+        $this->gateway->expects($this->once())
+            ->method('request')
+            ->with('POST', $this->stringContains('/v1/DUMMY_KEY/sms/send.json'))
+            ->willReturn($this->makeResponse(200, 'OK'));
+
+        $this->assertFalse(is_wp_error($this->gateway->SendSMS()));
+        $this->assertNull($this->gateway->templateId);
+    }
+
     public function test_send_simple_sms_splits_into_batches_of_200()
     {
         remove_all_filters('wp_sms_to');

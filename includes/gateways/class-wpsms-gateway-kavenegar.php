@@ -67,6 +67,13 @@ class kavenegar extends Gateway
     public $templateId = null;
 
     /**
+     * The template ID read from the last message's "|" suffix, so it can be cleared before the next message.
+     *
+     * @var string|null
+     */
+    private $templateFromMessage = null;
+
+    /**
      * Gateway version.
      */
     public $version = '1.1';
@@ -138,8 +145,16 @@ class kavenegar extends Gateway
     {
         $templateData = $this->getTemplateIdAndMessageBody();
 
+        // A template read from an earlier message must not carry over to the next one. A template
+        // ID set directly by the caller stays.
+        if ($this->templateFromMessage !== null && $this->templateId === $this->templateFromMessage) {
+            $this->templateId = null;
+        }
+        $this->templateFromMessage = null;
+
         if (!empty($templateData['template_id'])) {
-            $this->templateId = $templateData['template_id'];
+            $this->templateId          = $templateData['template_id'];
+            $this->templateFromMessage = $this->templateId;
         }
 
         if (!empty($templateData['message'])) {
