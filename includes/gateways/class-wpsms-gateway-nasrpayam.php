@@ -22,7 +22,7 @@ class nasrpayam extends ippanel
         parent::__construct();
 
         $this->gatewayFields['from']['desc']    = __('A line from your NasrPayam account, for example +983000505 or 3000505.', 'wp-sms');
-        $this->gatewayFields['has_key']['desc'] = __('NasrPayam now works with an API key: the old username and password no longer work. Make a key in your NasrPayam panel under Developers > Access Keys and paste it here.', 'wp-sms');
+        $this->gatewayFields['has_key']['desc'] = __('NasrPayam now works with an API key: the old username and password no longer work. Make a key in your NasrPayam panel under Developers → Access Keys and paste it here.', 'wp-sms');
 
         $this->help = '
 <div dir="rtl">
@@ -35,6 +35,11 @@ class nasrpayam extends ippanel
 
     protected function missingKey()
     {
-        return new \WP_Error('account-credit', esc_html__('Enter your NasrPayam API key. The old username and password no longer work: make a key in your panel under Developers > Access Keys.', 'wp-sms'));
+        return new \WP_Error('account-credit', esc_html__('Enter your NasrPayam API key. The old username and password no longer work: make a key in your panel under Developers → Access Keys.', 'wp-sms'));
+    }
+
+    protected function brand()
+    {
+        return 'NasrPayam';
     }
 }

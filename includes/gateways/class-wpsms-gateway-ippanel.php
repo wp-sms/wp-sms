@@ -77,7 +77,7 @@ class ippanel extends \WP_SMS\Gateway
             'has_key' => [
                 'id'   => 'gateway_key',
                 'name' => __('API Key', 'wp-sms'),
-                'desc' => __('Make it in your panel under Developers > Access Keys. The API uses this key, not the username and password you sign in with.', 'wp-sms'),
+                'desc' => __('Make it in your panel under Developers → Access Keys. The API uses this key, not the username and password you sign in with.', 'wp-sms'),
             ],
         ];
 
@@ -160,7 +160,7 @@ class ippanel extends \WP_SMS\Gateway
         $from = $this->e164((string)$this->from);
 
         if ($from === '') {
-            $error = new \WP_Error('send-sms', esc_html__('Enter your IPPanel sender number in the gateway settings.', 'wp-sms'));
+            $error = new \WP_Error('send-sms', esc_html(sprintf(__('Enter your %s sender number in the gateway settings.', 'wp-sms'), $this->brand())));
             $this->log($this->from, $this->msg, $this->to, $error->get_error_message(), 'error');
 
             return $error;
@@ -277,7 +277,7 @@ class ippanel extends \WP_SMS\Gateway
         }
 
         if (empty($data['message_outbox_ids'])) {
-            return new \WP_Error('send-sms', esc_html__('IPPanel did not confirm the send.', 'wp-sms'));
+            return new \WP_Error('send-sms', esc_html(sprintf(__('%s did not confirm the send.', 'wp-sms'), $this->brand())));
         }
 
         return $data;
@@ -296,7 +296,7 @@ class ippanel extends \WP_SMS\Gateway
         }
 
         if (!isset($data['credit']) || !is_numeric($data['credit'])) {
-            return new \WP_Error('account-credit', esc_html__('IPPanel did not return a balance.', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html(sprintf(__('%s did not return a balance.', 'wp-sms'), $this->brand())));
         }
 
         return $data['credit'];
@@ -327,8 +327,8 @@ class ippanel extends \WP_SMS\Gateway
         $response = wp_remote_request($this->wsdl_link . $path, $args);
 
         if (is_wp_error($response)) {
-            /* translators: %s: error message */
-            return new \WP_Error('gateway-unreachable', sprintf(esc_html__('IPPanel could not be reached: %s', 'wp-sms'), $response->get_error_message()));
+            /* translators: 1: panel name, 2: error message */
+            return new \WP_Error('gateway-unreachable', esc_html(sprintf(__('%1$s could not be reached: %2$s', 'wp-sms'), $this->brand(), $response->get_error_message())));
         }
 
         $http   = (int)wp_remote_retrieve_response_code($response);
@@ -344,27 +344,27 @@ class ippanel extends \WP_SMS\Gateway
         $code = isset($meta['message_code']) && is_scalar($meta['message_code']) ? trim((string)$meta['message_code']) : '';
 
         if ($http === 401 || $http === 403 || $code === '400-1') {
-            $text = esc_html__('IPPanel refused the API key. Make a new one in your panel under Developers > Access Keys and paste it again.', 'wp-sms');
+            $text = esc_html(sprintf(__('%s refused the API key. Make a new one in your panel under Developers → Access Keys and paste it again.', 'wp-sms'), $this->brand()));
 
             if ($said !== '') {
-                /* translators: %s: IPPanel's own message */
-                $text .= ' ' . sprintf(esc_html__('IPPanel said: %s', 'wp-sms'), esc_html($said));
+                /* translators: 1: panel name, 2: the panel's own message */
+                $text .= ' ' . esc_html(sprintf(__('%1$s said: %2$s', 'wp-sms'), $this->brand(), $said));
             }
 
             return new \WP_Error('ippanel-auth', $text);
         }
 
         if ($said !== '') {
-            /* translators: %s: IPPanel's own message */
-            return new \WP_Error('ippanel-refused', sprintf(esc_html__('IPPanel refused the request: %s', 'wp-sms'), esc_html($said)));
+            /* translators: 1: panel name, 2: the panel's own message */
+            return new \WP_Error('ippanel-refused', esc_html(sprintf(__('%1$s refused the request: %2$s', 'wp-sms'), $this->brand(), $said)));
         }
 
         if ($http >= 200 && $http < 300) {
-            return new \WP_Error('ippanel-unreadable', esc_html__('Could not read the answer from IPPanel.', 'wp-sms'));
+            return new \WP_Error('ippanel-unreadable', esc_html(sprintf(__('Could not read the answer from %s.', 'wp-sms'), $this->brand())));
         }
 
-        /* translators: %d: HTTP status */
-        return new \WP_Error('ippanel-http', sprintf(esc_html__('IPPanel answered HTTP %d.', 'wp-sms'), $http));
+        /* translators: 1: panel name, 2: HTTP status */
+        return new \WP_Error('ippanel-http', esc_html(sprintf(__('%1$s answered HTTP %2$d.', 'wp-sms'), $this->brand(), $http)));
     }
 
     /**
@@ -435,5 +435,13 @@ class ippanel extends \WP_SMS\Gateway
     protected function missingKey()
     {
         return new \WP_Error('account-credit', esc_html__('Enter your IPPanel API key. The username and password are not used.', 'wp-sms'));
+    }
+
+    /**
+     * The panel's name in messages; brands built on this gateway override it.
+     */
+    protected function brand()
+    {
+        return 'IPPanel';
     }
 }
