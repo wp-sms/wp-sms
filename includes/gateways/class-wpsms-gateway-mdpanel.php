@@ -22,7 +22,7 @@ class mdpanel extends ippanel
         parent::__construct();
 
         $this->gatewayFields['from']['desc']    = __('A line from your MdPanel account, for example +983000505 or 3000505.', 'wp-sms');
-        $this->gatewayFields['has_key']['desc'] = __('MdPanel now works with an API key: the old username and password no longer work. Make a key in your MdPanel panel under Developers > Access Keys and paste it here.', 'wp-sms');
+        $this->gatewayFields['has_key']['desc'] = __('MdPanel now works with an API key: the old username and password no longer work. Make a key in your MdPanel panel under Developers → Access Keys and paste it here.', 'wp-sms');
 
         $this->help = '
 <div dir="rtl">
@@ -35,6 +35,11 @@ class mdpanel extends ippanel
 
     protected function missingKey()
     {
-        return new \WP_Error('account-credit', esc_html__('Enter your MdPanel API key. The old username and password no longer work: make a key in your panel under Developers > Access Keys.', 'wp-sms'));
+        return new \WP_Error('account-credit', esc_html__('Enter your MdPanel API key. The old username and password no longer work: make a key in your panel under Developers → Access Keys.', 'wp-sms'));
+    }
+
+    protected function brand()
+    {
+        return 'MdPanel';
     }
 }
