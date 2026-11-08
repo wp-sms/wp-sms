@@ -13,9 +13,32 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
  * password, is no longer documented and no longer loads, so the gateway sends
  * through the REST API with an API key instead.
  *
+ * The current spec is at https://developer.mediana.ir/spec/en.
+ *
  *   Auth: `X-API-KEY: <key>` on every request.
- *   POST /sms/v1/send/sms       {sendingNumber, recipients: [up to 100], messageText}
+ *   POST /sms/v1/send/sms        {sendingNumber | type, recipients: [up to 100], messageText}
+ *   POST /sms/v1/send/pattern    {sendingNumber | type, recipients: [exactly 1], patternCode, parameters: {name: "value"}}
  *   GET  /sms/v1/account/balance -> {"data": {"balance": 9358}}
+ *
+ * New Mediana accounts have no dedicated line, only Mediana's shared lines.
+ * With no sender number set, the gateway sends `"type": "Informational"`
+ * instead of `sendingNumber`, and Mediana picks its shared service line.
+ *
+ * Pattern (template) sending follows the plugin's "message|TEMPLATE_ID"
+ * convention. The user types the message with the pattern code after a pipe:
+ *
+ *   Your code is %code%|815422
+ *
+ * and registers the pattern in the Mediana panel with the same variable names
+ * in double braces:
+ *
+ *   Your code is {{code}}
+ *
+ * Each WSMS variable fills the Mediana placeholder of the same name, without
+ * the percent signs: %billing_first_name% fills {{billing_first_name}}. A
+ * pattern goes to one recipient per request, so the gateway sends one request
+ * per number. A message with no "|code", or with no variables in it, is sent
+ * as a plain SMS.
  *
  * A send answers `{"meta": {"code": "OK"}, "data": {"succeed": true, "requestId": 1, ...}}`.
  * A refused one answers `{"meta": {"code": "BadRequest", "errorMessage": "...",
@@ -37,6 +60,16 @@ class mediana extends \WP_SMS\Gateway
     /** Recipients Mediana takes in one send. */
     const MAX_RECIPIENTS = 100;
 
+    /** The message type that sends from Mediana's shared service line. */
+    const SHARED_LINE_TYPE = 'Informational';
+
+    /**
+     * Pattern code taken from the "message|code" text, if any.
+     *
+     * @var string|null
+     */
+    public $template_id = null;
+
     public function __construct()
     {
         parent::__construct();
@@ -47,7 +80,7 @@ class mediana extends \WP_SMS\Gateway
                 'id'           => 'gateway_sender_id',
                 'name'         => __('Sender Number', 'wp-sms'),
                 'place_holder' => __('e.g., 3000505', 'wp-sms'),
-                'desc'         => __('The dedicated line bought in your Mediana account.', 'wp-sms'),
+                'desc'         => __('Your dedicated Mediana line. Leave empty to send from Mediana\'s shared line.', 'wp-sms'),
             ],
             'has_key' => [
                 'id'   => 'gateway_key',
@@ -55,10 +88,48 @@ class mediana extends \WP_SMS\Gateway
                 'desc' => __('Find it in your Mediana panel. The API uses this key, not the username and password you sign in with.', 'wp-sms'),
             ],
         ];
+
+        $this->documentUrl = 'https://wsms.io/fa/docs/mediana-gateway-setup/';
+
+        $this->help = '
+<div dir="rtl">
+  <p><strong>کلید API:</strong> در پنل مدیانا (app.mediana.ir) از بخش توسعه دهندگان ← کلیدهای دسترسی یک کلید بسازید و کپی کنید. نام کاربری و رمز عبور پنل دیگر استفاده نمی شود.</p>
+  <p><strong>شماره ارسال کننده (اختیاری):</strong> خط اختصاصی خود را وارد کنید، یا خالی بگذارید تا پیام از خط خدماتی مشترک مدیانا (مثلا 983000505) ارسال شود.</p>
+  <p><strong>ارسال با الگو (پترن):</strong></p>
+  <ol>
+    <li>در پنل مدیانا از توسعه دهندگان ← پترن ← ساخت پترن دستی، متن را بنویسید و متغیرها را به شکل <code>{{name}}</code> بگذارید. مدیانا پترن را فقط وقتی تایید می کند که نام فروشگاه یا برند داخل متن نوشته شده باشد (نه به صورت متغیر) و آدرس سایت در متن یا توضیح پترن باشد. هر متغیر را فقط یک بار به کار ببرید.<br>
+      مثال: <code>فروشگاه نمونه: کد ورود شما {{code}} example.com</code></li>
+    <li>بعد از تایید مدیانا، در افزونه همان پیام را با متغیرهای افزونه بنویسید و بعد از <code>|</code> کد پترن (عدد) را بگذارید.<br>
+      مثال: <code>فروشگاه نمونه: کد ورود شما %code% example.com|815422</code></li>
+  </ol>
+  <p>هر متغیر افزونه جای متغیر هم نام در پترن می نشیند، بدون علامت درصد: <code>%billing_first_name%</code> جای <code>{{billing_first_name}}</code>. پیام الگو برای هر گیرنده جدا ارسال می شود.</p>
+  <p>الگو فقط برای پیام های خودکار دارای متغیر کار می کند، مانند کد ورود و پیامک های ووکامرس. ارسال دستی و گروهی را بدون <code>|</code> بنویسید تا به صورت پیام عادی ارسال شود.</p>
+</div>';
+    }
+
+    /**
+     * Takes the pattern code off the end of "message|code".
+     *
+     * @return void
+     */
+    public function setTemplateIdAndMessageBody()
+    {
+        $this->template_id = null;
+        $templateData      = $this->getTemplateIdAndMessageBody();
+
+        if (!empty($templateData['template_id'])) {
+            $this->template_id = $templateData['template_id'];
+        }
+
+        if (!empty($templateData['message'])) {
+            $this->msg = $templateData['message'];
+        }
     }
 
     public function SendSMS()
     {
+        $this->setTemplateIdAndMessageBody();
+
         /**
          * Modify sender number
          *
@@ -93,38 +164,18 @@ class mediana extends \WP_SMS\Gateway
             return $error;
         }
 
-        if (!$this->from) {
-            $error = new \WP_Error('send-sms', esc_html__('Mediana needs a sender number: the dedicated line bought in your Mediana account.', 'wp-sms'));
-            $this->log($this->from, $this->msg, $this->to, $error->get_error_message(), 'error');
+        $recipients = array_values(array_filter(array_map([$this, 'localNumber'], (array)$this->to)));
 
-            return $error;
+        if (!empty($this->template_id) && !empty($this->messageVariables) && is_array($this->messageVariables)) {
+            $results = $this->sendPattern($recipients);
+        } else {
+            $results = $this->sendPlain($recipients);
         }
 
-        $recipients = array_values(array_filter(array_map([$this, 'localNumber'], (array)$this->to)));
-        $results    = [];
+        if (is_wp_error($results)) {
+            $this->log($this->from, $this->msg, $this->to, $results->get_error_message(), 'error');
 
-        foreach (array_chunk($recipients, self::MAX_RECIPIENTS) as $chunk) {
-            $data = $this->callApi('POST', '/send/sms', [
-                'sendingNumber' => (string)$this->from,
-                'recipients'    => $chunk,
-                'messageText'   => (string)$this->msg,
-            ]);
-
-            if (is_wp_error($data)) {
-                $this->log($this->from, $this->msg, $this->to, $data->get_error_message(), 'error');
-
-                return $data;
-            }
-
-            if (empty($data['succeed']) || empty($data['requestId'])) {
-                $said  = isset($data['message']) && is_scalar($data['message']) ? trim((string)$data['message']) : '';
-                $error = new \WP_Error('send-sms', $said !== '' ? $said : esc_html__('Mediana did not confirm the send.', 'wp-sms'));
-                $this->log($this->from, $this->msg, $this->to, $error->get_error_message(), 'error');
-
-                return $error;
-            }
-
-            $results[] = $data;
+            return $results;
         }
 
         $result = count($results) === 1 ? $results[0] : $results;
@@ -142,6 +193,112 @@ class mediana extends \WP_SMS\Gateway
         do_action('wp_sms_send', $result);
 
         return $result;
+    }
+
+    /**
+     * Sends the text to up to 100 numbers per request.
+     *
+     * @return array[]|\WP_Error
+     */
+    private function sendPlain($recipients)
+    {
+        $results = [];
+
+        foreach (array_chunk($recipients, self::MAX_RECIPIENTS) as $chunk) {
+            $data = $this->send('/send/sms', $this->lineFields() + [
+                'recipients'  => $chunk,
+                'messageText' => (string)$this->msg,
+            ]);
+
+            if (is_wp_error($data)) {
+                return $data;
+            }
+
+            $results[] = $data;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Sends the pattern once per number: Mediana takes one recipient per
+     * pattern request. Variables go by name, so %code% fills {{code}}.
+     *
+     * @return array[]|\WP_Error
+     */
+    private function sendPattern($recipients)
+    {
+        $parameters = [];
+
+        foreach ($this->messageVariables as $name => $value) {
+            if (is_array($value)) {
+                $value = implode(', ', $value);
+            }
+
+            $parameters[trim((string)$name, '%')] = is_scalar($value) || $value === null ? (string)$value : '';
+        }
+
+        $results = [];
+
+        foreach ($recipients as $recipient) {
+            $data = $this->send('/send/pattern', $this->lineFields() + [
+                'recipients'  => [$recipient],
+                'patternCode' => (string)$this->template_id,
+                'parameters'  => (object)$parameters,
+            ]);
+
+            if (is_wp_error($data)) {
+                return $data;
+            }
+
+            $results[] = $data;
+        }
+
+        return $results;
+    }
+
+    /**
+     * The sender number when one is set, or the shared line type when not.
+     */
+    private function lineFields()
+    {
+        $from = trim((string)$this->from);
+
+        if ($from === '') {
+            return ['type' => self::SHARED_LINE_TYPE];
+        }
+
+        return ['sendingNumber' => $from];
+    }
+
+    /**
+     * Posts one send and checks that Mediana confirmed it.
+     *
+     * @return array|\WP_Error
+     */
+    private function send($path, $body)
+    {
+        $data = $this->callApi('POST', $path, $body);
+
+        if (is_wp_error($data)) {
+            if ($data->get_error_code() === 'mediana-1101' && isset($body['sendingNumber'])) {
+                return new \WP_Error('mediana-1101', sprintf(
+                    /* translators: %s: the sender number in the gateway settings */
+                    esc_html__('Mediana does not know the sender number %s in your account (error 1101). Fix the number in the gateway settings, or leave it empty to send from Mediana\'s shared line.', 'wp-sms'),
+                    esc_html($body['sendingNumber'])
+                ));
+            }
+
+            return $data;
+        }
+
+        if (empty($data['succeed']) || empty($data['requestId'])) {
+            $said = isset($data['message']) && is_scalar($data['message']) ? trim((string)$data['message']) : '';
+
+            return new \WP_Error('send-sms', $said !== '' ? $said : esc_html__('Mediana did not confirm the send.', 'wp-sms'));
+        }
+
+        return $data;
     }
 
     public function GetCredit()
@@ -263,7 +420,7 @@ class mediana extends \WP_SMS\Gateway
     }
 
     /**
-     * The error codes in the description of Mediana's API collection.
+     * The error codes in the description of Mediana's API spec.
      */
     private function errorText($code)
     {
@@ -271,15 +428,25 @@ class mediana extends \WP_SMS\Gateway
             '1021' => __('an unknown error occurred', 'wp-sms'),
             '1032' => __('the account has no active plan', 'wp-sms'),
             '1033' => __('the account\'s plan does not include the API', 'wp-sms'),
+            '1034' => __('the account\'s plan does not include pattern sending', 'wp-sms'),
             '1035' => __('the account\'s plan does not include a dedicated line', 'wp-sms'),
             '1041' => __('the recipient\'s number is not valid', 'wp-sms'),
             '1042' => __('the wallet balance is not enough', 'wp-sms'),
             '1043' => __('there are more recipients than allowed', 'wp-sms'),
+            '1044' => __('the SMS ID is not valid', 'wp-sms'),
+            '1045' => __('the request code is not valid', 'wp-sms'),
             '1046' => __('the request\'s parameters are not valid', 'wp-sms'),
             '1047' => __('the number is on the blacklist', 'wp-sms'),
+            '1048' => __('WebEngage is not enabled on the account', 'wp-sms'),
+            '1051' => __('the campaign has expired', 'wp-sms'),
             '1061' => __('no active line was found', 'wp-sms'),
             '1062' => __('the line cannot be used at this time of day', 'wp-sms'),
+            '1071' => __('the pattern contains a URL', 'wp-sms'),
+            '1072' => __('the pattern was rejected by Mediana; check its status in your Mediana panel', 'wp-sms'),
+            '1073' => __('the pattern belongs to another sending number; send from the number it was approved for', 'wp-sms'),
             '1074' => __('the message text is empty', 'wp-sms'),
+            '1075' => __('the message request was not found', 'wp-sms'),
+            '1076' => __('the pattern is empty', 'wp-sms'),
             '1081' => __('the account\'s postal code has not been verified', 'wp-sms'),
             '1082' => __('the account\'s national code has not been verified', 'wp-sms'),
             '1083' => __('the account\'s mobile number has not been verified', 'wp-sms'),

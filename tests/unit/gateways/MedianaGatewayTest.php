@@ -111,6 +111,101 @@ class MedianaGatewayTest extends WP_UnitTestCase
         $this->assertSame('mediana-1042', $result->get_error_code());
     }
 
+    public function test_empty_sender_sends_from_the_shared_line()
+    {
+        $this->answer(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 1]]);
+
+        $gateway       = $this->gateway();
+        $gateway->from = '';
+
+        $this->assertIsArray($gateway->SendSMS());
+        $this->assertSame([
+            'type'        => 'Informational',
+            'recipients'  => ['09120000000', '09120000001'],
+            'messageText' => 'Test message',
+        ], json_decode(end($this->requests)['args']['body'], true));
+    }
+
+    public function test_pattern_is_sent_once_per_recipient_with_named_parameters()
+    {
+        $this->answer(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 2]]);
+
+        $gateway                   = $this->gateway();
+        $gateway->msg              = 'Your code is 1234|815422';
+        $gateway->messageVariables = ['code' => 1234, 'site_name' => 'Shop'];
+
+        $this->assertIsArray($gateway->SendSMS());
+        $this->assertCount(2, $this->requests);
+        $this->assertSame('https://api.mediana.ir/sms/v1/send/pattern', $this->requests[0]['url']);
+        $this->assertSame([
+            'sendingNumber' => '3000505',
+            'recipients'    => ['09120000000'],
+            'patternCode'   => '815422',
+            'parameters'    => ['code' => '1234', 'site_name' => 'Shop'],
+        ], json_decode($this->requests[0]['args']['body'], true));
+        $this->assertSame(['09120000001'], json_decode($this->requests[1]['args']['body'], true)['recipients']);
+    }
+
+    public function test_pattern_without_sender_uses_the_shared_line()
+    {
+        $this->answer(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 3]]);
+
+        $gateway                   = $this->gateway();
+        $gateway->from             = '';
+        $gateway->to               = ['09120000000'];
+        $gateway->msg              = 'Your code is 1234|815422';
+        $gateway->messageVariables = ['code' => '1234'];
+
+        $gateway->SendSMS();
+
+        $body = json_decode($this->requests[0]['args']['body'], true);
+        $this->assertSame('Informational', $body['type']);
+        $this->assertArrayNotHasKey('sendingNumber', $body);
+    }
+
+    public function test_template_code_without_variables_sends_plain_text()
+    {
+        $this->answer(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 4]]);
+
+        $gateway      = $this->gateway();
+        $gateway->msg = 'Hello|815422';
+
+        $gateway->SendSMS();
+
+        $send = end($this->requests);
+        $this->assertSame('https://api.mediana.ir/sms/v1/send/sms', $send['url']);
+        $this->assertSame('Hello', json_decode($send['args']['body'], true)['messageText']);
+    }
+
+    public function test_unknown_sender_number_says_to_fix_or_clear_it()
+    {
+        $this->answer(400, ['meta' => ['code' => 'BadRequest', 'errorMessage' => 'x', 'errors' => [['key' => 'error', 'errorCode' => 1101]]], 'data' => null]);
+
+        $result = $this->gateway()->SendSMS();
+
+        $this->assertInstanceOf('WP_Error', $result);
+        $this->assertSame('mediana-1101', $result->get_error_code());
+        $this->assertStringContainsString('3000505', $result->get_error_message());
+        $this->assertStringContainsString('leave it empty', $result->get_error_message());
+        $this->assertCount(1, $this->requests, 'No silent retry on the shared line.');
+    }
+
+    public function test_rejected_pattern_is_explained()
+    {
+        $this->answer(400, ['meta' => ['code' => 'BadRequest', 'errorMessage' => 'x', 'errors' => [['key' => 'error', 'errorCode' => 1072]]], 'data' => null]);
+
+        $gateway                   = $this->gateway();
+        $gateway->msg              = 'Your code is 1234|815422';
+        $gateway->messageVariables = ['code' => '1234'];
+
+        $result = $gateway->SendSMS();
+
+        $this->assertInstanceOf('WP_Error', $result);
+        $this->assertSame('mediana-1072', $result->get_error_code());
+        $this->assertStringContainsString('rejected', $result->get_error_message());
+        $this->assertCount(1, $this->requests);
+    }
+
     public function test_refused_key_says_so()
     {
         $this->answer(401, '');
