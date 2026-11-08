@@ -74,6 +74,56 @@ class Sms
             $sms->from = $parameters['from'];
         }
 
-        return $sms->SendSMS();
+        return self::dispatch($sms);
+    }
+
+    /**
+     * Longest time, in seconds, a gateway may keep a stream-based request
+     * (SOAP WSDL download, SOAP call, file_get_contents) open while sending.
+     */
+    const GATEWAY_SOCKET_TIMEOUT = 20;
+
+    /**
+     * Calls the gateway's SendSMS() so that a provider outage can never take
+     * the page down with it.
+     *
+     * Many gateways talk SOAP: when the provider's server is down, PHP throws a
+     * SoapFault (or an Error) from inside SendSMS(). Uncaught, that turns a
+     * failed SMS into a fatal error on checkout, login or form submit. Here it
+     * becomes a WP_Error and an outbox entry instead, like any other failure.
+     *
+     * @param object $sms Gateway instance with to/msg/from already set.
+     *
+     * @return mixed Gateway result, or WP_Error when the gateway threw.
+     */
+    public static function dispatch($sms)
+    {
+        $previousTimeout = ini_get('default_socket_timeout');
+        $lowerTimeout    = (int)$previousTimeout <= 0 || (int)$previousTimeout > self::GATEWAY_SOCKET_TIMEOUT;
+
+        if ($lowerTimeout) {
+            @ini_set('default_socket_timeout', (string)self::GATEWAY_SOCKET_TIMEOUT);
+        }
+
+        try {
+            return $sms->SendSMS();
+        } catch (\Throwable $e) {
+            /* translators: %s: error message returned by the SMS provider */
+            $message = sprintf(__('The SMS provider could not be reached: %s', 'wp-sms'), $e->getMessage());
+
+            if (method_exists($sms, 'log')) {
+                try {
+                    $sms->log($sms->from, $sms->msg, $sms->to, $message, 'error');
+                } catch (\Throwable $logError) {
+                    // Logging must never turn a handled failure back into a fatal one.
+                }
+            }
+
+            return new WP_Error('send-sms', $message);
+        } finally {
+            if ($lowerTimeout) {
+                @ini_set('default_socket_timeout', (string)$previousTimeout);
+            }
+        }
     }
 }
