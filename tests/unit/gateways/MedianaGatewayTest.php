@@ -24,9 +24,9 @@ class MedianaGatewayTest extends WP_UnitTestCase
 
     public function test_mediana_returns_wp_error_when_wsdl_cannot_be_loaded()
     {
-        $gateway = new \WP_SMS\Gateway\mediana();
+        $gateway = new MedianaGatewayWithoutLog();
 
-        $wsdl = new \ReflectionProperty($gateway, 'wsdl_link');
+        $wsdl = new \ReflectionProperty(\WP_SMS\Gateway\mediana::class, 'wsdl_link');
         $wsdl->setAccessible(true);
         $wsdl->setValue($gateway, 'http://127.0.0.1:1/server.php?wsdl');
 
@@ -44,4 +44,12 @@ class MedianaGatewayTest extends WP_UnitTestCase
         $this->assertInstanceOf('WP_Error', $result);
     }
 
+}
+
+class MedianaGatewayWithoutLog extends \WP_SMS\Gateway\mediana
+{
+    public function log($sender, $message, $to, $response, $status = 'success', $media = array())
+    {
+        return true;
+    }
 }
