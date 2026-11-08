@@ -278,18 +278,8 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         if ($gateway_name == 'default') {
             $sms = new $class_name();
         } else {
-            $gateway_class = '\\WP_SMS\\Gateway\\' . $resolved_name;
-
-            try {
-                $sms = new $gateway_class();
-            } catch (\Throwable $e) {
-                // The gateway is built on every page load (global $sms). If its
-                // constructor throws, for example because the provider's server
-                // is down, fall back to the default gateway so the site stays up.
-                error_log(sprintf('WSMS: gateway "%s" could not be loaded: %s', $resolved_name, $e->getMessage()));
-
-                return new $class_name();
-            }
+            $class_name = '\\WP_SMS\\Gateway\\' . $resolved_name;
+            $sms        = new $class_name();
         }
 
         if (!empty($sms->gatewayFields)) {
