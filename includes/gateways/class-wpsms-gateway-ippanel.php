@@ -432,7 +432,7 @@ class ippanel extends \WP_SMS\Gateway
         return is_string($this->has_key) && trim($this->has_key) !== '';
     }
 
-    private function missingKey()
+    protected function missingKey()
     {
         return new \WP_Error('account-credit', esc_html__('Enter your IPPanel API key. The username and password are not used.', 'wp-sms'));
     }
