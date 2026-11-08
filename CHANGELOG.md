@@ -1,4 +1,5 @@
 v7.2.13 - unreleased
+- **Fix:** Mediana: moved to Mediana's new API, since the old address no longer loads and Test Connection failed. Enter the API key from your Mediana panel; the username and password are no longer used.
 - **Fix:** Mediana: when Mediana's server is down, the site no longer shows a fatal error on every page. The send fails with a clear message in the outbox instead.
 
 v7.2.12 - 2026-11-06
