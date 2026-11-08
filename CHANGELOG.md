@@ -1,3 +1,6 @@
+v7.2.13 - unreleased
+- **Fix:** Mediana: when Mediana's server is down, the site no longer shows a fatal error on every page. The send fails with a clear message in the outbox instead.
+
 v7.2.12 - 2026-11-06
 - **Enhancement:** Setup guide links for 19 more gateways.
 - **Fix:** Kavenegar: a template message without variables now shows a clear error.
