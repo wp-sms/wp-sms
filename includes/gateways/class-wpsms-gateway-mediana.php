@@ -21,11 +21,36 @@ class mediana extends \WP_SMS\Gateway
         parent::__construct();
         $this->validateNumber = "09xxxxxxxx";
 
+    }
+
+    /**
+     * Connects to Mediana only when a request is made, never on page load.
+     *
+     * The constructor runs on every page, so loading the WSDL there turned a
+     * Mediana outage (HTTP 502) into a fatal error across the whole site.
+     * Exceptions stay on: with 'exceptions' => false PHP reports a failed WSDL
+     * download as an uncatchable fatal error instead of a SoapFault.
+     *
+     * @return \SoapClient|\WP_Error
+     */
+    private function getClient()
+    {
+        if ($this->client) {
+            return $this->client;
+        }
+
         if (!class_exists('SoapClient')) {
             return new \WP_Error('required-class', esc_html__('Class SoapClient not found. please enable php_soap in your php.', 'wp-sms'));
         }
 
-        $this->client = new \SoapClient($this->wsdl_link, ['exceptions' => false, 'encoding' => 'UTF-8']);
+        try {
+            $this->client = new \SoapClient($this->wsdl_link, ['encoding' => 'UTF-8', 'connection_timeout' => 10]);
+        } catch (\Throwable $e) {
+            /* translators: %s: error message */
+            return new \WP_Error('gateway-unreachable', sprintf(esc_html__('Mediana could not be reached: %s', 'wp-sms'), $e->getMessage()));
+        }
+
+        return $this->client;
     }
 
     public function SendSMS()
@@ -78,7 +103,21 @@ class mediana extends \WP_SMS\Gateway
             'Type'             => 'normal'
         ];
 
-        $result = $this->client->__soapCall("SendSMS", $params);
+        $client = $this->getClient();
+
+        if (is_wp_error($client)) {
+            $this->log($this->from, $this->msg, $this->to, $client->get_error_message(), 'error');
+
+            return $client;
+        }
+
+        try {
+            $result = $client->__soapCall("SendSMS", $params);
+        } catch (\Throwable $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+            return new \WP_Error('send-sms', $e->getMessage());
+        }
 
         if ($result) {
             // Log the result
@@ -114,7 +153,17 @@ class mediana extends \WP_SMS\Gateway
             'Password' => $this->password
         ];
 
-        $result = $this->client->__soapCall("GetCredit", $params);
+        $client = $this->getClient();
+
+        if (is_wp_error($client)) {
+            return $client;
+        }
+
+        try {
+            $result = $client->__soapCall("GetCredit", $params);
+        } catch (\Throwable $e) {
+            return new \WP_Error('account-credit', $e->getMessage());
+        }
 
         return $result;
     }
