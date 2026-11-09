@@ -166,24 +166,46 @@ class ippanel extends \WP_SMS\Gateway
             return $error;
         }
 
-        $recipients = array_values(array_filter(array_map([$this, 'e164'], (array)$this->to)));
+        $recipients        = [];
+        $invalidRecipients = [];
+
+        foreach ((array)$this->to as $recipient) {
+            $normalized = $this->e164($recipient);
+
+            if ($normalized === '') {
+                $invalidRecipients[] = $recipient;
+            } else {
+                $recipients[] = $normalized;
+            }
+        }
+
+        if ($invalidRecipients) {
+            $invalidError = new \WP_Error('send-sms', esc_html(sprintf(__('%s: no valid recipient number.', 'wp-sms'), $this->brand())));
+            $this->log($this->from, $this->msg, $invalidRecipients, $invalidError->get_error_message(), 'error');
+
+            if (!$recipients) {
+                return $invalidError;
+            }
+        }
 
         if (!empty($this->template_id) && !empty($this->messageVariables) && is_array($this->messageVariables)) {
-            $results = $this->sendPattern($from, $recipients);
+            $outcome = $this->sendPattern($from, $recipients);
         } else {
-            $results = $this->sendPlain($from, $recipients);
+            $outcome = $this->sendPlain($from, $recipients);
         }
 
-        if (is_wp_error($results)) {
-            $this->log($this->from, $this->msg, $this->to, $results->get_error_message(), 'error');
-
-            return $results;
+        if ($outcome['failed']) {
+            $this->log($this->from, $this->msg, $outcome['failed'], $outcome['error']->get_error_message(), 'error');
         }
 
-        $result = count($results) === 1 ? $results[0] : $results;
+        if (!$outcome['sent']) {
+            return $outcome['error'];
+        }
 
-        // Log the result
-        $this->log($this->from, $this->msg, $this->to, $result);
+        $result = count($outcome['results']) === 1 ? $outcome['results'][0] : $outcome['results'];
+
+        // Log only the recipients that were delivered.
+        $this->log($this->from, $this->msg, $outcome['sent'], $result);
 
         /**
          * Run hook after send sms.
@@ -200,11 +222,11 @@ class ippanel extends \WP_SMS\Gateway
     /**
      * Sends the text as a "webservice" send, up to MAX_RECIPIENTS per request.
      *
-     * @return array[]|\WP_Error
+     * @return array{results: array[], sent: string[], failed: string[], error: \WP_Error|null}
      */
     private function sendPlain($from, $recipients)
     {
-        $results = [];
+        $outcome = ['results' => [], 'sent' => [], 'failed' => [], 'error' => null];
 
         foreach (array_chunk($recipients, self::MAX_RECIPIENTS) as $chunk) {
             $data = $this->send([
@@ -215,20 +237,23 @@ class ippanel extends \WP_SMS\Gateway
             ]);
 
             if (is_wp_error($data)) {
-                return $data;
+                $outcome['failed'] = array_merge($outcome['failed'], $chunk);
+                $outcome['error']  = $outcome['error'] ?: $data;
+                continue;
             }
 
-            $results[] = $data;
+            $outcome['results'][] = $data;
+            $outcome['sent']      = array_merge($outcome['sent'], $chunk);
         }
 
-        return $results;
+        return $outcome;
     }
 
     /**
      * Sends the pattern once per number: IPPanel takes one recipient per
      * pattern request. Variables go by name, so %code% fills %code%.
      *
-     * @return array[]|\WP_Error
+     * @return array{results: array[], sent: string[], failed: string[], error: \WP_Error|null}
      */
     private function sendPattern($from, $recipients)
     {
@@ -242,7 +267,7 @@ class ippanel extends \WP_SMS\Gateway
             $params[trim((string)$name, '%')] = is_scalar($value) || $value === null ? (string)$value : '';
         }
 
-        $results = [];
+        $outcome = ['results' => [], 'sent' => [], 'failed' => [], 'error' => null];
 
         foreach ($recipients as $recipient) {
             $data = $this->send([
@@ -254,13 +279,16 @@ class ippanel extends \WP_SMS\Gateway
             ]);
 
             if (is_wp_error($data)) {
-                return $data;
+                $outcome['failed'][] = $recipient;
+                $outcome['error']    = $outcome['error'] ?: $data;
+                continue;
             }
 
-            $results[] = $data;
+            $outcome['results'][] = $data;
+            $outcome['sent'][]    = $recipient;
         }
 
-        return $results;
+        return $outcome;
     }
 
     /**

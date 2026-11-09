@@ -18,10 +18,14 @@ class MedianaGatewayTest extends WP_UnitTestCase
     /** @var array|\WP_Error the next answer */
     private $answer;
 
+    /** @var array[] queued answers for multi-request tests */
+    private $answers = [];
+
     public function setUp(): void
     {
         parent::setUp();
         $this->requests = [];
+        $this->answers  = [];
         add_filter('pre_http_request', [$this, 'fakeHttp'], 10, 3);
     }
 
@@ -35,12 +39,17 @@ class MedianaGatewayTest extends WP_UnitTestCase
     {
         $this->requests[] = ['url' => $url, 'args' => $args];
 
-        return $this->answer;
+        return $this->answers ? array_shift($this->answers) : $this->answer;
     }
 
     private function answer($code, $body)
     {
-        $this->answer = [
+        $this->answer = $this->response($code, $body);
+    }
+
+    private function response($code, $body)
+    {
+        return [
             'headers'  => [],
             'body'     => is_string($body) ? $body : wp_json_encode($body),
             'response' => ['code' => $code, 'message' => ''],
@@ -203,7 +212,7 @@ class MedianaGatewayTest extends WP_UnitTestCase
         $this->assertInstanceOf('WP_Error', $result);
         $this->assertSame('mediana-1072', $result->get_error_code());
         $this->assertStringContainsString('rejected', $result->get_error_message());
-        $this->assertCount(1, $this->requests);
+        $this->assertCount(2, $this->requests);
     }
 
     public function test_refused_key_says_so()
@@ -237,12 +246,52 @@ class MedianaGatewayTest extends WP_UnitTestCase
         $this->assertInstanceOf('WP_Error', $gateway->SendSMS());
         $this->assertCount(0, $this->requests);
     }
+
+    public function test_invalid_recipients_are_not_reported_as_sent()
+    {
+        $gateway     = $this->gateway();
+        $gateway->to = ['not-a-number'];
+
+        $result = $gateway->SendSMS();
+
+        $this->assertInstanceOf('WP_Error', $result);
+        $this->assertCount(0, $this->requests);
+        $this->assertSame('error', $gateway->logs[0]['status']);
+    }
+
+    public function test_partial_pattern_failure_keeps_sending_and_logs_each_outcome()
+    {
+        $this->answers = [
+            $this->response(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 1]]),
+            $this->response(400, ['meta' => ['code' => 'BadRequest', 'errors' => [['errorCode' => 1042]]]]),
+            $this->response(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 3]]),
+        ];
+
+        $gateway                   = $this->gateway();
+        $gateway->to               = ['09120000000', '09120000001', '09120000002'];
+        $gateway->msg              = 'Your code is 1234|815422';
+        $gateway->messageVariables = ['code' => 1234];
+
+        $result = $gateway->SendSMS();
+
+        $this->assertIsArray($result);
+        $this->assertCount(3, $this->requests);
+        $this->assertCount(2, $gateway->logs);
+        $this->assertSame('error', $gateway->logs[0]['status']);
+        $this->assertSame(['09120000001'], $gateway->logs[0]['to']);
+        $this->assertSame('success', $gateway->logs[1]['status']);
+        $this->assertSame(['09120000000', '09120000002'], $gateway->logs[1]['to']);
+    }
 }
 
 class MedianaGatewayWithoutLog extends \WP_SMS\Gateway\mediana
 {
+    public $logs = [];
+
     public function log($sender, $message, $to, $response, $status = 'success', $media = array())
     {
+        $this->logs[] = compact('sender', 'message', 'to', 'response', 'status', 'media');
+
         return true;
     }
 }
