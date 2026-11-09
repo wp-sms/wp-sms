@@ -279,7 +279,7 @@ class MedianaGatewayTest extends WP_UnitTestCase
         $this->assertSame('error', $gateway->logs[0]['status']);
     }
 
-    public function test_partial_pattern_failure_keeps_sending_and_logs_each_outcome()
+    public function test_partial_pattern_failure_reports_error_and_logs_each_outcome()
     {
         $this->answers = [
             $this->response(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 1]]),
@@ -294,7 +294,7 @@ class MedianaGatewayTest extends WP_UnitTestCase
 
         $result = $gateway->SendSMS();
 
-        $this->assertIsArray($result);
+        $this->assertInstanceOf('WP_Error', $result);
         $this->assertCount(3, $this->requests);
         $this->assertCount(2, $gateway->logs);
         $this->assertSame('error', $gateway->logs[0]['status']);

@@ -271,7 +271,7 @@ class IppanelGatewayTest extends WP_UnitTestCase
         $this->assertSame('error', $gateway->logs[0]['status']);
     }
 
-    public function test_partial_plain_failure_logs_delivered_and_failed_chunks_separately()
+    public function test_partial_plain_failure_reports_error_and_logs_each_outcome()
     {
         $this->answers = [
             $this->response(200, [
@@ -291,7 +291,7 @@ class IppanelGatewayTest extends WP_UnitTestCase
 
         $result = $gateway->SendSMS();
 
-        $this->assertIsArray($result);
+        $this->assertInstanceOf('WP_Error', $result);
         $this->assertCount(2, $this->requests);
         $this->assertCount(2, $gateway->logs);
         $this->assertSame('error', $gateway->logs[0]['status']);

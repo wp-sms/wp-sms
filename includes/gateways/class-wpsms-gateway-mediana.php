@@ -176,6 +176,7 @@ class mediana extends \WP_SMS\Gateway
             }
         }
 
+        $invalidError = null;
         if ($invalidRecipients) {
             $invalidError = new \WP_Error('send-sms', esc_html__('Mediana: no valid recipient number.', 'wp-sms'));
             $this->log($this->from, $this->msg, $invalidRecipients, $invalidError->get_error_message(), 'error');
@@ -196,13 +197,19 @@ class mediana extends \WP_SMS\Gateway
         }
 
         if (!$outcome['sent']) {
-            return $outcome['error'];
+            return $outcome['error'] ?: $invalidError;
         }
 
         $result = count($outcome['results']) === 1 ? $outcome['results'][0] : $outcome['results'];
 
         // Log only the recipients that were delivered.
         $this->log($this->from, $this->msg, $outcome['sent'], $result);
+
+        // The gateway contract cannot represent a partial success to its caller.
+        // Report the failed dispatch while preserving accurate per-recipient logs.
+        if ($outcome['error'] || $invalidError) {
+            return $outcome['error'] ?: $invalidError;
+        }
 
         /**
          * Run hook after send sms.
