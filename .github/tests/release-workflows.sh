@@ -156,19 +156,28 @@ check_legacy_setup_skips_woocommerce() {
 
     cat > "$tmp/bin/wp" <<'EOF'
 #!/usr/bin/env bash
-printf '%s\n' "$*" >> "$WP_CALLS"
+printf 'wp %s\n' "$*" >> "$TOOL_CALLS"
 exit 0
 EOF
-    chmod +x "$tmp/bin/wp"
+    cat > "$tmp/bin/curl" <<'EOF'
+#!/usr/bin/env bash
+printf 'curl %s\n' "$*" >> "$TOOL_CALLS"
+exit 99
+EOF
+    chmod +x "$tmp/bin/wp" "$tmp/bin/curl"
 
     PATH="$tmp/bin:$PATH" \
-        WP_CALLS="$calls" \
+        TOOL_CALLS="$calls" \
         WP_CORE_DIR="$tmp/wordpress" \
         WP_TESTS_DIR="$tmp/wordpress-tests-lib" \
         bash "$INSTALL_WP_TESTS" wordpress_tests root root 127.0.0.1 6.6 true false >/dev/null
 
-    if grep -q '^plugin install woocommerce' "$calls"; then
+    if grep -q '^wp plugin install woocommerce' "$calls"; then
         fail "legacy textdomain setup installed WooCommerce despite opting out"
+    fi
+
+    if grep -q '^curl ' "$calls"; then
+        fail "legacy textdomain setup used the network despite an existing test config"
     fi
 
     rm -rf "$tmp"
