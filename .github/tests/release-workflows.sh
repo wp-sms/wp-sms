@@ -6,6 +6,7 @@ ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 ASSETS_WORKFLOW="$ROOT/.github/workflows/assets.yml"
 DEPLOY_WORKFLOW="$ROOT/.github/workflows/deploy.yml"
 GATEWAY_REGISTRY_WORKFLOW="$ROOT/.github/workflows/notify-gateway-registry.yml"
+INSTALL_WP_TESTS="$ROOT/bin/install-wp-tests.sh"
 PLUGIN_FILE="$ROOT/wp-sms.php"
 README_FILE="$ROOT/readme.txt"
 POT_FILE="$ROOT/languages/wp-sms.pot"
@@ -144,6 +145,36 @@ check_pinned_actions() {
 }
 
 check_pinned_actions
+
+check_legacy_setup_skips_woocommerce() {
+    local tmp calls
+
+    tmp=$(mktemp -d)
+    calls="$tmp/wp-calls"
+    mkdir -p "$tmp/bin" "$tmp/wordpress" "$tmp/wordpress-tests-lib"
+    touch "$tmp/wordpress/wp-config.php" "$tmp/wordpress-tests-lib/wp-tests-config.php"
+
+    cat > "$tmp/bin/wp" <<'EOF'
+#!/usr/bin/env bash
+printf '%s\n' "$*" >> "$WP_CALLS"
+exit 0
+EOF
+    chmod +x "$tmp/bin/wp"
+
+    PATH="$tmp/bin:$PATH" \
+        WP_CALLS="$calls" \
+        WP_CORE_DIR="$tmp/wordpress" \
+        WP_TESTS_DIR="$tmp/wordpress-tests-lib" \
+        bash "$INSTALL_WP_TESTS" wordpress_tests root root 127.0.0.1 6.6 true false >/dev/null
+
+    if grep -q '^plugin install woocommerce' "$calls"; then
+        fail "legacy textdomain setup installed WooCommerce despite opting out"
+    fi
+
+    rm -rf "$tmp"
+}
+
+check_legacy_setup_skips_woocommerce
 
 check_release_metadata() {
     local plugin_version stable_tag pot_version

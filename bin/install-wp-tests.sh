@@ -17,7 +17,7 @@ download() {
 
 # Exit if insufficient arguments
 if [ $# -lt 3 ]; then
-    echo "usage: $0 <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]"
+    echo "usage: $0 <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation] [install-woocommerce]"
     exit 1
 fi
 
@@ -27,6 +27,7 @@ DB_PASS=$3
 DB_HOST=${4-localhost}
 WP_VERSION=${5-latest}
 SKIP_DB_CREATE=${6-false}
+INSTALL_WOOCOMMERCE=${7-true}
 
 TMPDIR=${TMPDIR-/tmp}
 TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
@@ -183,6 +184,8 @@ create_wp_config
 install_db
 install_wp_if_needed
 install_test_suite
-install_woocommerce
+if [ "$INSTALL_WOOCOMMERCE" = "true" ]; then
+    install_woocommerce
+fi
 
 echo "WordPress unit test environment set up successfully!"
