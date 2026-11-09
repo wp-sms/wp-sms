@@ -48,6 +48,40 @@ jobs:
       - name: Run language catalog regression test
         run: node --test tests/js/makeLanguageFiles.test.mjs
 
+  legacy-textdomain:
+    name: Run textdomain tests on WordPress 6.6
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      database:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: wordpress_tests
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        with:
+          php-version: '7.4'
+          tools: phpunit-polyfills:1.1, wp-cli
+
+      - name: Install required dependencies
+        run: sudo apt-get update && sudo apt-get install -y subversion
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Setup WordPress 6.6 tests
+        run: bash bin/install-wp-tests.sh wordpress_tests root root 127.0.0.1 6.6 true
+
+      - name: Run textdomain compatibility tests
+        run: phpunit --testdox tests/unit/TextDomainTest.php
+
   phpunit:
     name: Run tests
     runs-on: ubuntu-latest
