@@ -213,6 +213,12 @@ class WP_SMS
         if (version_compare($GLOBALS['wp_version'], '6.7', '>=')) {
             load_textdomain('wp-sms', $packFile, $locale);
             load_textdomain('wp-sms', $bundledFile, $locale);
+        } elseif (version_compare($GLOBALS['wp_version'], '4.6', '<') && is_readable($packFile)) {
+            // WordPress 4.1-4.5 checks the bundled catalog before the language
+            // pack. Reset that result, then load pack first so it keeps priority.
+            unload_textdomain('wp-sms');
+            load_textdomain('wp-sms', $packFile);
+            load_textdomain('wp-sms', $bundledFile);
         } elseif (is_readable($packFile) || !$loaded) {
             // Also when nothing loaded, e.g. the plugin folder sits outside
             // WP_PLUGIN_DIR (symlinked installs), so the relative path misses it.

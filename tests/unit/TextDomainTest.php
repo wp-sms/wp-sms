@@ -76,4 +76,48 @@ class TextDomainTest extends WP_UnitTestCase
 
         $this->assertSame('Test Connection', __('Test Connection', 'wp-sms'));
     }
+
+    public function testLanguagePackWinsOnWordPressBeforeFortySix(): void
+    {
+        $po = wp_tempnam('wp-sms-pack') . '.po';
+        file_put_contents($po, "msgid \"\"\nmsgstr \"Content-Type: text/plain; charset=UTF-8\\n\"\n\nmsgid \"Your line number from the Kavenegar panel.\"\nmsgstr \"از بسته وردپرس\"\n");
+        wp_mkdir_p(WP_LANG_DIR . '/plugins');
+        $this->packFile = WP_LANG_DIR . '/plugins/wp-sms-fa_IR.mo';
+
+        require_once ABSPATH . WPINC . '/pomo/po.php';
+        $translations = new \PO();
+        $translations->import_from_file($po);
+        $mo = new \MO();
+        $mo->merge_with($translations);
+        $mo->export_to_file($this->packFile);
+        unlink($po);
+
+        add_filter('pre_determine_locale', static function () {
+            return 'fa_IR';
+        });
+
+        unload_textdomain('wp-sms');
+        load_textdomain('wp-sms', WP_SMS_DIR . 'languages/wp-sms-fa_IR.mo');
+
+        $relativeFile = WP_PLUGIN_DIR . '/' . dirname(plugin_basename(WP_SMS_MAIN_FILE)) . '/languages/wp-sms-fa_IR.mo';
+        $override = static function ($loaded, $domain, $mofile) use ($relativeFile) {
+            return $domain === 'wp-sms' && $mofile === $relativeFile ? true : $loaded;
+        };
+        add_filter('override_load_textdomain', $override, 10, 3);
+
+        $oldVersion = $GLOBALS['wp_version'];
+        $GLOBALS['wp_version'] = '4.5';
+
+        try {
+            $method = new ReflectionMethod(WP_SMS::class, 'loadTextDomain');
+            $method->setAccessible(true);
+            $method->invoke(WP_SMS::get_instance());
+        } finally {
+            $GLOBALS['wp_version'] = $oldVersion;
+            remove_filter('override_load_textdomain', $override, 10);
+        }
+
+        $this->assertSame('از بسته وردپرس', __('Your line number from the Kavenegar panel.', 'wp-sms'));
+        $this->assertSame('آزمایش اتصال', __('Test Connection', 'wp-sms'));
+    }
 }
