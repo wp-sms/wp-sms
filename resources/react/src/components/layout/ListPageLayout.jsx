@@ -30,7 +30,7 @@ import { cn } from '@/lib/utils'
  *   <ListPageLayout
  *     title={__('Subscribers')}
  *     description={__('Manage your SMS subscribers')}
- *     actions={<Button onClick={() => editDialog.open()}>Add New</Button>}
+ *     actions={<Button onClick={() => editDialog.open()}>{__('Add New', 'wp-sms')}</Button>}
  *     filters={<SubscriberFilters {...filters} />}
  *     table={table}
  *     columns={columns}
@@ -39,7 +39,7 @@ import { cn } from '@/lib/utils'
  *     emptyState={{
  *       icon: Users,
  *       message: __('No subscribers yet'),
- *       action: <Button onClick={() => editDialog.open()}>Add First Subscriber</Button>
+ *       action: <Button onClick={() => editDialog.open()}>{__('Add First Subscriber', 'wp-sms')}</Button>
  *     }}
  *   >
  *     <EditSubscriberDialog {...editDialog} />

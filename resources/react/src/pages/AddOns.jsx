@@ -246,7 +246,7 @@ function AddOnCard({ addon, onLicenseChanged }) {
 
 function AddOnsLoadingSkeleton() {
   return (
-    <div className="wsms-space-y-6" role="status" aria-label="Loading">
+    <div className="wsms-space-y-6" role="status" aria-label={__('Loading', 'wp-sms')}>
       <div className="wsms-rounded-lg wsms-border wsms-border-border wsms-bg-card wsms-p-5">
         <div className="wsms-flex wsms-items-center wsms-gap-4">
           <Skeleton className="wsms-h-10 wsms-w-10 wsms-rounded-lg" />
@@ -277,7 +277,7 @@ function AddOnsLoadingSkeleton() {
           </div>
         ))}
       </div>
-      <span className="wsms-sr-only">Loading...</span>
+      <span className="wsms-sr-only">{__('Loading...', 'wp-sms')}</span>
     </div>
   )
 }

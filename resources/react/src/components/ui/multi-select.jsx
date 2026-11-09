@@ -180,7 +180,7 @@ const MultiSelect = React.forwardRef(
                 type="button"
                 className="wsms-rounded-full wsms-p-0.5 hover:wsms-bg-accent"
                 onClick={handleClearAll}
-                aria-label="Clear all selections"
+                aria-label={__('Clear all selections', 'wp-sms')}
               >
                 <X className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
               </button>

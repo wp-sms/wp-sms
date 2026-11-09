@@ -1,4 +1,6 @@
 v7.2.13 - unreleased
+- **Enhancement:** The Persian translation shipped with the plugin now covers every string (2,460), based on the full WordPress.org Persian translation. Sites without the language pack, or with an older one, now see every WSMS screen in Persian.
+- **Fix:** About 80 labels could not be translated (Privacy, Subscribers, Messaging, Two-Way, Authentication and import screens, notifications sidebar, error screens). They now can.
 - **New:** A Persian translation of the dashboard now ships with the plugin. Send SMS, Gateway, Outbox, the review window and the gateway list show in Persian even where the WordPress.org language pack does not have those strings yet. The language pack still wins where it has a string.
 - **Fix:** Text on the review and send window, the "Insert:" bar, the Test Connection message, the WooCommerce Pro page, gateway region names, the Kavenegar number format hint and a few screen reader labels could not be translated. They now can. The close button of dialogs no longer covers the title on right-to-left sites.
 - **Fix:** Translation files shipped in the plugin's languages folder were never loaded, because the folder path was wrong.

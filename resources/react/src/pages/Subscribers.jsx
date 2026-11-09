@@ -67,8 +67,8 @@ function SubscriberImportDialog({ open, onOpenChange, onImport, isLoading }) {
       open={open}
       onOpenChange={onOpenChange}
       mode="import"
-      title="Import Subscribers"
-      description="Upload a CSV file with subscriber data"
+      title={__('Import Subscribers', 'wp-sms')}
+      description={__('Upload a CSV file with subscriber data', 'wp-sms')}
       onImport={onImport}
       isLoading={isLoading}
       importFields={importFields}
@@ -898,19 +898,19 @@ export default function Subscribers() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <Edit className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              Edit Subscriber
+              {__('Edit Subscriber', 'wp-sms')}
             </DialogTitle>
-            <DialogDescription>Update subscriber information</DialogDescription>
+            <DialogDescription>{__('Update subscriber information', 'wp-sms')}</DialogDescription>
           </DialogHeader>
           <DialogBody overflow="visible">
             <div className="wsms-space-y-4">
               <div className="wsms-space-y-2">
-                <label htmlFor="edit-subscriber-name" className="wsms-text-[12px] wsms-font-medium">Name</label>
+                <label htmlFor="edit-subscriber-name" className="wsms-text-[12px] wsms-font-medium">{__('Name', 'wp-sms')}</label>
                 <Input
                   id="edit-subscriber-name"
                   value={editDialog.formData.name}
                   onChange={(e) => editDialog.updateField('name', e.target.value)}
-                  placeholder="Subscriber name"
+                  placeholder={__('Subscriber name', 'wp-sms')}
                 />
               </div>
               <div className="wsms-space-y-2">
@@ -928,16 +928,16 @@ export default function Subscribers() {
               </div>
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
                 <div className="wsms-space-y-2">
-                  <label className="wsms-text-[12px] wsms-font-medium">Group</label>
+                  <label className="wsms-text-[12px] wsms-font-medium">{__('Group', 'wp-sms')}</label>
                   <Select
                     value={editDialog.formData.group_id || 'none'}
                     onValueChange={(v) => editDialog.updateField('group_id', v === 'none' ? '' : v)}
                   >
                     <SelectTrigger aria-label={__('Group', 'wp-sms')}>
-                      <SelectValue placeholder="Select group" />
+                      <SelectValue placeholder={__('Select group', 'wp-sms')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">No Group</SelectItem>
+                      <SelectItem value="none">{__('No Group', 'wp-sms')}</SelectItem>
                       {groups.map((group) => (
                         <SelectItem key={group.id} value={group.id.toString()}>
                           {group.name}
@@ -947,7 +947,7 @@ export default function Subscribers() {
                   </Select>
                 </div>
                 <div className="wsms-space-y-2">
-                  <label className="wsms-text-[12px] wsms-font-medium">Status</label>
+                  <label className="wsms-text-[12px] wsms-font-medium">{__('Status', 'wp-sms')}</label>
                   <Select
                     value={editDialog.formData.status}
                     onValueChange={(v) => editDialog.updateField('status', v)}
@@ -956,8 +956,8 @@ export default function Subscribers() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1">Active</SelectItem>
-                      <SelectItem value="0">Inactive</SelectItem>
+                      <SelectItem value="1">{__('Active', 'wp-sms')}</SelectItem>
+                      <SelectItem value="0">{__('Inactive', 'wp-sms')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -966,13 +966,13 @@ export default function Subscribers() {
           </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={editDialog.close}>
-              Cancel
+              {__('Cancel', 'wp-sms')}
             </Button>
             <Button onClick={editDialog.save} disabled={editDialog.isSaving}>
               {editDialog.isSaving ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
-                  Saving...
+                  {__('Saving...', 'wp-sms')}
                 </>
               ) : (
                 'Save Changes'
@@ -1002,7 +1002,7 @@ export default function Subscribers() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              Quick Reply
+              {__('Quick Reply', 'wp-sms')}
             </DialogTitle>
             <DialogDescription>
               Send a message to {quickReplyTo?.name || quickReplyTo?.mobile}
@@ -1011,18 +1011,18 @@ export default function Subscribers() {
           <DialogBody>
             <div className="wsms-space-y-4">
               <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/50 wsms-border wsms-border-border">
-                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-1">Recipient</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-1">{__('Recipient', 'wp-sms')}</p>
                 <p className="wsms-text-[13px] wsms-font-mono wsms-text-foreground">
                   {quickReplyTo?.mobile}
                 </p>
               </div>
               <div className="wsms-space-y-2">
-                <label htmlFor="quick-reply-message" className="wsms-text-[12px] wsms-font-medium">Message</label>
+                <label htmlFor="quick-reply-message" className="wsms-text-[12px] wsms-font-medium">{__('Message', 'wp-sms')}</label>
                 <textarea
                   id="quick-reply-message"
                   value={quickReplyMessage}
                   onChange={(e) => setQuickReplyMessage(e.target.value)}
-                  placeholder="Type your message..."
+                  placeholder={__('Type your message...', 'wp-sms')}
                   rows={4}
                   className="wsms-w-full wsms-px-3 wsms-py-2 wsms-text-[13px] wsms-text-foreground wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-resize-none placeholder:wsms-text-muted-foreground focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-ring focus:wsms-ring-offset-2"
                 />
@@ -1040,7 +1040,7 @@ export default function Subscribers() {
                 setQuickReplyMessage('')
               }}
             >
-              Cancel
+              {__('Cancel', 'wp-sms')}
             </Button>
             <Button
               onClick={handleQuickReply}
@@ -1049,12 +1049,12 @@ export default function Subscribers() {
               {isSendingReply ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
-                  Sending...
+                  {__('Sending...', 'wp-sms')}
                 </>
               ) : (
                 <>
                   <Send className="wsms-h-4 wsms-w-4 wsms-me-2" />
-                  Send Message
+                  {__('Send Message', 'wp-sms')}
                 </>
               )}
             </Button>
@@ -1074,7 +1074,7 @@ export default function Subscribers() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <FolderOpen className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              Move to Group
+              {__('Move to Group', 'wp-sms')}
             </DialogTitle>
             <DialogDescription>
               Move {table.selectedIds.length} selected subscriber(s) to a group

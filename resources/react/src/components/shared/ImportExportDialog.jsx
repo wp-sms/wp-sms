@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import * as React from 'react'
 import { Upload, Download, FileText, AlertCircle, CheckCircle, Loader2, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -185,7 +186,7 @@ const ImportExportDialog = ({
                         e.stopPropagation()
                         clearFile()
                       }}
-                      aria-label="Remove selected file"
+                      aria-label={__('Remove selected file', 'wp-sms')}
                     >
                       <X className="wsms-h-4 wsms-w-4" />
                     </Button>
@@ -194,7 +195,7 @@ const ImportExportDialog = ({
                   <>
                     <Upload className="wsms-h-10 wsms-w-10 wsms-mx-auto wsms-text-muted-foreground wsms-mb-3" />
                     <p className="wsms-text-[13px] wsms-font-medium">
-                      Drop your CSV file here or click to browse
+                      {__('Drop your CSV file here or click to browse', 'wp-sms')}
                     </p>
                     <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mt-1">
                       Maximum file size: 5MB
@@ -206,7 +207,7 @@ const ImportExportDialog = ({
               {/* Expected fields */}
               {importFields.length > 0 && (
                 <div className="wsms-p-3 wsms-rounded-md wsms-bg-muted/30 wsms-border wsms-border-border">
-                  <p className="wsms-text-[12px] wsms-font-medium wsms-mb-2">Expected CSV columns:</p>
+                  <p className="wsms-text-[12px] wsms-font-medium wsms-mb-2">{__('Expected CSV columns:', 'wp-sms')}</p>
                   <div className="wsms-flex wsms-flex-wrap wsms-gap-1.5">
                     {importFields.map((field) => (
                       <span
@@ -268,7 +269,7 @@ const ImportExportDialog = ({
                   className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-text-primary hover:wsms-underline"
                 >
                   <Download className="wsms-h-3.5 wsms-w-3.5" />
-                  Download sample CSV template
+                  {__('Download sample CSV template', 'wp-sms')}
                 </a>
               )}
             </div>
@@ -279,7 +280,7 @@ const ImportExportDialog = ({
             <div className="wsms-space-y-4">
               {exportOptions.length > 0 && (
                 <div className="wsms-space-y-2">
-                  <label className="wsms-text-[12px] wsms-font-medium">Export Format</label>
+                  <label className="wsms-text-[12px] wsms-font-medium">{__('Export Format', 'wp-sms')}</label>
                   <Select value={exportFormat} onValueChange={setExportFormat}>
                     <SelectTrigger>
                       <SelectValue />
@@ -298,7 +299,7 @@ const ImportExportDialog = ({
               <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/30 wsms-border wsms-border-border wsms-text-center">
                 <Upload className="wsms-h-10 wsms-w-10 wsms-mx-auto wsms-text-muted-foreground wsms-mb-3" />
                 <p className="wsms-text-[13px]">
-                  Click export to download your data as a CSV file
+                  {__('Click export to download your data as a CSV file', 'wp-sms')}
                 </p>
               </div>
             </div>
@@ -325,19 +326,19 @@ const ImportExportDialog = ({
 
         <DialogFooter>
           <Button variant="outline" onClick={handleClose} disabled={isLoading}>
-            Cancel
+            {__('Cancel', 'wp-sms')}
           </Button>
           {mode === 'import' ? (
             <Button onClick={handleImport} disabled={isLoading || !file}>
               {isLoading ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
-                  Importing...
+                  {__('Importing...', 'wp-sms')}
                 </>
               ) : (
                 <>
                   <Download className="wsms-h-4 wsms-w-4 wsms-me-2" />
-                  Import
+                  {__('Import', 'wp-sms')}
                 </>
               )}
             </Button>
@@ -346,12 +347,12 @@ const ImportExportDialog = ({
               {isLoading ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
-                  Exporting...
+                  {__('Exporting...', 'wp-sms')}
                 </>
               ) : (
                 <>
                   <Upload className="wsms-h-4 wsms-w-4 wsms-me-2" />
-                  Export
+                  {__('Export', 'wp-sms')}
                 </>
               )}
             </Button>
