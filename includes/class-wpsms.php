@@ -201,7 +201,7 @@ class WP_SMS
         $packFile     = WP_LANG_DIR . '/plugins/wp-sms-' . $locale . '.mo';
         $bundledFile  = WP_SMS_DIR . 'languages/wp-sms-' . $locale . '.mo';
 
-        load_plugin_textdomain('wp-sms', false, $relativePath);
+        $loaded = load_plugin_textdomain('wp-sms', false, $relativePath);
 
         if ($locale === 'en_US') {
             return;
@@ -213,7 +213,9 @@ class WP_SMS
         if (version_compare($GLOBALS['wp_version'], '6.7', '>=')) {
             load_textdomain('wp-sms', $packFile, $locale);
             load_textdomain('wp-sms', $bundledFile, $locale);
-        } elseif (is_readable($packFile)) {
+        } elseif (is_readable($packFile) || !$loaded) {
+            // Also when nothing loaded, e.g. the plugin folder sits outside
+            // WP_PLUGIN_DIR (symlinked installs), so the relative path misses it.
             load_textdomain('wp-sms', $bundledFile, $locale);
         }
     }
