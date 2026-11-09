@@ -17,6 +17,7 @@ class TextDomainTest extends WP_UnitTestCase
     public function tearDown(): void
     {
         remove_all_filters('pre_determine_locale');
+        remove_all_filters('plugin_locale');
         if ($this->packFile && file_exists($this->packFile)) {
             unlink($this->packFile);
         }
@@ -63,5 +64,16 @@ class TextDomainTest extends WP_UnitTestCase
         $this->assertSame('از بسته وردپرس', __('Your line number from the Kavenegar panel.', 'wp-sms'));
         // Strings the pack does not have still come from the shipped file.
         $this->assertSame('آزمایش اتصال', __('Test Connection', 'wp-sms'));
+    }
+
+    public function testPluginLocaleControlsExplicitCatalogLoads(): void
+    {
+        add_filter('plugin_locale', static function ($locale, $domain) {
+            return $domain === 'wp-sms' ? 'en_US' : $locale;
+        }, 10, 2);
+
+        $this->loadPersian();
+
+        $this->assertSame('Test Connection', __('Test Connection', 'wp-sms'));
     }
 }

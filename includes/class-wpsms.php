@@ -194,16 +194,28 @@ class WP_SMS
      */
     private function loadTextDomain()
     {
-        $locale = determine_locale();
+        $locale = function_exists('determine_locale') ? determine_locale() : get_locale();
+        $locale = apply_filters('plugin_locale', $locale, 'wp-sms');
 
-        load_plugin_textdomain('wp-sms', false, dirname(plugin_basename(WP_SMS_MAIN_FILE)) . '/languages');
+        $relativePath = dirname(plugin_basename(WP_SMS_MAIN_FILE)) . '/languages';
+        $packFile     = WP_LANG_DIR . '/plugins/wp-sms-' . $locale . '.mo';
+        $bundledFile  = WP_SMS_DIR . 'languages/wp-sms-' . $locale . '.mo';
+
+        load_plugin_textdomain('wp-sms', false, $relativePath);
 
         if ($locale === 'en_US') {
             return;
         }
 
-        load_textdomain('wp-sms', WP_LANG_DIR . '/plugins/wp-sms-' . $locale . '.mo', $locale);
-        load_textdomain('wp-sms', WP_SMS_DIR . 'languages/wp-sms-' . $locale . '.mo', $locale);
+        // WordPress 6.7+ defers plugin catalog loading, so load both sources
+        // explicitly. On older versions load_plugin_textdomain() already loaded
+        // the pack or bundled file; only add the bundled fallback when a pack won.
+        if (version_compare($GLOBALS['wp_version'], '6.7', '>=')) {
+            load_textdomain('wp-sms', $packFile, $locale);
+            load_textdomain('wp-sms', $bundledFile, $locale);
+        } elseif (is_readable($packFile)) {
+            load_textdomain('wp-sms', $bundledFile, $locale);
+        }
     }
 
     private function initGateway()
