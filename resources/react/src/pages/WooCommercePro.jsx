@@ -129,7 +129,7 @@ export default function WooCommercePro() {
           <CardContent>
             <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
               <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                No settings available. Please ensure the WooCommerce Pro add-on is properly configured.
+                {__('No settings available. Please ensure the WooCommerce Pro add-on is properly configured.', 'wp-sms')}
               </p>
             </div>
           </CardContent>
@@ -144,10 +144,10 @@ export default function WooCommercePro() {
       <div className="wsms-mb-6">
         <h1 className="wsms-text-2xl wsms-font-bold wsms-flex wsms-items-center wsms-gap-2">
           <ShoppingCart className="wsms-h-6 wsms-w-6" />
-          WooCommerce Pro
+          {__('WooCommerce Pro', 'wp-sms')}
         </h1>
         <p className="wsms-text-muted-foreground wsms-mt-1">
-          Configure advanced WooCommerce SMS notifications and automation features.
+          {__('Configure advanced WooCommerce SMS notifications and automation features.', 'wp-sms')}
         </p>
       </div>
 

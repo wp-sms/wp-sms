@@ -213,7 +213,7 @@ export default function Privacy() {
             </div>
             <div>
               <h2 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-1">
-                GDPR Data Management
+                {__('GDPR Data Management', 'wp-sms')}
               </h2>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-max-w-lg">
                 Search for user data by phone number, export it for data portability requests (Article 20),
@@ -227,21 +227,21 @@ export default function Privacy() {
             <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-p-3 wsms-rounded-lg wsms-bg-background/50 wsms-border wsms-border-border">
               <Eye className="wsms-h-5 wsms-w-5 wsms-text-blue-500" />
               <div>
-                <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">Right to Access</p>
+                <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">{__('Right to Access', 'wp-sms')}</p>
                 <p className="wsms-text-[11px] wsms-text-muted-foreground">Article 15</p>
               </div>
             </div>
             <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-p-3 wsms-rounded-lg wsms-bg-background/50 wsms-border wsms-border-border">
               <Database className="wsms-h-5 wsms-w-5 wsms-text-emerald-500" />
               <div>
-                <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">Data Portability</p>
+                <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">{__('Data Portability', 'wp-sms')}</p>
                 <p className="wsms-text-[11px] wsms-text-muted-foreground">Article 20</p>
               </div>
             </div>
             <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-p-3 wsms-rounded-lg wsms-bg-background/50 wsms-border wsms-border-border">
               <Trash2 className="wsms-h-5 wsms-w-5 wsms-text-red-500" />
               <div>
-                <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">Right to Erasure</p>
+                <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">{__('Right to Erasure', 'wp-sms')}</p>
                 <p className="wsms-text-[11px] wsms-text-muted-foreground">Article 17</p>
               </div>
             </div>
@@ -255,10 +255,10 @@ export default function Privacy() {
           <form onSubmit={handleSearch} className="wsms-max-w-xl wsms-mx-auto">
             <div className="wsms-text-center wsms-mb-6">
               <h3 className="wsms-text-[14px] wsms-font-semibold wsms-text-foreground wsms-mb-1">
-                Search User Data
+                {__('Search User Data', 'wp-sms')}
               </h3>
               <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                Enter a phone number to find all associated data
+                {__('Enter a phone number to find all associated data', 'wp-sms')}
               </p>
             </div>
             <div className="wsms-flex wsms-gap-2">
@@ -277,12 +277,12 @@ export default function Privacy() {
                 {isSearching ? (
                   <>
                     <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
-                    Searching...
+                    {__('Searching...', 'wp-sms')}
                   </>
                 ) : (
                   <>
                     <Search className="wsms-h-4 wsms-w-4 wsms-me-2" />
-                    Search
+                    {__('Search', 'wp-sms')}
                   </>
                 )}
               </Button>
@@ -301,7 +301,7 @@ export default function Privacy() {
                 <div>
                   <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                     <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-success" />
-                    Data Found
+                    {__('Data Found', 'wp-sms')}
                   </CardTitle>
                   <CardDescription>
                     {searchResults.summary.total_records} records found for {phoneNumber}
@@ -316,7 +316,7 @@ export default function Privacy() {
                   />
                   <Button variant="destructive" onClick={() => setShowDeleteConfirm(true)}>
                     <Trash2 className="wsms-h-4 wsms-w-4 wsms-me-2" />
-                    Delete All
+                    {__('Delete All', 'wp-sms')}
                   </Button>
                 </div>
               </div>
@@ -331,7 +331,7 @@ export default function Privacy() {
                     <p className="wsms-text-2xl wsms-font-bold wsms-text-foreground">
                       {searchResults.summary.wp_users}
                     </p>
-                    <p className="wsms-text-[12px] wsms-text-muted-foreground">User Records</p>
+                    <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('User Records', 'wp-sms')}</p>
                   </div>
                 </div>
                 <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-p-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
@@ -342,7 +342,7 @@ export default function Privacy() {
                     <p className="wsms-text-2xl wsms-font-bold wsms-text-foreground">
                       {searchResults.summary.subscribers}
                     </p>
-                    <p className="wsms-text-[12px] wsms-text-muted-foreground">Subscriptions</p>
+                    <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Subscriptions', 'wp-sms')}</p>
                   </div>
                 </div>
                 <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-p-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
@@ -353,7 +353,7 @@ export default function Privacy() {
                     <p className="wsms-text-2xl wsms-font-bold wsms-text-foreground">
                       {searchResults.summary.outbox_messages}
                     </p>
-                    <p className="wsms-text-[12px] wsms-text-muted-foreground">Messages</p>
+                    <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Messages', 'wp-sms')}</p>
                   </div>
                 </div>
               </div>
@@ -363,8 +363,8 @@ export default function Privacy() {
           {/* Records List */}
           <Card>
             <CardHeader>
-              <CardTitle>All Records</CardTitle>
-              <CardDescription>Detailed view of all data associated with this phone number</CardDescription>
+              <CardTitle>{__('All Records', 'wp-sms')}</CardTitle>
+              <CardDescription>{__('Detailed view of all data associated with this phone number', 'wp-sms')}</CardDescription>
             </CardHeader>
             <CardContent className="wsms-p-0">
               <div className="wsms-divide-y wsms-divide-border">
@@ -439,46 +439,46 @@ export default function Privacy() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2 wsms-text-destructive">
               <AlertTriangle className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              Confirm Deletion
+              {__('Confirm Deletion', 'wp-sms')}
             </DialogTitle>
             <DialogDescription>
-              This action cannot be undone.
+              {__('This action cannot be undone.', 'wp-sms')}
             </DialogDescription>
           </DialogHeader>
           <DialogBody>
             <div className="wsms-space-y-4">
               <p className="wsms-text-[13px] wsms-text-foreground">
-                You are about to permanently delete all data associated with:
+                {__('You are about to permanently delete all data associated with:', 'wp-sms')}
               </p>
               <div className="wsms-p-4 wsms-rounded-lg wsms-bg-muted wsms-font-mono wsms-text-[14px] wsms-text-center wsms-font-medium">
                 {phoneNumber}
               </div>
               <div className="wsms-p-4 wsms-rounded-lg wsms-bg-destructive/10 wsms-border wsms-border-destructive/20">
                 <p className="wsms-text-[12px] wsms-font-medium wsms-text-destructive wsms-mb-2">
-                  This will delete:
+                  {__('This will delete:', 'wp-sms')}
                 </p>
                 <ul className="wsms-text-[12px] wsms-text-destructive wsms-list-disc wsms-ms-4 wsms-space-y-1">
-                  <li>User mobile number from profiles</li>
-                  <li>Newsletter subscriptions</li>
-                  <li>Sent message history</li>
+                  <li>{__('User mobile number from profiles', 'wp-sms')}</li>
+                  <li>{__('Newsletter subscriptions', 'wp-sms')}</li>
+                  <li>{__('Sent message history', 'wp-sms')}</li>
                 </ul>
               </div>
             </div>
           </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>
-              Cancel
+              {__('Cancel', 'wp-sms')}
             </Button>
             <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
               {isDeleting ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
-                  Deleting...
+                  {__('Deleting...', 'wp-sms')}
                 </>
               ) : (
                 <>
                   <Trash2 className="wsms-h-4 wsms-w-4 wsms-me-2" />
-                  Delete All Data
+                  {__('Delete All Data', 'wp-sms')}
                 </>
               )}
             </Button>

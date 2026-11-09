@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState } from 'react'
 import { ExternalLink, X, Clock } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -96,7 +97,7 @@ export function NotificationCard({ notification, onDismiss, showDismiss = true }
             'active:wsms-scale-90',
             'focus:wsms-outline-none focus-visible:wsms-opacity-100 focus-visible:wsms-ring-2 focus-visible:wsms-ring-primary/50'
           )}
-          aria-label="Dismiss notification"
+          aria-label={__('Dismiss notification', 'wp-sms')}
         >
           <X className="wsms-h-3.5 wsms-w-3.5" strokeWidth={2.5} />
         </button>

@@ -550,7 +550,7 @@ export default function Groups() {
             onClick={() => table.handlePageChange(table.pagination.current_page - 1)}
             disabled={table.pagination.current_page === 1}
           >
-            Previous
+            {__('Previous', 'wp-sms')}
           </Button>
           <span className="wsms-flex wsms-items-center wsms-px-3 wsms-text-[12px] wsms-text-muted-foreground">
             Page {table.pagination.current_page} of {table.pagination.total_pages}
@@ -561,7 +561,7 @@ export default function Groups() {
             onClick={() => table.handlePageChange(table.pagination.current_page + 1)}
             disabled={table.pagination.current_page === table.pagination.total_pages}
           >
-            Next
+            {__('Next', 'wp-sms')}
           </Button>
         </div>
       )}

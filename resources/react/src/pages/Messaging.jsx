@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React from 'react'
 import { MessageSquare, Link, Clock, FileText, CheckCircle } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
@@ -19,17 +20,17 @@ export default function Messaging() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Link className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            URL Shortening
+            {__('URL Shortening', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            Long URLs in your messages are automatically shortened to save characters
+            {__('Long URLs in your messages are automatically shortened to save characters', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-rounded-lg wsms-bg-success/10 wsms-p-4">
             <CheckCircle className="wsms-h-5 wsms-w-5 wsms-text-success wsms-shrink-0" />
             <div>
-              <p className="wsms-font-medium wsms-text-success">Enabled</p>
+              <p className="wsms-font-medium wsms-text-success">{__('Enabled', 'wp-sms')}</p>
               <p className="wsms-text-[12px] wsms-text-muted-foreground">
                 URLs are automatically shortened using the wp_sms_shorturl filter. You can customize the shortening service via hooks.
               </p>
@@ -47,20 +48,20 @@ export default function Messaging() {
             {!hasPro && <Badge variant="warning">Pro</Badge>}
           </CardTitle>
           <CardDescription>
-            Create reusable message templates for common notifications
+            {__('Create reusable message templates for common notifications', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {hasPro ? (
             <div className="wsms-space-y-4">
               <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                Manage your message templates from the dedicated templates section.
+                {__('Manage your message templates from the dedicated templates section.', 'wp-sms')}
               </p>
             </div>
           ) : (
             <div className="wsms-rounded-lg wsms-bg-muted wsms-p-4 wsms-text-center">
               <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                Message templates are available in the Pro version.
+                {__('Message templates are available in the Pro version.', 'wp-sms')}
               </p>
             </div>
           )}
@@ -76,20 +77,20 @@ export default function Messaging() {
             {!hasPro && <Badge variant="warning">Pro</Badge>}
           </CardTitle>
           <CardDescription>
-            Schedule messages to be sent at a specific time
+            {__('Schedule messages to be sent at a specific time', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {hasPro ? (
             <div className="wsms-space-y-4">
               <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                Scheduled messages can be configured when composing SMS in the Send SMS page.
+                {__('Scheduled messages can be configured when composing SMS in the Send SMS page.', 'wp-sms')}
               </p>
             </div>
           ) : (
             <div className="wsms-rounded-lg wsms-bg-muted wsms-p-4 wsms-text-center">
               <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                Scheduled messages are available in the Pro version.
+                {__('Scheduled messages are available in the Pro version.', 'wp-sms')}
               </p>
             </div>
           )}
@@ -101,16 +102,16 @@ export default function Messaging() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            Message Settings
+            {__('Message Settings', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            General messaging configuration options
+            {__('General messaging configuration options', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <SettingRow
-            title="Store Sent Messages"
-            description="Keep a record of all sent messages in the outbox for tracking and resending"
+            title={__('Store Sent Messages', 'wp-sms')}
+            description={__('Keep a record of all sent messages in the outbox for tracking and resending', 'wp-sms')}
             checked={storeOutbox === '1'}
             onCheckedChange={(checked) => setStoreOutbox(checked ? '1' : '')}
           />

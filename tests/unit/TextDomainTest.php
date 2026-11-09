@@ -39,7 +39,7 @@ class TextDomainTest extends WP_UnitTestCase
     {
         $this->loadPersian();
 
-        $this->assertSame('شماره خط شما در پنل Kavenegar.', __('Your line number from the Kavenegar panel.', 'wp-sms'));
+        $this->assertSame('شماره خط شما در پنل کاوه‌نگار.', __('Your line number from the Kavenegar panel.', 'wp-sms'));
     }
 
     public function testLanguagePackWinsOverShippedStrings(): void

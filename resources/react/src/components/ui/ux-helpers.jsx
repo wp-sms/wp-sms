@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import * as React from 'react'
 import {
   Lightbulb,
@@ -92,7 +93,7 @@ export function SetupProgress({ steps, className }) {
       <div className="wsms-space-y-2">
         <div className="wsms-flex wsms-items-center wsms-justify-between">
           <span className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">
-            Setup Progress
+            {__('Setup Progress', 'wp-sms')}
           </span>
           <span className="wsms-text-[12px] wsms-text-muted-foreground">
             {completedSteps} of {steps.length} complete

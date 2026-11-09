@@ -35,21 +35,21 @@ export default function Authentication() {
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <Shield className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              Authentication & OTP
+              {__('Authentication & OTP', 'wp-sms')}
               <Badge variant="warning">
                 <Diamond className="wsms-me-1 wsms-h-3 wsms-w-3" />
-                Add-on Required
+                {__('Add-on Required', 'wp-sms')}
               </Badge>
             </CardTitle>
             <CardDescription>
-              Secure your users with SMS-based authentication
+              {__('Secure your users with SMS-based authentication', 'wp-sms')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="wsms-rounded-lg wsms-bg-muted wsms-p-8 wsms-text-center">
               <Shield className="wsms-mx-auto wsms-h-12 wsms-w-12 wsms-text-muted-foreground" />
               <h3 className="wsms-mt-4 wsms-text-lg wsms-font-semibold">
-                Pro or OTP Add-on Required
+                {__('Pro or OTP Add-on Required', 'wp-sms')}
               </h3>
               <p className="wsms-mt-2 wsms-text-sm wsms-text-muted-foreground">
                 SMS authentication features require the Pro pack or OTP-MFA add-on.
@@ -57,10 +57,10 @@ export default function Authentication() {
               </p>
               <div className="wsms-mt-6 wsms-flex wsms-justify-center wsms-gap-4">
                 <Button>
-                  Get Pro Pack
+                  {__('Get Pro Pack', 'wp-sms')}
                 </Button>
                 <Button variant="outline">
-                  Learn More
+                  {__('Learn More', 'wp-sms')}
                 </Button>
               </div>
             </div>
@@ -77,16 +77,16 @@ export default function Authentication() {
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <Shield className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              Authentication
+              {__('Authentication', 'wp-sms')}
             </CardTitle>
             <CardDescription>
-              SMS-based login and two-factor authentication settings
+              {__('SMS-based login and two-factor authentication settings', 'wp-sms')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
               <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                No settings available. Please ensure your add-on is up to date.
+                {__('No settings available. Please ensure your add-on is up to date.', 'wp-sms')}
               </p>
             </div>
           </CardContent>
@@ -126,7 +126,7 @@ export default function Authentication() {
       {standaloneFields.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Additional Settings</CardTitle>
+            <CardTitle>{__('Additional Settings', 'wp-sms')}</CardTitle>
           </CardHeader>
           <CardContent className="wsms-space-y-4">
             {standaloneFields.map((field) => (

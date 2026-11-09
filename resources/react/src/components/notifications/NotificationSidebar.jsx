@@ -121,7 +121,7 @@ export function NotificationSidebar({
     if (!sidebar) return
 
     // Auto-focus the close button on open
-    const closeButton = sidebar.querySelector('[aria-label="Close notifications"]')
+    const closeButton = sidebar.querySelector(`[aria-label="${__('Close notifications', 'wp-sms')}"]`)
     if (closeButton) {
       closeButton.focus()
     }
@@ -201,7 +201,7 @@ export function NotificationSidebar({
         }}
         role="dialog"
         aria-modal="true"
-        aria-label="Notifications"
+        aria-label={__('Notifications', 'wp-sms')}
       >
         {/* Header with gradient accent */}
         <div className="wsms-relative wsms-flex-shrink-0">
@@ -215,7 +215,7 @@ export function NotificationSidebar({
               </div>
               <div>
                 <h2 className="wsms-text-base wsms-font-semibold wsms-text-foreground wsms-tracking-tight">
-                  Notifications
+                  {__('Notifications', 'wp-sms')}
                 </h2>
                 {totalCount > 0 && (
                   <p className="wsms-text-xs wsms-text-muted-foreground wsms-mt-0.5">
@@ -234,7 +234,7 @@ export function NotificationSidebar({
                 'active:wsms-scale-95',
                 'focus:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-primary/50'
               )}
-              aria-label="Close notifications"
+              aria-label={__('Close notifications', 'wp-sms')}
             >
               <X className="wsms-h-[18px] wsms-w-[18px]" strokeWidth={2} />
             </button>
@@ -263,7 +263,7 @@ export function NotificationSidebar({
               id="notifications-tab-inbox"
               controls="notifications-tabpanel"
             >
-              Inbox
+              {__('Inbox', 'wp-sms')}
             </TabButton>
             <TabButton
               active={activeTab === 'dismissed'}
@@ -272,7 +272,7 @@ export function NotificationSidebar({
               id="notifications-tab-dismissed"
               controls="notifications-tabpanel"
             >
-              Dismissed
+              {__('Dismissed', 'wp-sms')}
             </TabButton>
           </div>
 
@@ -290,7 +290,7 @@ export function NotificationSidebar({
               )}
             >
               <Trash2 className="wsms-h-3.5 wsms-w-3.5" />
-              <span>Clear all</span>
+              <span>{__('Clear all', 'wp-sms')}</span>
             </button>
           )}
         </div>
@@ -312,7 +312,7 @@ export function NotificationSidebar({
                 <div className="wsms-absolute wsms-inset-0 wsms-bg-primary/20 wsms-rounded-full wsms-blur-xl wsms-animate-pulse" />
                 <Loader2 className="wsms-relative wsms-h-8 wsms-w-8 wsms-animate-spin wsms-text-primary" strokeWidth={2} />
               </div>
-              <p className="wsms-text-sm wsms-text-muted-foreground wsms-mt-4">Loading notifications...</p>
+              <p className="wsms-text-sm wsms-text-muted-foreground wsms-mt-4">{__('Loading notifications...', 'wp-sms')}</p>
             </div>
           ) : currentNotifications.length === 0 ? (
             <EmptyState tab={activeTab} />
@@ -341,7 +341,7 @@ export function NotificationSidebar({
         {/* Footer with subtle branding */}
         <div className="wsms-flex-shrink-0 wsms-px-5 wsms-py-3 wsms-border-t wsms-border-border/50 wsms-bg-card/80">
           <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-text-center">
-            Stay updated with the latest from WSMS
+            {__('Stay updated with the latest from WSMS', 'wp-sms')}
           </p>
         </div>
       </div>
