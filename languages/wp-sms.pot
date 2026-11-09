@@ -2190,6 +2190,12 @@ msgstr ""
 msgid "Not Available"
 msgstr ""
 
+#. translators: %s: SMS provider name
+#: includes/class-wpsms-gateway.php:829
+#, php-format
+msgid "%s: not a valid phone number."
+msgstr ""
+
 #. translators: %s: Site name
 #: includes/class-wpsms-gateway.php:1076
 #, php-format
@@ -2760,6 +2766,11 @@ msgstr ""
 msgid "Enter your %s sender number in the gateway settings."
 msgstr ""
 
+#: includes/gateways/class-wpsms-gateway-ippanel.php:173
+#, php-format
+msgid "%s: no valid recipient number."
+msgstr ""
+
 #: includes/gateways/class-wpsms-gateway-ippanel.php:280
 #, php-format
 msgid "%s did not confirm the send."
@@ -2938,6 +2949,14 @@ msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-mediana.php:88
 msgid "Find it in your Mediana panel. The API uses this key, not the username and password you sign in with."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-mediana.php:171
+msgid "Mediana: no valid recipient number."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-mediana.php:244
+msgid "Mediana: the number is on the blacklist."
 msgstr ""
 
 #. translators: %s: the sender number in the gateway settings
