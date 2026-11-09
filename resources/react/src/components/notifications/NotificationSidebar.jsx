@@ -79,6 +79,7 @@ export function NotificationSidebar({
   const [isAnimatingOut, setIsAnimatingOut] = useState(false)
   const contentRef = useRef(null)
   const sidebarRef = useRef(null)
+  const closeButtonRef = useRef(null)
 
   // Lock body scroll when sidebar is open
   useEffect(() => {
@@ -121,10 +122,7 @@ export function NotificationSidebar({
     if (!sidebar) return
 
     // Auto-focus the close button on open
-    const closeButton = sidebar.querySelector(`[aria-label="${__('Close notifications', 'wp-sms')}"]`)
-    if (closeButton) {
-      closeButton.focus()
-    }
+    closeButtonRef.current?.focus()
 
     // Focus trap: keep focus inside sidebar
     const handleTabKey = (e) => {
@@ -226,6 +224,7 @@ export function NotificationSidebar({
             </div>
 
             <button
+              ref={closeButtonRef}
               onClick={onClose}
               className={cn(
                 'wsms-flex wsms-items-center wsms-justify-center wsms-h-8 wsms-w-8 wsms-rounded-lg',
