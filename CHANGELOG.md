@@ -1,6 +1,6 @@
 v7.2.13 - unreleased
 - **New:** A Persian translation of the dashboard now ships with the plugin. Send SMS, Gateway, Outbox, the review window and the gateway list show in Persian even where the WordPress.org language pack does not have those strings yet. The language pack still wins where it has a string.
-- **Fix:** Text on the review and send window, the "Insert:" bar, the Test Connection message, the WooCommerce Pro page, gateway region names and a few screen reader labels could not be translated. They now can. The close button of dialogs no longer covers the title on right-to-left sites.
+- **Fix:** Text on the review and send window, the "Insert:" bar, the Test Connection message, the WooCommerce Pro page, gateway region names, the Kavenegar number format hint and a few screen reader labels could not be translated. They now can. The close button of dialogs no longer covers the title on right-to-left sites.
 - **Fix:** Translation files shipped in the plugin's languages folder were never loaded, because the folder path was wrong.
 - **Fix:** Mediana: moved to Mediana's new API, since the old address no longer loads and Test Connection failed. Enter the API key from your Mediana panel; the username and password are no longer used.
 - **Fix:** Mediana: when Mediana's server is down, the site no longer shows a fatal error on every page. The send fails with a clear message in the outbox instead.
