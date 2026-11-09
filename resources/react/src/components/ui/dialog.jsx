@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import * as React from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
@@ -60,10 +61,10 @@ const DialogContent = React.forwardRef(
         {children}
         {showClose && (
           <DialogPrimitive.Close
-            aria-label="Close dialog"
+            aria-label={__('Close dialog', 'wp-sms')}
             style={{
               position: 'absolute',
-              right: '12px',
+              insetInlineEnd: '12px',
               top: '12px',
               padding: '8px',
               borderRadius: '6px',

@@ -121,7 +121,7 @@ function NotificationBell() {
           'wsms-text-muted-foreground wsms-transition-colors',
           'hover:wsms-bg-accent hover:wsms-text-foreground'
         )}
-        aria-label="Notifications"
+        aria-label={__('Notifications', 'wp-sms')}
       >
         <Bell className="wsms-h-[18px] wsms-w-[18px]" strokeWidth={1.75} />
         {hasUnread && (
@@ -177,7 +177,7 @@ export default function Header({ onMenuClick, showMenuButton }) {
         {showMenuButton && (
           <button
             onClick={onMenuClick}
-            aria-label="Open navigation menu"
+            aria-label={__('Open navigation menu', 'wp-sms')}
             className={cn(
               'wsms-flex wsms-items-center wsms-justify-center wsms-h-8 wsms-w-8 wsms-rounded-md',
               'wsms-text-muted-foreground wsms-transition-colors',

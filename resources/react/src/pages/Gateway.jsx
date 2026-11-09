@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n'
+import { __, sprintf } from '@wordpress/i18n'
 import React, { useState, useMemo, useRef, useEffect } from 'react'
 import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap, BookOpen, ExternalLink, XCircle, RotateCcw, Code, Unplug, Wallet, Star, Globe, Wrench } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
@@ -89,10 +89,23 @@ export default function Gateway() {
     setAutoSaveGateway(true)
   }
 
+  // Region names come from the gateway registry in English; the known ones are translated here.
+  const regionLabel = (slug, name) => ({
+    global: __('Global', 'wp-sms'),
+    europe: __('Europe', 'wp-sms'),
+    'north-america': __('North America', 'wp-sms'),
+    gcc: __('GCC', 'wp-sms'),
+    'middle-east': __('Middle East', 'wp-sms'),
+    'asia-pacific': __('Asia Pacific', 'wp-sms'),
+    africa: __('Africa', 'wp-sms'),
+    'latin-america': __('Latin America', 'wp-sms'),
+    'russia-cis': __('Russia & CIS', 'wp-sms'),
+  }[slug] || name)
+
   // Build region options from registry data (no flags — flags appear in the gateway list)
   const regionOptions = useMemo(() => {
     if (regions.length > 0) {
-      return regions.map((r) => ({ value: r.slug, label: r.name }))
+      return regions.map((r) => ({ value: r.slug, label: regionLabel(r.slug, r.name) }))
     }
     const slugs = [...new Set(gateways.flatMap((g) => g.regions || []))].filter(Boolean)
     return slugs.sort((a, b) => {
@@ -150,7 +163,7 @@ export default function Gateway() {
   // Build region name lookup from regions data
   const regionNameMap = useMemo(() => {
     const map = {}
-    regions.forEach((r) => { map[r.slug] = r.name })
+    regions.forEach((r) => { map[r.slug] = regionLabel(r.slug, r.name) })
     return map
   }, [regions])
 
@@ -243,8 +256,8 @@ export default function Gateway() {
       setConnectionSuccess(result.success)
       setRawResponse(result.rawResponse || null)
       toast({
-        title: result.success ? 'Connection Successful' : 'Connection Failed',
-        description: result.success ? `Credit: ${result.credit}` : result.error,
+        title: result.success ? __('Connection Successful', 'wp-sms') : __('Connection Failed', 'wp-sms'),
+        description: result.success ? sprintf(__('Credit: %s', 'wp-sms'), result.credit) : result.error,
         variant: result.success ? 'success' : 'destructive',
       })
       if (result.success) {
@@ -253,7 +266,7 @@ export default function Gateway() {
     } catch (error) {
       setConnectionTested(true)
       setConnectionSuccess(false)
-      toast({ title: 'Error', description: error.message, variant: 'destructive' })
+      toast({ title: __('Error', 'wp-sms'), description: error.message, variant: 'destructive' })
     }
     setTesting(false)
   }

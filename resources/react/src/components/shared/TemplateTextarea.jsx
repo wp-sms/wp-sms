@@ -1,4 +1,5 @@
 import React, { useRef, useCallback, useMemo } from 'react'
+import { __ } from '@wordpress/i18n'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 
@@ -60,7 +61,7 @@ export function TemplateTextarea({
       />
       {normalizedVars.length > 0 && (
         <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-1.5">
-          <span className="wsms-text-xs wsms-text-muted-foreground wsms-me-1">Insert:</span>
+          <span className="wsms-text-xs wsms-text-muted-foreground wsms-me-1">{__('Insert:', 'wp-sms')}</span>
           {normalizedVars.map(({ variable, description }) => (
             <button
               key={variable}

@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n'
+import { __, sprintf } from '@wordpress/i18n'
 import React from 'react'
 import { CheckCircle, Lock } from 'lucide-react'
 import { cn, displayHost, getGatewayLogo } from '@/lib/utils'
@@ -157,8 +157,10 @@ export function MoreGatewaysNotice({ premiumCount, searchQuery }) {
     <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border wsms-px-4 wsms-py-2.5">
       <p className="wsms-text-[12px] wsms-text-muted-foreground">
         {searchQuery
-          ? __("Can't find your gateway?", 'wp-sms') + ` ` + __('We support', 'wp-sms') + ` ${premiumCount}+ ` + __('additional gateways.', 'wp-sms')
-          : __('Looking for more gateways?', 'wp-sms') + ` ` + __('We support', 'wp-sms') + ` ${premiumCount}+ ` + __('additional gateways with the Pro add-on.', 'wp-sms')
+          /* translators: %d: number of gateways in the Pro add-on */
+          ? sprintf(__("Can't find your gateway? We support %d+ additional gateways.", 'wp-sms'), premiumCount)
+          /* translators: %d: number of gateways in the Pro add-on */
+          : sprintf(__('Looking for more gateways? We support %d+ additional gateways with the Pro add-on.', 'wp-sms'), premiumCount)
         }
       </p>
       <a

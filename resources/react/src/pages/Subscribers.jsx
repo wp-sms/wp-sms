@@ -56,10 +56,10 @@ import { useToast } from '@/components/ui/toaster'
  */
 function SubscriberImportDialog({ open, onOpenChange, onImport, isLoading }) {
   const importFields = [
-    { name: 'name', label: 'Name', required: false },
-    { name: 'mobile', label: 'Phone Number', required: true },
-    { name: 'status', label: 'Status', required: false },
-    { name: 'group_id', label: 'Group ID', required: false },
+    { name: 'name', label: __('Name', 'wp-sms'), required: false },
+    { name: 'mobile', label: __('Phone Number', 'wp-sms'), required: true },
+    { name: 'status', label: __('Status', 'wp-sms'), required: false },
+    { name: 'group_id', label: __('Group ID', 'wp-sms'), required: false },
   ]
 
   return (

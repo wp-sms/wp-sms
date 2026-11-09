@@ -43,18 +43,18 @@ export default function WooCommercePro() {
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <ShoppingCart className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              WooCommerce Pro
+              {__('WooCommerce Pro', 'wp-sms')}
             </CardTitle>
             <CardDescription>
-              Advanced WooCommerce SMS notifications and automation
+              {__('Advanced WooCommerce SMS notifications and automation', 'wp-sms')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
               <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
-              <h3 className="wsms-font-medium wsms-mb-2">WooCommerce Pro Add-on Required</h3>
+              <h3 className="wsms-font-medium wsms-mb-2">{__('WooCommerce Pro Add-on Required', 'wp-sms')}</h3>
               <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-4">
-                Install and activate the WSMS WooCommerce Pro add-on to access these features.
+                {__('Install and activate the WSMS WooCommerce Pro add-on to access these features.', 'wp-sms')}
               </p>
               <Button variant="outline" asChild>
                 <a
@@ -62,7 +62,7 @@ export default function WooCommercePro() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Learn More
+                  {__('Learn More', 'wp-sms')}
                   <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
                 </a>
               </Button>
@@ -85,23 +85,23 @@ export default function WooCommercePro() {
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <ShoppingCart className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              WooCommerce Pro
+              {__('WooCommerce Pro', 'wp-sms')}
             </CardTitle>
             <CardDescription>
-              Advanced WooCommerce SMS notifications and automation
+              {__('Advanced WooCommerce SMS notifications and automation', 'wp-sms')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
               <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
-              <h3 className="wsms-font-medium wsms-mb-2">WooCommerce Required</h3>
+              <h3 className="wsms-font-medium wsms-mb-2">{__('WooCommerce Required', 'wp-sms')}</h3>
               <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-4">
-                WooCommerce must be installed and activated to use these features.
+                {__('WooCommerce must be installed and activated to use these features.', 'wp-sms')}
               </p>
               {wooCommerceStatus.actionUrl && (
                 <Button variant="outline" asChild>
                   <a href={wooCommerceStatus.actionUrl}>
-                    {wooCommerceStatus.status === 'inactive' ? 'Activate WooCommerce' : 'Install WooCommerce'}
+                    {wooCommerceStatus.status === 'inactive' ? __('Activate WooCommerce', 'wp-sms') : __('Install WooCommerce', 'wp-sms')}
                   </a>
                 </Button>
               )}
@@ -120,10 +120,10 @@ export default function WooCommercePro() {
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <ShoppingCart className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              WooCommerce Pro
+              {__('WooCommerce Pro', 'wp-sms')}
             </CardTitle>
             <CardDescription>
-              Advanced WooCommerce SMS notifications and automation
+              {__('Advanced WooCommerce SMS notifications and automation', 'wp-sms')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -182,7 +182,7 @@ export default function WooCommercePro() {
       {standaloneFields.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Additional Settings</CardTitle>
+            <CardTitle>{__('Additional Settings', 'wp-sms')}</CardTitle>
           </CardHeader>
           <CardContent className="wsms-space-y-4">
             {standaloneFields.map((field) => (

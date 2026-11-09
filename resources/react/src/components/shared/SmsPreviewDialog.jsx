@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { __, _n, sprintf } from '@wordpress/i18n'
 import { Send, Users, MessageSquare, Hash, Zap, Image, Check, AlertTriangle, Loader2, XCircle, RefreshCw, CheckCircle2 } from 'lucide-react'
 import {
   Dialog,
@@ -51,7 +52,7 @@ function PhoneMockup({ message, senderId, isFlash, hasMedia }) {
               </div>
               {isFlash && (
                 <span className="wsms-px-1.5 wsms-py-0.5 wsms-rounded wsms-text-[8px] wsms-font-medium wsms-bg-amber-100 wsms-text-amber-700">
-                  Flash
+                  {__('Flash', 'wp-sms')}
                 </span>
               )}
             </div>
@@ -65,7 +66,7 @@ function PhoneMockup({ message, senderId, isFlash, hasMedia }) {
                 {hasMedia && (
                   <div className="wsms-mb-2 wsms-p-2 wsms-rounded wsms-bg-slate-100 dark:wsms-bg-slate-700 wsms-flex wsms-items-center wsms-gap-1.5">
                     <Image className="wsms-h-3 wsms-w-3 wsms-text-slate-500" />
-                    <span className="wsms-text-[9px] wsms-text-slate-500">Media</span>
+                    <span className="wsms-text-[9px] wsms-text-slate-500">{__('Media', 'wp-sms')}</span>
                   </div>
                 )}
                 <p className="wsms-text-[11px] wsms-text-foreground wsms-leading-relaxed wsms-whitespace-pre-wrap wsms-break-words">
@@ -129,7 +130,7 @@ export function SmsPreviewDialog({
             <DialogHeader>
               <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
                 <CheckCircle2 className="wsms-h-4 wsms-w-4 wsms-text-emerald-600" />
-                Message Sent
+                {__('Message Sent', 'wp-sms')}
               </DialogTitle>
             </DialogHeader>
             <DialogBody>
@@ -149,7 +150,7 @@ export function SmsPreviewDialog({
             <DialogHeader>
               <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
                 <XCircle className="wsms-h-4 wsms-w-4 wsms-text-red-600" />
-                Sending Failed
+                {__('Sending Failed', 'wp-sms')}
               </DialogTitle>
             </DialogHeader>
             <DialogBody>
@@ -164,11 +165,11 @@ export function SmsPreviewDialog({
             </DialogBody>
             <DialogFooter>
               <Button variant="outline" onClick={onDone} size="sm">
-                Close
+                {__('Close', 'wp-sms')}
               </Button>
               <Button onClick={onRetry} size="sm">
                 <RefreshCw className="wsms-h-4 wsms-w-4 wsms-me-1.5" />
-                Retry
+                {__('Retry', 'wp-sms')}
               </Button>
             </DialogFooter>
           </>
@@ -177,10 +178,10 @@ export function SmsPreviewDialog({
             <DialogHeader>
               <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
                 <Send className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                Review & Send
+                {__('Review & Send', 'wp-sms')}
               </DialogTitle>
               <DialogDescription>
-                Review your message before sending.
+                {__('Review your message before sending.', 'wp-sms')}
               </DialogDescription>
             </DialogHeader>
 
@@ -200,11 +201,11 @@ export function SmsPreviewDialog({
                 <div className="wsms-p-5 wsms-space-y-4">
                   {/* Stats */}
                   <div className="wsms-space-y-2.5 wsms-p-3 wsms-rounded-lg wsms-bg-muted/30">
-                    <StatItem icon={Users} label="Recipients" value={recipientCount} />
-                    <StatItem icon={MessageSquare} label="Segments" value={smsInfo.segments} />
-                    <StatItem icon={Hash} label="Characters" value={smsInfo.characters || smsInfo.length} />
+                    <StatItem icon={Users} label={__('Recipients', 'wp-sms')} value={recipientCount} />
+                    <StatItem icon={MessageSquare} label={__('Segments', 'wp-sms')} value={smsInfo.segments} />
+                    <StatItem icon={Hash} label={__('Characters', 'wp-sms')} value={smsInfo.characters || smsInfo.length} />
                     <div className="wsms-pt-2 wsms-border-t wsms-border-border">
-                      <StatItem icon={Send} label="Total SMS" value={totalSms} highlight />
+                      <StatItem icon={Send} label={__('Total SMS', 'wp-sms')} value={totalSms} highlight />
                     </div>
                   </div>
 
@@ -212,27 +213,27 @@ export function SmsPreviewDialog({
                   {(groups.length > 0 || roles.length > 0 || users.length > 0 || numbers.length > 0) && (
                     <div className="wsms-space-y-2">
                       <p className="wsms-text-[11px] wsms-font-medium wsms-text-muted-foreground wsms-uppercase">
-                        Sending to
+                        {__('Sending to', 'wp-sms')}
                       </p>
                       <div className="wsms-flex wsms-flex-wrap wsms-gap-2">
                         {groups.length > 0 && (
                           <span className="wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-text-foreground">
-                            {groups.length} group{groups.length !== 1 ? 's' : ''}
+                            {sprintf(_n('%d group', '%d groups', groups.length, 'wp-sms'), groups.length)}
                           </span>
                         )}
                         {roles.length > 0 && (
                           <span className="wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-text-foreground">
-                            {roles.length} role{roles.length !== 1 ? 's' : ''}
+                            {sprintf(_n('%d role', '%d roles', roles.length, 'wp-sms'), roles.length)}
                           </span>
                         )}
                         {users.length > 0 && (
                           <span className="wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-text-foreground">
-                            {users.length} user{users.length !== 1 ? 's' : ''}
+                            {sprintf(_n('%d user', '%d users', users.length, 'wp-sms'), users.length)}
                           </span>
                         )}
                         {numbers.length > 0 && (
                           <span className="wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-text-foreground">
-                            {numbers.length} number{numbers.length !== 1 ? 's' : ''}
+                            {sprintf(_n('%d number', '%d numbers', numbers.length, 'wp-sms'), numbers.length)}
                           </span>
                         )}
                       </div>
@@ -245,13 +246,13 @@ export function SmsPreviewDialog({
                       {smsInfo.isUnicode && (
                         <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-2 wsms-rounded-md wsms-bg-amber-500/10 wsms-text-[11px] wsms-text-amber-700 dark:wsms-text-amber-400">
                           <AlertTriangle className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0" />
-                          Unicode encoding - reduced character limit
+                          {__('Unicode encoding - reduced character limit', 'wp-sms')}
                         </div>
                       )}
                       {isFlash && (
                         <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-2 wsms-rounded-md wsms-bg-amber-500/10 wsms-text-[11px] wsms-text-amber-700 dark:wsms-text-amber-400">
                           <Zap className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0" />
-                          Flash SMS - displays directly on screen
+                          {__('Flash SMS - displays directly on screen', 'wp-sms')}
                         </div>
                       )}
                     </div>
@@ -267,18 +268,18 @@ export function SmsPreviewDialog({
                 disabled={isSending}
                 size="sm"
               >
-                Cancel
+                {__('Cancel', 'wp-sms')}
               </Button>
               <Button onClick={onConfirm} disabled={isSending} size="sm">
                 {isSending ? (
                   <>
                     <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1.5 wsms-animate-spin" />
-                    Sending...
+                    {__('Sending...', 'wp-sms')}
                   </>
                 ) : (
                   <>
                     <Check className="wsms-h-4 wsms-w-4 wsms-me-1.5" />
-                    Send Message
+                    {__('Send Message', 'wp-sms')}
                   </>
                 )}
               </Button>
