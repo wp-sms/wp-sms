@@ -5,6 +5,7 @@ set -euo pipefail
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 ASSETS_WORKFLOW="$ROOT/.github/workflows/assets.yml"
 DEPLOY_WORKFLOW="$ROOT/.github/workflows/deploy.yml"
+GATEWAY_REGISTRY_WORKFLOW="$ROOT/.github/workflows/notify-gateway-registry.yml"
 
 fail() {
     echo "FAIL: $*" >&2
@@ -131,7 +132,7 @@ run_deploy_guard 7.2.12 7.2.13 fail
 check_pinned_actions() {
     local workflow use
 
-    for workflow in "$ASSETS_WORKFLOW" "$DEPLOY_WORKFLOW" "$ROOT/.github/workflows/testing.yml"; do
+    for workflow in "$ASSETS_WORKFLOW" "$DEPLOY_WORKFLOW" "$GATEWAY_REGISTRY_WORKFLOW" "$ROOT/.github/workflows/testing.yml"; do
         while IFS= read -r use; do
             [[ "$use" == ./* ]] && continue
             [[ "$use" =~ @[0-9a-f]{40}$ ]] || fail "$workflow uses a mutable action reference: $use"
