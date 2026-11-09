@@ -195,6 +195,57 @@ class mediana extends \WP_SMS\Gateway
     }
 
     /**
+     * Mediana may accept a request while marking individual SMS items as
+     * blacklisted. Keep those numbers out of the successful outbox entry.
+     */
+    protected function batchRecipients(array $batch, $data)
+    {
+        if (empty($data['smsItems']) || !is_array($data['smsItems'])) {
+            return parent::batchRecipients($batch, $data);
+        }
+
+        $failedIndexes = [];
+
+        foreach ($data['smsItems'] as $itemIndex => $item) {
+            if (!is_array($item) || empty($item['isInBlackList'])) {
+                continue;
+            }
+
+            $recipient = isset($item['recipient']) ? $this->localNumber($item['recipient']) : '';
+            $batchIndex = $recipient === '' ? false : array_search($recipient, $batch, true);
+
+            if ($batchIndex === false && isset($batch[$itemIndex])) {
+                $batchIndex = $itemIndex;
+            }
+
+            if ($batchIndex !== false) {
+                $failedIndexes[$batchIndex] = true;
+            }
+        }
+
+        if (!$failedIndexes) {
+            return parent::batchRecipients($batch, $data);
+        }
+
+        $sent   = [];
+        $failed = [];
+
+        foreach ($batch as $index => $recipient) {
+            if (isset($failedIndexes[$index])) {
+                $failed[] = $recipient;
+            } else {
+                $sent[] = $recipient;
+            }
+        }
+
+        return [
+            'sent'   => $sent,
+            'failed' => $failed,
+            'error'  => new \WP_Error('mediana-1047', esc_html__('Mediana: the number is on the blacklist.', 'wp-sms')),
+        ];
+    }
+
+    /**
      * Sends the text to up to 100 numbers per request.
      *
      * @return array{results: array[], sent: string[], failed: string[], error: \WP_Error|null}

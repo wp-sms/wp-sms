@@ -754,8 +754,11 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             $data = $send($batch);
 
             if (!is_wp_error($data)) {
+                $delivery             = $this->batchRecipients($batch, $data);
                 $outcome['results'][] = $data;
-                $outcome['sent']      = array_merge($outcome['sent'], $batch);
+                $outcome['sent']      = array_merge($outcome['sent'], $delivery['sent']);
+                $outcome['failed']    = array_merge($outcome['failed'], $delivery['failed']);
+                $outcome['error']     = $outcome['error'] ?: $delivery['error'];
                 continue;
             }
 
@@ -771,6 +774,19 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         }
 
         return $outcome;
+    }
+
+    /**
+     * Recipients confirmed by a successful provider response. Gateways whose
+     * successful response can still reject individual numbers may override it.
+     *
+     * @param string[] $batch
+     * @param mixed $data provider response
+     * @return array{sent: string[], failed: string[], error: \WP_Error|null}
+     */
+    protected function batchRecipients(array $batch, $data)
+    {
+        return ['sent' => $batch, 'failed' => [], 'error' => null];
     }
 
     /**

@@ -110,6 +110,32 @@ class MedianaGatewayTest extends WP_UnitTestCase
         $this->assertCount(2, $this->requests);
     }
 
+    public function test_blacklisted_items_in_a_successful_response_are_not_reported_as_sent()
+    {
+        $this->answer(200, [
+            'meta' => ['code' => 'OK'],
+            'data' => [
+                'succeed'   => true,
+                'requestId' => 1,
+                'smsItems'  => [
+                    ['recipient' => '989120000000', 'isInBlackList' => false],
+                    ['recipient' => '989120000001', 'isInBlackList' => true],
+                ],
+            ],
+        ]);
+
+        $gateway = $this->gateway();
+        $result  = $gateway->SendSMS();
+
+        $this->assertSame(['09120000000'], $result['sent']);
+        $this->assertSame(['09120000001'], $result['failed']);
+        $this->assertStringContainsString('blacklist', $result['error']);
+        $this->assertSame('error', $gateway->logs[0]['status']);
+        $this->assertSame(['09120000001'], $gateway->logs[0]['to']);
+        $this->assertSame('success', $gateway->logs[1]['status']);
+        $this->assertSame(['09120000000'], $gateway->logs[1]['to']);
+    }
+
     public function test_documented_error_code_is_explained()
     {
         $this->answer(400, ['meta' => ['code' => 'BadRequest', 'errorMessage' => 'x', 'errors' => [['errorCode' => 1042]]]]);
