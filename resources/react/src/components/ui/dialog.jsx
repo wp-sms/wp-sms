@@ -64,7 +64,7 @@ const DialogContent = React.forwardRef(
             aria-label={__('Close dialog', 'wp-sms')}
             style={{
               position: 'absolute',
-              right: '12px',
+              insetInlineEnd: '12px',
               top: '12px',
               padding: '8px',
               borderRadius: '6px',
