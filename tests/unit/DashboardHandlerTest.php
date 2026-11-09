@@ -58,8 +58,9 @@ class DashboardHandlerTest extends WP_UnitTestCase
     {
         $this->assertSame('33e9817343444a49324a275ae3f87b89', md5('public/dashboard/i18n-strings.js'));
 
-        $dir  = WP_LANG_DIR . '/plugins';
-        $pack = $dir . '/wp-sms-fa_IR-' . md5('public/dashboard/i18n-strings.js') . '.json';
+        $dir       = WP_LANG_DIR . '/plugins';
+        $pack      = $dir . '/wp-sms-fa_IR-' . md5('public/dashboard/i18n-strings.js') . '.json';
+        $unrelated = $dir . '/wp-sms-fa_IR-unrelated-script.json';
         wp_mkdir_p($dir);
         file_put_contents($pack, wp_json_encode([
             'domain'      => 'messages',
@@ -71,11 +72,21 @@ class DashboardHandlerTest extends WP_UnitTestCase
                 ],
             ],
         ]));
+        file_put_contents($unrelated, wp_json_encode([
+            'domain'      => 'messages',
+            'locale_data' => [
+                'messages' => [
+                    ''        => ['domain' => 'messages', 'lang' => 'fa_IR'],
+                    'Insert:' => ['از فایل نامرتبط'],
+                ],
+            ],
+        ]));
 
         try {
             $translations = $this->printPersianTranslations();
         } finally {
             unlink($pack);
+            unlink($unrelated);
         }
 
         $this->assertNotFalse($translations);

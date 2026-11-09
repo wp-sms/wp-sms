@@ -186,9 +186,8 @@ class DashboardHandler extends BaseAssets
      * Add the WordPress.org language pack on top of the dashboard strings shipped in languages/.
      *
      * When languages/ has a file for this handle, WordPress loads only that file. The
-     * pack's dashboard strings (WP_LANG_DIR/plugins/wp-sms-<locale>-*.json) are merged
-     * over it, so the pack wins and the shipped file only fills the strings the pack
-     * does not have yet.
+     * matching pack file for public/dashboard/i18n-strings.js is merged over it, so
+     * the pack wins and the shipped file only fills strings the pack does not have.
      *
      * @param string|false $translations JSON translations, or false.
      * @param string       $file         Path of the file that was loaded.
@@ -206,22 +205,28 @@ class DashboardHandler extends BaseAssets
             return $translations;
         }
 
+        if (!preg_match('/^wp-sms-(.+)-wsms-dashboard-i18n\.json$/', basename($file), $matches)) {
+            return $translations;
+        }
+
         $shipped = json_decode($translations, true);
         if (!isset($shipped['locale_data']['messages'])) {
             return $translations;
         }
 
-        // The pack splits the dashboard strings over one file per compiled script; all of them are dashboard labels.
-        $packFiles = glob(WP_LANG_DIR . '/plugins/wp-sms-' . determine_locale() . '-*.json') ?: [];
-        foreach ($packFiles as $packFile) {
-            $fromPack = json_decode((string)file_get_contents($packFile), true);
-            if (!isset($fromPack['locale_data']['messages']) || !is_array($fromPack['locale_data']['messages'])) {
-                continue;
-            }
-            $messages = $fromPack['locale_data']['messages'];
-            unset($messages['']);
-            $shipped['locale_data']['messages'] = array_merge($shipped['locale_data']['messages'], $messages);
+        $packFile = WP_LANG_DIR . '/plugins/wp-sms-' . $matches[1] . '-' . md5('public/dashboard/i18n-strings.js') . '.json';
+        if (!is_readable($packFile)) {
+            return wp_json_encode($shipped);
         }
+
+        $fromPack = json_decode((string)file_get_contents($packFile), true);
+        if (!isset($fromPack['locale_data']['messages']) || !is_array($fromPack['locale_data']['messages'])) {
+            return wp_json_encode($shipped);
+        }
+
+        $messages = $fromPack['locale_data']['messages'];
+        unset($messages['']);
+        $shipped['locale_data']['messages'] = array_merge($shipped['locale_data']['messages'], $messages);
 
         return wp_json_encode($shipped);
     }
