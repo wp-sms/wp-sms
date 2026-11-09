@@ -1,4 +1,5 @@
 v7.2.13 - unreleased
+- **Fix:** UwaziiMobile: SMS sent in a burst (for example many order messages in the same minute) no longer fail with "429 Too Many Requests". The plugin no longer checks the balance before every message, so each SMS makes one call to UwaziiMobile instead of two ([#614](https://github.com/wp-sms/wp-sms/issues/614)).
 - **Fix:** Mediana: moved to Mediana's new API, since the old address no longer loads and Test Connection failed. Enter the API key from your Mediana panel; the username and password are no longer used.
 - **Fix:** Mediana: when Mediana's server is down, the site no longer shows a fatal error on every page. The send fails with a clear message in the outbox instead.
 
