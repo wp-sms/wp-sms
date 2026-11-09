@@ -128,8 +128,6 @@ class mediana extends \WP_SMS\Gateway
 
     public function SendSMS()
     {
-        $this->setTemplateIdAndMessageBody();
-
         /**
          * Modify sender number
          *
@@ -156,6 +154,7 @@ class mediana extends \WP_SMS\Gateway
          *
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
+        $this->setTemplateIdAndMessageBody();
 
         if (!$this->hasKey()) {
             $error = $this->missingKey();

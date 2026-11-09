@@ -186,6 +186,26 @@ class MedianaGatewayTest extends WP_UnitTestCase
         $this->assertSame('Hello', json_decode($send['args']['body'], true)['messageText']);
     }
 
+    public function test_message_filter_can_select_a_pattern()
+    {
+        $this->answer(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 4]]);
+        $filter = static function ($message) {
+            return $message . '|815422';
+        };
+        add_filter('wp_sms_msg', $filter);
+
+        try {
+            $gateway                   = $this->gateway();
+            $gateway->messageVariables = ['code' => 1234];
+            $gateway->SendSMS();
+        } finally {
+            remove_filter('wp_sms_msg', $filter);
+        }
+
+        $this->assertSame('https://api.mediana.ir/sms/v1/send/pattern', $this->requests[0]['url']);
+        $this->assertSame('815422', json_decode($this->requests[0]['args']['body'], true)['patternCode']);
+    }
+
     public function test_unknown_sender_number_says_to_fix_or_clear_it()
     {
         $this->answer(400, ['meta' => ['code' => 'BadRequest', 'errorMessage' => 'x', 'errors' => [['key' => 'error', 'errorCode' => 1101]]], 'data' => null]);

@@ -159,6 +159,27 @@ class IppanelGatewayTest extends WP_UnitTestCase
         $this->assertSame('Hello', $body['message']);
     }
 
+    public function test_message_filter_can_select_a_pattern()
+    {
+        $this->sent([1123594208]);
+        $filter = static function ($message) {
+            return $message . '|filtered-pattern';
+        };
+        add_filter('wp_sms_msg', $filter);
+
+        try {
+            $gateway                   = $this->gateway();
+            $gateway->messageVariables = ['code' => 1234];
+            $gateway->SendSMS();
+        } finally {
+            remove_filter('wp_sms_msg', $filter);
+        }
+
+        $body = json_decode($this->requests[0]['args']['body'], true);
+        $this->assertSame('pattern', $body['sending_type']);
+        $this->assertSame('filtered-pattern', $body['code']);
+    }
+
     public function test_sender_already_in_e164_is_kept()
     {
         $this->sent();

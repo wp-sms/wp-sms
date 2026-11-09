@@ -121,8 +121,6 @@ class ippanel extends \WP_SMS\Gateway
 
     public function SendSMS()
     {
-        $this->setTemplateIdAndMessageBody();
-
         /**
          * Modify sender number
          *
@@ -149,6 +147,7 @@ class ippanel extends \WP_SMS\Gateway
          *
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
+        $this->setTemplateIdAndMessageBody();
 
         if (!$this->hasKey()) {
             $error = $this->missingKey();
