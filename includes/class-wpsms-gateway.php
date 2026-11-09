@@ -710,6 +710,139 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     }
 
     /**
+     * Splits recipients into numbers the gateway can send to and numbers it
+     * cannot, using the gateway's own number format.
+     *
+     * @param array $recipients
+     * @param callable $normalize returns the number in the gateway's format, or '' when it is not a number
+     * @return array{0: string[], 1: string[]} the valid numbers (normalized) and the invalid ones (as given)
+     */
+    protected function splitRecipients($recipients, callable $normalize)
+    {
+        $valid   = [];
+        $invalid = [];
+
+        foreach ((array)$recipients as $recipient) {
+            $normalized = $normalize($recipient);
+
+            if ($normalized === '') {
+                $invalid[] = $recipient;
+            } else {
+                $valid[] = $normalized;
+            }
+        }
+
+        return [$valid, $invalid];
+    }
+
+    /**
+     * Sends batch by batch. A refusal for some numbers moves on to the next
+     * batch; a refusal that would repeat for every batch (a refused key, no
+     * credit, the provider down) stops, and the batches not tried count as
+     * failed. See stopsBatchSend().
+     *
+     * @param array[] $batches lists of numbers, one list per request
+     * @param callable $send takes one list, returns the provider's answer or a WP_Error
+     * @return array{results: array, sent: string[], failed: string[], error: \WP_Error|null}
+     */
+    protected function sendInBatches(array $batches, callable $send)
+    {
+        $batches = array_values($batches);
+        $outcome = ['results' => [], 'sent' => [], 'failed' => [], 'error' => null];
+
+        foreach ($batches as $index => $batch) {
+            $data = $send($batch);
+
+            if (!is_wp_error($data)) {
+                $outcome['results'][] = $data;
+                $outcome['sent']      = array_merge($outcome['sent'], $batch);
+                continue;
+            }
+
+            $outcome['failed'] = array_merge($outcome['failed'], $batch);
+            $outcome['error']  = $outcome['error'] ?: $data;
+
+            if ($this->stopsBatchSend($data)) {
+                foreach (array_slice($batches, $index + 1) as $notTried) {
+                    $outcome['failed'] = array_merge($outcome['failed'], $notTried);
+                }
+                break;
+            }
+        }
+
+        return $outcome;
+    }
+
+    /**
+     * Whether an error from one batch would happen for every batch, so the
+     * send should stop. Gateways that can tell a refusal of some numbers
+     * apart from an account or connection problem override this.
+     *
+     * @param \WP_Error $error
+     * @return bool
+     */
+    protected function stopsBatchSend($error)
+    {
+        return true;
+    }
+
+    /**
+     * Logs a batched send and gives the caller its result.
+     *
+     * Numbers sent are logged as sent, numbers refused or not tried as failed,
+     * and invalid numbers as invalid. When at least one number was sent the
+     * send counts as done: wp_sms_send runs and the caller gets the answer,
+     * with the numbers that were not sent listed in it, so a resend does not
+     * text the others twice. A WP_Error comes back only when nothing was sent.
+     *
+     * @param string[] $invalid numbers that are not phone numbers
+     * @param array $outcome from sendInBatches()
+     * @param string $label the provider's name, for messages
+     * @return mixed|\WP_Error
+     */
+    protected function finishBatchSend(array $invalid, array $outcome, $label)
+    {
+        $invalidMessage = '';
+
+        if ($invalid) {
+            /* translators: %s: SMS provider name */
+            $invalidMessage = esc_html(sprintf(__('%s: not a valid phone number.', 'wp-sms'), $label));
+            $this->log($this->from, $this->msg, $invalid, $invalidMessage, 'error');
+        }
+
+        if ($outcome['failed']) {
+            $this->log($this->from, $this->msg, $outcome['failed'], $outcome['error']->get_error_message(), 'error');
+        }
+
+        if (!$outcome['sent']) {
+            return $outcome['error'] ?: new \WP_Error('send-sms', $invalidMessage);
+        }
+
+        $result = count($outcome['results']) === 1 ? $outcome['results'][0] : $outcome['results'];
+
+        $this->log($this->from, $this->msg, $outcome['sent'], $result);
+
+        if ($invalid || $outcome['failed']) {
+            $result = [
+                'response' => $result,
+                'sent'     => $outcome['sent'],
+                'failed'   => array_merge($invalid, $outcome['failed']),
+                'error'    => $outcome['error'] ? $outcome['error']->get_error_message() : $invalidMessage,
+            ];
+        }
+
+        /**
+         * Run hook after send sms.
+         *
+         * @param mixed $result result output.
+         * @since 2.4
+         */
+        do_action('wp_sms_send', $result);
+
+        return $result;
+    }
+
+    /**
      * Executes a remote HTTP request.
      *
      * @param string $method The HTTP request method (GET, POST, PUT, PATCH, DELETE, etc.).

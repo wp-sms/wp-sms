@@ -163,27 +163,15 @@ class mediana extends \WP_SMS\Gateway
             return $error;
         }
 
-        $recipients        = [];
-        $invalidRecipients = [];
+        list($recipients, $invalid) = $this->splitRecipients($this->to, function ($number) {
+            return $this->localNumber($number);
+        });
 
-        foreach ((array)$this->to as $recipient) {
-            $normalized = $this->localNumber($recipient);
+        if (!$recipients) {
+            $error = new \WP_Error('send-sms', esc_html__('Mediana: no valid recipient number.', 'wp-sms'));
+            $this->log($this->from, $this->msg, $this->to, $error->get_error_message(), 'error');
 
-            if ($normalized === '') {
-                $invalidRecipients[] = $recipient;
-            } else {
-                $recipients[] = $normalized;
-            }
-        }
-
-        $invalidError = null;
-        if ($invalidRecipients || !$recipients) {
-            $invalidError = new \WP_Error('send-sms', esc_html__('Mediana: no valid recipient number.', 'wp-sms'));
-            $this->log($this->from, $this->msg, $invalidRecipients, $invalidError->get_error_message(), 'error');
-
-            if (!$recipients) {
-                return $invalidError;
-            }
+            return $error;
         }
 
         if (!empty($this->template_id) && !empty($this->messageVariables) && is_array($this->messageVariables)) {
@@ -192,35 +180,18 @@ class mediana extends \WP_SMS\Gateway
             $outcome = $this->sendPlain($recipients);
         }
 
-        if ($outcome['failed']) {
-            $this->log($this->from, $this->msg, $outcome['failed'], $outcome['error']->get_error_message(), 'error');
-        }
+        return $this->finishBatchSend($invalid, $outcome, 'Mediana');
+    }
 
-        if (!$outcome['sent']) {
-            return $outcome['error'] ?: $invalidError;
-        }
-
-        $result = count($outcome['results']) === 1 ? $outcome['results'][0] : $outcome['results'];
-
-        // Log only the recipients that were delivered.
-        $this->log($this->from, $this->msg, $outcome['sent'], $result);
-
-        // The gateway contract cannot represent a partial success to its caller.
-        // Report the failed dispatch while preserving accurate per-recipient logs.
-        if ($outcome['error'] || $invalidError) {
-            return $outcome['error'] ?: $invalidError;
-        }
-
-        /**
-         * Run hook after send sms.
-         *
-         * @param string $result result output.
-         * @since 2.4
-         *
-         */
-        do_action('wp_sms_send', $result);
-
-        return $result;
+    /**
+     * Mediana's errors about one number (not a valid number, on the
+     * blacklist) let the send go on to the next request. Any other error, such
+     * as no credit, no plan, a refused key or a rejected pattern, would repeat
+     * for every request, so the send stops.
+     */
+    protected function stopsBatchSend($error)
+    {
+        return !in_array($error->get_error_code(), ['mediana-1041', 'mediana-1047'], true);
     }
 
     /**
@@ -230,25 +201,12 @@ class mediana extends \WP_SMS\Gateway
      */
     private function sendPlain($recipients)
     {
-        $outcome = ['results' => [], 'sent' => [], 'failed' => [], 'error' => null];
-
-        foreach (array_chunk($recipients, self::MAX_RECIPIENTS) as $chunk) {
-            $data = $this->send('/send/sms', $this->lineFields() + [
+        return $this->sendInBatches(array_chunk($recipients, self::MAX_RECIPIENTS), function ($chunk) {
+            return $this->send('/send/sms', $this->lineFields() + [
                 'recipients'  => $chunk,
                 'messageText' => (string)$this->msg,
             ]);
-
-            if (is_wp_error($data)) {
-                $outcome['failed'] = array_merge($outcome['failed'], $chunk);
-                $outcome['error']  = $outcome['error'] ?: $data;
-                continue;
-            }
-
-            $outcome['results'][] = $data;
-            $outcome['sent']      = array_merge($outcome['sent'], $chunk);
-        }
-
-        return $outcome;
+        });
     }
 
     /**
@@ -269,26 +227,13 @@ class mediana extends \WP_SMS\Gateway
             $parameters[trim((string)$name, '%')] = is_scalar($value) || $value === null ? (string)$value : '';
         }
 
-        $outcome = ['results' => [], 'sent' => [], 'failed' => [], 'error' => null];
-
-        foreach ($recipients as $recipient) {
-            $data = $this->send('/send/pattern', $this->lineFields() + [
-                'recipients'  => [$recipient],
+        return $this->sendInBatches(array_chunk($recipients, 1), function ($one) use ($parameters) {
+            return $this->send('/send/pattern', $this->lineFields() + [
+                'recipients'  => $one,
                 'patternCode' => (string)$this->template_id,
                 'parameters'  => (object)$parameters,
             ]);
-
-            if (is_wp_error($data)) {
-                $outcome['failed'][] = $recipient;
-                $outcome['error']    = $outcome['error'] ?: $data;
-                continue;
-            }
-
-            $outcome['results'][] = $data;
-            $outcome['sent'][]    = $recipient;
-        }
-
-        return $outcome;
+        });
     }
 
     /**

@@ -232,7 +232,8 @@ class MedianaGatewayTest extends WP_UnitTestCase
         $this->assertInstanceOf('WP_Error', $result);
         $this->assertSame('mediana-1072', $result->get_error_code());
         $this->assertStringContainsString('rejected', $result->get_error_message());
-        $this->assertCount(2, $this->requests);
+        // A rejected pattern would be rejected for every number, so the send stops.
+        $this->assertCount(1, $this->requests);
     }
 
     public function test_refused_key_says_so()
@@ -291,7 +292,7 @@ class MedianaGatewayTest extends WP_UnitTestCase
         $this->assertSame('error', $gateway->logs[0]['status']);
     }
 
-    public function test_partial_pattern_failure_reports_error_and_logs_each_outcome()
+    public function test_no_credit_stops_and_keeps_the_sent_number()
     {
         $this->answers = [
             $this->response(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 1]]),
@@ -303,16 +304,81 @@ class MedianaGatewayTest extends WP_UnitTestCase
         $gateway->to               = ['09120000000', '09120000001', '09120000002'];
         $gateway->msg              = 'Your code is 1234|815422';
         $gateway->messageVariables = ['code' => 1234];
+        $hooks                     = did_action('wp_sms_send');
+
+        $result = $gateway->SendSMS();
+
+        // No credit would fail for every number, so the third is not tried.
+        $this->assertIsArray($result);
+        $this->assertCount(2, $this->requests);
+        $this->assertSame(['09120000000'], $result['sent']);
+        $this->assertSame(['09120000001', '09120000002'], $result['failed']);
+        $this->assertSame($hooks + 1, did_action('wp_sms_send'));
+        $this->assertCount(2, $gateway->logs);
+        $this->assertSame('error', $gateway->logs[0]['status']);
+        $this->assertSame(['09120000001', '09120000002'], $gateway->logs[0]['to']);
+        $this->assertSame('success', $gateway->logs[1]['status']);
+        $this->assertSame(['09120000000'], $gateway->logs[1]['to']);
+    }
+
+    public function test_refused_number_does_not_stop_the_next_one()
+    {
+        $this->answers = [
+            $this->response(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 1]]),
+            $this->response(400, ['meta' => ['code' => 'BadRequest', 'errors' => [['errorCode' => 1047]]]]),
+            $this->response(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 3]]),
+        ];
+
+        $gateway                   = $this->gateway();
+        $gateway->to               = ['09120000000', '09120000001', '09120000002'];
+        $gateway->msg              = 'Your code is 1234|815422';
+        $gateway->messageVariables = ['code' => 1234];
+
+        $result = $gateway->SendSMS();
+
+        $this->assertIsArray($result);
+        $this->assertCount(3, $this->requests);
+        $this->assertSame(['09120000000', '09120000002'], $result['sent']);
+        $this->assertSame(['09120000001'], $result['failed']);
+    }
+
+    public function test_one_bad_number_does_not_fail_the_others()
+    {
+        $this->answer(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 1]]);
+
+        $gateway     = $this->gateway();
+        $gateway->to = ['-', '09120000000', '09120000001'];
+        $hooks       = did_action('wp_sms_send');
+
+        $result = $gateway->SendSMS();
+
+        $this->assertIsArray($result);
+        $this->assertSame(['09120000000', '09120000001'], $result['sent']);
+        $this->assertSame(['-'], $result['failed']);
+        $this->assertStringNotContainsString('no valid recipient', $result['error']);
+        $this->assertSame($hooks + 1, did_action('wp_sms_send'));
+        $this->assertCount(1, $this->requests);
+        $this->assertSame(['-'], $gateway->logs[0]['to']);
+        $this->assertSame('error', $gateway->logs[0]['status']);
+    }
+
+    public function test_provider_down_stops_after_the_first_request()
+    {
+        $this->answer = new \WP_Error('http_request_failed', 'cURL error 28: Operation timed out');
+
+        $gateway     = $this->gateway();
+        $gateway->to = array_map(function ($i) {
+            return sprintf('0912%07d', $i);
+        }, range(1, 250));
+        $hooks       = did_action('wp_sms_send');
 
         $result = $gateway->SendSMS();
 
         $this->assertInstanceOf('WP_Error', $result);
-        $this->assertCount(3, $this->requests);
-        $this->assertCount(2, $gateway->logs);
-        $this->assertSame('error', $gateway->logs[0]['status']);
-        $this->assertSame(['09120000001'], $gateway->logs[0]['to']);
-        $this->assertSame('success', $gateway->logs[1]['status']);
-        $this->assertSame(['09120000000', '09120000002'], $gateway->logs[1]['to']);
+        $this->assertCount(1, $this->requests);
+        $this->assertCount(1, $gateway->logs);
+        $this->assertCount(250, $gateway->logs[0]['to']);
+        $this->assertSame($hooks, did_action('wp_sms_send'));
     }
 }
 
