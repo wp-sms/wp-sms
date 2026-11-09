@@ -6,6 +6,9 @@ ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 ASSETS_WORKFLOW="$ROOT/.github/workflows/assets.yml"
 DEPLOY_WORKFLOW="$ROOT/.github/workflows/deploy.yml"
 GATEWAY_REGISTRY_WORKFLOW="$ROOT/.github/workflows/notify-gateway-registry.yml"
+PLUGIN_FILE="$ROOT/wp-sms.php"
+README_FILE="$ROOT/readme.txt"
+POT_FILE="$ROOT/languages/wp-sms.pot"
 
 fail() {
     echo "FAIL: $*" >&2
@@ -141,5 +144,19 @@ check_pinned_actions() {
 }
 
 check_pinned_actions
+
+check_release_metadata() {
+    local plugin_version stable_tag pot_version
+
+    plugin_version=$(sed -nE 's/^[[:space:]]*\* Version:[[:space:]]*//p' "$PLUGIN_FILE" | head -1)
+    stable_tag=$(sed -nE 's/^Stable tag:[[:space:]]*//p' "$README_FILE" | head -1)
+    pot_version=$(grep -m1 'Project-Id-Version:' "$POT_FILE" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+
+    [[ -n "$plugin_version" ]] || fail "plugin version is missing"
+    [[ "$stable_tag" == "$plugin_version" ]] || fail "readme stable tag $stable_tag does not match plugin version $plugin_version"
+    [[ "$pot_version" == "$plugin_version" ]] || fail "POT version $pot_version does not match plugin version $plugin_version"
+}
+
+check_release_metadata
 
 echo "Release workflow regression tests passed."
