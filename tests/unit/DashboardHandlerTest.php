@@ -51,7 +51,9 @@ class DashboardHandlerTest extends WP_UnitTestCase
 
         $this->assertNotFalse($translations);
         $this->assertStringContainsString('Insert:', $translations);
-        $this->assertStringContainsString(wp_json_encode('درج:'), $translations);
+        $this->assertStringContainsString('درج:', $translations);
+        // The shipped file is printed as it is, not re-encoded with every letter escaped.
+        $this->assertStringNotContainsString('\\u06', $translations);
     }
 
     public function testDashboardTranslationsLetTheWordPressOrgPackWinOverShippedStrings(): void
@@ -91,12 +93,13 @@ class DashboardHandlerTest extends WP_UnitTestCase
 
         $this->assertNotFalse($translations);
         // A string only the pack has.
-        $this->assertStringContainsString(wp_json_encode('نرخ موفقیت'), $translations);
+        $this->assertStringContainsString('نرخ موفقیت', $translations);
         // A string both have: the pack wins.
-        $this->assertStringContainsString(wp_json_encode('از بسته وردپرس'), $translations);
-        $this->assertStringNotContainsString(wp_json_encode('درج:'), $translations);
+        $this->assertStringContainsString('از بسته وردپرس', $translations);
+        $this->assertStringNotContainsString('درج:', $translations);
         // A string only the shipped file has.
-        $this->assertStringContainsString(wp_json_encode('ارسال پیام'), $translations);
+        $this->assertStringContainsString('ارسال پیام', $translations);
+        $this->assertStringNotContainsString('\\u06', $translations);
     }
 
     /**

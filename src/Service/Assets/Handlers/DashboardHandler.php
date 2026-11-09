@@ -215,20 +215,22 @@ class DashboardHandler extends BaseAssets
         }
 
         $packFile = WP_LANG_DIR . '/plugins/wp-sms-' . $matches[1] . '-' . md5('public/dashboard/i18n-strings.js') . '.json';
+        // Nothing to merge: hand back the shipped file as it is, without decoding
+        // and encoding it again (which would also escape every non-Latin letter).
         if (!is_readable($packFile)) {
-            return wp_json_encode($shipped);
+            return $translations;
         }
 
         $fromPack = json_decode((string)file_get_contents($packFile), true);
         if (!isset($fromPack['locale_data']['messages']) || !is_array($fromPack['locale_data']['messages'])) {
-            return wp_json_encode($shipped);
+            return $translations;
         }
 
         $messages = $fromPack['locale_data']['messages'];
         unset($messages['']);
         $shipped['locale_data']['messages'] = array_merge($shipped['locale_data']['messages'], $messages);
 
-        return wp_json_encode($shipped);
+        return wp_json_encode($shipped, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
     /**
