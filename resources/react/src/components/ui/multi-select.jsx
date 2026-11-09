@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import * as React from 'react'
 import { Check, ChevronDown, X, Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -212,7 +213,7 @@ const MultiSelect = React.forwardRef(
             <div className="wsms-max-h-[200px] wsms-overflow-y-auto wsms-p-1">
               {filteredOptions.length === 0 ? (
                 <div className="wsms-py-4 wsms-text-center wsms-text-sm wsms-text-muted-foreground">
-                  No results found
+                  {__('No results found', 'wp-sms')}
                 </div>
               ) : (
                 filteredOptions.map((option) => {

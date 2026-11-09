@@ -448,7 +448,7 @@ export default function Sidebar({ onClose, showClose }) {
           <Logo className="wsms-h-7" />
           <button
             onClick={onClose}
-            aria-label="Close navigation menu"
+            aria-label={__('Close navigation menu', 'wp-sms')}
             className="wsms-flex wsms-items-center wsms-justify-center wsms-h-8 wsms-w-8 wsms-rounded-md hover:wsms-bg-accent wsms-text-muted-foreground wsms-transition-colors"
           >
             <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />

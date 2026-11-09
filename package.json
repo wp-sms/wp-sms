@@ -10,6 +10,7 @@
     "build:dashboard": "vite build",
     "build:i18n-strings": "node bin/emit-i18n-strings.mjs",
     "build:pot": "wp i18n make-pot . languages/wp-sms.pot",
+    "build:languages": "node bin/make-language-files.mjs",
     "copy-static": "node bin/copy-static.mjs",
     "dev": "vite",
     "dev:all": "concurrently \"npm run dev:blocks\" \"npm run dev:scripts\" \"npm run dev:sass\" \"npm run dev\"",

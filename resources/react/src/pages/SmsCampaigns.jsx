@@ -447,15 +447,15 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
             placeholder={__('Enter your SMS message...', 'wp-sms')}
             rows={4}
             variables={messageVariables.length > 0 ? messageVariables : [
-              { variable: '%billing_first_name%', description: 'First Name' },
-              { variable: '%billing_last_name%', description: 'Last Name' },
-              { variable: '%order_number%', description: 'Order Number' },
-              { variable: '%order_total%', description: 'Order Total' },
-              { variable: '%status%', description: 'Order Status' },
-              { variable: '%order_items%', description: 'Order Items' },
-              { variable: '%billing_phone%', description: 'Phone' },
-              { variable: '%billing_email%', description: 'Email' },
-              { variable: '%shipping_method%', description: 'Shipping Method' },
+              { variable: '%billing_first_name%', description: __('First Name', 'wp-sms') },
+              { variable: '%billing_last_name%', description: __('Last Name', 'wp-sms') },
+              { variable: '%order_number%', description: __('Order Number', 'wp-sms') },
+              { variable: '%order_total%', description: __('Order Total', 'wp-sms') },
+              { variable: '%status%', description: __('Order Status', 'wp-sms') },
+              { variable: '%order_items%', description: __('Order Items', 'wp-sms') },
+              { variable: '%billing_phone%', description: __('Phone', 'wp-sms') },
+              { variable: '%billing_email%', description: __('Email', 'wp-sms') },
+              { variable: '%shipping_method%', description: __('Shipping Method', 'wp-sms') },
             ]}
           />
         </div>

@@ -178,7 +178,52 @@ class DashboardHandler extends BaseAssets
             $this->getVersion() . ($mtime !== false ? '.' . $mtime : ''),
             false
         );
-        wp_set_script_translations($handle, 'wp-sms');
+        wp_set_script_translations($handle, 'wp-sms', WP_SMS_DIR . 'languages');
+        add_filter('load_script_translations', [$this, 'mergeLanguagePackScriptTranslations'], 10, 4);
+    }
+
+    /**
+     * Add the WordPress.org language pack on top of the dashboard strings shipped in languages/.
+     *
+     * When languages/ has a file for this handle, WordPress loads only that file. The
+     * pack's dashboard strings (WP_LANG_DIR/plugins/wp-sms-<locale>-*.json) are merged
+     * over it, so the pack wins and the shipped file only fills the strings the pack
+     * does not have yet.
+     *
+     * @param string|false $translations JSON translations, or false.
+     * @param string       $file         Path of the file that was loaded.
+     * @param string       $handle       Script handle.
+     * @param string       $domain       Text domain.
+     * @return string|false
+     */
+    public function mergeLanguagePackScriptTranslations($translations, $file, $handle, $domain)
+    {
+        if ($domain !== 'wp-sms' || $handle !== 'wsms-dashboard-i18n' || !is_string($translations)) {
+            return $translations;
+        }
+
+        if (strpos(wp_normalize_path($file), wp_normalize_path(WP_SMS_DIR . 'languages/')) !== 0) {
+            return $translations;
+        }
+
+        $shipped = json_decode($translations, true);
+        if (!isset($shipped['locale_data']['messages'])) {
+            return $translations;
+        }
+
+        // The pack splits the dashboard strings over one file per compiled script; all of them are dashboard labels.
+        $packFiles = glob(WP_LANG_DIR . '/plugins/wp-sms-' . determine_locale() . '-*.json') ?: [];
+        foreach ($packFiles as $packFile) {
+            $fromPack = json_decode((string)file_get_contents($packFile), true);
+            if (!isset($fromPack['locale_data']['messages']) || !is_array($fromPack['locale_data']['messages'])) {
+                continue;
+            }
+            $messages = $fromPack['locale_data']['messages'];
+            unset($messages['']);
+            $shipped['locale_data']['messages'] = array_merge($shipped['locale_data']['messages'], $messages);
+        }
+
+        return wp_json_encode($shipped);
     }
 
     /**
