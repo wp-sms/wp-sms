@@ -271,6 +271,18 @@ class IppanelGatewayTest extends WP_UnitTestCase
         $this->assertSame('error', $gateway->logs[0]['status']);
     }
 
+    public function test_empty_recipients_are_not_reported_as_sent()
+    {
+        $gateway     = $this->gateway();
+        $gateway->to = [];
+
+        $result = $gateway->SendSMS();
+
+        $this->assertInstanceOf('WP_Error', $result);
+        $this->assertCount(0, $this->requests);
+        $this->assertSame('error', $gateway->logs[0]['status']);
+    }
+
     public function test_partial_plain_failure_reports_error_and_logs_each_outcome()
     {
         $this->answers = [

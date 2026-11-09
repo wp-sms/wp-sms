@@ -179,7 +179,7 @@ class ippanel extends \WP_SMS\Gateway
         }
 
         $invalidError = null;
-        if ($invalidRecipients) {
+        if ($invalidRecipients || !$recipients) {
             $invalidError = new \WP_Error('send-sms', esc_html(sprintf(__('%s: no valid recipient number.', 'wp-sms'), $this->brand())));
             $this->log($this->from, $this->msg, $invalidRecipients, $invalidError->get_error_message(), 'error');
 

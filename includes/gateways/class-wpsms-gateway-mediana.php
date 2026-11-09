@@ -177,7 +177,7 @@ class mediana extends \WP_SMS\Gateway
         }
 
         $invalidError = null;
-        if ($invalidRecipients) {
+        if ($invalidRecipients || !$recipients) {
             $invalidError = new \WP_Error('send-sms', esc_html__('Mediana: no valid recipient number.', 'wp-sms'));
             $this->log($this->from, $this->msg, $invalidRecipients, $invalidError->get_error_message(), 'error');
 
