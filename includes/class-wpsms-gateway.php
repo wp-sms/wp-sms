@@ -763,9 +763,13 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             }
 
             $outcome['failed'] = array_merge($outcome['failed'], $batch);
-            $outcome['error']  = $outcome['error'] ?: $data;
+            $stops            = $this->stopsBatchSend($data);
 
-            if ($this->stopsBatchSend($data)) {
+            if (!$outcome['error'] || $stops) {
+                $outcome['error'] = $data;
+            }
+
+            if ($stops) {
                 foreach (array_slice($batches, $index + 1) as $notTried) {
                     $outcome['failed'] = array_merge($outcome['failed'], $notTried);
                 }

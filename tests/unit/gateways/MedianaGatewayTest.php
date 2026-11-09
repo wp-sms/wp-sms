@@ -368,6 +368,25 @@ class MedianaGatewayTest extends WP_UnitTestCase
         $this->assertSame(['09120000001'], $result['failed']);
     }
 
+    public function test_stopping_error_replaces_an_earlier_recipient_error()
+    {
+        $this->answers = [
+            $this->response(400, ['meta' => ['code' => 'BadRequest', 'errors' => [['errorCode' => 1047]]]]),
+            $this->response(400, ['meta' => ['code' => 'BadRequest', 'errors' => [['errorCode' => 1042]]]]),
+        ];
+
+        $gateway                   = $this->gateway();
+        $gateway->to               = ['09120000000', '09120000001', '09120000002'];
+        $gateway->msg              = 'Your code is 1234|815422';
+        $gateway->messageVariables = ['code' => 1234];
+
+        $result = $gateway->SendSMS();
+
+        $this->assertInstanceOf('WP_Error', $result);
+        $this->assertSame('mediana-1042', $result->get_error_code());
+        $this->assertCount(2, $this->requests);
+    }
+
     public function test_one_bad_number_does_not_fail_the_others()
     {
         $this->answer(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 1]]);
