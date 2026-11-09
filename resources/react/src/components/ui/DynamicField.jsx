@@ -306,7 +306,7 @@ export function DynamicField({ field }) {
             options={resolveOptions(field.options, field.addonSlug)}
             value={Array.isArray(value) ? value : []}
             onValueChange={setValue}
-            placeholder={field.placeholder || 'Select items...'}
+            placeholder={field.placeholder || __('Select items...', 'wp-sms')}
             disabled={field.disabled}
           />
           {field.description && (

@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n'
+import { __, _n, sprintf } from '@wordpress/i18n'
 import React, { useState, useEffect, useRef } from 'react'
 import { X, Loader2, Bell, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -219,7 +219,7 @@ export function NotificationSidebar({
                 </h2>
                 {totalCount > 0 && (
                   <p className="wsms-text-xs wsms-text-muted-foreground wsms-mt-0.5">
-                    {inboxNotifications.length} unread
+                    {sprintf(_n('%d unread', '%d unread', inboxNotifications.length, 'wp-sms'), inboxNotifications.length)}
                   </p>
                 )}
               </div>

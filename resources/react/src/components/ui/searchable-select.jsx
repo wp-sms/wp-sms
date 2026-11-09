@@ -25,7 +25,7 @@ const SearchableSelect = React.forwardRef(
       value,
       onValueChange,
       placeholder = 'Select...',
-      searchPlaceholder = 'Search...',
+      searchPlaceholder = __('Search...', 'wp-sms'),
       id,
       className,
       disabled = false,

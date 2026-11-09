@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
+import { __ } from '@wordpress/i18n'
 import { AlertCircle } from 'lucide-react'
 import { cn, getWpSettings } from '@/lib/utils'
 
@@ -129,6 +130,32 @@ export default function PhoneInput({
           if (preferredCountries.length > 0) {
             // v24+ uses countryOrder instead of preferredCountries
             options.countryOrder = preferredCountries.map(c => c.toLowerCase())
+          }
+
+          // The country picker's own texts and country names are English; use the admin language instead.
+          // Country names come from the browser (Intl.DisplayNames), so every language gets them.
+          const lang = document.documentElement.lang || 'en'
+          if (!/^en\b/i.test(lang)) {
+            const i18n = {
+              selectedCountryAriaLabel: __('Selected country', 'wp-sms'),
+              noCountrySelected: __('No country selected', 'wp-sms'),
+              countryListAriaLabel: __('List of countries', 'wp-sms'),
+              searchPlaceholder: __('Search', 'wp-sms'),
+              zeroSearchResults: __('No results found', 'wp-sms'),
+              oneSearchResult: __('1 result found', 'wp-sms'),
+              // translators: ${count} is replaced by the number of results; keep it as written.
+              multipleSearchResults: __('${count} results found', 'wp-sms'),
+            }
+            try {
+              const names = new Intl.DisplayNames([lang], { type: 'region' })
+              for (const c of window.intlTelInput.getCountryData()) {
+                const name = names.of(c.iso2.toUpperCase())
+                if (name && name.toUpperCase() !== c.iso2.toUpperCase()) i18n[c.iso2] = name
+              }
+            } catch (e) {
+              // Older browsers without Intl.DisplayNames keep the English country names.
+            }
+            options.i18n = i18n
           }
 
           const iti = window.intlTelInput(inputRef.current, options)

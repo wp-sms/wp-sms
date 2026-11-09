@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React from 'react'
 import { Inbox, CheckCheck, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -91,13 +92,13 @@ export function EmptyState({ tab = 'inbox' }) {
           ? 'wsms-bg-gradient-to-r wsms-from-foreground wsms-to-foreground/70'
           : 'wsms-bg-gradient-to-r wsms-from-emerald-600 wsms-to-emerald-500 dark:wsms-from-emerald-400 dark:wsms-to-emerald-300'
       )}>
-        {isInbox ? "You're all caught up!" : 'All clear'}
+        {isInbox ? __("You're all caught up!", 'wp-sms') : __('All clear', 'wp-sms')}
       </h3>
 
       <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-max-w-[220px] wsms-leading-relaxed">
         {isInbox
-          ? 'No new notifications. Check back later for updates.'
-          : 'Dismissed notifications are cleared. Nice and tidy!'}
+          ? __('No new notifications. Check back later for updates.', 'wp-sms')
+          : __('Dismissed notifications are cleared. Nice and tidy!', 'wp-sms')}
       </p>
 
       {/* Decorative bottom line */}
