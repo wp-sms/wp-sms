@@ -26,7 +26,8 @@ const unquote = (lines) => lines.map((l) => JSON.parse(l.slice(l.indexOf('"'))))
 export function parsePo(text) {
   const entries = []
   let header = {}
-  for (const block of text.split(/\n\s*\n/)) {
+  const normalizedText = text.replace(/\r\n?/g, '\n')
+  for (const block of normalizedText.split(/\n\s*\n/)) {
     const blockLines = block.split('\n')
     const references = blockLines
       .filter((line) => line.startsWith('#:'))

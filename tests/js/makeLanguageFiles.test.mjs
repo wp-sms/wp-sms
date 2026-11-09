@@ -24,3 +24,22 @@ msgstr "برچسب پیشخوان"
 
   assert.deepEqual(dashboard.map(([key]) => key), ['Dashboard label'])
 })
+
+test('PO parser accepts Windows and legacy Mac line endings', () => {
+  const po = [
+    'msgid ""',
+    'msgstr ""',
+    '"Language: fa_IR\\n"',
+    '',
+    '#: public/dashboard/i18n-strings.js:5',
+    'msgid "Dashboard label"',
+    'msgstr "برچسب پیشخوان"',
+    '',
+  ].join('\r\n')
+
+  const { entries } = parsePo(po.replace('msgid "Dashboard label"\r\n', 'msgid "Dashboard label"\r'))
+
+  assert.deepEqual(entries.map(([key, forms]) => [key, forms]), [
+    ['Dashboard label', ['برچسب پیشخوان']],
+  ])
+})
