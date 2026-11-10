@@ -3708,7 +3708,7 @@ msgstr "آدرس پایه API درگاه پیامک را انتخاب کنید."
 
 #: includes/gateways/class-wpsms-gateway-smses.php:86
 msgid "Username"
-msgstr "نام كاربري:"
+msgstr "نام کاربری"
 
 #: includes/gateways/class-wpsms-gateway-smses.php:87
 msgid "sms.es API username (System ID)."
@@ -15227,3 +15227,19 @@ msgstr "خبرنامه"
 #~ "جمله به‌روزرسانی‌های مهم امنیتی) نخواهد بود. برای دریافت مداوم به‌روزرسانی‌ها "
 #~ "و افزایش امنیت سایت، لایسنس خود را فعال کنید. از <a href=\"%s\">اینجا</a> "
 #~ "می‌توانید لایسنس را فعال کنید."
+
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:105
+msgid "Password or API key"
+msgstr "رمز عبور یا کلید API"
+
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:101
+msgid "The username you use to log in to the Melipayamak panel."
+msgstr "نام کاربری که با آن وارد پنل ملی پیامک می شوید."
+
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:106
+msgid "Your Melipayamak panel password, or the API key from Developers > Web service settings in the panel."
+msgstr "رمز عبور پنل ملی پیامک، یا کلید API از منوی توسعه دهندگان ← تنظیمات وبسرویس در پنل."
+
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:179
+msgid "Username and password (or API key) are required."
+msgstr "نام کاربری و رمز عبور (یا کلید API) الزامی است."
