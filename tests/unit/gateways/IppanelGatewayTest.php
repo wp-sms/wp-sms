@@ -329,6 +329,40 @@ class IppanelGatewayTest extends WP_UnitTestCase
         $this->assertSame('error', $gateway->logs[0]['status']);
     }
 
+    public function test_pattern_success_before_an_error_is_not_reported_as_failed()
+    {
+        $this->answers = [
+            $this->response(200, [
+                'data' => ['message_outbox_ids' => [1]],
+                'meta' => ['status' => true, 'message_code' => '200-1'],
+            ]),
+            $this->response(422, [
+                'data' => null,
+                'meta' => ['status' => false, 'message' => 'Refused', 'message_code' => '400-2'],
+            ]),
+        ];
+
+        $gateway                   = $this->gateway();
+        $gateway->msg              = 'Your code is %code%|abc123';
+        $gateway->messageVariables = ['%code%' => '1234'];
+        $hooks                     = did_action('wp_sms_send');
+
+        $result = $gateway->SendSMS();
+
+        $sentRecipient   = json_decode($this->requests[0]['args']['body'], true)['recipients'][0];
+        $failedRecipient = json_decode($this->requests[1]['args']['body'], true)['recipients'][0];
+
+        $this->assertIsArray($result);
+        $this->assertSame([$sentRecipient], $result['sent']);
+        $this->assertSame([$failedRecipient], $result['failed']);
+        $this->assertCount(2, $this->requests);
+        $this->assertSame($hooks + 1, did_action('wp_sms_send'));
+        $this->assertSame([$failedRecipient], $gateway->logs[0]['to']);
+        $this->assertSame('error', $gateway->logs[0]['status']);
+        $this->assertSame([$sentRecipient], $gateway->logs[1]['to']);
+        $this->assertSame('success', $gateway->logs[1]['status']);
+    }
+
     public function test_provider_down_stops_after_the_first_request()
     {
         $this->answer = new \WP_Error('http_request_failed', 'cURL error 28: Operation timed out');

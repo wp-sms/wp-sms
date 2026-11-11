@@ -172,6 +172,10 @@ class ippanel extends \WP_SMS\Gateway
             }
         }
 
+        if (!empty($this->template_id) && !empty($this->messageVariables) && is_array($this->messageVariables)) {
+            return $this->finishBatchSend($invalid, $this->sendPattern($from, $recipients), $this->brand());
+        }
+
         if ($invalid) {
             /* translators: %s: SMS provider name */
             $this->log($this->from, $this->msg, $invalid, esc_html(sprintf(__('%s: not a valid phone number.', 'wp-sms'), $this->brand())), 'error');
@@ -184,11 +188,7 @@ class ippanel extends \WP_SMS\Gateway
             return $error;
         }
 
-        if (!empty($this->template_id) && !empty($this->messageVariables) && is_array($this->messageVariables)) {
-            $result = $this->sendPattern($from, $recipients);
-        } else {
-            $result = $this->sendPlain($from, $recipients);
-        }
+        $result = $this->sendPlain($from, $recipients);
 
         if (is_wp_error($result)) {
             $this->log($this->from, $this->msg, $recipients, $result->get_error_message(), 'error');
@@ -229,7 +229,7 @@ class ippanel extends \WP_SMS\Gateway
      * pattern request. Variables go by name, so %code% fills %code%. Stops at
      * the first error.
      *
-     * @return array|\WP_Error the answers, or the first error
+     * @return array{results: array, sent: string[], failed: string[], error: \WP_Error|null}
      */
     private function sendPattern($from, $recipients)
     {
@@ -243,25 +243,15 @@ class ippanel extends \WP_SMS\Gateway
             $params[trim((string)$name, '%')] = is_scalar($value) || $value === null ? (string)$value : '';
         }
 
-        $answers = [];
-
-        foreach ($recipients as $recipient) {
-            $data = $this->send([
+        return $this->sendInBatches(array_chunk($recipients, 1), function ($one) use ($from, $params) {
+            return $this->send([
                 'sending_type' => 'pattern',
                 'from_number'  => $from,
                 'code'         => (string)$this->template_id,
-                'recipients'   => [$recipient],
+                'recipients'   => $one,
                 'params'       => (object)$params,
             ]);
-
-            if (is_wp_error($data)) {
-                return $data;
-            }
-
-            $answers[] = $data;
-        }
-
-        return count($answers) === 1 ? $answers[0] : $answers;
+        });
     }
 
     /**

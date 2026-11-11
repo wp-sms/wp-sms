@@ -710,6 +710,108 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     }
 
     /**
+     * Sends batch by batch. When a request fails, that batch and every batch
+     * not tried count as failed while earlier confirmed sends stay successful.
+     *
+     * @param array[] $batches lists of numbers, one list per request
+     * @param callable $send takes one list, returns the provider's answer or a WP_Error
+     * @return array{results: array, sent: string[], failed: string[], error: \WP_Error|null}
+     */
+    protected function sendInBatches(array $batches, callable $send)
+    {
+        $batches = array_values($batches);
+        $outcome = ['results' => [], 'sent' => [], 'failed' => [], 'error' => null];
+
+        foreach ($batches as $index => $batch) {
+            $data = $send($batch);
+
+            if (!is_wp_error($data)) {
+                $delivery             = $this->batchRecipients($batch, $data);
+                $outcome['results'][] = $data;
+                $outcome['sent']      = array_merge($outcome['sent'], $delivery['sent']);
+                $outcome['failed']    = array_merge($outcome['failed'], $delivery['failed']);
+                $outcome['error']     = $outcome['error'] ?: $delivery['error'];
+                continue;
+            }
+
+            $outcome['failed'] = array_merge($outcome['failed'], $batch);
+            $outcome['error']  = $data;
+
+            foreach (array_slice($batches, $index + 1) as $notTried) {
+                $outcome['failed'] = array_merge($outcome['failed'], $notTried);
+            }
+
+            break;
+        }
+
+        return $outcome;
+    }
+
+    /**
+     * Recipients confirmed by a successful provider response. Gateways whose
+     * successful response can still reject individual numbers may override it.
+     *
+     * @param string[] $batch
+     * @param mixed $data provider response
+     * @return array{sent: string[], failed: string[], error: \WP_Error|null}
+     */
+    protected function batchRecipients(array $batch, $data)
+    {
+        return ['sent' => $batch, 'failed' => [], 'error' => null];
+    }
+
+    /**
+     * Logs a multi-request send without losing recipients confirmed before a
+     * later request failed.
+     *
+     * @param string[] $invalid numbers that are not phone numbers
+     * @param array $outcome from sendInBatches()
+     * @param string $label the provider's name, for messages
+     * @return mixed|\WP_Error
+     */
+    protected function finishBatchSend(array $invalid, array $outcome, $label)
+    {
+        $invalidMessage = '';
+
+        if ($invalid) {
+            /* translators: %s: SMS provider name */
+            $invalidMessage = esc_html(sprintf(__('%s: not a valid phone number.', 'wp-sms'), $label));
+            $this->log($this->from, $this->msg, $invalid, $invalidMessage, 'error');
+        }
+
+        if ($outcome['failed']) {
+            $this->log($this->from, $this->msg, $outcome['failed'], $outcome['error']->get_error_message(), 'error');
+        }
+
+        if (!$outcome['sent']) {
+            return $outcome['error'] ?: new \WP_Error('send-sms', $invalidMessage);
+        }
+
+        $result = count($outcome['results']) === 1 ? $outcome['results'][0] : $outcome['results'];
+
+        $this->log($this->from, $this->msg, $outcome['sent'], $result);
+
+        if ($invalid || $outcome['failed']) {
+            $result = [
+                'response' => $result,
+                'sent'     => $outcome['sent'],
+                'failed'   => array_merge($invalid, $outcome['failed']),
+                'error'    => $outcome['error'] ? $outcome['error']->get_error_message() : $invalidMessage,
+            ];
+        }
+
+        /**
+         * Run hook after send sms.
+         *
+         * @param mixed $result result output.
+         * @since 2.4
+         */
+        do_action('wp_sms_send', $result);
+
+        return $result;
+    }
+
+    /**
      * Executes a remote HTTP request.
      *
      * @param string $method The HTTP request method (GET, POST, PUT, PATCH, DELETE, etc.).

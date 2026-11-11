@@ -361,6 +361,32 @@ class MedianaGatewayTest extends WP_UnitTestCase
         $this->assertSame('error', $gateway->logs[0]['status']);
     }
 
+    public function test_pattern_success_before_an_error_is_not_reported_as_failed()
+    {
+        $this->answers = [
+            $this->response(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 1]]),
+            $this->response(400, ['meta' => ['code' => 'BadRequest', 'errors' => [['errorCode' => 1042]]]]),
+        ];
+
+        $gateway                   = $this->gateway();
+        $gateway->to               = ['09120000000', '09120000001', '09120000002'];
+        $gateway->msg              = 'Your code is 1234|815422';
+        $gateway->messageVariables = ['code' => 1234];
+        $hooks                     = did_action('wp_sms_send');
+
+        $result = $gateway->SendSMS();
+
+        $this->assertIsArray($result);
+        $this->assertSame(['09120000000'], $result['sent']);
+        $this->assertSame(['09120000001', '09120000002'], $result['failed']);
+        $this->assertCount(2, $this->requests);
+        $this->assertSame($hooks + 1, did_action('wp_sms_send'));
+        $this->assertSame(['09120000001', '09120000002'], $gateway->logs[0]['to']);
+        $this->assertSame('error', $gateway->logs[0]['status']);
+        $this->assertSame(['09120000000'], $gateway->logs[1]['to']);
+        $this->assertSame('success', $gateway->logs[1]['status']);
+    }
+
     public function test_one_bad_number_is_logged_and_the_others_are_sent()
     {
         $this->answer(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 1]]);
