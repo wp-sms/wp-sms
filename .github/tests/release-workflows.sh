@@ -187,15 +187,26 @@ EOF
 check_legacy_setup_skips_woocommerce
 
 check_release_metadata() {
-    local plugin_version stable_tag pot_version
+    local plugin_version stable_tag pot_version changelog_heading changelog_version changelog_date
+    local readme_heading readme_version readme_date
 
     plugin_version=$(sed -nE 's/^[[:space:]]*\* Version:[[:space:]]*//p' "$PLUGIN_FILE" | head -1)
     stable_tag=$(sed -nE 's/^Stable tag:[[:space:]]*//p' "$README_FILE" | head -1)
     pot_version=$(grep -m1 'Project-Id-Version:' "$POT_FILE" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+    changelog_heading=$(head -1 "$CHANGELOG_FILE")
+    changelog_version=$(sed -nE 's/^v([0-9]+\.[0-9]+\.[0-9]+) - [0-9]{4}-[0-9]{2}-[0-9]{2}$/\1/p' <<< "$changelog_heading")
+    changelog_date=$(sed -nE 's/^v[0-9]+\.[0-9]+\.[0-9]+ - ([0-9]{4}-[0-9]{2}-[0-9]{2})$/\1/p' <<< "$changelog_heading")
+    readme_heading=$(awk '$0 == "== Changelog ==" { in_changelog = 1; next } in_changelog && /^= v/ { print; exit }' "$README_FILE")
+    readme_version=$(sed -nE 's/^= v([0-9]+\.[0-9]+\.[0-9]+) - [0-9]{4}-[0-9]{2}-[0-9]{2} =$/\1/p' <<< "$readme_heading")
+    readme_date=$(sed -nE 's/^= v[0-9]+\.[0-9]+\.[0-9]+ - ([0-9]{4}-[0-9]{2}-[0-9]{2}) =$/\1/p' <<< "$readme_heading")
 
     [[ -n "$plugin_version" ]] || fail "plugin version is missing"
     [[ "$stable_tag" == "$plugin_version" ]] || fail "readme stable tag $stable_tag does not match plugin version $plugin_version"
     [[ "$pot_version" == "$plugin_version" ]] || fail "POT version $pot_version does not match plugin version $plugin_version"
+    [[ "$changelog_version" == "$plugin_version" ]] || fail "CHANGELOG.md version $changelog_version does not match plugin version $plugin_version"
+    [[ "$readme_version" == "$plugin_version" ]] || fail "readme changelog version $readme_version does not match plugin version $plugin_version"
+    [[ -n "$changelog_date" ]] || fail "CHANGELOG.md release date is missing or malformed"
+    [[ "$readme_date" == "$changelog_date" ]] || fail "readme changelog date $readme_date does not match CHANGELOG.md date $changelog_date"
 }
 
 check_release_metadata
