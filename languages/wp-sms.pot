@@ -144,6 +144,14 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
+#: public/dashboard/i18n-strings.js:185
+#: resources/react/src/components/notifications/NotificationSidebar.jsx:222
+#, javascript-format
+msgid "%d unread notification"
+msgid_plural "%d unread notifications"
+msgstr[0] ""
+msgstr[1] ""
+
 #: includes/admin/settings/class-wpsms-settings.php:188
 #: includes/admin/settings/class-wpsms-settings.php:742
 #: public/dashboard/assets/dashboard-DrbNN1IG.js:2

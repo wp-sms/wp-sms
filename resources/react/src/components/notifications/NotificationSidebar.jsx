@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n'
+import { __, _n, sprintf } from '@wordpress/i18n'
 import React, { useState, useEffect, useRef } from 'react'
 import { X, Loader2, Bell, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -191,7 +191,7 @@ export function NotificationSidebar({
           'wsms-right-0 rtl:wsms-right-auto rtl:wsms-left-0',
           isOpen
             ? 'wsms-translate-x-0 wsms-ease-out wsms-shadow-[-20px_0_60px_-15px_rgba(0,0,0,0.2),_-8px_0_20px_-10px_rgba(0,0,0,0.1)] rtl:wsms-shadow-[20px_0_60px_-15px_rgba(0,0,0,0.2),_8px_0_20px_-10px_rgba(0,0,0,0.1)]'
-            : 'wsms-translate-x-full rtl:wsms--translate-x-full wsms-ease-in'
+            : 'wsms-translate-x-full rtl:wsms--translate-x-full wsms-ease-in wsms-pointer-events-none'
         )}
         style={{
           top: WP_ADMIN_BAR_HEIGHT,
@@ -200,6 +200,8 @@ export function NotificationSidebar({
         role="dialog"
         aria-modal="true"
         aria-label={__('Notifications', 'wp-sms')}
+        aria-hidden={!isOpen}
+        inert={!isOpen ? '' : undefined}
       >
         {/* Header with gradient accent */}
         <div className="wsms-relative wsms-flex-shrink-0">
@@ -217,7 +219,10 @@ export function NotificationSidebar({
                 </h2>
                 {totalCount > 0 && (
                   <p className="wsms-text-xs wsms-text-muted-foreground wsms-mt-0.5">
-                    {inboxNotifications.length} unread
+                    {sprintf(
+                      _n('%d unread notification', '%d unread notifications', inboxNotifications.length, 'wp-sms'),
+                      inboxNotifications.length
+                    )}
                   </p>
                 )}
               </div>
