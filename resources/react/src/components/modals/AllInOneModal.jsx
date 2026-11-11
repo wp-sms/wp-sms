@@ -398,6 +398,7 @@ export default function AllInOneModal() {
 
             <button
               onClick={close}
+              aria-label={__('Close', 'wp-sms')}
               className="wsms-flex wsms-items-center wsms-justify-center wsms-h-8 wsms-w-8 wsms-rounded-lg wsms-text-muted-foreground hover:wsms-text-foreground hover:wsms-bg-accent wsms-transition-colors"
             >
               <X className="wsms-h-4 wsms-w-4" />
@@ -467,6 +468,7 @@ export default function AllInOneModal() {
               <div className="wsms-flex wsms-items-center wsms-justify-between wsms-mt-4 lg:wsms-hidden">
                 <button
                   onClick={goPrev}
+                  aria-label={__('Previous', 'wp-sms')}
                   className="wsms-flex wsms-items-center wsms-justify-center wsms-h-9 wsms-w-9 wsms-rounded-lg wsms-border wsms-border-border wsms-bg-card wsms-text-muted-foreground hover:wsms-text-foreground hover:wsms-bg-accent wsms-transition-colors"
                 >
                   <ChevronLeft className="wsms-h-4 wsms-w-4" />
@@ -476,6 +478,7 @@ export default function AllInOneModal() {
                 </span>
                 <button
                   onClick={goNext}
+                  aria-label={__('Next', 'wp-sms')}
                   className="wsms-flex wsms-items-center wsms-justify-center wsms-h-9 wsms-w-9 wsms-rounded-lg wsms-border wsms-border-border wsms-bg-card wsms-text-muted-foreground hover:wsms-text-foreground hover:wsms-bg-accent wsms-transition-colors"
                 >
                   <ChevronRight className="wsms-h-4 wsms-w-4" />
@@ -527,6 +530,7 @@ export default function AllInOneModal() {
               <div className="wsms-flex wsms-items-center wsms-justify-between wsms-px-4 wsms-py-2.5 wsms-border-t wsms-border-border">
                 <button
                   onClick={goPrev}
+                  aria-label={__('Previous', 'wp-sms')}
                   className="wsms-flex wsms-items-center wsms-justify-center wsms-h-8 wsms-w-8 wsms-rounded-lg wsms-border wsms-border-border wsms-bg-card wsms-text-muted-foreground hover:wsms-text-foreground hover:wsms-bg-accent wsms-transition-colors"
                 >
                   <ChevronLeft className="wsms-h-3.5 wsms-w-3.5" />
@@ -536,6 +540,7 @@ export default function AllInOneModal() {
                 </span>
                 <button
                   onClick={goNext}
+                  aria-label={__('Next', 'wp-sms')}
                   className="wsms-flex wsms-items-center wsms-justify-center wsms-h-8 wsms-w-8 wsms-rounded-lg wsms-border wsms-border-border wsms-bg-card wsms-text-muted-foreground hover:wsms-text-foreground hover:wsms-bg-accent wsms-transition-colors"
                 >
                   <ChevronRight className="wsms-h-3.5 wsms-w-3.5" />
