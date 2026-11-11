@@ -116,7 +116,7 @@ export function PremiumSearchResults({ gateways, searchQuery }) {
   if (gateways.length === 0) {
     return (
       <p className="wsms-py-8 wsms-text-center wsms-text-[12px] wsms-text-muted-foreground">
-        {searchQuery ? __('No gateways found matching', 'wp-sms') + ` "${searchQuery}".` : __('No gateways found.', 'wp-sms')}
+        {searchQuery ? /* translators: %s: the search term */ sprintf(__('No gateways found matching "%s".', 'wp-sms'), searchQuery) : __('No gateways found.', 'wp-sms')}
       </p>
     )
   }

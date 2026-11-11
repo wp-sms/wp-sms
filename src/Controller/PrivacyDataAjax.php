@@ -58,7 +58,7 @@ class PrivacyDataAjax extends AjaxControllerAbstract
          * Delete type
          */
         if ($this->type === 'delete') {
-            wp_send_json_success(array('message' => Helper::notice(sprintf(__('User with % s mobile number is removed completely!', 'wp-sms'), $this->mobile), 'success', false, '', true)));
+            wp_send_json_success(array('message' => Helper::notice(sprintf(__('User with %s mobile number is removed completely!', 'wp-sms'), $this->mobile), 'success', false, '', true)));
         }
     }
 
