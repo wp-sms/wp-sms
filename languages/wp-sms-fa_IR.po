@@ -2773,10 +2773,11 @@ msgstr "هدرهای HTTP"
 #: includes/gateways/class-wpsms-gateway-custom.php:40
 msgid ""
 "One <code>Header-Name: value</code> per line. Example: <code>Content-Type: "
-"application/json</code>, <code>Authorization: Bearer ***"
+"application/json</code>, <code>Authorization: Bearer YOUR_TOKEN</code>."
 msgstr ""
 "در هر خط یک <code>Header-Name: value</code>. مثال: <code>Content-Type: "
-"application/json</code>، <code>Authorization: Bearer ***"
+"application/json</code>، <code>Authorization: Bearer ***</code>."
+
 
 #: includes/gateways/class-wpsms-gateway-custom.php:46
 msgid "Body Format"
@@ -4594,9 +4595,12 @@ msgstr "نقش‌های مشخص"
 msgid "Please select the Role"
 msgstr "لطفاً نقش را انتخاب کنید"
 
-#: includes/templates/meta-box.php:67
-msgid " Users have mobile number."
-msgstr " کاربر دارای شماره موبایل هستند."
+#. translators: %s: number of users, wrapped in bold tags
+#: includes/templates/meta-box.php:70
+#, php-format
+msgid "%s users have a mobile number."
+msgstr "%s کاربر شماره موبایل دارند."
+
 
 #: includes/templates/meta-box.php:84
 msgid "Short codes"
@@ -5784,8 +5788,10 @@ msgid "Please enter the mobile number!"
 msgstr "لطفا شماره موبایل را وارد نمایید!"
 
 #: src/Controller/PrivacyDataAjax.php:61
-msgid "User with % s mobile number is removed completely!"
-msgstr "کاربر به‌طور کامل حذف گردید!"
+#, php-format
+msgid "User with %s mobile number is removed completely!"
+msgstr "کاربر با شماره موبایل %s به‌طور کامل حذف گردید!"
+
 
 #: src/Controller/PrivacyDataAjax.php:125
 msgid "User with this mobile number was not found!"
@@ -12256,11 +12262,13 @@ msgstr "از این شماره برای پیامک آزمایشی و اعلان�
 msgid "Valid phone number"
 msgstr "شماره تلفن معتبر"
 
-#: public/dashboard/assets/dashboard-DrbNN1IG.js:2
+#. translators: %s: the search term
 #: public/dashboard/i18n-strings.js:22
 #: resources/react/src/components/GatewayCard.jsx:119
-msgid "No gateways found matching"
-msgstr "هیچ درگاهی یافت نشد برای"
+#, js-format
+msgid "No gateways found matching \"%s\"."
+msgstr "هیچ درگاهی مطابق با «%s» یافت نشد."
+
 
 #: public/dashboard/assets/dashboard-DrbNN1IG.js:2
 #: public/dashboard/i18n-strings.js:23
@@ -12862,17 +12870,16 @@ msgstr "فعال نشده"
 msgid "No License"
 msgstr "بدون لایسنس"
 
-#: public/dashboard/assets/dashboard-DrbNN1IG.js:2
 #: public/dashboard/i18n-strings.js:172
-#: resources/react/src/components/modals/AllInOneModal.jsx:177
-msgid "Your license includes the"
-msgstr "لایسنس شما شامل"
+#: resources/react/src/components/modals/AllInOneModal.jsx:178
+#, js-format
+msgid ""
+"Your license includes the %s, but it's not installed yet. Go to the Add-Ons "
+"page to install and activate it, so you can start using all its features."
+msgstr ""
+"لایسنس شما شامل %s است، اما هنوز نصب نشده است. به صفحه افزونه‌ها بروید و آن "
+"را نصب و فعال کنید تا بتوانید از همه امکانات آن استفاده کنید."
 
-#: public/dashboard/assets/dashboard-DrbNN1IG.js:2
-#: public/dashboard/i18n-strings.js:173
-#: resources/react/src/components/modals/AllInOneModal.jsx:179
-msgid ", but it's not installed yet. Go to the Add-Ons page to install and"
-msgstr "است، اما هنوز نصب نشده است. به صفحه افزونه‌ها بروید و آن را نصب و"
 
 #: public/dashboard/assets/dashboard-DrbNN1IG.js:2
 #: public/dashboard/i18n-strings.js:174
@@ -12880,35 +12887,18 @@ msgstr "است، اما هنوز نصب نشده است. به صفحه افزو�
 msgid "activate"
 msgstr "فعالسازی"
 
-#: public/dashboard/assets/dashboard-DrbNN1IG.js:2
-#: public/dashboard/i18n-strings.js:175
-#: resources/react/src/components/modals/AllInOneModal.jsx:181
-msgid "it, so you can start using all its features."
-msgstr "کنید تا بتوانید از همه امکانات آن استفاده کنید."
-
-#: public/dashboard/assets/dashboard-DrbNN1IG.js:2
-#: public/dashboard/i18n-strings.js:176
-#: resources/react/src/components/modals/AllInOneModal.jsx:192
-msgid "This add-on does"
-msgstr "این افزونه"
-
-#: public/dashboard/assets/dashboard-DrbNN1IG.js:2
-#: public/dashboard/i18n-strings.js:177
-#: resources/react/src/components/modals/AllInOneModal.jsx:193
-msgid "not have an active license"
-msgstr "لایسنس فعال ندارد."
-
-#: public/dashboard/assets/dashboard-DrbNN1IG.js:2
-#: public/dashboard/i18n-strings.js:178
-#: resources/react/src/components/modals/AllInOneModal.jsx:194
+#: public/dashboard/i18n-strings.js:173
+#: resources/react/src/components/modals/AllInOneModal.jsx:189
 msgid ""
-", which means it cannot receive updates, including important security "
-"updates. For uninterrupted access to updates and to keep your site secure, "
-"we strongly recommend activating a license."
+"This add-on does not have an active license, which means it cannot receive "
+"updates, including important security updates. For uninterrupted access to "
+"updates and to keep your site secure, we strongly recommend activating a "
+"license."
 msgstr ""
-"، یعنی نمی‌تواند به‌روزرسانی‌ها، از جمله به‌روزرسانی‌های مهم امنیتی، را دریافت "
-"کند. برای دسترسی بدون وقفه به به‌روزرسانی‌ها و حفظ امنیت سایت، قویاً توصیه "
-"می‌کنیم لایسنس را فعال کنید."
+"این افزونه لایسنس فعال ندارد، یعنی نمی‌تواند به‌روزرسانی‌ها، از جمله "
+"به‌روزرسانی‌های مهم امنیتی، را دریافت کند. برای دسترسی بدون وقفه به "
+"به‌روزرسانی‌ها و حفظ امنیت سایت، قویاً توصیه می‌کنیم لایسنس را فعال کنید."
+
 
 #: public/dashboard/assets/dashboard-DrbNN1IG.js:2
 #: public/dashboard/i18n-strings.js:179
