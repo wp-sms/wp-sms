@@ -96,7 +96,7 @@ class MedianaGatewayTest extends WP_UnitTestCase
         ], json_decode($send['args']['body'], true));
     }
 
-    public function test_send_is_one_request_for_all_recipients()
+    public function test_send_splits_more_than_100_recipients()
     {
         $this->answer(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 1]]);
 
@@ -107,8 +107,9 @@ class MedianaGatewayTest extends WP_UnitTestCase
 
         $gateway->SendSMS();
 
-        $this->assertCount(1, $this->requests);
-        $this->assertCount(150, json_decode($this->requests[0]['args']['body'], true)['recipients']);
+        $this->assertCount(2, $this->requests);
+        $this->assertCount(100, json_decode($this->requests[0]['args']['body'], true)['recipients']);
+        $this->assertCount(50, json_decode($this->requests[1]['args']['body'], true)['recipients']);
     }
 
     public function test_blacklisted_items_in_a_successful_response_are_not_reported_as_sent()
@@ -128,7 +129,9 @@ class MedianaGatewayTest extends WP_UnitTestCase
         $gateway = $this->gateway();
         $result  = $gateway->SendSMS();
 
-        $this->assertSame(1, $result['requestId']);
+        $this->assertSame(['09120000000'], $result['sent']);
+        $this->assertSame(['09120000001'], $result['failed']);
+        $this->assertStringContainsString('blacklist', $result['error']);
         $this->assertStringContainsString('blacklist', $gateway->logs[0]['response']);
         $this->assertSame('error', $gateway->logs[0]['status']);
         $this->assertSame(['09120000001'], $gateway->logs[0]['to']);
@@ -397,7 +400,8 @@ class MedianaGatewayTest extends WP_UnitTestCase
 
         $result = $gateway->SendSMS();
 
-        $this->assertSame(1, $result['requestId']);
+        $this->assertSame(['09120000000', '09120000001'], $result['sent']);
+        $this->assertSame(['-'], $result['failed']);
         $this->assertSame($hooks + 1, did_action('wp_sms_send'));
         $this->assertCount(1, $this->requests);
         $this->assertSame(['-'], $gateway->logs[0]['to']);

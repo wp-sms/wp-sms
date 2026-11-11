@@ -57,6 +57,9 @@ class mediana extends \WP_SMS\Gateway
 
     private $wsdl_link = "https://api.mediana.ir/sms/v1";
 
+    /** Recipients Mediana accepts in one plain send request. */
+    const MAX_RECIPIENTS = 100;
+
     /** The message type that sends from Mediana's shared service line. */
     const SHARED_LINE_TYPE = 'Informational';
 
@@ -173,81 +176,18 @@ class mediana extends \WP_SMS\Gateway
             }
         }
 
-        if (!empty($this->template_id) && !empty($this->messageVariables) && is_array($this->messageVariables)) {
-            return $this->finishBatchSend($invalid, $this->sendPattern($recipients), 'Mediana');
-        }
-
-        if ($invalid) {
-            /* translators: %s: SMS provider name */
-            $this->log($this->from, $this->msg, $invalid, esc_html(sprintf(__('%s: not a valid phone number.', 'wp-sms'), 'Mediana')), 'error');
-        }
-
-        if (!$recipients) {
+        if (!$recipients && !$invalid) {
             $error = new \WP_Error('send-sms', esc_html__('Mediana: no valid recipient number.', 'wp-sms'));
             $this->log($this->from, $this->msg, $this->to, $error->get_error_message(), 'error');
 
             return $error;
         }
 
-        $answers = $this->sendPlain($recipients);
-
-        if (is_wp_error($answers)) {
-            $this->log($this->from, $this->msg, $recipients, $answers->get_error_message(), 'error');
-
-            return $answers;
+        if (!empty($this->template_id) && !empty($this->messageVariables) && is_array($this->messageVariables)) {
+            return $this->finishBatchSend($invalid, $this->sendPattern($recipients), 'Mediana');
         }
 
-        // Mediana may accept a request while marking some numbers as blacklisted.
-        $blocked = $this->blacklisted($answers);
-        $sent    = array_values(array_diff($recipients, $blocked));
-
-        if ($blocked) {
-            $blockedError = new \WP_Error('mediana-1047', esc_html__('Mediana: the number is on the blacklist.', 'wp-sms'));
-            $this->log($this->from, $this->msg, $blocked, $blockedError->get_error_message(), 'error');
-
-            if (!$sent) {
-                return $blockedError;
-            }
-        }
-
-        $result = count($answers) === 1 ? $answers[0] : $answers;
-
-        $this->log($this->from, $this->msg, $sent, $result);
-
-        /**
-         * Run hook after send sms.
-         *
-         * @param mixed $result result output.
-         * @since 2.4
-         */
-        do_action('wp_sms_send', $result);
-
-        return $result;
-    }
-
-    /**
-     * The numbers Mediana marked as blacklisted in its answers, in local form.
-     *
-     * @param array[] $answers
-     * @return string[]
-     */
-    private function blacklisted($answers)
-    {
-        $blocked = [];
-
-        foreach ($answers as $answer) {
-            if (empty($answer['smsItems']) || !is_array($answer['smsItems'])) {
-                continue;
-            }
-
-            foreach ($answer['smsItems'] as $item) {
-                if (is_array($item) && !empty($item['isInBlackList']) && isset($item['recipient'])) {
-                    $blocked[] = $this->localNumber($item['recipient']);
-                }
-            }
-        }
-
-        return $blocked;
+        return $this->finishBatchSend($invalid, $this->sendPlain($recipients), 'Mediana');
     }
 
     /**
@@ -280,18 +220,18 @@ class mediana extends \WP_SMS\Gateway
     }
 
     /**
-     * Sends the text to all recipients in one request.
+     * Sends the text to up to 100 recipients per request.
      *
-     * @return array[]|\WP_Error a list with the one answer, or the error
+     * @return array{results: array, sent: string[], failed: string[], error: \WP_Error|null}
      */
     private function sendPlain($recipients)
     {
-        $data = $this->send('/send/sms', $this->lineFields() + [
-            'recipients'  => $recipients,
-            'messageText' => (string)$this->msg,
-        ]);
-
-        return is_wp_error($data) ? $data : [$data];
+        return $this->sendInBatches(array_chunk($recipients, self::MAX_RECIPIENTS), function ($chunk) {
+            return $this->send('/send/sms', $this->lineFields() + [
+                'recipients'  => $chunk,
+                'messageText' => (string)$this->msg,
+            ]);
+        });
     }
 
     /**
