@@ -176,62 +176,120 @@ class mediana extends \WP_SMS\Gateway
             }
         }
 
-        if (!$recipients && !$invalid) {
+        if (!$recipients) {
             $error = new \WP_Error('send-sms', esc_html__('Mediana: no valid recipient number.', 'wp-sms'));
             $this->log($this->from, $this->msg, $this->to, $error->get_error_message(), 'error');
 
             return $error;
         }
 
+        if ($invalid) {
+            /* translators: %s: SMS provider name */
+            $this->log($this->from, $this->msg, $invalid, esc_html(sprintf(__('%s: not a valid phone number.', 'wp-sms'), 'Mediana')), 'error');
+        }
+
         if (!empty($this->template_id) && !empty($this->messageVariables) && is_array($this->messageVariables)) {
-            return $this->finishBatchSend($invalid, $this->sendPattern($recipients), 'Mediana');
+            return $this->sendPattern($recipients, $invalid);
         }
 
-        return $this->finishBatchSend($invalid, $this->sendPlain($recipients), 'Mediana');
+        return $this->sendPlain($recipients, $invalid);
     }
 
     /**
-     * Mediana may accept a request while marking individual SMS items as
-     * blacklisted. Keep those numbers out of the successful outbox entry.
-     */
-    protected function batchRecipients(array $batch, $data)
-    {
-        if (empty($data['smsItems']) || !is_array($data['smsItems'])) {
-            return parent::batchRecipients($batch, $data);
-        }
-
-        $blocked = [];
-
-        foreach ($data['smsItems'] as $item) {
-            if (is_array($item) && !empty($item['isInBlackList']) && isset($item['recipient'])) {
-                $blocked[] = $this->localNumber($item['recipient']);
-            }
-        }
-
-        if (!$blocked) {
-            return parent::batchRecipients($batch, $data);
-        }
-
-        return [
-            'sent'   => array_values(array_diff($batch, $blocked)),
-            'failed' => $blocked,
-            'error'  => new \WP_Error('mediana-1047', esc_html__('Mediana: the number is on the blacklist.', 'wp-sms')),
-        ];
-    }
-
-    /**
-     * Sends the text to up to 100 recipients per request.
+     * Sends request by request and logs what happened. Numbers confirmed stay
+     * logged as sent, the request that failed and the ones not tried are logged
+     * as failed, so a resend does not text the first ones twice. Mediana may
+     * accept a request while marking individual SMS items as blacklisted; those
+     * numbers are logged as failed too. A WP_Error comes back only when nothing
+     * was sent.
      *
-     * @return array{results: array, sent: string[], failed: string[], error: \WP_Error|null}
+     * @param array[] $groups the numbers of each request
+     * @param callable $send takes one group, returns Mediana's answer or a WP_Error
+     * @param string[] $invalid numbers that are not phone numbers
+     * @return array|\WP_Error
      */
-    private function sendPlain($recipients)
+    private function deliver(array $groups, callable $send, array $invalid)
     {
-        return $this->sendInBatches(array_chunk($recipients, self::MAX_RECIPIENTS), function ($chunk) {
+        $answers = [];
+        $sent    = [];
+        $failed  = [];
+        $error   = null;
+
+        foreach ($groups as $index => $group) {
+            $data = $send($group);
+
+            if (is_wp_error($data)) {
+                $error = $data;
+
+                foreach (array_slice($groups, $index) as $notSent) {
+                    $failed = array_merge($failed, $notSent);
+                }
+
+                break;
+            }
+
+            $blocked = [];
+
+            foreach ((array)(isset($data['smsItems']) ? $data['smsItems'] : []) as $item) {
+                if (is_array($item) && !empty($item['isInBlackList']) && isset($item['recipient'])) {
+                    $blocked[] = $this->localNumber($item['recipient']);
+                }
+            }
+
+            if ($blocked) {
+                $error = new \WP_Error('mediana-1047', esc_html__('Mediana: the number is on the blacklist.', 'wp-sms'));
+            }
+
+            $answers[] = $data;
+            $sent      = array_merge($sent, array_values(array_diff($group, $blocked)));
+            $failed    = array_merge($failed, array_values(array_intersect($group, $blocked)));
+        }
+
+        if ($failed) {
+            $this->log($this->from, $this->msg, $failed, $error->get_error_message(), 'error');
+        }
+
+        if (!$sent) {
+            return $error;
+        }
+
+        $result = count($answers) === 1 ? $answers[0] : $answers;
+
+        $this->log($this->from, $this->msg, $sent, $result);
+
+        if ($failed) {
+            $result = [
+                'response' => $result,
+                'sent'     => $sent,
+                'failed'   => array_merge($invalid, $failed),
+                'error'    => $error->get_error_message(),
+            ];
+        }
+
+        /**
+         * Run hook after send sms.
+         *
+         * @param mixed $result result output.
+         * @since 2.4
+         */
+        do_action('wp_sms_send', $result);
+
+        return $result;
+    }
+
+    /**
+     * Sends the text to up to MAX_RECIPIENTS numbers per request.
+     *
+     * @return array|\WP_Error
+     */
+    private function sendPlain($recipients, $invalid)
+    {
+        return $this->deliver(array_chunk($recipients, self::MAX_RECIPIENTS), function ($chunk) {
             return $this->send('/send/sms', $this->lineFields() + [
                 'recipients'  => $chunk,
                 'messageText' => (string)$this->msg,
             ]);
-        });
+        }, $invalid);
     }
 
     /**
@@ -239,9 +297,9 @@ class mediana extends \WP_SMS\Gateway
      * pattern request. Variables go by name, so %code% fills {{code}}. Stops
      * at the first error.
      *
-     * @return array{results: array, sent: string[], failed: string[], error: \WP_Error|null}
+     * @return array|\WP_Error
      */
-    private function sendPattern($recipients)
+    private function sendPattern($recipients, $invalid)
     {
         $parameters = [];
 
@@ -253,13 +311,13 @@ class mediana extends \WP_SMS\Gateway
             $parameters[trim((string)$name, '%')] = is_scalar($value) || $value === null ? (string)$value : '';
         }
 
-        return $this->sendInBatches(array_chunk($recipients, 1), function ($one) use ($parameters) {
+        return $this->deliver(array_chunk($recipients, 1), function ($one) use ($parameters) {
             return $this->send('/send/pattern', $this->lineFields() + [
                 'recipients'  => $one,
                 'patternCode' => (string)$this->template_id,
                 'parameters'  => (object)$parameters,
             ]);
-        });
+        }, $invalid);
     }
 
     /**

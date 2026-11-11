@@ -400,8 +400,7 @@ class MedianaGatewayTest extends WP_UnitTestCase
 
         $result = $gateway->SendSMS();
 
-        $this->assertSame(['09120000000', '09120000001'], $result['sent']);
-        $this->assertSame(['-'], $result['failed']);
+        $this->assertSame(1, $result['requestId']);
         $this->assertSame($hooks + 1, did_action('wp_sms_send'));
         $this->assertCount(1, $this->requests);
         $this->assertSame(['-'], $gateway->logs[0]['to']);

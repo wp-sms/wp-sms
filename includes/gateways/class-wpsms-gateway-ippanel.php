@@ -172,10 +172,6 @@ class ippanel extends \WP_SMS\Gateway
             }
         }
 
-        if (!empty($this->template_id) && !empty($this->messageVariables) && is_array($this->messageVariables)) {
-            return $this->finishBatchSend($invalid, $this->sendPattern($from, $recipients), $this->brand());
-        }
-
         if (!$recipients) {
             $error = new \WP_Error('send-sms', esc_html(sprintf(__('%s: no valid recipient number.', 'wp-sms'), $this->brand())));
             $this->log($this->from, $this->msg, $this->to, $error->get_error_message(), 'error');
@@ -186,6 +182,10 @@ class ippanel extends \WP_SMS\Gateway
         if ($invalid) {
             /* translators: %s: SMS provider name */
             $this->log($this->from, $this->msg, $invalid, esc_html(sprintf(__('%s: not a valid phone number.', 'wp-sms'), $this->brand())), 'error');
+        }
+
+        if (!empty($this->template_id) && !empty($this->messageVariables) && is_array($this->messageVariables)) {
+            return $this->sendPattern($from, $recipients, $invalid);
         }
 
         $result = $this->sendPlain($from, $recipients);
@@ -227,11 +227,14 @@ class ippanel extends \WP_SMS\Gateway
     /**
      * Sends the pattern once per number: IPPanel takes one recipient per
      * pattern request. Variables go by name, so %code% fills %code%. Stops at
-     * the first error.
+     * the first error. Numbers already sent stay logged as sent, the failed one
+     * and the ones not tried are logged as failed, so a resend does not text
+     * the first ones twice.
      *
-     * @return array{results: array, sent: string[], failed: string[], error: \WP_Error|null}
+     * @param string[] $invalid numbers that are not phone numbers, already logged
+     * @return array|\WP_Error
      */
-    private function sendPattern($from, $recipients)
+    private function sendPattern($from, $recipients, $invalid)
     {
         $params = [];
 
@@ -243,15 +246,59 @@ class ippanel extends \WP_SMS\Gateway
             $params[trim((string)$name, '%')] = is_scalar($value) || $value === null ? (string)$value : '';
         }
 
-        return $this->sendInBatches(array_chunk($recipients, 1), function ($one) use ($from, $params) {
-            return $this->send([
+        $answers = [];
+        $error   = null;
+
+        foreach ($recipients as $recipient) {
+            $data = $this->send([
                 'sending_type' => 'pattern',
                 'from_number'  => $from,
                 'code'         => (string)$this->template_id,
-                'recipients'   => $one,
+                'recipients'   => [$recipient],
                 'params'       => (object)$params,
             ]);
-        });
+
+            if (is_wp_error($data)) {
+                $error = $data;
+                break;
+            }
+
+            $answers[] = $data;
+        }
+
+        $sent   = array_slice($recipients, 0, count($answers));
+        $failed = array_slice($recipients, count($answers));
+
+        if ($failed) {
+            $this->log($this->from, $this->msg, $failed, $error->get_error_message(), 'error');
+        }
+
+        if (!$sent) {
+            return $error;
+        }
+
+        $result = count($answers) === 1 ? $answers[0] : $answers;
+
+        $this->log($this->from, $this->msg, $sent, $result);
+
+        if ($failed) {
+            $result = [
+                'response' => $result,
+                'sent'     => $sent,
+                'failed'   => array_merge($invalid, $failed),
+                'error'    => $error->get_error_message(),
+            ];
+        }
+
+        /**
+         * Run hook after send sms.
+         *
+         * @param mixed $result result output.
+         * @since 2.4
+         */
+        do_action('wp_sms_send', $result);
+
+        return $result;
     }
 
     /**
