@@ -37,7 +37,7 @@ class custom extends \WP_SMS\Gateway
             'http_headers'    => [
                 'id'         => 'gateway_http_headers',
                 'name'       => esc_html__('HTTP Headers', 'wp-sms'),
-                'desc'       => __('One <code>Header-Name: value</code> per line. Example: <code>Content-Type: application/json</code>, <code>Authorization: Bearer ***', 'wp-sms'),
+                'desc'       => __('One <code>Header-Name: value</code> per line. Example: <code>Content-Type: application/json</code>, <code>Authorization: Bearer YOUR_TOKEN</code>.', 'wp-sms'),
                 'type'       => 'textarea',
                 'isPassword' => true,
             ],

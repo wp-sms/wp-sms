@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n'
+import { __, sprintf } from '@wordpress/i18n'
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import {
@@ -174,11 +174,8 @@ function StepNotice({ addon, step }) {
       <div className="wsms-flex wsms-items-start wsms-gap-2.5 wsms-p-3 wsms-rounded-lg wsms-bg-amber-50 wsms-border wsms-border-amber-200 wsms-mt-4">
         <AlertTriangle className="wsms-h-4 wsms-w-4 wsms-text-amber-500 wsms-mt-0.5 wsms-shrink-0" />
         <p className="wsms-text-[12px] wsms-text-amber-800 wsms-leading-relaxed">
-          {__('Your license includes the', 'wp-sms')}{' '}
-          <strong>{step.addonName}</strong>
-          {__(', but it\'s not installed yet. Go to the Add-Ons page to install and', 'wp-sms')}{' '}
-          <strong>{__('activate', 'wp-sms')}</strong>{' '}
-          {__('it, so you can start using all its features.', 'wp-sms')}
+          {/* translators: %s: add-on name */}
+          {sprintf(__("Your license includes the %s, but it's not installed yet. Go to the Add-Ons page to install and activate it, so you can start using all its features.", 'wp-sms'), step.addonName)}
         </p>
       </div>
     )
@@ -189,9 +186,7 @@ function StepNotice({ addon, step }) {
       <div className="wsms-flex wsms-items-start wsms-gap-2.5 wsms-p-3 wsms-rounded-lg wsms-bg-red-50 wsms-border wsms-border-red-200 wsms-mt-4">
         <AlertTriangle className="wsms-h-4 wsms-w-4 wsms-text-red-500 wsms-mt-0.5 wsms-shrink-0" />
         <p className="wsms-text-[12px] wsms-text-red-800 wsms-leading-relaxed">
-          {__('This add-on does', 'wp-sms')}{' '}
-          <strong>{__('not have an active license', 'wp-sms')}</strong>
-          {__(', which means it cannot receive updates, including important security updates. For uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license.', 'wp-sms')}
+          {__('This add-on does not have an active license, which means it cannot receive updates, including important security updates. For uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license.', 'wp-sms')}
         </p>
       </div>
     )

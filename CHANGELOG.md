@@ -6,6 +6,7 @@ v7.2.13 - 2026-11-11
 - **Fix:** Translations shipped with the plugin now load, and about 80 dashboard labels that could not be translated now can.
 - **Fix:** The dialog close button no longer covers the title on right-to-left sites.
 - **Fix:** Melipayamak: the login fields are named as the panel names them (Username, and Password or API key), the balance shows two decimals, and Persian translations are added.
+- **Fix:** English text fixes for translators: "API Key" typo, an unclosed tag in the custom gateway headers help text, and several sentences that were split into separate pieces are now whole translatable strings.
 
 v7.2.12 - 2026-11-06
 - **Enhancement:** Setup guide links for 19 more gateways.
