@@ -103,7 +103,7 @@ class melipayamak extends Gateway
             'password' => [
                 'id' => 'gateway_password',
                 'name' => esc_html__('Password or API key', 'wp-sms'),
-                'desc' => esc_html__('Your Melipayamak panel password, or the API key from Developers > Web service settings in the panel.', 'wp-sms'),
+                'desc' => esc_html__('Your Melipayamak panel password, or the API key from Developers → Web service settings in the panel.', 'wp-sms'),
             ],
             'from' => [
                 'id' => 'gateway_sender_id',

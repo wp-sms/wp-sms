@@ -41,6 +41,10 @@ class TextDomainTest extends WP_UnitTestCase
         $this->loadPersian();
 
         $this->assertSame('شماره خط شما در پنل کاوه‌نگار.', __('Your line number from the Kavenegar panel.', 'wp-sms'));
+        $this->assertSame(
+            'رمز عبور پنل ملی پیامک، یا کلید API از منوی توسعه دهندگان ← تنظیمات وبسرویس در پنل.',
+            __('Your Melipayamak panel password, or the API key from Developers → Web service settings in the panel.', 'wp-sms')
+        );
     }
 
     public function testLanguagePackWinsOverShippedStrings(): void

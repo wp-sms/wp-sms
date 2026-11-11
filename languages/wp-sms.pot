@@ -401,7 +401,6 @@ msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:503
 #: includes/gateways/class-wpsms-gateway-logisticsms.php:73
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:100
 msgid "API Username"
 msgstr ""
 
@@ -415,7 +414,6 @@ msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:510
 #: includes/gateways/class-wpsms-gateway-logisticsms.php:78
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:105
 msgid "API Password"
 msgstr ""
 
@@ -3130,11 +3128,15 @@ msgid "the sending number has expired"
 msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-melipayamak.php:101
-msgid "Enter the API username provided by your SMS gateway."
+msgid "The username you use to log in to the Melipayamak panel."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:105
+msgid "Password or API key"
 msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-melipayamak.php:106
-msgid "Enter the API password provided by your SMS gateway."
+msgid "Your Melipayamak panel password, or the API key from Developers → Web service settings in the panel."
 msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-melipayamak.php:111
@@ -3157,9 +3159,12 @@ msgstr ""
 msgid "Optional: secondary support sender used with Smart SMS."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:179
 #: includes/gateways/class-wpsms-gateway-smses.php:110
 msgid "API Username and API Password are required."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:179
+msgid "Username and password (or API key) are required."
 msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-melipayamak.php:260
@@ -3402,6 +3407,7 @@ msgstr ""
 msgid "Select the base URL for the SMS Gateway API."
 msgstr ""
 
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:100
 #: includes/gateways/class-wpsms-gateway-smses.php:86
 msgid "Username"
 msgstr ""
