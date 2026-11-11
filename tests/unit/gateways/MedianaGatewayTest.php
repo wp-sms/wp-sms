@@ -96,7 +96,7 @@ class MedianaGatewayTest extends WP_UnitTestCase
         ], json_decode($send['args']['body'], true));
     }
 
-    public function test_send_splits_more_than_100_recipients()
+    public function test_send_is_one_request_for_all_recipients()
     {
         $this->answer(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 1]]);
 
@@ -107,7 +107,8 @@ class MedianaGatewayTest extends WP_UnitTestCase
 
         $gateway->SendSMS();
 
-        $this->assertCount(2, $this->requests);
+        $this->assertCount(1, $this->requests);
+        $this->assertCount(150, json_decode($this->requests[0]['args']['body'], true)['recipients']);
     }
 
     public function test_blacklisted_items_in_a_successful_response_are_not_reported_as_sent()
@@ -127,9 +128,8 @@ class MedianaGatewayTest extends WP_UnitTestCase
         $gateway = $this->gateway();
         $result  = $gateway->SendSMS();
 
-        $this->assertSame(['09120000000'], $result['sent']);
-        $this->assertSame(['09120000001'], $result['failed']);
-        $this->assertStringContainsString('blacklist', $result['error']);
+        $this->assertSame(1, $result['requestId']);
+        $this->assertStringContainsString('blacklist', $gateway->logs[0]['response']);
         $this->assertSame('error', $gateway->logs[0]['status']);
         $this->assertSame(['09120000001'], $gateway->logs[0]['to']);
         $this->assertSame('success', $gateway->logs[1]['status']);
@@ -318,65 +318,37 @@ class MedianaGatewayTest extends WP_UnitTestCase
         $this->assertSame('error', $gateway->logs[0]['status']);
     }
 
-    public function test_no_credit_stops_and_keeps_the_sent_number()
+    public function test_all_blacklisted_numbers_are_an_error()
     {
-        $this->answers = [
-            $this->response(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 1]]),
-            $this->response(400, ['meta' => ['code' => 'BadRequest', 'errors' => [['errorCode' => 1042]]]]),
-            $this->response(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 3]]),
-        ];
+        $this->answer(200, [
+            'meta' => ['code' => 'OK'],
+            'data' => [
+                'succeed'   => true,
+                'requestId' => 1,
+                'smsItems'  => [
+                    ['recipient' => '989120000000', 'isInBlackList' => true],
+                    ['recipient' => '989120000001', 'isInBlackList' => true],
+                ],
+            ],
+        ]);
 
-        $gateway                   = $this->gateway();
-        $gateway->to               = ['09120000000', '09120000001', '09120000002'];
-        $gateway->msg              = 'Your code is 1234|815422';
-        $gateway->messageVariables = ['code' => 1234];
-        $hooks                     = did_action('wp_sms_send');
+        $gateway = $this->gateway();
+        $result  = $gateway->SendSMS();
 
-        $result = $gateway->SendSMS();
-
-        // No credit would fail for every number, so the third is not tried.
-        $this->assertIsArray($result);
-        $this->assertCount(2, $this->requests);
-        $this->assertSame(['09120000000'], $result['sent']);
-        $this->assertSame(['09120000001', '09120000002'], $result['failed']);
-        $this->assertSame($hooks + 1, did_action('wp_sms_send'));
-        $this->assertCount(2, $gateway->logs);
+        $this->assertInstanceOf('WP_Error', $result);
+        $this->assertSame('mediana-1047', $result->get_error_code());
+        $this->assertCount(1, $gateway->logs);
         $this->assertSame('error', $gateway->logs[0]['status']);
-        $this->assertSame(['09120000001', '09120000002'], $gateway->logs[0]['to']);
-        $this->assertSame('success', $gateway->logs[1]['status']);
-        $this->assertSame(['09120000000'], $gateway->logs[1]['to']);
     }
 
-    public function test_refused_number_does_not_stop_the_next_one()
+    public function test_pattern_stops_at_the_first_error()
     {
         $this->answers = [
-            $this->response(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 1]]),
-            $this->response(400, ['meta' => ['code' => 'BadRequest', 'errors' => [['errorCode' => 1047]]]]),
-            $this->response(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 3]]),
-        ];
-
-        $gateway                   = $this->gateway();
-        $gateway->to               = ['09120000000', '09120000001', '09120000002'];
-        $gateway->msg              = 'Your code is 1234|815422';
-        $gateway->messageVariables = ['code' => 1234];
-
-        $result = $gateway->SendSMS();
-
-        $this->assertIsArray($result);
-        $this->assertCount(3, $this->requests);
-        $this->assertSame(['09120000000', '09120000002'], $result['sent']);
-        $this->assertSame(['09120000001'], $result['failed']);
-    }
-
-    public function test_stopping_error_replaces_an_earlier_recipient_error()
-    {
-        $this->answers = [
-            $this->response(400, ['meta' => ['code' => 'BadRequest', 'errors' => [['errorCode' => 1047]]]]),
             $this->response(400, ['meta' => ['code' => 'BadRequest', 'errors' => [['errorCode' => 1042]]]]),
+            $this->response(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 2]]),
         ];
 
         $gateway                   = $this->gateway();
-        $gateway->to               = ['09120000000', '09120000001', '09120000002'];
         $gateway->msg              = 'Your code is 1234|815422';
         $gateway->messageVariables = ['code' => 1234];
 
@@ -384,10 +356,12 @@ class MedianaGatewayTest extends WP_UnitTestCase
 
         $this->assertInstanceOf('WP_Error', $result);
         $this->assertSame('mediana-1042', $result->get_error_code());
-        $this->assertCount(2, $this->requests);
+        $this->assertCount(1, $this->requests);
+        $this->assertCount(1, $gateway->logs);
+        $this->assertSame('error', $gateway->logs[0]['status']);
     }
 
-    public function test_one_bad_number_does_not_fail_the_others()
+    public function test_one_bad_number_is_logged_and_the_others_are_sent()
     {
         $this->answer(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 1]]);
 
@@ -397,14 +371,13 @@ class MedianaGatewayTest extends WP_UnitTestCase
 
         $result = $gateway->SendSMS();
 
-        $this->assertIsArray($result);
-        $this->assertSame(['09120000000', '09120000001'], $result['sent']);
-        $this->assertSame(['-'], $result['failed']);
-        $this->assertStringNotContainsString('no valid recipient', $result['error']);
+        $this->assertSame(1, $result['requestId']);
         $this->assertSame($hooks + 1, did_action('wp_sms_send'));
         $this->assertCount(1, $this->requests);
         $this->assertSame(['-'], $gateway->logs[0]['to']);
         $this->assertSame('error', $gateway->logs[0]['status']);
+        $this->assertSame(['09120000000', '09120000001'], $gateway->logs[1]['to']);
+        $this->assertSame('success', $gateway->logs[1]['status']);
     }
 
     public function test_provider_down_stops_after_the_first_request()

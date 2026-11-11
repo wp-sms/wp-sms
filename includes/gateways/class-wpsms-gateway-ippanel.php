@@ -50,12 +50,6 @@ class ippanel extends \WP_SMS\Gateway
     private $wsdl_link = "https://edge.ippanel.com/v1/api";
 
     /**
-     * Recipients sent in one plain request. The docs give no limit, so the
-     * gateway stays at a size other Iranian panels accept.
-     */
-    const MAX_RECIPIENTS = 100;
-
-    /**
      * Pattern code taken from the "message|code" text, if any.
      *
      * @var string|null
@@ -165,9 +159,23 @@ class ippanel extends \WP_SMS\Gateway
             return $error;
         }
 
-        list($recipients, $invalid) = $this->splitRecipients($this->to, function ($number) {
-            return $this->e164($number);
-        });
+        $recipients = [];
+        $invalid    = [];
+
+        foreach ((array)$this->to as $number) {
+            $normalized = $this->e164($number);
+
+            if ($normalized === '') {
+                $invalid[] = $number;
+            } else {
+                $recipients[] = $normalized;
+            }
+        }
+
+        if ($invalid) {
+            /* translators: %s: SMS provider name */
+            $this->log($this->from, $this->msg, $invalid, esc_html(sprintf(__('%s: not a valid phone number.', 'wp-sms'), $this->brand())), 'error');
+        }
 
         if (!$recipients) {
             $error = new \WP_Error('send-sms', esc_html(sprintf(__('%s: no valid recipient number.', 'wp-sms'), $this->brand())));
@@ -177,46 +185,51 @@ class ippanel extends \WP_SMS\Gateway
         }
 
         if (!empty($this->template_id) && !empty($this->messageVariables) && is_array($this->messageVariables)) {
-            $outcome = $this->sendPattern($from, $recipients);
+            $result = $this->sendPattern($from, $recipients);
         } else {
-            $outcome = $this->sendPlain($from, $recipients);
+            $result = $this->sendPlain($from, $recipients);
         }
 
-        return $this->finishBatchSend($invalid, $outcome, $this->brand());
+        if (is_wp_error($result)) {
+            $this->log($this->from, $this->msg, $recipients, $result->get_error_message(), 'error');
+
+            return $result;
+        }
+
+        $this->log($this->from, $this->msg, $recipients, $result);
+
+        /**
+         * Run hook after send sms.
+         *
+         * @param mixed $result result output.
+         * @since 2.4
+         */
+        do_action('wp_sms_send', $result);
+
+        return $result;
     }
 
     /**
-     * IPPanel refusing the numbers or text of one request (HTTP 422) can be
-     * about that request only, so the next one is still tried. A refused key,
-     * an unreadable answer or no answer at all would repeat for every request.
-     */
-    protected function stopsBatchSend($error)
-    {
-        return !in_array($error->get_error_code(), ['ippanel-refused', 'send-sms'], true);
-    }
-
-    /**
-     * Sends the text as a "webservice" send, up to MAX_RECIPIENTS per request.
+     * Sends the text as one "webservice" send to all recipients.
      *
-     * @return array{results: array[], sent: string[], failed: string[], error: \WP_Error|null}
+     * @return array|\WP_Error
      */
     private function sendPlain($from, $recipients)
     {
-        return $this->sendInBatches(array_chunk($recipients, self::MAX_RECIPIENTS), function ($chunk) use ($from) {
-            return $this->send([
-                'sending_type' => 'webservice',
-                'from_number'  => $from,
-                'message'      => (string)$this->msg,
-                'params'       => ['recipients' => $chunk],
-            ]);
-        });
+        return $this->send([
+            'sending_type' => 'webservice',
+            'from_number'  => $from,
+            'message'      => (string)$this->msg,
+            'params'       => ['recipients' => $recipients],
+        ]);
     }
 
     /**
      * Sends the pattern once per number: IPPanel takes one recipient per
-     * pattern request. Variables go by name, so %code% fills %code%.
+     * pattern request. Variables go by name, so %code% fills %code%. Stops at
+     * the first error.
      *
-     * @return array{results: array[], sent: string[], failed: string[], error: \WP_Error|null}
+     * @return array|\WP_Error the answers, or the first error
      */
     private function sendPattern($from, $recipients)
     {
@@ -230,15 +243,25 @@ class ippanel extends \WP_SMS\Gateway
             $params[trim((string)$name, '%')] = is_scalar($value) || $value === null ? (string)$value : '';
         }
 
-        return $this->sendInBatches(array_chunk($recipients, 1), function ($one) use ($from, $params) {
-            return $this->send([
+        $answers = [];
+
+        foreach ($recipients as $recipient) {
+            $data = $this->send([
                 'sending_type' => 'pattern',
                 'from_number'  => $from,
                 'code'         => (string)$this->template_id,
-                'recipients'   => $one,
+                'recipients'   => [$recipient],
                 'params'       => (object)$params,
             ]);
-        });
+
+            if (is_wp_error($data)) {
+                return $data;
+            }
+
+            $answers[] = $data;
+        }
+
+        return count($answers) === 1 ? $answers[0] : $answers;
     }
 
     /**

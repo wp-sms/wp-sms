@@ -110,7 +110,7 @@ class IppanelGatewayTest extends WP_UnitTestCase
         ], json_decode($send['args']['body'], true));
     }
 
-    public function test_send_splits_more_than_100_recipients()
+    public function test_send_is_one_request_for_all_recipients()
     {
         $this->sent();
 
@@ -121,7 +121,8 @@ class IppanelGatewayTest extends WP_UnitTestCase
 
         $gateway->SendSMS();
 
-        $this->assertCount(2, $this->requests);
+        $this->assertCount(1, $this->requests);
+        $this->assertCount(150, json_decode($this->requests[0]['args']['body'], true)['params']['recipients']);
     }
 
     public function test_pattern_is_sent_once_per_recipient_with_named_params()
@@ -283,42 +284,27 @@ class IppanelGatewayTest extends WP_UnitTestCase
         $this->assertSame('error', $gateway->logs[0]['status']);
     }
 
-    public function test_failed_chunk_is_reported_without_hiding_the_sent_one()
+    public function test_one_bad_number_is_logged_and_the_others_are_sent()
     {
-        $this->answers = [
-            $this->response(200, [
-                'data' => ['message_outbox_ids' => [1]],
-                'meta' => ['status' => true, 'message_code' => '200-1'],
-            ]),
-            $this->response(422, [
-                'data' => null,
-                'meta' => ['status' => false, 'message' => 'Refused', 'message_code' => '400-2'],
-            ]),
-        ];
+        $this->sent();
 
         $gateway     = $this->gateway();
-        $gateway->to = array_map(function ($i) {
-            return sprintf('0912%07d', $i);
-        }, range(1, 150));
+        $gateway->to = ['-', '09120000000', '09120000001'];
         $hooks       = did_action('wp_sms_send');
 
         $result = $gateway->SendSMS();
 
-        // 100 numbers were sent, so this is not an error: a resend would text them twice.
-        $this->assertIsArray($result);
-        $this->assertCount(100, $result['sent']);
-        $this->assertCount(50, $result['failed']);
-        $this->assertSame(['message_outbox_ids' => [1]], $result['response']);
+        $this->assertSame([1123544244], $result['message_outbox_ids']);
         $this->assertSame($hooks + 1, did_action('wp_sms_send'));
-        $this->assertCount(2, $this->requests);
-        $this->assertCount(2, $gateway->logs);
+        $this->assertCount(1, $this->requests);
+        $this->assertSame(['+989120000000', '+989120000001'], json_decode($this->requests[0]['args']['body'], true)['params']['recipients']);
         $this->assertSame('error', $gateway->logs[0]['status']);
-        $this->assertCount(50, $gateway->logs[0]['to']);
+        $this->assertSame(['-'], $gateway->logs[0]['to']);
         $this->assertSame('success', $gateway->logs[1]['status']);
-        $this->assertCount(100, $gateway->logs[1]['to']);
+        $this->assertSame(['+989120000000', '+989120000001'], $gateway->logs[1]['to']);
     }
 
-    public function test_refused_chunk_does_not_stop_the_next_one()
+    public function test_pattern_stops_at_the_first_error()
     {
         $this->answers = [
             $this->response(422, [
@@ -331,38 +317,16 @@ class IppanelGatewayTest extends WP_UnitTestCase
             ]),
         ];
 
-        $gateway     = $this->gateway();
-        $gateway->to = array_map(function ($i) {
-            return sprintf('0912%07d', $i);
-        }, range(1, 150));
+        $gateway                   = $this->gateway();
+        $gateway->msg              = 'Your code is %code%|abc123';
+        $gateway->messageVariables = ['%code%' => '1234'];
 
         $result = $gateway->SendSMS();
 
-        $this->assertIsArray($result);
-        $this->assertCount(2, $this->requests);
-        $this->assertCount(50, $result['sent']);
-        $this->assertCount(100, $result['failed']);
-    }
-
-    public function test_one_bad_number_does_not_fail_the_others()
-    {
-        $this->sent();
-
-        $gateway     = $this->gateway();
-        $gateway->to = ['-', '09120000000', '09120000001'];
-        $hooks       = did_action('wp_sms_send');
-
-        $result = $gateway->SendSMS();
-
-        $this->assertIsArray($result);
-        $this->assertSame(['+989120000000', '+989120000001'], $result['sent']);
-        $this->assertSame(['-'], $result['failed']);
-        $this->assertStringNotContainsString('no valid recipient', $result['error']);
-        $this->assertSame($hooks + 1, did_action('wp_sms_send'));
+        $this->assertInstanceOf('WP_Error', $result);
         $this->assertCount(1, $this->requests);
+        $this->assertCount(1, $gateway->logs);
         $this->assertSame('error', $gateway->logs[0]['status']);
-        $this->assertSame(['-'], $gateway->logs[0]['to']);
-        $this->assertSame('success', $gateway->logs[1]['status']);
     }
 
     public function test_provider_down_stops_after_the_first_request()
@@ -385,7 +349,7 @@ class IppanelGatewayTest extends WP_UnitTestCase
         $this->assertSame($hooks, did_action('wp_sms_send'));
     }
 
-    public function test_refused_key_stops_after_the_first_chunk()
+    public function test_refused_key_is_one_request_and_one_error()
     {
         $this->answer(401, ['data' => null, 'meta' => ['status' => false, 'message' => 'Unauthorized', 'message_code' => '400-1']]);
 
