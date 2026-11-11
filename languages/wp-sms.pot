@@ -3328,10 +3328,6 @@ msgstr ""
 msgid "Note: that you need to get every 'Sender Name' approved before you can use it as 'Sender Name'. You can do it by going to your gateway account then go to this path : Account setting > SENDER NAME > Add"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-prosms.php:35
-msgid "API Iey"
-msgstr ""
-
 #: includes/gateways/class-wpsms-gateway-prosms.php:114
 #: includes/gateways/class-wpsms-gateway-smsdk.php:111
 msgid "Api key for this gateway is required."
@@ -6225,8 +6221,10 @@ msgstr ""
 #: views/components/lock-sections/notice-inactive-license-addon.php:9
 #, php-format
 msgid ""
-"This add-on does not have an active license, which means it cannot receive updates, including important security updates.\r\n"
-"For uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license. Activate your license <a href=\"%s\">here</a>."
+"This add-on does not have an active license, which means it cannot receive "
+"updates, including important security updates. For uninterrupted access to "
+"updates and to keep your site secure, we strongly recommend activating a "
+"license. Activate your license <a href=\"%s\">here</a>."
 msgstr ""
 
 #: views/components/lock-sections/unlock-all-in-one-addon.php:5
@@ -12286,12 +12284,6 @@ msgid ""
 "page to install and activate it, so you can start using all its features."
 msgstr ""
 
-
-#: public/dashboard/assets/dashboard-DrbNN1IG.js:2
-#: public/dashboard/i18n-strings.js:174
-#: resources/react/src/components/modals/AllInOneModal.jsx:180
-msgid "activate"
-msgstr ""
 
 #: public/dashboard/i18n-strings.js:173
 #: resources/react/src/components/modals/AllInOneModal.jsx:189

@@ -53,6 +53,7 @@ test('shipped Persian files cover the corrected source strings', () => {
   const { entries } = parsePo(readFileSync(join(root, 'languages/wp-sms-fa_IR.po'), 'utf8'))
   const translated = new Map(entries.map(([key, forms]) => [key, forms]))
   const corrected = [
+    'This add-on does not have an active license, which means it cannot receive updates, including important security updates. For uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license. Activate your license <a href="%s">here</a>.',
     '%s users have a mobile number.',
     'User with %s mobile number is removed completely!',
     'No gateways found matching "%s".',
@@ -69,7 +70,7 @@ test('shipped Persian files cover the corrected source strings', () => {
 
   const dashboard = JSON.parse(readFileSync(join(root, 'languages/wp-sms-fa_IR-wsms-dashboard-i18n.json'), 'utf8'))
   const messages = dashboard.locale_data.messages
-  for (const msgid of corrected.slice(2)) {
+  for (const msgid of corrected.slice(3)) {
     assert.ok(messages[msgid]?.some(Boolean), `Missing dashboard translation for: ${msgid}`)
   }
 })

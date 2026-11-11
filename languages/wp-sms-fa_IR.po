@@ -6623,8 +6623,8 @@ msgstr "توجه:"
 #. translators: %s: URL to license activation page
 #: views/components/lock-sections/notice-inactive-license-addon.php:9
 #, php-format
-msgid "This add-on does not have an active license, which means it cannot receive updates, including important security updates.\\r\nFor uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license. Activate your license <a href=\"%s\">here</a>."
-msgstr "این افزونه جانبی لایسنس فعال ندارد، بنابراین نمی‌تواند به‌روزرسانی‌ها، از جمله به‌روزرسانی‌های امنیتی مهم، را دریافت کند.\\r\nبرای دسترسی بدون وقفه به به‌روزرسانی‌ها و حفظ امنیت سایت، پیشنهاد می‌کنیم حتماً لایسنس را فعال کنید. لایسنس خود را از <a href=\"%s\">اینجا</a> فعال کنید."
+msgid "This add-on does not have an active license, which means it cannot receive updates, including important security updates. For uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license. Activate your license <a href=\"%s\">here</a>."
+msgstr "این افزونه جانبی لایسنس فعال ندارد، بنابراین نمی‌تواند به‌روزرسانی‌ها، از جمله به‌روزرسانی‌های امنیتی مهم، را دریافت کند. برای دسترسی بدون وقفه به به‌روزرسانی‌ها و حفظ امنیت سایت، پیشنهاد می‌کنیم حتماً لایسنس را فعال کنید. لایسنس خود را از <a href=\"%s\">اینجا</a> فعال کنید."
 
 #: views/components/lock-sections/unlock-all-in-one-addon.php:5
 msgid "Unlock Powerful Messaging Features with WP SMS Pro"
