@@ -1,10 +1,11 @@
-v7.2.13 - Unreleased
+v7.2.13 - 2026-11-11
 - **New:** IPPanel gateway. MdPanel and NasrPayam now use the same IPPanel API, and their errors name the panel.
 - **New:** Mediana: pattern sending, and messages go from the shared line when no sender is set.
 - **Fix:** Mediana: moved to Mediana's new API (enter the API key from your Mediana panel). A Mediana outage no longer crashes the site; the send fails with a clear message in the outbox.
 - **Fix:** UwaziiMobile: SMS sent in a burst no longer fail with "429 Too Many Requests" ([#614](https://github.com/wp-sms/wp-sms/issues/614)).
 - **Fix:** Translations shipped with the plugin now load, and about 80 dashboard labels that could not be translated now can.
 - **Fix:** The dialog close button no longer covers the title on right-to-left sites.
+- **Fix:** Melipayamak: the login fields are named as the panel names them (Username, and Password or API key), the balance shows two decimals, and Persian translations are added.
 
 v7.2.12 - 2026-11-06
 - **Enhancement:** Setup guide links for 19 more gateways.
