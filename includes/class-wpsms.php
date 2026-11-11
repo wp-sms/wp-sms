@@ -201,20 +201,12 @@ class WP_SMS
         $packFile     = WP_LANG_DIR . '/plugins/wp-sms-' . $locale . '.mo';
         $bundledFile  = WP_SMS_DIR . 'languages/wp-sms-' . $locale . '.mo';
 
-        global $wp_version;
-
         // Registers languages/ for script translations and loads the catalog on
         // WordPress before 6.7.
         load_plugin_textdomain('wp-sms', false, $relativePath);
 
         if ($locale === 'en_US') {
             return;
-        }
-
-        // Before WordPress 4.6 load_plugin_textdomain() checked the bundled
-        // catalog first. Unload it so the WordPress.org pack can still win.
-        if (version_compare($wp_version, '4.6', '<')) {
-            unload_textdomain('wp-sms');
         }
 
         // The WordPress.org language pack goes first so it wins; the shipped
