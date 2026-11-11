@@ -4,6 +4,7 @@ set -euo pipefail
 
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 ASSETS_WORKFLOW="$ROOT/.github/workflows/assets.yml"
+CHANGELOG_FILE="$ROOT/CHANGELOG.md"
 DEPLOY_WORKFLOW="$ROOT/.github/workflows/deploy.yml"
 GATEWAY_REGISTRY_WORKFLOW="$ROOT/.github/workflows/notify-gateway-registry.yml"
 INSTALL_WP_TESTS="$ROOT/bin/install-wp-tests.sh"
@@ -198,5 +199,23 @@ check_release_metadata() {
 }
 
 check_release_metadata
+
+check_release_changelog_parity() {
+    local tmp
+
+    tmp=$(mktemp -d)
+    awk 'NR == 1 { next } /^- / { print; next } { exit }' "$CHANGELOG_FILE" > "$tmp/changelog"
+    awk '
+        $0 == "== Changelog ==" { in_changelog = 1; next }
+        in_changelog && /^= v/ { in_release = 1; next }
+        in_release && /^- / { print; next }
+        in_release { exit }
+    ' "$README_FILE" > "$tmp/readme"
+
+    cmp -s "$tmp/changelog" "$tmp/readme" || fail "CHANGELOG.md and readme.txt have different current release notes"
+    rm -rf "$tmp"
+}
+
+check_release_changelog_parity
 
 echo "Release workflow regression tests passed."
