@@ -410,6 +410,23 @@ class MedianaGatewayTest extends WP_UnitTestCase
         $this->assertSame('success', $gateway->logs[1]['status']);
     }
 
+    public function test_malformed_numbers_are_rejected_without_hiding_valid_recipients()
+    {
+        $this->answer(200, ['meta' => ['code' => 'OK'], 'data' => ['succeed' => true, 'requestId' => 1]]);
+
+        $gateway     = $this->gateway();
+        $valid       = $gateway->to[0];
+        $gateway->to = ['abc1', '123', str_repeat('1', 20), $valid];
+
+        $gateway->SendSMS();
+
+        $body = json_decode($this->requests[0]['args']['body'], true);
+        $this->assertCount(1, $body['recipients']);
+        $this->assertCount(3, $gateway->logs[0]['to']);
+        $this->assertSame('error', $gateway->logs[0]['status']);
+        $this->assertSame('success', $gateway->logs[1]['status']);
+    }
+
     public function test_provider_down_stops_after_the_first_request()
     {
         $this->answer = new \WP_Error('http_request_failed', 'cURL error 28: Operation timed out');

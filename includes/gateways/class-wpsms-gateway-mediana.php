@@ -399,7 +399,13 @@ class mediana extends \WP_SMS\Gateway
      */
     private function localNumber($number)
     {
-        $number = preg_replace('/[^0-9]/', '', (string)$number);
+        $number = trim((string)$number);
+
+        if ($number === '' || !preg_match('/^\+?[0-9\s().-]+$/', $number)) {
+            return '';
+        }
+
+        $number = preg_replace('/[^0-9]/', '', $number);
 
         if (strpos($number, '0098') === 0) {
             $number = substr($number, 4);
@@ -411,7 +417,7 @@ class mediana extends \WP_SMS\Gateway
             $number = '0' . $number;
         }
 
-        return $number;
+        return preg_match('/^09[0-9]{9}$/', $number) ? $number : '';
     }
 
     private function hasKey()

@@ -269,6 +269,7 @@ class IppanelGatewayTest extends WP_UnitTestCase
 
         $this->assertInstanceOf('WP_Error', $result);
         $this->assertCount(0, $this->requests);
+        $this->assertCount(1, $gateway->logs);
         $this->assertSame('error', $gateway->logs[0]['status']);
     }
 
@@ -302,6 +303,23 @@ class IppanelGatewayTest extends WP_UnitTestCase
         $this->assertSame(['-'], $gateway->logs[0]['to']);
         $this->assertSame('success', $gateway->logs[1]['status']);
         $this->assertSame(['+989120000000', '+989120000001'], $gateway->logs[1]['to']);
+    }
+
+    public function test_malformed_numbers_are_rejected_without_hiding_valid_recipients()
+    {
+        $this->sent();
+
+        $gateway     = $this->gateway();
+        $valid       = $gateway->to[0];
+        $gateway->to = ['abc1', '123', str_repeat('1', 20), $valid];
+
+        $gateway->SendSMS();
+
+        $body = json_decode($this->requests[0]['args']['body'], true);
+        $this->assertCount(1, $body['params']['recipients']);
+        $this->assertCount(3, $gateway->logs[0]['to']);
+        $this->assertSame('error', $gateway->logs[0]['status']);
+        $this->assertSame('success', $gateway->logs[1]['status']);
     }
 
     public function test_pattern_stops_at_the_first_error()

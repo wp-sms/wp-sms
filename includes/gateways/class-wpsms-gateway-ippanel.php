@@ -176,16 +176,16 @@ class ippanel extends \WP_SMS\Gateway
             return $this->finishBatchSend($invalid, $this->sendPattern($from, $recipients), $this->brand());
         }
 
-        if ($invalid) {
-            /* translators: %s: SMS provider name */
-            $this->log($this->from, $this->msg, $invalid, esc_html(sprintf(__('%s: not a valid phone number.', 'wp-sms'), $this->brand())), 'error');
-        }
-
         if (!$recipients) {
             $error = new \WP_Error('send-sms', esc_html(sprintf(__('%s: no valid recipient number.', 'wp-sms'), $this->brand())));
             $this->log($this->from, $this->msg, $this->to, $error->get_error_message(), 'error');
 
             return $error;
+        }
+
+        if ($invalid) {
+            /* translators: %s: SMS provider name */
+            $this->log($this->from, $this->msg, $invalid, esc_html(sprintf(__('%s: not a valid phone number.', 'wp-sms'), $this->brand())), 'error');
         }
 
         $result = $this->sendPlain($from, $recipients);
@@ -388,7 +388,7 @@ class ippanel extends \WP_SMS\Gateway
     {
         $number = trim((string)$number);
 
-        if ($number === '') {
+        if ($number === '' || !preg_match('/^\+?[0-9\s().-]+$/', $number)) {
             return '';
         }
 
@@ -400,22 +400,18 @@ class ippanel extends \WP_SMS\Gateway
         }
 
         if ($plus) {
-            return '+' . $digits;
+            $normalized = '+' . $digits;
+        } elseif (strpos($digits, '00') === 0) {
+            $normalized = '+' . substr($digits, 2);
+        } elseif (strpos($digits, '98') === 0) {
+            $normalized = '+' . $digits;
+        } elseif (strpos($digits, '0') === 0) {
+            $normalized = '+98' . substr($digits, 1);
+        } else {
+            $normalized = '+98' . $digits;
         }
 
-        if (strpos($digits, '00') === 0) {
-            return '+' . substr($digits, 2);
-        }
-
-        if (strpos($digits, '98') === 0) {
-            return '+' . $digits;
-        }
-
-        if (strpos($digits, '0') === 0) {
-            return '+98' . substr($digits, 1);
-        }
-
-        return '+98' . $digits;
+        return preg_match('/^\+[1-9][0-9]{7,14}$/', $normalized) ? $normalized : '';
     }
 
     private function hasKey()
