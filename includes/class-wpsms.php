@@ -201,23 +201,18 @@ class WP_SMS
         $packFile     = WP_LANG_DIR . '/plugins/wp-sms-' . $locale . '.mo';
         $bundledFile  = WP_SMS_DIR . 'languages/wp-sms-' . $locale . '.mo';
 
-        $loaded = load_plugin_textdomain('wp-sms', false, $relativePath);
+        // Registers languages/ for script translations and loads the catalog on
+        // WordPress before 6.7.
+        load_plugin_textdomain('wp-sms', false, $relativePath);
 
         if ($locale === 'en_US') {
             return;
         }
 
-        // WordPress 6.7+ defers plugin catalog loading, so load both sources
-        // explicitly. On older versions load_plugin_textdomain() already loaded
-        // the pack or bundled file; only add the bundled fallback when a pack won.
-        if (version_compare($GLOBALS['wp_version'], '6.7', '>=')) {
-            load_textdomain('wp-sms', $packFile, $locale);
-            load_textdomain('wp-sms', $bundledFile, $locale);
-        } elseif (is_readable($packFile) || !$loaded) {
-            // Also when nothing loaded, e.g. the plugin folder sits outside
-            // WP_PLUGIN_DIR (symlinked installs), so the relative path misses it.
-            load_textdomain('wp-sms', $bundledFile, $locale);
-        }
+        // The WordPress.org language pack goes first so it wins; the shipped
+        // file only fills the strings the pack does not have.
+        load_textdomain('wp-sms', $packFile, $locale);
+        load_textdomain('wp-sms', $bundledFile, $locale);
     }
 
     private function initGateway()
