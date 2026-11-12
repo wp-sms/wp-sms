@@ -191,6 +191,7 @@ All premium features + all add-ons in one package.
 
 == Changelog ==
 = v7.2.13 - 2026-11-11 =
+- **Security:** The attempt limit on the SMS subscribe confirmation code now counts per subscriber, so it cannot be reset, and total wrong codes per pending number are capped ([#620](https://github.com/wp-sms/wp-sms/issues/620)).
 - **New:** IPPanel gateway. MdPanel and NasrPayam now use the same IPPanel API, and their errors name the panel.
 - **New:** Mediana: pattern sending, and messages go from the shared line when no sender is set.
 - **Fix:** Mediana: moved to Mediana's new API (enter the API key from your Mediana panel). A Mediana outage no longer crashes the site; the send fails with a clear message in the outbox.
