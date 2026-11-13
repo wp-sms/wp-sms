@@ -190,7 +190,8 @@ function NotificationBell() {
         )}
         aria-label={__('Notifications', 'wp-sms')}
       >
-        <span className="wsms-relative wsms-flex wsms-items-center wsms-justify-center">
+        {/* Same size for the bell and the gift, and hidden until the notices are loaded, so the bell never flashes before it turns into the gift. */}
+        <span className={cn('wsms-relative wsms-flex wsms-h-7 wsms-w-7 wsms-items-center wsms-justify-center wsms-transition-opacity wsms-duration-150', loading ? 'wsms-opacity-0' : 'wsms-opacity-100')}>
           {hasOffer ? (
             <span className="wsms-flex wsms-h-7 wsms-w-7 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-gradient-to-br wsms-from-rose-500/15 wsms-to-orange-400/20 wsms-text-[19px] wsms-leading-none" aria-hidden="true">🎁</span>
           ) : (
