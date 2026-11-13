@@ -127,7 +127,7 @@ export default function AllInOneCompare({ compact = false, showHide = false, pre
                         tabIndex={0}
                         role="img"
                         aria-label={row.info}
-                        className="wsms-inline-flex wsms-cursor-help wsms-text-muted-foreground hover:wsms-text-foreground focus:wsms-text-foreground"
+                        className="wsms-inline-flex wsms-cursor-help wsms-text-muted-foreground/50 hover:wsms-text-muted-foreground focus:wsms-text-muted-foreground"
                         onMouseEnter={(e) => showTip(e, row.info)}
                         onMouseLeave={() => setTip(null)}
                         onFocus={(e) => showTip(e, row.info)}
