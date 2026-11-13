@@ -196,7 +196,7 @@ function NotificationBell() {
             <Bell className="wsms-h-[18px] wsms-w-[18px]" strokeWidth={1.75} />
           )}
           {hasUnread && (
-            <span className="wsms-absolute wsms--top-1.5 wsms--end-1.5 wsms-flex wsms-h-4 wsms-min-w-4 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-red-600 wsms-px-1 wsms-text-[11px] wsms-font-bold wsms-leading-none wsms-text-white wsms-ring-2 wsms-ring-card">
+            <span className="wsms-absolute wsms--top-1.5 wsms--end-1.5 wsms-flex wsms-h-4 wsms-min-w-4 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary wsms-px-1 wsms-text-[11px] wsms-font-bold wsms-leading-none wsms-text-white wsms-ring-2 wsms-ring-card">
               {inboxNotifications.length}
             </span>
           )}
