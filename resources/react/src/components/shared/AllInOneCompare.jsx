@@ -109,7 +109,7 @@ export default function AllInOneCompare({ compact = false, showHide = false, pre
       <div className={cn('wsms-overflow-x-auto', compact ? 'wsms-px-5 wsms-pt-2' : 'wsms-px-6 wsms-pt-4')}>
         <table className="wsms-w-full wsms-border-collapse wsms-text-start">
           <thead>
-            <tr className="wsms-text-[12px] wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
+            <tr className="wsms-text-[13px] wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
               <th className="wsms-py-2 wsms-text-start wsms-font-semibold">{__('Feature', 'wp-sms')}</th>
               <th className="wsms-w-[190px] wsms-whitespace-nowrap wsms-py-2 wsms-text-center wsms-font-semibold">{__('Free', 'wp-sms')} <span className="wsms-font-bold wsms-normal-case wsms-tracking-normal wsms-text-primary">{__('(you are here)', 'wp-sms')}</span></th>
               <th className="wsms-w-[190px] wsms-rounded-t-lg wsms-bg-primary/10 wsms-py-2 wsms-text-center wsms-font-semibold wsms-text-primary">{__('All-in-One', 'wp-sms')}</th>
@@ -120,8 +120,8 @@ export default function AllInOneCompare({ compact = false, showHide = false, pre
               const Icon = row.icon
               return (
                 <tr key={row.key} className="wsms-border-t wsms-border-border">
-                  <td className={cn('wsms-py-[0.375rem]', 'wsms-pe-3')}>
-                    <span className="wsms-flex wsms-items-center wsms-gap-2.5 wsms-text-[13.5px] wsms-text-foreground">
+                  <td className={cn('wsms-py-[0.5rem]', 'wsms-pe-3')}>
+                    <span className="wsms-flex wsms-items-center wsms-gap-2.5 wsms-text-[15px] wsms-leading-[1.6] wsms-text-foreground">
                       <span>{row.title}</span>
                       <span
                         tabIndex={0}
@@ -137,13 +137,13 @@ export default function AllInOneCompare({ compact = false, showHide = false, pre
                       </span>
                     </span>
                   </td>
-                  <td className={cn('wsms-py-[0.375rem]', 'wsms-text-center')}>
-                    {row.freeText ? <span className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground">{row.freeText}</span> : row.free
+                  <td className={cn('wsms-py-[0.5rem]', 'wsms-text-center')}>
+                    {row.freeText ? <span className="wsms-text-[15px] wsms-leading-[1.6] wsms-font-semibold wsms-text-foreground">{row.freeText}</span> : row.free
                       ? <Check className="wsms-mx-auto wsms-h-4 wsms-w-4 wsms-text-emerald-600" aria-label={__('Included', 'wp-sms')} />
                       : <Minus className="wsms-mx-auto wsms-h-4 wsms-w-4 wsms-text-muted-foreground/50" aria-label={__('Not included', 'wp-sms')} />}
                   </td>
-                  <td className={cn('wsms-py-[0.375rem]', 'wsms-bg-primary/10 wsms-text-center', idx === arr.length - 1 && 'wsms-rounded-b-lg')}>
-                    {row.aioText ? <span className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[13px] wsms-font-semibold wsms-whitespace-nowrap wsms-text-emerald-700 dark:wsms-text-emerald-400">{row.key === 'support' && <GreenSeal className="wsms-h-4 wsms-w-4" />}{row.aioText}</span> : <Check className="wsms-mx-auto wsms-h-4 wsms-w-4 wsms-text-emerald-600" aria-label={__('Included', 'wp-sms')} />}
+                  <td className={cn('wsms-py-[0.5rem]', 'wsms-bg-primary/10 wsms-text-center', idx === arr.length - 1 && 'wsms-rounded-b-lg')}>
+                    {row.aioText ? <span className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[15px] wsms-leading-[1.6] wsms-font-semibold wsms-whitespace-nowrap wsms-text-emerald-700 dark:wsms-text-emerald-400">{row.key === 'support' && <GreenSeal className="wsms-h-4 wsms-w-4" />}{row.aioText}</span> : <Check className="wsms-mx-auto wsms-h-4 wsms-w-4 wsms-text-emerald-600" aria-label={__('Included', 'wp-sms')} />}
                   </td>
                 </tr>
               )
