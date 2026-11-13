@@ -145,7 +145,7 @@ function NavItem({ item, isActive, onClick, isNested = false, badge }) {
           <Icon className="wsms-h-[18px] wsms-w-[18px] wsms-shrink-0" strokeWidth={1.5} />
           <span className="wsms-text-[14px] wsms-font-medium">{item.label}</span>
           {badge > 0 && (
-            <span className="wsms-ms-auto wsms-flex wsms-h-[18px] wsms-min-w-[18px] wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-red-600 wsms-px-1 wsms-text-[11px] wsms-font-semibold wsms-text-primary-foreground wsms-leading-none">
+            <span className="wsms-ms-auto wsms-flex wsms-h-[18px] wsms-min-w-[18px] wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary wsms-px-1 wsms-text-[11px] wsms-font-semibold wsms-text-primary-foreground wsms-leading-none">
               {badge > 99 ? '99+' : badge}
             </span>
           )}
@@ -168,7 +168,7 @@ function NavItem({ item, isActive, onClick, isNested = false, badge }) {
       <Icon className="wsms-h-4 wsms-w-4 wsms-shrink-0" strokeWidth={1.75} />
       <span>{item.label}</span>
       {badge > 0 && (
-        <span className="wsms-ms-auto wsms-flex wsms-h-[18px] wsms-min-w-[18px] wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-red-600 wsms-px-1 wsms-text-[11px] wsms-font-semibold wsms-text-white wsms-leading-none" title={item.id === 'add-ons' ? __('Licenses need attention', 'wp-sms') : undefined}>
+        <span className="wsms-ms-auto wsms-flex wsms-h-[18px] wsms-min-w-[18px] wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary wsms-px-1 wsms-text-[11px] wsms-font-semibold wsms-text-white wsms-leading-none" title={item.id === 'add-ons' ? __('Licenses need attention', 'wp-sms') : undefined}>
           {badge > 99 ? '99+' : badge}
         </span>
       )}
@@ -312,7 +312,7 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions, badges = {} 
         </div>
         <div className="wsms-flex wsms-items-center wsms-gap-1.5">
           {groupBadgeTotal > 0 && !isExpanded && (
-            <span className="wsms-flex wsms-h-[18px] wsms-min-w-[18px] wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-red-600 wsms-px-1 wsms-text-[11px] wsms-font-semibold wsms-text-primary-foreground wsms-leading-none">
+            <span className="wsms-flex wsms-h-[18px] wsms-min-w-[18px] wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary wsms-px-1 wsms-text-[11px] wsms-font-semibold wsms-text-primary-foreground wsms-leading-none">
               {groupBadgeTotal > 99 ? '99+' : groupBadgeTotal}
             </span>
           )}
