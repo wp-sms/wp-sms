@@ -2,6 +2,7 @@ import { __, sprintf } from '@wordpress/i18n'
 import React, { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 import Logo from './Logo'
+import GreenSeal from '@/components/shared/GreenSeal'
 import { Menu, Bell, Moon, Sun, Sparkles, ExternalLink, KeyRound } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { NotificationSidebar } from '@/components/notifications'
@@ -73,10 +74,7 @@ function LicenseButton() {
         title={__('Manage licenses', 'wp-sms')}
         className={cn(buttonClass, 'wsms-bg-emerald-500/10 wsms-text-emerald-700 hover:wsms-bg-emerald-500/20')}
       >
-        <svg aria-hidden="true" viewBox="0 0 24 24" className="wsms-h-5 wsms-w-5 wsms-shrink-0">
-          <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" fill="#5fae62" />
-          <path d="m8.5 12.3 2.4 2.4 4.6-4.9" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <GreenSeal className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
         <span>{__('All-in-One', 'wp-sms')}</span>
       </a>
     )

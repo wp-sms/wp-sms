@@ -8,6 +8,7 @@ import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, A
 import { EmptyStateAction } from '@/components/ui/ux-helpers'
 import { useToast } from '@/components/ui/toaster'
 import { addonsApi } from '@/api/addonsApi'
+import AllInOneCompare from '@/components/shared/AllInOneCompare'
 import {
   Blocks,
   ExternalLink,
@@ -25,7 +26,7 @@ import {
   CheckCircle2,
   Settings as SettingsIcon,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn, appendUtm } from '@/lib/utils'
 import { useSettings } from '@/context/SettingsContext'
 
 const STATUS_TO_VARIANT = {
@@ -105,7 +106,7 @@ function collectKeys(addons) {
 /**
  * The one place to enter, review and renew licenses.
  */
-function LicenseHero({ addons, summary, onChanged }) {
+function LicenseHero({ addons, summary, onChanged, compact = false }) {
   const { toast } = useToast()
   const [licenseKey, setLicenseKey] = useState('')
   const [activating, setActivating] = useState(false)
@@ -193,17 +194,17 @@ function LicenseHero({ addons, summary, onChanged }) {
   return (
     <section
       id="wsms-license-hero"
-      className="wsms-relative wsms-overflow-hidden wsms-rounded-2xl wsms-bg-card wsms-px-6 wsms-pb-5 wsms-pt-9 wsms-text-center wsms-text-foreground sm:wsms-px-10"
+      className={cn('wsms-relative wsms-overflow-hidden wsms-rounded-2xl wsms-bg-card wsms-text-foreground', compact ? 'wsms-px-5 wsms-py-4 wsms-text-start' : 'wsms-px-6 wsms-pb-5 wsms-pt-9 wsms-text-center sm:wsms-px-10')}
       style={{ border: `1px solid ${t.border}` }}
       aria-label={__('Licenses', 'wp-sms')}
     >
       <span aria-hidden="true" className="wsms-pointer-events-none wsms-absolute wsms-inset-0" style={{ background: t.tint }} />
-      <div className="wsms-relative wsms-mx-auto wsms-max-w-[680px]">
-        <span className={cn('wsms-mx-auto wsms-flex wsms-h-16 wsms-w-16 wsms-items-center wsms-justify-center wsms-rounded-full', t.iconClass)}>
+      <div className={cn('wsms-relative', compact ? '' : 'wsms-mx-auto wsms-max-w-[680px]')}>
+        <span className={cn('wsms-mx-auto wsms-h-16 wsms-w-16 wsms-items-center wsms-justify-center wsms-rounded-full', compact ? 'wsms-hidden' : 'wsms-flex', t.iconClass)}>
           <t.icon className="wsms-h-8 wsms-w-8" strokeWidth={1.75} />
         </span>
-        <h2 className="wsms-mt-4 wsms-text-[30px] wsms-font-extrabold wsms-leading-tight wsms-tracking-tight wsms-text-foreground">{title}</h2>
-        <p className="wsms-mx-auto wsms-mt-2 wsms-max-w-[520px] wsms-text-[15px] wsms-leading-relaxed wsms-text-muted-foreground">{text}</p>
+        <h2 className={cn('wsms-text-foreground', compact ? 'wsms-text-[16px] wsms-font-semibold' : 'wsms-mt-4 wsms-text-[30px] wsms-font-extrabold wsms-leading-tight wsms-tracking-tight')}>{title}</h2>
+        <p className={cn('wsms-text-muted-foreground', compact ? 'wsms-mt-0.5 wsms-text-[13px]' : 'wsms-mx-auto wsms-mt-2 wsms-max-w-[520px] wsms-text-[15px] wsms-leading-relaxed')}>{text}</p>
 
         {renew?.renew_url && expired > 0 && (
           <a
@@ -229,13 +230,13 @@ function LicenseHero({ addons, summary, onChanged }) {
               placeholder={__('Paste your license key', 'wp-sms')}
               aria-label={__('License key', 'wp-sms')}
               dir="ltr"
-              className="wsms-h-14 wsms-min-w-0 wsms-flex-1 wsms-rounded-2xl wsms-border wsms-border-border wsms-bg-background wsms-px-5 wsms-text-center wsms-text-[16px] wsms-text-foreground placeholder:wsms-text-muted-foreground/70 focus:wsms-outline-none sm:wsms-text-start"
+              className={cn('wsms-min-w-0 wsms-flex-1 wsms-rounded-2xl wsms-border wsms-border-border wsms-bg-background wsms-px-5 wsms-text-foreground placeholder:wsms-text-muted-foreground/70 focus:wsms-outline-none', compact ? 'wsms-h-11 wsms-text-[14px]' : 'wsms-h-14 wsms-text-center wsms-text-[16px] sm:wsms-text-start')}
             />
             <button
               type="button"
               onClick={handleActivate}
               disabled={activating || !licenseKey.trim()}
-              className="wsms-inline-flex wsms-h-14 wsms-shrink-0 wsms-items-center wsms-justify-center wsms-gap-2 wsms-rounded-2xl wsms-bg-primary wsms-px-8 wsms-text-[16px] wsms-font-bold wsms-text-primary-foreground hover:wsms-bg-primary/90 disabled:wsms-cursor-not-allowed disabled:wsms-opacity-40"
+              className={cn('wsms-inline-flex wsms-shrink-0 wsms-items-center wsms-justify-center wsms-gap-2 wsms-rounded-2xl wsms-bg-primary wsms-font-bold wsms-text-primary-foreground hover:wsms-bg-primary/90 disabled:wsms-cursor-not-allowed disabled:wsms-opacity-40', compact ? 'wsms-h-11 wsms-px-6 wsms-text-[14px]' : 'wsms-h-14 wsms-px-8 wsms-text-[16px]')}
             >
               {activating ? <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" /> : null}
               {__('Activate', 'wp-sms')}
@@ -281,7 +282,7 @@ function LicenseHero({ addons, summary, onChanged }) {
         )}
 
         {keys.length > 0 && (
-          <ul className="wsms-mx-auto wsms-mt-8 wsms-flex wsms-max-w-[620px] wsms-flex-col wsms-gap-3 wsms-text-start">
+          <ul className={cn('wsms-flex wsms-flex-col wsms-gap-3 wsms-text-start', compact ? 'wsms-mt-5' : 'wsms-mx-auto wsms-mt-8 wsms-max-w-[620px]')}>
             {keys.map((key) => {
               const isExpired = key.status === 'license_expired'
               const kind = key.sku === 'all-in-one' ? __('All-in-One', 'wp-sms') : key.sku === 'pro' ? __('Pro', 'wp-sms') : __('Add-on key', 'wp-sms')
@@ -323,7 +324,7 @@ function LicenseHero({ addons, summary, onChanged }) {
           </ul>
         )}
 
-        <div className="wsms-mx-auto wsms-mt-8 wsms-flex wsms-max-w-[620px] wsms-flex-wrap wsms-justify-center wsms-gap-x-8 wsms-gap-y-2 wsms-pt-2 wsms-text-[14px]">
+        <div className={cn('wsms-mt-4 wsms-flex wsms-flex-wrap wsms-gap-x-8 wsms-gap-y-2 wsms-pt-2 wsms-text-[14px]', compact ? 'wsms-justify-start' : 'wsms-mx-auto wsms-mt-8 wsms-max-w-[620px] wsms-justify-center')}>
           <a href="https://wsms.io/pricing/?utm_source=wp-sms&utm_medium=add-ons&utm_campaign=license-help" target="_blank" rel="noopener noreferrer" className="wsms-inline-flex wsms-items-center wsms-gap-2 wsms-font-medium wsms-text-primary wsms-no-underline hover:wsms-underline">
             <ShoppingCart className="wsms-h-4 wsms-w-4" />
             {__('No license yet? See plans', 'wp-sms')}
@@ -365,6 +366,8 @@ const SETTINGS_PAGES = {
   'wp-sms-woocommerce-pro': 'woocommerce-pro',
 }
 
+const addonUtm = (url) => (url ? appendUtm(url, { source: 'wsms', medium: 'plugin', campaign: 'add-ons-page' }) : url)
+
 function AddOnCard({ addon, onOpenPage }) {
   const primary = 'wsms-bg-primary wsms-text-primary-foreground hover:wsms-bg-primary/90'
   const outline = 'wsms-border wsms-border-border wsms-bg-background wsms-text-foreground hover:wsms-bg-accent'
@@ -379,8 +382,6 @@ function AddOnCard({ addon, onOpenPage }) {
   // License entry and renewal live in the band above, so cards never ask for a key.
   if (addon.status === 'not_activated') {
     action = { label: __('Activate plugin', 'wp-sms'), tone: primary, href: 'plugins.php' }
-  } else if (addon.status === 'not_installed' && addon.product_url) {
-    action = { label: __('Get add-on', 'wp-sms'), tone: outline, href: addon.product_url }
   } else if (addon.status === 'activated' && SETTINGS_PAGES[addon.slug]) {
     gear = () => onOpenPage(SETTINGS_PAGES[addon.slug])
   }
@@ -402,12 +403,21 @@ function AddOnCard({ addon, onOpenPage }) {
           )}
           <div className="wsms-min-w-0 wsms-flex-1">
             <div className="wsms-flex wsms-flex-wrap wsms-items-baseline wsms-gap-x-2">
-              <span className="wsms-text-[15px] wsms-font-semibold wsms-text-foreground" title={addon.name}>{addon.name}</span>
-              {addon.version && <span className="wsms-shrink-0 wsms-text-[12px] wsms-text-muted-foreground" dir="ltr">v{addon.version}</span>}
+              {!addon.is_installed && addon.product_url ? (
+                <a href={addonUtm(addon.product_url)} target="_blank" rel="noopener noreferrer" className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[15px] wsms-font-semibold wsms-text-foreground wsms-no-underline hover:wsms-text-primary" title={addon.name}>
+                  {addon.name}
+                  <ExternalLink className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
+                </a>
+              ) : (
+                <span className="wsms-text-[15px] wsms-font-semibold wsms-text-foreground" title={addon.name}>{addon.name}</span>
+              )}
+              {addon.is_installed && addon.version && <span className="wsms-shrink-0 wsms-text-[12px] wsms-text-muted-foreground" dir="ltr">v{addon.version}</span>}
             </div>
-            <div className="wsms-mt-1 wsms-flex wsms-items-center wsms-gap-2">
-              <span className="wsms-shrink-0 [&_*]:wsms-whitespace-nowrap"><StatusBadge variant={STATUS_TO_VARIANT[addon.status] || 'default'} size="sm">{addon.status_label}</StatusBadge></span>
+            {addon.is_installed && (
+              <div className="wsms-mt-1 wsms-flex wsms-items-center wsms-gap-2">
+                <span className="wsms-shrink-0 [&_*]:wsms-whitespace-nowrap"><StatusBadge variant={STATUS_TO_VARIANT[addon.status] || 'default'} size="sm">{addon.status_label}</StatusBadge></span>
             </div>
+            )}
           </div>
           {gear && (
             <button
@@ -439,26 +449,28 @@ function AddOnCard({ addon, onOpenPage }) {
         </div>
       </div>
 
+      {addon.is_installed && (
       <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-4 wsms-border-t wsms-border-border wsms-px-4 wsms-py-3">
         {addon.product_url && (
-          <a href={addon.product_url} target="_blank" rel="noopener noreferrer" className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-text-muted-foreground wsms-no-underline hover:wsms-text-foreground">
+          <a href={addonUtm(addon.product_url)} target="_blank" rel="noopener noreferrer" className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-text-muted-foreground wsms-no-underline hover:wsms-text-foreground">
             <ExternalLink className="wsms-h-3 wsms-w-3" />
             {addon.is_installed ? __('Details', 'wp-sms') : __('Get Add-On', 'wp-sms')}
           </a>
         )}
         {addon.documentation_url && (
-          <a href={addon.documentation_url} target="_blank" rel="noopener noreferrer" className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-text-muted-foreground wsms-no-underline hover:wsms-text-foreground">
+          <a href={addonUtm(addon.documentation_url)} target="_blank" rel="noopener noreferrer" className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-text-muted-foreground wsms-no-underline hover:wsms-text-foreground">
             <BookOpen className="wsms-h-3 wsms-w-3" />
             {__('Docs', 'wp-sms')}
           </a>
         )}
         {addon.changelog_url && (
-          <a href={addon.changelog_url} target="_blank" rel="noopener noreferrer" className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-text-muted-foreground wsms-no-underline hover:wsms-text-foreground">
+          <a href={addonUtm(addon.changelog_url)} target="_blank" rel="noopener noreferrer" className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-text-muted-foreground wsms-no-underline hover:wsms-text-foreground">
             <FileText className="wsms-h-3 wsms-w-3" />
             {__('Changelog', 'wp-sms')}
           </a>
         )}
       </div>
+      )}
     </div>
   )
 }
@@ -562,16 +574,36 @@ export default function AddOns() {
     )
   }
 
+  // WSMS on its own: no add-on installed and no key stored (add &aio-preview=1 to preview it elsewhere).
+  const freeOnly = new URLSearchParams(window.location.search).has('aio-preview') || (addons.every((a) => !a.is_installed) && collectKeys(addons).length === 0)
+
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
-      <LicenseHero addons={addons} summary={summary} onChanged={handleLicenseChanged} />
+      {freeOnly ? (
+        <>
+          {/* A site with no add-on and no key: show the value first, then a slim box for people who already have a key. */}
+          <AllInOneCompare campaign="add-ons-compare" />
+          <p className="wsms-mb-2 wsms-mt-2 wsms-border-b wsms-border-border wsms-px-1 wsms-pb-6 wsms-pt-2 wsms-text-[14px] wsms-text-muted-foreground">
+            🔑 {__('Already bought an add-on? Download it from your account and install it like any plugin. A license box appears here once it is installed.', 'wp-sms')}{' '}
+            <a href={addonUtm('https://my.wsms.io/')} target="_blank" rel="noopener noreferrer" className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-font-semibold wsms-text-primary wsms-no-underline hover:wsms-underline">
+              {__('Open my account', 'wp-sms')}<ExternalLink className="wsms-h-3.5 wsms-w-3.5" />
+            </a>
+          </p>
+        </>
+      ) : (
+        <LicenseHero addons={addons} summary={summary} onChanged={handleLicenseChanged} />
+      )}
 
       <div>
         <h3 className="wsms-flex wsms-items-center wsms-gap-2 wsms-text-[17px] wsms-font-semibold wsms-text-foreground">
           <Blocks className="wsms-h-5 wsms-w-5 wsms-text-primary" />
-          {__('Your add-ons', 'wp-sms')}
+          {freeOnly ? __('Add-ons available', 'wp-sms') : __('Your add-ons', 'wp-sms')}
         </h3>
-        <p className="wsms-mt-1 wsms-text-[14px] wsms-text-muted-foreground">{__('Extend WSMS with extra gateways, integrations and tools', 'wp-sms')}</p>
+        <p className="wsms-mt-1 wsms-text-[14px] wsms-text-muted-foreground">
+          {freeOnly
+            ? __('Want just one feature? Each add-on can be bought on its own, or get them all with All-in-One.', 'wp-sms')
+            : __('Extend WSMS with extra gateways, integrations and tools', 'wp-sms')}
+        </p>
         <div className="wsms-mt-4 wsms-grid wsms-grid-cols-1 wsms-gap-3 lg:wsms-grid-cols-2 xl:wsms-grid-cols-3">
           {addons.map((addon) => (
             <AddOnCard key={addon.slug} addon={addon} onOpenPage={setCurrentPage} />

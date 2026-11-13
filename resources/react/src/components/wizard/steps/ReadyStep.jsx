@@ -49,45 +49,24 @@ export default function ReadyStep({
     },
   ]
 
+  const helpLinks = window.wpSmsSettings?.brandingUrls || {}
+
   return (
-    <div className="wsms-max-w-2xl wsms-mx-auto">
-      {/* Header with Success Animation */}
-      <div className="wsms-text-center wsms-mb-8">
-        <div className="wsms-flex wsms-justify-center wsms-mb-4">
-          <div className="wsms-relative">
-            <div className="wsms-h-16 wsms-w-16 wsms-rounded-2xl wsms-bg-success/10 wsms-flex wsms-items-center wsms-justify-center">
-              <PartyPopper className="wsms-h-8 wsms-w-8 wsms-text-success" />
-            </div>
-            <div className="wsms-absolute wsms--right-1 wsms--top-1 wsms-h-7 wsms-w-7 wsms-rounded-full wsms-bg-success wsms-flex wsms-items-center wsms-justify-center wsms-shadow-lg wsms-shadow-success/30">
-              <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-white" />
-            </div>
-          </div>
+    <div className="wsms-mx-auto wsms-max-w-4xl wsms-py-1">
+      {/* Success hero */}
+      <div className="wsms-text-center">
+        <div className="wsms-relative wsms-mx-auto wsms-flex wsms-h-16 wsms-w-16 wsms-items-center wsms-justify-center wsms-rounded-2xl wsms-bg-success/10">
+          <PartyPopper className="wsms-h-8 wsms-w-8 wsms-text-success" />
+          <span className="wsms-absolute wsms--end-2 wsms--top-2 wsms-flex wsms-h-8 wsms-w-8 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-success wsms-shadow-lg wsms-shadow-success/30">
+            <CheckCircle className="wsms-h-5 wsms-w-5 wsms-text-white" />
+          </span>
         </div>
-        <h2 className="wsms-text-xl wsms-font-bold wsms-text-foreground wsms-mb-2">
-          {__("You're All Set!", 'wp-sms')}
-        </h2>
-        <p className="wsms-text-[14px] wsms-text-muted-foreground">
-          {__('Your SMS gateway is configured and ready to use.', 'wp-sms')}
-        </p>
+        <h2 className="wsms-mt-3 wsms-text-[24px] wsms-font-extrabold wsms-tracking-tight wsms-text-foreground">{__("You're All Set!", 'wp-sms')}</h2>
+        <p className="wsms-mt-1.5 wsms-text-[15px] wsms-text-muted-foreground">{__('Your SMS gateway is configured and ready to use.', 'wp-sms')}</p>
       </div>
 
-      {/* Gateway Summary */}
-      {gatewayName && (
-        <div className="wsms-flex wsms-justify-center wsms-mb-8">
-          <div className="wsms-inline-flex wsms-items-center wsms-gap-2 wsms-px-4 wsms-py-2.5 wsms-rounded-full wsms-bg-success/10 wsms-border wsms-border-success/20">
-            <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-success" />
-            <span className="wsms-text-[14px] wsms-font-medium wsms-text-success">
-              {__('Connected to', 'wp-sms')} {getGatewayDisplayName()}
-            </span>
-          </div>
-        </div>
-      )}
-
-      {/* Quick Actions */}
-      <div className="wsms-space-y-3 wsms-mb-8">
-        <p className="wsms-text-[13px] wsms-font-medium wsms-text-muted-foreground wsms-uppercase wsms-text-center wsms-mb-4">
-          {__('What would you like to do next?', 'wp-sms')}
-        </p>
+      {/* Next steps */}
+      <div className="wsms-mt-6 wsms-grid wsms-grid-cols-1 wsms-gap-3 md:wsms-grid-cols-3">
         {quickActions.map((action) => {
           const Icon = action.icon
           return (
@@ -96,53 +75,37 @@ export default function ReadyStep({
               type="button"
               onClick={() => handleComplete(action.id)}
               disabled={isCompleting}
-              className={`wsms-w-full wsms-flex wsms-items-center wsms-gap-4 wsms-p-4 wsms-rounded-xl wsms-border wsms-transition-all wsms-shadow-sm hover:wsms-shadow-md disabled:wsms-opacity-50 disabled:wsms-cursor-not-allowed ${
+              className={`wsms-group wsms-flex wsms-flex-col wsms-items-start wsms-gap-3 wsms-rounded-2xl wsms-border wsms-p-4 wsms-text-start wsms-shadow-sm wsms-transition-all hover:wsms--translate-y-0.5 hover:wsms-shadow-md disabled:wsms-opacity-50 disabled:wsms-cursor-not-allowed ${
                 action.primary
                   ? 'wsms-border-primary/30 wsms-bg-primary/5 hover:wsms-bg-primary/10'
                   : 'wsms-border-border wsms-bg-card hover:wsms-bg-accent'
               }`}
             >
-              <div
-                className={`wsms-flex wsms-h-11 wsms-w-11 wsms-shrink-0 wsms-items-center wsms-justify-center wsms-rounded-xl ${
-                  action.primary ? 'wsms-bg-primary/10' : 'wsms-bg-muted'
-                }`}
-              >
-                <Icon
-                  className={`wsms-h-5 wsms-w-5 ${
-                    action.primary ? 'wsms-text-primary' : 'wsms-text-muted-foreground'
-                  }`}
-                />
-              </div>
-              <div className="wsms-flex-1" style={{ textAlign: 'start' }}>
-                <p
-                  className={`wsms-text-[14px] wsms-font-semibold ${
-                    action.primary ? 'wsms-text-primary' : 'wsms-text-foreground'
-                  }`}
-                >
-                  {action.title}
-                </p>
-                <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                  {action.description}
-                </p>
-              </div>
-              <ArrowRight
-                className={`wsms-h-4 wsms-w-4 rtl:wsms-scale-x-[-1] ${
-                  action.primary ? 'wsms-text-primary' : 'wsms-text-muted-foreground'
-                }`}
-              />
+              <span className={`wsms-flex wsms-h-12 wsms-w-12 wsms-items-center wsms-justify-center wsms-rounded-xl ${action.primary ? 'wsms-bg-primary/10' : 'wsms-bg-muted'}`}>
+                <Icon className={`wsms-h-6 wsms-w-6 ${action.primary ? 'wsms-text-primary' : 'wsms-text-muted-foreground'}`} />
+              </span>
+              <span className="wsms-flex-1">
+                <span className={`wsms-block wsms-text-[16px] wsms-font-semibold ${action.primary ? 'wsms-text-primary' : 'wsms-text-foreground'}`}>{action.title}</span>
+                <span className="wsms-mt-1 wsms-block wsms-text-[13px] wsms-leading-relaxed wsms-text-muted-foreground">{action.description}</span>
+              </span>
+              <span className={`wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[13px] wsms-font-semibold ${action.primary ? 'wsms-text-primary' : 'wsms-text-foreground'}`}>
+                {__('Open', 'wp-sms')}
+                <ArrowRight className="wsms-h-4 wsms-w-4 rtl:wsms-scale-x-[-1]" />
+              </span>
             </button>
           )
         })}
       </div>
 
-      {/* Close Button */}
-      <div className="wsms-text-center">
-        <Button
-          variant="outline"
-          onClick={() => handleComplete()}
-          size="lg"
-          disabled={isCompleting}
-        >
+      {/* Help and close */}
+      <div className="wsms-mt-5 wsms-flex wsms-flex-wrap wsms-items-center wsms-justify-between wsms-gap-3 wsms-border-t wsms-border-border wsms-pt-4">
+        <p className="wsms-text-[13px] wsms-text-muted-foreground">
+          {__('Need a hand?', 'wp-sms')}{' '}
+          <a href={helpLinks.docs || 'https://wsms.io/docs/'} target="_blank" rel="noopener noreferrer" className="wsms-font-medium wsms-text-primary hover:wsms-underline">{__('Read the documentation', 'wp-sms')}</a>
+          {' '}{__('or', 'wp-sms')}{' '}
+          <a href={helpLinks.support || 'https://wsms.io/support/'} target="_blank" rel="noopener noreferrer" className="wsms-font-medium wsms-text-primary hover:wsms-underline">{__('contact support', 'wp-sms')}</a>.
+        </p>
+        <Button variant="outline" onClick={() => handleComplete()} disabled={isCompleting}>
           {isCompleting ? (
             <>
               <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />

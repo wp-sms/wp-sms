@@ -14,6 +14,7 @@ export default function GatewaySelector({
   selectedGateway,
   onGatewaySelect,
   maxHeight = '280px',
+  showMoreNotice = true,
 }) {
   const { gateways, regions, source, premiumCount, premiumGateways, isLoading, error } = useGatewayRegistry()
   const [searchQuery, setSearchQuery] = useState('')
@@ -328,7 +329,7 @@ export default function GatewaySelector({
         )}
       </div>
 
-      {filteredGateways.length > 0 && (
+      {showMoreNotice && filteredGateways.length > 0 && (
         <MoreGatewaysNotice premiumCount={premiumCount} searchQuery={searchQuery} />
       )}
     </div>

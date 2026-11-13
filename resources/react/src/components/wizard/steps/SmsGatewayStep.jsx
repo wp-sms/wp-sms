@@ -12,6 +12,7 @@ export default function SmsGatewayStep({
   return (
     <div className="wsms-max-w-6xl wsms-mx-auto">
       <GatewaySelector
+        showMoreNotice={false}
         selectedGateway={selectedGateway}
         onGatewaySelect={onGatewaySelect}
         maxHeight="max(320px, calc(100vh - 520px))"
