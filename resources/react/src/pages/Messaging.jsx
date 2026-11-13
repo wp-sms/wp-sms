@@ -31,7 +31,7 @@ export default function Messaging() {
             <CheckCircle className="wsms-h-5 wsms-w-5 wsms-text-success wsms-shrink-0" />
             <div>
               <p className="wsms-font-medium wsms-text-success">{__('Enabled', 'wp-sms')}</p>
-              <p className="wsms-text-[12px] wsms-text-muted-foreground">
+              <p className="wsms-text-[13px] wsms-text-muted-foreground">
                 URLs are automatically shortened using the wp_sms_shorturl filter. You can customize the shortening service via hooks.
               </p>
             </div>
@@ -54,13 +54,13 @@ export default function Messaging() {
         <CardContent>
           {hasPro ? (
             <div className="wsms-space-y-4">
-              <p className="wsms-text-[12px] wsms-text-muted-foreground">
+              <p className="wsms-text-[13px] wsms-text-muted-foreground">
                 {__('Manage your message templates from the dedicated templates section.', 'wp-sms')}
               </p>
             </div>
           ) : (
             <div className="wsms-rounded-lg wsms-bg-muted wsms-p-4 wsms-text-center">
-              <p className="wsms-text-[12px] wsms-text-muted-foreground">
+              <p className="wsms-text-[13px] wsms-text-muted-foreground">
                 {__('Message templates are available in the Pro version.', 'wp-sms')}
               </p>
             </div>
@@ -83,13 +83,13 @@ export default function Messaging() {
         <CardContent>
           {hasPro ? (
             <div className="wsms-space-y-4">
-              <p className="wsms-text-[12px] wsms-text-muted-foreground">
+              <p className="wsms-text-[13px] wsms-text-muted-foreground">
                 {__('Scheduled messages can be configured when composing SMS in the Send SMS page.', 'wp-sms')}
               </p>
             </div>
           ) : (
             <div className="wsms-rounded-lg wsms-bg-muted wsms-p-4 wsms-text-center">
-              <p className="wsms-text-[12px] wsms-text-muted-foreground">
+              <p className="wsms-text-[13px] wsms-text-muted-foreground">
                 {__('Scheduled messages are available in the Pro version.', 'wp-sms')}
               </p>
             </div>

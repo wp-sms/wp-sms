@@ -52,11 +52,11 @@ export default function PreviewStep({
           ref={headlineRef}
           tabIndex={-1}
           aria-live="polite"
-          className="wsms-text-[18px] wsms-font-semibold wsms-text-foreground wsms-mb-2 wsms-outline-none"
+          className="wsms-text-[19px] wsms-font-semibold wsms-text-foreground wsms-mb-2 wsms-outline-none"
         >
           {__('Review the changes', 'wp-sms')}
         </h2>
-        <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-leading-relaxed">
+        <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-leading-relaxed">
           {bodyCopy}{' '}
           <button
             type="button"
@@ -69,7 +69,7 @@ export default function PreviewStep({
       </div>
 
       <div className="wsms-border wsms-rounded-lg wsms-overflow-hidden wsms-overflow-x-auto">
-        <table className="wsms-w-full wsms-text-[13px]">
+        <table className="wsms-w-full wsms-text-[14px]">
           <thead>
             <tr className="wsms-bg-muted/50">
               <th className="wsms-text-start wsms-px-3 wsms-py-2 wsms-font-medium">{__('Name', 'wp-sms')}</th>
@@ -84,7 +84,7 @@ export default function PreviewStep({
                 <tr className="wsms-bg-muted/30 wsms-border-t">
                   <td
                     colSpan={4}
-                    className="wsms-px-3 wsms-py-1.5 wsms-text-[12px] wsms-font-semibold wsms-text-foreground/80 wsms-sticky wsms-top-0"
+                    className="wsms-px-3 wsms-py-1.5 wsms-text-[13px] wsms-font-semibold wsms-text-foreground/80 wsms-sticky wsms-top-0"
                   >
                     {sprintf(__('%1$s — %2$d changes', 'wp-sms'), group.label, group.rows.length)}
                   </td>
@@ -95,7 +95,7 @@ export default function PreviewStep({
                       {item.name || '—'}
                     </td>
                     <td className="wsms-px-3 wsms-py-2">
-                      <code className="wsms-font-mono wsms-text-orange-600 wsms-text-[12px] wsms-break-all">
+                      <code className="wsms-font-mono wsms-text-orange-600 wsms-text-[13px] wsms-break-all">
                         <bdi>{item.original}</bdi>
                       </code>
                     </td>
@@ -106,7 +106,7 @@ export default function PreviewStep({
                       />
                     </td>
                     <td className="wsms-px-3 wsms-py-2">
-                      <code className="wsms-font-mono wsms-text-green-600 wsms-text-[12px] wsms-break-all">
+                      <code className="wsms-font-mono wsms-text-green-600 wsms-text-[13px] wsms-break-all">
                         <bdi>{item.migrated}</bdi>
                       </code>
                     </td>
@@ -126,7 +126,7 @@ export default function PreviewStep({
       </div>
 
       {previewData && (previewData.total || 0) > (previewData.per_page || 20) && (
-        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-text-[13px]">
+        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-text-[14px]">
           <span className="wsms-text-muted-foreground">
             {sprintf(__('Page %d', 'wp-sms'), previewPage)}
           </span>
@@ -160,12 +160,12 @@ export default function PreviewStep({
             aria-describedby="wpsms-migration-confirm-sub"
           />
           <span className="wsms-flex wsms-flex-col wsms-gap-1">
-            <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+            <span className="wsms-text-[14px] wsms-font-medium wsms-text-foreground">
               {__("I've reviewed the changes above and I'm ready to apply them.", 'wp-sms')}
             </span>
             <span
               id="wpsms-migration-confirm-sub"
-              className="wsms-text-[12px] wsms-text-muted-foreground"
+              className="wsms-text-[13px] wsms-text-muted-foreground"
             >
               {__('A backup will be saved before any change is made.', 'wp-sms')}
             </span>

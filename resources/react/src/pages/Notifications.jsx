@@ -274,7 +274,7 @@ export default function Notifications() {
             rows={3}
             variables={['%user_id%', '%user_login%', '%user_email%', '%date_register%', '%user_url%', '%display_name%', '%first_name%', '%last_name%', '%user_role%']}
           />
-          <p className="wsms-text-[12px] wsms-text-muted-foreground">
+          <p className="wsms-text-[13px] wsms-text-muted-foreground">
             {__('Sent to admin.', 'wp-sms')}
           </p>
         </div>
@@ -289,7 +289,7 @@ export default function Notifications() {
             rows={3}
             variables={['%user_id%', '%user_login%', '%user_email%', '%date_register%', '%user_url%', '%display_name%', '%first_name%', '%last_name%', '%user_role%']}
           />
-          <p className="wsms-text-[12px] wsms-text-muted-foreground">
+          <p className="wsms-text-[13px] wsms-text-muted-foreground">
             {__('Sent to new user.', 'wp-sms')}
           </p>
         </div>

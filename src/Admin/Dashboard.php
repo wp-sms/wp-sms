@@ -95,53 +95,15 @@ class Dashboard extends Singleton
             /* Hide chatbox by default - React Preview button will toggle it */
             .wpsms-chatbox { display: none !important; }
             .wpsms-chatbox.wpsms-chatbox--visible { display: block !important; }
-            /* Fixed positioning - dashboard stays in viewport regardless of page scroll */
+            /* Normal page flow: the header scrolls away with the page, the sidebar sticks below the admin bar. */
             #wpsms-settings-root {
-                position: fixed !important;
-                top: 32px !important;
-                left: 160px !important;
-                right: 0 !important;
-                bottom: 0 !important;
-                overflow: hidden !important;
+                position: relative !important;
+                min-height: calc(100vh - 32px);
                 display: flex !important;
                 flex-direction: column !important;
             }
-            /* Collapsed sidebar */
-            body.folded #wpsms-settings-root {
-                left: 36px !important;
-            }
-            /* Auto-fold at 960px (must come before the 782px rule so mobile wins) */
-            @media screen and (max-width: 960px) {
-                body:not(.folded) #wpsms-settings-root {
-                    left: 36px !important;
-                }
-            }
-            /* Mobile - sidebar is hidden/overlay (repeat high-specificity selector to override 960px rule) */
             @media screen and (max-width: 782px) {
-                #wpsms-settings-root,
-                body:not(.folded) #wpsms-settings-root {
-                    top: 46px !important;
-                    left: 0 !important;
-                }
-            }
-            /* RTL support - sidebar is on the right */
-            body.rtl #wpsms-settings-root {
-                left: 0 !important;
-                right: 160px !important;
-            }
-            body.rtl.folded #wpsms-settings-root {
-                right: 36px !important;
-            }
-            @media screen and (max-width: 960px) {
-                body.rtl:not(.folded) #wpsms-settings-root {
-                    right: 36px !important;
-                }
-            }
-            @media screen and (max-width: 782px) {
-                body.rtl #wpsms-settings-root,
-                body.rtl:not(.folded) #wpsms-settings-root {
-                    right: 0 !important;
-                }
+                #wpsms-settings-root { min-height: calc(100vh - 46px); }
             }
         </style>';
         echo sprintf(
@@ -838,6 +800,25 @@ class Dashboard extends Singleton
     }
 
     /**
+     * Renew link and discount percent for the header button, or null.
+     *
+     * @return array|null
+     */
+    private function getLicenseRenewSummary()
+    {
+        $renew = \WP_SMS\Admin\LicenseManagement\LicenseHelper::getLicenseAlerts()['renew'];
+
+        if (empty($renew['renew_url'])) {
+            return null;
+        }
+
+        $offer   = $renew['offer'] ?? null;
+        $percent = ($offer && ($offer['discount_type'] ?? '') === 'percentage') ? (float) ($offer['discount_value'] ?? 0) : 0;
+
+        return ['url' => $renew['renew_url'], 'percent' => $percent];
+    }
+
+    /**
      * Get feature flags
      *
      * @return array
@@ -849,11 +830,18 @@ class Dashboard extends Singleton
         // Check if wizard was completed (uses same option as legacy wizard)
         $activationNoticeShown = get_option('wp_sms_wp-sms-onboarding_activation_notice_shown', false);
 
+        $licenseAlerts = \WP_SMS\Admin\LicenseManagement\LicenseHelper::getLicenseAlerts();
+
         return [
             'gdprEnabled'           => Option::getOption('gdpr_compliance') === '1',
             'twoWayEnabled'         => is_plugin_active('wp-sms-two-way/wp-sms-two-way.php'),
             'scheduledSms'          => class_exists('WP_SMS\Pro\Scheduled'),
             'isProActive'           => $isProActive,
+            'licenseSummary'        => \WP_SMS\Admin\LicenseManagement\LicenseHelper::getLicenseSummary(),
+            'licenseAlerts'         => $licenseAlerts['count'],
+            'licenseMissing'        => $licenseAlerts['missing'],
+            'licenseExpired'        => $licenseAlerts['expired'],
+            'licenseRenew'          => $this->getLicenseRenewSummary(),
             'hasProAddon'           => $isProActive, // Alias for sidebar navigation
             'isWooActive'           => class_exists('WooCommerce'),
             'isBuddyPressActive'    => class_exists('BuddyPress'),

@@ -14,6 +14,13 @@ export function useToast() {
 }
 
 // Simple Toast Component (avoiding Radix UI portal issues)
+// A server error can arrive as HTML (a critical-error page, links). Show it as plain text.
+function plainText(value) {
+  if (typeof value !== 'string' || !/<[a-z!/]/i.test(value)) return value
+  const doc = new DOMParser().parseFromString(value, 'text/html')
+  return (doc.body.textContent || '').replace(/\s+/g, ' ').trim()
+}
+
 function Toast({ id, title, description, variant, onDismiss }) {
   const [isExiting, setIsExiting] = useState(false)
 
@@ -36,12 +43,12 @@ function Toast({ id, title, description, variant, onDismiss }) {
       )}
       style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
     >
-      <div className="wsms-grid wsms-gap-1">
+      <div className="wsms-grid wsms-min-w-0 wsms-gap-1 wsms-break-words">
         {title && (
-          <div className="wsms-text-sm wsms-font-semibold">{title}</div>
+          <div className="wsms-text-sm wsms-font-semibold">{plainText(title)}</div>
         )}
         {description && (
-          <div className="wsms-text-sm wsms-opacity-90">{description}</div>
+          <div className="wsms-text-sm wsms-opacity-90">{plainText(description)}</div>
         )}
       </div>
       <button

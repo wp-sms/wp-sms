@@ -561,12 +561,17 @@ class ApiCommunicator
                 ? intval($licenseData->code)
                 : 0;
 
-            // phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Message is escaped, $status/$code are internal params
-            throw new LicenseException(
-                esc_html($message),
+            // phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Message is filtered with wp_kses (links only), $status/$code are internal params
+            $exception = new LicenseException(
+                wp_kses($message, ['a' => ['href' => [], 'target' => [], 'rel' => []]], ['https', 'mailto']),
                 $status,
-                $code
+                $code,
+                null,
+                LicenseHelper::normalizeRenewal($licenseData->renewal ?? null)
             );
+            $exception->setSupportUrl($licenseData->support_url ?? '');
+
+            throw $exception;
             // phpcs:enable WordPress.Security.EscapeOutput.ExceptionNotEscaped
 
         }

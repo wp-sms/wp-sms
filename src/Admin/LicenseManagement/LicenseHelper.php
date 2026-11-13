@@ -121,9 +121,132 @@ class LicenseHelper
             'max_domains' => $licenseData->license_details->max_domains ?? null,
             'user'        => $licenseData->license_details->user ?? null,
             'products'    => isset($licenseData->products) ? wp_list_pluck($licenseData->products, 'slug') : null,
+            // How to renew and what it costs, as the licence server quotes it (null when it sends none).
+            'renewal'     => self::normalizeRenewal($licenseData->renewal ?? $licenseData->license_details->renewal ?? null),
         ];
 
         OptionUtil::saveOptionGroup($licenseKey, $data, self::LICENSE_OPTION_KEY);
+    }
+
+    /**
+     * Keep only the renewal fields the plugin shows: link, offer and price.
+     *
+     * @param object|array|null $renewal The `renewal` block from the licence server.
+     * @return array|null
+     */
+    public static function normalizeRenewal($renewal)
+    {
+        $renewal = json_decode(wp_json_encode($renewal), true);
+
+        if (empty($renewal['renew_url'])) {
+            return null;
+        }
+
+        $offer = $renewal['offer'] ?? null;
+        $price = $renewal['price'] ?? null;
+
+        return [
+            'renew_url' => esc_url_raw($renewal['renew_url']),
+            'offer'     => is_array($offer) ? [
+                'code'           => sanitize_text_field($offer['code'] ?? ''),
+                'discount_type'  => sanitize_text_field($offer['discount_type'] ?? ''),
+                'discount_value' => $offer['discount_value'] ?? null,
+                'expires_at'     => sanitize_text_field($offer['expires_at'] ?? ''),
+            ] : null,
+            'price'     => is_array($price) ? [
+                'currency'     => sanitize_text_field($price['currency'] ?? ''),
+                'full'         => sanitize_text_field($price['full'] ?? ''),
+                'with_offer'   => isset($price['with_offer']) ? sanitize_text_field($price['with_offer']) : null,
+                'tax_included' => !empty($price['tax_included']),
+            ] : null,
+        ];
+    }
+
+    /**
+     * The one place every number about licenses comes from: header, menu badge, notification, Add-Ons page.
+     *
+     * - total:         every add-on the store sells
+     * - licensed:      add-ons with a valid license (installed or not)
+     * - missing:       installed, no valid license
+     * - expired:       installed, license expired
+     * - inactive:      installed and licensed, but turned off
+     * - not_installed: not installed
+     * - attention:     missing + expired + inactive (what the menu badge counts)
+     *
+     * @return array{total:int, licensed:int, installed:int, missing:int, expired:int, inactive:int, not_installed:int, attention:int, renew:?array}
+     */
+    public static function getLicenseSummary()
+    {
+        static $summary = null;
+
+        if ($summary !== null) {
+            return $summary;
+        }
+
+        $result = ['total' => 0, 'licensed' => 0, 'installed' => 0, 'missing' => 0, 'expired' => 0, 'inactive' => 0, 'not_installed' => 0, 'attention' => 0, 'renew' => null];
+
+        try {
+            foreach (\WP_SMS\Admin\LicenseManagement\Plugin\PluginHelper::getRemotePlugins() as $plugin) {
+                $result['total']++;
+
+                $installed = $plugin->isInstalled();
+                $valid     = $plugin->isLicenseValid();
+                $expired   = $plugin->isLicenseExpired();
+
+                if ($valid) {
+                    $result['licensed']++;
+                }
+
+                if (!$installed) {
+                    $result['not_installed']++;
+                    continue;
+                }
+
+                $result['installed']++;
+
+                if ($expired) {
+                    $result['expired']++;
+                } elseif (!$valid) {
+                    $result['missing']++;
+                } elseif (!$plugin->isActivated()) {
+                    $result['inactive']++;
+                }
+            }
+        } catch (\Throwable $e) {
+            // Do not keep half-counted numbers for the rest of the request.
+            return $result;
+        }
+
+        $result['attention'] = $result['missing'] + $result['expired'] + $result['inactive'];
+
+        foreach (self::getLicenses('license_expired') as $license) {
+            if (!empty($license['renewal']['renew_url'])) {
+                $result['renew'] = $license['renewal'];
+                break;
+            }
+        }
+
+        $summary = $result;
+
+        return $summary;
+    }
+
+    /**
+     * Same numbers as the summary, under the names the notification and header already use.
+     *
+     * @return array{count:int, missing:int, expired:int, inactive:int, renew:?array}
+     */
+    public static function getLicenseAlerts()
+    {
+        $summary = self::getLicenseSummary();
+
+        return [
+            'count'    => $summary['attention'],
+            'missing'  => $summary['missing'],
+            'expired'  => $summary['expired'],
+            'inactive' => $summary['inactive'],
+            'renew'    => $summary['renew'],
+        ];
     }
 
     /**
@@ -191,13 +314,14 @@ class LicenseHelper
                 LicenseHelper::storeLicense($key, $licenseData);
             } catch (LicenseException $e) {
                 // If status is empty, do nothing (probably server error, or connection issue)
-                if (!$e->getStatus()) return;
+                if (!$e->getStatus()) continue;
 
                 // If license is expired, update the status
                 if ($e->getStatus() === 'license_expired') {
-                    $data['status'] = $e->getStatus();
+                    $data['status']  = $e->getStatus();
+                    $data['renewal'] = $e->getRenewal() ?: ($data['renewal'] ?? null);
                     LicenseHelper::updateLicense($key, $data);
-                    return;
+                    continue;
                 }
 
                 // If license is invalid, remove the license

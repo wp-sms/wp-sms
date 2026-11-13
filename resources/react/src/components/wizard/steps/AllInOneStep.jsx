@@ -49,7 +49,7 @@ export default function AllInOneStep({ onSkip }) {
         <h2 className="wsms-text-xl wsms-font-bold wsms-text-foreground wsms-mb-2">
           {__('Unlock More with All-in-One', 'wp-sms')}
         </h2>
-        <p className="wsms-text-[13px] wsms-text-muted-foreground">
+        <p className="wsms-text-[14px] wsms-text-muted-foreground">
           {__('Take your SMS communications to the next level with powerful features.', 'wp-sms')}
         </p>
       </div>
@@ -68,10 +68,10 @@ export default function AllInOneStep({ onSkip }) {
                   <Icon className="wsms-h-4 wsms-w-4 wsms-text-primary" />
                 </div>
                 <div className="wsms-min-w-0">
-                  <h3 className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground wsms-mb-0.5">
+                  <h3 className="wsms-text-[14px] wsms-font-semibold wsms-text-foreground wsms-mb-0.5">
                     {feature.title}
                   </h3>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-leading-relaxed">
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
@@ -83,7 +83,7 @@ export default function AllInOneStep({ onSkip }) {
 
       {/* Benefits List */}
       <div className="wsms-rounded-xl wsms-border wsms-border-amber-200 wsms-bg-amber-50/50 dark:wsms-border-amber-900/30 dark:wsms-bg-amber-950/20 wsms-p-5 wsms-mb-6">
-        <h3 className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground wsms-mb-3">
+        <h3 className="wsms-text-[14px] wsms-font-semibold wsms-text-foreground wsms-mb-3">
           {__('All All-in-One plans include:', 'wp-sms')}
         </h3>
         <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2">
@@ -92,7 +92,7 @@ export default function AllInOneStep({ onSkip }) {
               <div className="wsms-h-5 wsms-w-5 wsms-rounded-full wsms-bg-amber-500/20 wsms-flex wsms-items-center wsms-justify-center wsms-shrink-0">
                 <Check className="wsms-h-3 wsms-w-3 wsms-text-amber-600 dark:wsms-text-amber-400" />
               </div>
-              <span className="wsms-text-[12px] wsms-text-foreground">{item}</span>
+              <span className="wsms-text-[13px] wsms-text-foreground">{item}</span>
             </div>
           ))}
         </div>

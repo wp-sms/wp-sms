@@ -354,10 +354,10 @@ export default function SetupWizard() {
             <div className="wsms-flex wsms-items-center wsms-gap-3">
               <Logo className="wsms-h-8 wsms-w-auto" />
               <div>
-                <h1 className="wsms-text-[15px] wsms-font-semibold wsms-text-foreground">
+                <h1 className="wsms-text-[16px] wsms-font-semibold wsms-text-foreground">
                   {__('WSMS Setup Wizard', 'wp-sms')}
                 </h1>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">
                   {__('Step', 'wp-sms')} {currentStep + 1} {__('of', 'wp-sms')} {steps.length}
                 </p>
               </div>

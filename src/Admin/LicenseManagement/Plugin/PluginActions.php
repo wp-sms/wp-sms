@@ -75,7 +75,7 @@ class PluginActions
             ]);
         } catch (Exception $e) {
             wp_send_json_error([
-                'message' => $e->getMessage(),
+                'message' => wp_strip_all_tags($e->getMessage()),
             ]);
         }
 
@@ -109,7 +109,7 @@ class PluginActions
             ]);
         } catch (Exception $e) {
             wp_send_json_error([
-                'message' => $e->getMessage(),
+                'message' => wp_strip_all_tags($e->getMessage()),
             ]);
         }
 

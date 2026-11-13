@@ -180,7 +180,7 @@ export default function Newsletter() {
                 placeholder={__('I agree to receive SMS notifications and understand that my data will be handled according to the privacy policy.', 'wp-sms')}
                 rows={3}
               />
-              <p className="wsms-text-[12px] wsms-text-muted-foreground">
+              <p className="wsms-text-[13px] wsms-text-muted-foreground">
                 {__('Privacy consent text shown to subscribers. Required for GDPR compliance.', 'wp-sms')}
               </p>
             </div>
@@ -203,7 +203,7 @@ export default function Newsletter() {
       {!gdprEnabled && (
         <Card className="wsms-border-amber-200 wsms-bg-amber-50 dark:wsms-border-amber-900 dark:wsms-bg-amber-950/30">
           <CardContent className="wsms-p-4">
-            <p className="wsms-text-[12px] wsms-text-muted-foreground">
+            <p className="wsms-text-[13px] wsms-text-muted-foreground">
               {__('To enable GDPR settings for newsletters, first enable "GDPR Compliance Enhancements" in the Phone Configuration page.', 'wp-sms')}
             </p>
           </CardContent>

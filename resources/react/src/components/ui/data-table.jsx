@@ -82,7 +82,7 @@ function EmptyState({ icon: Icon = Inbox, message }) {
       <div className="wsms-empty-state-icon">
         <Icon strokeWidth={1.5} />
       </div>
-      <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-text-center wsms-max-w-[280px]">{message || __('No items found', 'wp-sms')}</p>
+      <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-text-center wsms-max-w-[280px]">{message || __('No items found', 'wp-sms')}</p>
     </div>
   )
 }
@@ -102,7 +102,7 @@ function BulkActionsDropdown({ actions, selectedCount, onAction, loadingAction }
           ) : (
             <span>{__('Actions', 'wp-sms')}</span>
           )}
-          <span className="wsms-flex wsms-h-5 wsms-min-w-5 wsms-items-center wsms-justify-center wsms-rounded wsms-bg-primary/10 wsms-px-1.5 wsms-text-[11px] wsms-font-semibold wsms-text-primary">
+          <span className="wsms-flex wsms-h-5 wsms-min-w-5 wsms-items-center wsms-justify-center wsms-rounded wsms-bg-primary/10 wsms-px-1.5 wsms-text-[12px] wsms-font-semibold wsms-text-primary">
             {selectedCount}
           </span>
         </Button>
@@ -222,20 +222,20 @@ function Pagination({
   return (
     <nav aria-label={__('Pagination', 'wp-sms')} className="wsms-flex wsms-flex-col sm:wsms-flex-row wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-4 wsms-py-3 wsms-border-t wsms-border-border wsms-bg-muted/20">
       <div className="wsms-flex wsms-items-center wsms-gap-4">
-        <p className="wsms-text-[12px] wsms-text-muted-foreground">
+        <p className="wsms-text-[13px] wsms-text-muted-foreground">
           {__('Showing', 'wp-sms')} <span className="wsms-font-medium wsms-text-foreground">{startItem}</span> {__('to', 'wp-sms')}{' '}
           <span className="wsms-font-medium wsms-text-foreground">{endItem}</span> {__('of', 'wp-sms')}{' '}
           <span className="wsms-font-medium wsms-text-foreground">{totalItems}</span> {__('results', 'wp-sms')}
         </p>
         {onPerPageChange && (
           <div className="wsms-flex wsms-items-center wsms-gap-1.5">
-            <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-whitespace-nowrap">
+            <span className="wsms-text-[13px] wsms-text-muted-foreground wsms-whitespace-nowrap">
               {__('Per page', 'wp-sms')}
             </span>
             <select
               value={perPage}
               onChange={(e) => onPerPageChange(Number(e.target.value))}
-              className="wsms-h-7 wsms-appearance-none wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-px-2 wsms-pr-6 wsms-text-[12px] wsms-text-foreground wsms-cursor-pointer focus:wsms-outline-none focus:wsms-ring-1 focus:wsms-ring-ring"
+              className="wsms-h-7 wsms-appearance-none wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-px-2 wsms-pr-6 wsms-text-[13px] wsms-text-foreground wsms-cursor-pointer focus:wsms-outline-none focus:wsms-ring-1 focus:wsms-ring-ring"
               style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%236b7280\' stroke-width=\'2\'%3E%3Cpath d=\'M6 9l6 6 6-6\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 6px center' }}
             >
               {PER_PAGE_OPTIONS.filter((option) => option <= (maxPerPage || 100)).map((option) => (
@@ -266,7 +266,7 @@ function Pagination({
               <Button
                 variant={currentPage === 1 ? 'default' : 'ghost'}
                 size="icon"
-                className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
+                className="wsms-h-8 wsms-w-8 wsms-text-[13px]"
                 onClick={() => onPageChange(1)}
                 aria-label={__('Go to page %s', 'wp-sms').replace('%s', '1')}
                 aria-current={currentPage === 1 ? 'page' : undefined}
@@ -284,7 +284,7 @@ function Pagination({
               key={page}
               variant={currentPage === page ? 'default' : 'ghost'}
               size="icon"
-              className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
+              className="wsms-h-8 wsms-w-8 wsms-text-[13px]"
               onClick={() => onPageChange(page)}
               aria-label={__('Go to page %s', 'wp-sms').replace('%s', String(page))}
               aria-current={currentPage === page ? 'page' : undefined}
@@ -301,7 +301,7 @@ function Pagination({
               <Button
                 variant={currentPage === totalPages ? 'default' : 'ghost'}
                 size="icon"
-                className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
+                className="wsms-h-8 wsms-w-8 wsms-text-[13px]"
                 onClick={() => onPageChange(totalPages)}
                 aria-label={__('Go to page %s', 'wp-sms').replace('%s', String(totalPages))}
                 aria-current={currentPage === totalPages ? 'page' : undefined}
@@ -485,7 +485,7 @@ export function DataTable({
                   <th
                     key={columnKey}
                     className={cn(
-                      'wsms-p-3 wsms-text-start wsms-text-[12px] wsms-font-semibold wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide',
+                      'wsms-p-3 wsms-text-start wsms-text-[13px] wsms-font-semibold wsms-text-muted-foreground wsms-uppercase',
                       column.className
                     )}
                     style={{ width: column.width }}
@@ -495,7 +495,7 @@ export function DataTable({
                       <button
                         type="button"
                         onClick={() => handleSort(columnKey)}
-                        className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-cursor-pointer wsms-select-none hover:wsms-text-foreground wsms-transition-colors wsms-bg-transparent wsms-border-0 wsms-p-0 wsms-font-semibold wsms-text-[12px] wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground"
+                        className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-cursor-pointer wsms-select-none hover:wsms-text-foreground wsms-transition-colors wsms-bg-transparent wsms-border-0 wsms-p-0 wsms-font-semibold wsms-text-[13px] wsms-uppercase wsms-text-muted-foreground"
                       >
                         <span>{column.header}</span>
                         <SortIndicator direction={currentDirection} />
@@ -557,7 +557,7 @@ export function DataTable({
                       return (
                         <td
                           key={column.id || column.accessorKey}
-                          className={cn('wsms-p-3 wsms-text-[13px] wsms-text-foreground', column.cellClassName)}
+                          className={cn('wsms-p-3 wsms-text-[14px] wsms-text-foreground', column.cellClassName)}
                         >
                           {column.cell ? column.cell({ row, value: cellValue }) : cellValue}
                         </td>

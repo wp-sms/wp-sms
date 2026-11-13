@@ -12,7 +12,7 @@ const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) 
     ref={ref}
     dir={document.getElementById('wpsms-settings-root')?.getAttribute('dir') || undefined}
     className={cn(
-      'wsms-select-trigger wsms-flex wsms-h-9 wsms-w-full wsms-items-center wsms-justify-between wsms-gap-2 wsms-rounded-md wsms-border wsms-border-input wsms-bg-card wsms-px-3 wsms-text-[13px] wsms-text-foreground wsms-shadow-sm hover:wsms-bg-accent/50 focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20 focus:wsms-border-primary disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50 [&>span]:wsms-line-clamp-1 [&>span]:wsms-flex-1 [&>span]:wsms-text-start',
+      'wsms-select-trigger wsms-flex wsms-h-9 wsms-w-full wsms-items-center wsms-justify-between wsms-gap-2 wsms-rounded-md wsms-border wsms-border-input wsms-bg-card wsms-px-3 wsms-text-[14px] wsms-text-foreground wsms-shadow-sm hover:wsms-bg-accent/50 focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20 focus:wsms-border-primary disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50 [&>span]:wsms-line-clamp-1 [&>span]:wsms-flex-1 [&>span]:wsms-text-start',
       className
     )}
     {...props}
@@ -70,7 +70,7 @@ const SelectLabel = React.forwardRef(({ className, ...props }, ref) => (
   <SelectPrimitive.Label
     ref={ref}
     className={cn(
-      'wsms-py-1.5 wsms-ps-7 wsms-pe-2 wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground wsms-text-start rtl:wsms-text-right',
+      'wsms-py-1.5 wsms-ps-7 wsms-pe-2 wsms-text-[13px] wsms-font-medium wsms-text-muted-foreground wsms-text-start rtl:wsms-text-right',
       className
     )}
     {...props}
@@ -98,7 +98,7 @@ const SelectItem = React.forwardRef(({ className, children, style, ...props }, r
     <SelectPrimitive.Item
       ref={ref}
       className={cn(
-        'wsms-relative wsms-flex wsms-w-full wsms-cursor-pointer wsms-select-none wsms-items-center wsms-rounded wsms-py-1.5 wsms-ps-7 wsms-pe-2 wsms-text-[13px] wsms-outline-none data-[disabled]:wsms-pointer-events-none data-[disabled]:wsms-opacity-50 wsms-text-start rtl:wsms-text-right',
+        'wsms-relative wsms-flex wsms-w-full wsms-cursor-pointer wsms-select-none wsms-items-center wsms-rounded wsms-py-1.5 wsms-ps-7 wsms-pe-2 wsms-text-[14px] wsms-outline-none data-[disabled]:wsms-pointer-events-none data-[disabled]:wsms-opacity-50 wsms-text-start rtl:wsms-text-right',
         className
       )}
       style={{

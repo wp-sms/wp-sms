@@ -205,7 +205,7 @@ const SearchableSelect = React.forwardRef(
                       onClick={() => handleSelect(option.value)}
                       disabled={disabled}
                       className={cn(
-                        'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded wsms-px-2 wsms-py-1.5 wsms-text-start wsms-text-[13px] wsms-outline-none',
+                        'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded wsms-px-2 wsms-py-1.5 wsms-text-start wsms-text-[14px] wsms-outline-none',
                         'hover:wsms-bg-accent focus:wsms-bg-accent',
                         isSelected && 'wsms-bg-accent/50',
                         optionClassName

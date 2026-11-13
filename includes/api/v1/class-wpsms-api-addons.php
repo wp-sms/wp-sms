@@ -120,6 +120,9 @@ class AddonsApi extends RestApi
                         $licenses[] = [
                             'masked_key' => str_repeat('•', max(0, strlen($key) - 4)) . substr($key, -4),
                             'status'     => $license['status'] ?? 'unknown',
+                            'sku'        => $license['sku'] ?? null,
+                            'covers'     => is_array($license['products'] ?? null) ? count($license['products']) : 1,
+                            'renewal'    => ($license['status'] ?? '') === 'license_expired' ? ($license['renewal'] ?? null) : null,
                         ];
                     }
                 }
@@ -147,7 +150,8 @@ class AddonsApi extends RestApi
             }
 
             return self::response(__('Add-ons retrieved successfully', 'wp-sms'), 200, [
-                'addons' => $addons,
+                'addons'  => $addons,
+                'summary' => LicenseHelper::getLicenseSummary(),
             ]);
         } catch (\Exception $e) {
             return self::response($e->getMessage(), 500);
@@ -162,14 +166,28 @@ class AddonsApi extends RestApi
      */
     public function activateLicense(WP_REST_Request $request)
     {
-        $licenseKey = $request->get_param('license_key');
-        $addonSlug = $request->get_param('addon_slug');
+        $licenseKey = sanitize_text_field((string) $request->get_param('license_key'));
+        $addonSlug  = sanitize_text_field((string) $request->get_param('addon_slug'));
+
+        // The same key entered twice is not an error, and it is not a new activation either.
+        $stored = LicenseHelper::getLicenses('all');
+        if ($licenseKey !== '' && $addonSlug === '' && isset($stored[$licenseKey]) && ($stored[$licenseKey]['status'] ?? '') === 'valid') {
+            return self::response(__('This license is already active on this site.', 'wp-sms'), 200, ['already' => true]);
+        }
 
         try {
             $apiCommunicator = new ApiCommunicator();
-            $apiCommunicator->validateLicense($licenseKey, $addonSlug);
+            // No add-on slug: any valid key is accepted and unlocks whatever products it includes.
+            $apiCommunicator->validateLicense($licenseKey, $addonSlug ?: false);
 
             return self::response(__('License activated successfully.', 'wp-sms'), 200);
+        } catch (\WP_SMS\Exceptions\LicenseException $e) {
+            // Give the page enough to explain what went wrong and where to go next.
+            return self::response($e->getMessage(), 400, [
+                'status'  => $e->getStatus(),
+                'renewal' => $e->getRenewal(),
+                'support_url' => $e->getSupportUrl(),
+            ]);
         } catch (\Exception $e) {
             return self::response($e->getMessage(), 400);
         }

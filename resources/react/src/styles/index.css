@@ -40,8 +40,8 @@
   --warning-foreground: 0 0% 0%;
 
   /* Improved border contrast - darker for visibility */
-  --border: 20 8% 75%;
-  --input: 20 8% 75%;
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
   --ring: 24 95% 38%;
 
   --radius: 6px;
@@ -175,10 +175,8 @@ body[data-scroll-locked][data-scroll-locked] {
 
 .wsms-settings-app {
   flex: 1;
-  min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
 /* RTL button layout:
@@ -221,8 +219,8 @@ body[data-scroll-locked][data-scroll-locked] {
 .wsms-settings-wrapper {
   display: flex;
   flex: 1;
-  min-height: 0; /* Important for flex children to scroll properly */
-  overflow: hidden;
+  min-height: 0;
+  align-items: stretch;
 }
 
 .wsms-sidebar {
@@ -234,6 +232,7 @@ body[data-scroll-locked][data-scroll-locked] {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  align-self: stretch;
 }
 
 .wsms-main {
@@ -243,15 +242,14 @@ body[data-scroll-locked][data-scroll-locked] {
   display: flex;
   flex-direction: column;
   background: hsl(var(--muted));
-  overflow: hidden;
+  align-self: stretch;
+  min-height: calc(100vh - 32px - 64px);
 }
 
 .wsms-content {
   flex: 1;
-  min-height: 0; /* Required for nested flex + overflow scrolling to work reliably */
   padding: 24px;
   padding-inline-start: 32px;
-  overflow-y: auto;
 }
 
 @media (max-width: 782px) {
@@ -728,4 +726,25 @@ body.wsms-notification-sidebar-open {
 #wpsms-settings-root input[type="time"]::-webkit-datetime-edit-fields-wrapper,
 #wpsms-settings-root input[type="datetime-local"]::-webkit-datetime-edit-fields-wrapper {
   padding: 0;
+}
+
+
+/* wsms-no-blue-focus: WordPress paints a blue ring on every focused link, button and field.
+   Mouse focus gets nothing; keyboard focus gets a quiet neutral outline. */
+.wsms-settings-app a:focus,
+.wsms-settings-app button:focus,
+.wsms-settings-app input:focus,
+.wsms-settings-app select:focus,
+.wsms-settings-app textarea:focus,
+[class*="wsms-"]:focus {
+  outline: none;
+  box-shadow: none;
+}
+.wsms-settings-app input:focus,
+.wsms-settings-app textarea:focus {
+  border-color: hsl(var(--foreground) / 0.45);
+}
+.wsms-settings-app a:focus-visible,
+.wsms-settings-app button:focus-visible {
+  outline: none;
 }

@@ -323,7 +323,7 @@ export default function TwoWayInbox() {
       accessorKey: 'sender_number',
       header: __('Sender', 'wp-sms'),
       cell: ({ row }) => (
-        <span className="wsms-text-[13px] wsms-font-mono wsms-text-foreground">
+        <span className="wsms-text-[14px] wsms-font-mono wsms-text-foreground">
           {row.sender_number}
         </span>
       ),
@@ -333,12 +333,12 @@ export default function TwoWayInbox() {
       accessorKey: 'contact_name',
       header: __('Contact', 'wp-sms'),
       cell: ({ row }) => {
-        if (!row.contact_name) return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
+        if (!row.contact_name) return <span className="wsms-text-[13px] wsms-text-muted-foreground">—</span>
         if (row.contact_user_id) {
           const { adminUrl } = getWpSettings()
-          return <a href={`${adminUrl}user-edit.php?user_id=${row.contact_user_id}`} className="wsms-text-[13px] wsms-text-primary hover:wsms-underline">{row.contact_name}</a>
+          return <a href={`${adminUrl}user-edit.php?user_id=${row.contact_user_id}`} className="wsms-text-[14px] wsms-text-primary hover:wsms-underline">{row.contact_name}</a>
         }
-        return <span className="wsms-text-[13px] wsms-text-foreground">{row.contact_name}</span>
+        return <span className="wsms-text-[14px] wsms-text-foreground">{row.contact_name}</span>
       },
     },
     {
@@ -346,7 +346,7 @@ export default function TwoWayInbox() {
       accessorKey: 'text',
       header: __('Message', 'wp-sms'),
       cell: ({ value }) => (
-        <span className="wsms-text-[13px] wsms-max-w-xs wsms-truncate wsms-block">
+        <span className="wsms-text-[14px] wsms-max-w-xs wsms-truncate wsms-block">
           {value?.substring(0, 50)}{value?.length > 50 ? '...' : ''}
         </span>
       ),
@@ -357,7 +357,7 @@ export default function TwoWayInbox() {
       header: __('Command', 'wp-sms'),
       cell: ({ value }) => value
         ? <Badge variant="outline">{value}</Badge>
-        : <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>,
+        : <span className="wsms-text-[13px] wsms-text-muted-foreground">—</span>,
     },
     {
       id: 'action_status',
@@ -367,14 +367,14 @@ export default function TwoWayInbox() {
         if (value === 'successful') return <StatusBadge variant="success">{__('Successful', 'wp-sms')}</StatusBadge>
         if (value === 'failed') return <StatusBadge variant="failed">{__('Failed', 'wp-sms')}</StatusBadge>
         if (value === 'plain') return <StatusBadge variant="default">{__('Plain', 'wp-sms')}</StatusBadge>
-        return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
+        return <span className="wsms-text-[13px] wsms-text-muted-foreground">—</span>
       },
     },
     {
       id: 'received_at',
       header: __('Date', 'wp-sms'),
       cell: ({ row }) => (
-        <span className="wsms-text-[12px] wsms-text-muted-foreground">
+        <span className="wsms-text-[13px] wsms-text-muted-foreground">
           {row.received_at_formatted || row.received_at}
         </span>
       ),
@@ -446,7 +446,7 @@ export default function TwoWayInbox() {
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
                 {__('Two-Way SMS Add-on Required', 'wp-sms')}
               </h3>
-              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
+              <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-mb-6">
                 {__('Install and activate the WSMS Two-Way add-on to receive incoming messages.', 'wp-sms')}
               </p>
               <Button variant="outline" asChild>
@@ -484,7 +484,7 @@ export default function TwoWayInbox() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Total', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -497,7 +497,7 @@ export default function TwoWayInbox() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.today}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Today', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Today', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -510,7 +510,7 @@ export default function TwoWayInbox() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.week}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('This Week', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('This Week', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -532,7 +532,7 @@ export default function TwoWayInbox() {
                   'wsms-text-xl wsms-font-bold',
                   stats.unread > 0 ? 'wsms-text-destructive' : 'wsms-text-muted-foreground'
                 )}>{stats.unread}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Unread', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Unread', 'wp-sms')}</p>
               </div>
             </div>
           </div>
@@ -567,7 +567,7 @@ export default function TwoWayInbox() {
             {/* Filters */}
             <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-2">
               <Select value={filters.filters.action_status} onValueChange={(v) => filters.setFilter('action_status', v)}>
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label={__('Filter by action status', 'wp-sms')}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[13px]" aria-label={__('Filter by action status', 'wp-sms')}>
                   <SelectValue placeholder={__('All Actions', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
@@ -579,7 +579,7 @@ export default function TwoWayInbox() {
               </Select>
 
               <Select value={filters.filters.command_id} onValueChange={(v) => filters.setFilter('command_id', v)}>
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[130px] wsms-text-[12px]" aria-label={__('Filter by command', 'wp-sms')}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[130px] wsms-text-[13px]" aria-label={__('Filter by command', 'wp-sms')}>
                   <SelectValue placeholder={__('All Commands', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
@@ -593,7 +593,7 @@ export default function TwoWayInbox() {
               </Select>
 
               <Select value={filters.filters.status} onValueChange={(v) => filters.setFilter('status', v)}>
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[100px] wsms-text-[12px]" aria-label={__('Filter by read status', 'wp-sms')}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[100px] wsms-text-[13px]" aria-label={__('Filter by read status', 'wp-sms')}>
                   <SelectValue placeholder={__('All', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
@@ -679,15 +679,15 @@ export default function TwoWayInbox() {
               {/* Sender & Status Row */}
               <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-p-4 wsms-rounded-lg wsms-bg-muted/30">
                 <div className="wsms-flex-1">
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Sender', 'wp-sms')}</p>
-                  <p className="wsms-text-[13px] wsms-font-mono wsms-font-medium">{viewingMessage?.sender_number}</p>
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-1">{__('Sender', 'wp-sms')}</p>
+                  <p className="wsms-text-[14px] wsms-font-mono wsms-font-medium">{viewingMessage?.sender_number}</p>
                   {viewingMessage?.contact_name && (
-                    <p className="wsms-text-[12px] wsms-text-muted-foreground">{viewingMessage.contact_name}</p>
+                    <p className="wsms-text-[13px] wsms-text-muted-foreground">{viewingMessage.contact_name}</p>
                   )}
                 </div>
                 <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
                 <div className="wsms-flex-1">
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Status', 'wp-sms')}</p>
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-1">{__('Status', 'wp-sms')}</p>
                   {viewingMessage?.action_status === 'successful'
                     ? <StatusBadge variant="success">{__('Successful', 'wp-sms')}</StatusBadge>
                     : viewingMessage?.action_status === 'failed'
@@ -699,7 +699,7 @@ export default function TwoWayInbox() {
                   <>
                     <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
                     <div className="wsms-flex-1">
-                      <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Command', 'wp-sms')}</p>
+                      <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-1">{__('Command', 'wp-sms')}</p>
                       <Badge variant="outline">{viewingMessage.command_name}</Badge>
                     </div>
                   </>
@@ -708,9 +708,9 @@ export default function TwoWayInbox() {
 
               {/* Message */}
               <div>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Message', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-1">{__('Message', 'wp-sms')}</p>
                 <div className="wsms-p-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
-                  <p className="wsms-text-[13px] wsms-whitespace-pre-wrap">{viewingMessage?.text}</p>
+                  <p className="wsms-text-[14px] wsms-whitespace-pre-wrap">{viewingMessage?.text}</p>
                 </div>
               </div>
             </div>
@@ -745,17 +745,17 @@ export default function TwoWayInbox() {
           <DialogBody>
             <div className="wsms-space-y-4">
               <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/50 wsms-border wsms-border-border">
-                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-1">{__('Recipient', 'wp-sms')}</p>
-                <p className="wsms-text-[13px] wsms-font-mono wsms-text-foreground">
+                <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-1">{__('Recipient', 'wp-sms')}</p>
+                <p className="wsms-text-[14px] wsms-font-mono wsms-text-foreground">
                   {replyingTo?.sender_number}
                 </p>
               </div>
-              <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/30 wsms-text-[13px]">
-                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-1">{__('Original message', 'wp-sms')}</p>
+              <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/30 wsms-text-[14px]">
+                <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-1">{__('Original message', 'wp-sms')}</p>
                 <p>{replyingTo?.text?.substring(0, 100)}{replyingTo?.text?.length > 100 ? '...' : ''}</p>
               </div>
               <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium" htmlFor="reply-message">{__('Message', 'wp-sms')}</label>
+                <label className="wsms-text-[13px] wsms-font-medium" htmlFor="reply-message">{__('Message', 'wp-sms')}</label>
                 <Textarea
                   id="reply-message"
                   placeholder={__('Type your reply...', 'wp-sms')}
@@ -763,7 +763,7 @@ export default function TwoWayInbox() {
                   onChange={(e) => setReplyMessage(e.target.value)}
                   rows={4}
                 />
-                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-text-right">
+                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-text-right">
                   {replyMessage.length} {__('characters', 'wp-sms')}
                 </p>
               </div>
@@ -807,7 +807,7 @@ export default function TwoWayInbox() {
                   <Loader2 className="wsms-h-6 wsms-w-6 wsms-animate-spin wsms-text-muted-foreground" />
                 </div>
               ) : conversationMessages.length === 0 ? (
-                <div className="wsms-text-center wsms-py-12 wsms-text-[13px] wsms-text-muted-foreground">
+                <div className="wsms-text-center wsms-py-12 wsms-text-[14px] wsms-text-muted-foreground">
                   {__('No messages in this conversation', 'wp-sms')}
                 </div>
               ) : (
@@ -821,7 +821,7 @@ export default function TwoWayInbox() {
                   >
                     <div
                       className={cn(
-                        'wsms-rounded-lg wsms-px-3 wsms-py-2 wsms-text-[13px]',
+                        'wsms-rounded-lg wsms-px-3 wsms-py-2 wsms-text-[14px]',
                         msg.type === 'outgoing'
                           ? 'wsms-bg-primary/10 wsms-text-foreground'
                           : 'wsms-bg-muted/50 wsms-text-foreground wsms-border wsms-border-border'
@@ -830,12 +830,12 @@ export default function TwoWayInbox() {
                       <p className="wsms-whitespace-pre-wrap">{msg.message}</p>
                     </div>
                     <div className="wsms-flex wsms-items-center wsms-gap-1.5">
-                      <span className="wsms-text-[11px] wsms-text-muted-foreground">
+                      <span className="wsms-text-[12px] wsms-text-muted-foreground">
                         {msg.date_formatted || msg.date}
                       </span>
                       {msg.type === 'outgoing' && msg.status != null && (
                         <span className={cn(
-                          'wsms-text-[10px] wsms-font-medium',
+                          'wsms-text-[11px] wsms-font-medium',
                           msg.status === 'success' ? 'wsms-text-success' : 'wsms-text-destructive'
                         )}>
                           {msg.status === 'success' ? __('Sent', 'wp-sms') : __('Failed', 'wp-sms')}
@@ -866,7 +866,7 @@ export default function TwoWayInbox() {
                       }
                     }}
                   />
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-text-right">
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-text-right">
                     {conversationReply.length} {__('characters', 'wp-sms')}
                   </p>
                 </div>
@@ -899,10 +899,10 @@ export default function TwoWayInbox() {
       >
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
           <div className="wsms-space-y-1">
-            <p className="wsms-text-[13px] wsms-font-mono wsms-text-muted-foreground">
+            <p className="wsms-text-[14px] wsms-font-mono wsms-text-muted-foreground">
               {deleteDialog.item?.sender_number}
             </p>
-            <p className="wsms-text-[13px] wsms-text-foreground">
+            <p className="wsms-text-[14px] wsms-text-foreground">
               {deleteDialog.item?.text?.substring(0, 80)}{deleteDialog.item?.text?.length > 80 ? '...' : ''}
             </p>
           </div>
@@ -919,7 +919,7 @@ export default function TwoWayInbox() {
         description={__('Are you sure you want to delete the selected messages?', 'wp-sms')}
       >
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
-          <p className="wsms-text-[13px] wsms-text-foreground">
+          <p className="wsms-text-[14px] wsms-text-foreground">
             {__('%d message(s) will be permanently deleted.', 'wp-sms').replace('%d', table.selectedIds.length)}
           </p>
         </div>

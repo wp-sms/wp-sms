@@ -53,7 +53,7 @@ export default function WooCommercePro() {
             <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
               <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
               <h3 className="wsms-font-medium wsms-mb-2">{__('WooCommerce Pro Add-on Required', 'wp-sms')}</h3>
-              <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-4">
+              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-4">
                 {__('Install and activate the WSMS WooCommerce Pro add-on to access these features.', 'wp-sms')}
               </p>
               <Button variant="outline" asChild>
@@ -95,7 +95,7 @@ export default function WooCommercePro() {
             <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
               <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
               <h3 className="wsms-font-medium wsms-mb-2">{__('WooCommerce Required', 'wp-sms')}</h3>
-              <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-4">
+              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-4">
                 {__('WooCommerce must be installed and activated to use these features.', 'wp-sms')}
               </p>
               {wooCommerceStatus.actionUrl && (
@@ -128,7 +128,7 @@ export default function WooCommercePro() {
           </CardHeader>
           <CardContent>
             <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
-              <p className="wsms-text-[12px] wsms-text-muted-foreground">
+              <p className="wsms-text-[13px] wsms-text-muted-foreground">
                 {__('No settings available. Please ensure the WooCommerce Pro add-on is properly configured.', 'wp-sms')}
               </p>
             </div>
