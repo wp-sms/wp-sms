@@ -102,7 +102,7 @@ const AppShell = memo(function AppShell() {
         <div className="wsms-main">
           <div id="main-content" role="region" aria-label={__('WSMS content', 'wp-sms')} className="wsms-content wsms-scrollbar-thin" tabIndex={-1}>
             <div className="wsms-content-inner">
-              <AdminNotices />
+              {currentPage !== 'add-ons' && <AdminNotices />}
               {isLoading ? (
                 <LoadingSkeleton />
               ) : (

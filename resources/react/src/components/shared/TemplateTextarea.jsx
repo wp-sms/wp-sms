@@ -70,7 +70,7 @@ export function TemplateTextarea({
               title={description || undefined}
               className={cn(
                 'wsms-inline-flex wsms-items-center wsms-rounded wsms-border wsms-border-border',
-                'wsms-px-1.5 wsms-py-0.5 wsms-text-[11px] wsms-font-mono',
+                'wsms-px-1.5 wsms-py-0.5 wsms-text-[12px] wsms-font-mono',
                 'wsms-text-muted-foreground wsms-bg-muted/30',
                 'hover:wsms-bg-primary/10 hover:wsms-border-primary hover:wsms-text-primary',
                 'wsms-transition-colors wsms-cursor-pointer',

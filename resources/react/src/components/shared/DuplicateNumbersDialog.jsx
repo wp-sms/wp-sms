@@ -67,7 +67,7 @@ export function DuplicateNumbersDialog({ open, onOpenChange, duplicates = [], on
         <DialogBody>
           <div className="wsms-rounded-lg wsms-border wsms-border-border wsms-overflow-hidden">
             <div className="wsms-max-h-[320px] wsms-overflow-y-auto">
-              <table className="wsms-w-full wsms-text-[12px]">
+              <table className="wsms-w-full wsms-text-[13px]">
                 <thead className="wsms-bg-muted/40 wsms-sticky wsms-top-0">
                   <tr>
                     <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">
@@ -112,7 +112,7 @@ export function DuplicateNumbersDialog({ open, onOpenChange, duplicates = [], on
               </table>
             </div>
           </div>
-          <p className="wsms-mt-3 wsms-text-[11px] wsms-text-muted-foreground">
+          <p className="wsms-mt-3 wsms-text-[12px] wsms-text-muted-foreground">
             {__('To leave someone out, go back, open the group and untick them.', 'wp-sms')}
           </p>
         </DialogBody>

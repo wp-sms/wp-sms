@@ -149,7 +149,7 @@ const MessageComposer = React.forwardRef(
           />
 
           {/* Character counter bar */}
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-px-3 wsms-py-1.5 wsms-text-[11px] wsms-text-muted-foreground wsms-border wsms-border-input wsms-border-t-border/40 wsms-rounded-b-md wsms-bg-muted/30">
+          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-px-3 wsms-py-1.5 wsms-text-[12px] wsms-text-muted-foreground wsms-border wsms-border-input wsms-border-t-border/40 wsms-rounded-b-md wsms-bg-muted/30">
             <div className="wsms-flex wsms-items-center wsms-gap-3">
               <span className="wsms-flex wsms-items-center wsms-gap-1">
                 <Hash className="wsms-h-3 wsms-w-3" />
@@ -161,7 +161,7 @@ const MessageComposer = React.forwardRef(
               </span>
             </div>
             <span className={cn(
-              'wsms-px-1.5 wsms-py-0.5 wsms-rounded wsms-text-[10px] wsms-font-medium',
+              'wsms-px-1.5 wsms-py-0.5 wsms-rounded wsms-text-[11px] wsms-font-medium',
               smsInfo.isUnicode
                 ? 'wsms-bg-amber-100 wsms-text-amber-800 dark:wsms-bg-amber-900/40 dark:wsms-text-amber-200'
                 : 'wsms-bg-emerald-100 wsms-text-emerald-800 dark:wsms-bg-emerald-900/40 dark:wsms-text-emerald-200'
@@ -184,7 +184,7 @@ const MessageComposer = React.forwardRef(
                 disabled={disabled}
                 className={cn(
                   'wsms-inline-flex wsms-items-center wsms-rounded wsms-border wsms-border-border',
-                  'wsms-px-1.5 wsms-py-0.5 wsms-text-[11px] wsms-font-mono',
+                  'wsms-px-1.5 wsms-py-0.5 wsms-text-[12px] wsms-font-mono',
                   'wsms-text-muted-foreground wsms-bg-muted/30',
                   'hover:wsms-bg-primary/10 hover:wsms-border-primary hover:wsms-text-primary',
                   'wsms-transition-colors wsms-cursor-pointer',
@@ -201,7 +201,7 @@ const MessageComposer = React.forwardRef(
         {showUnicodeWarning && (
           <div className="wsms-flex wsms-items-start wsms-gap-2 wsms-p-2.5 wsms-rounded-md wsms-bg-amber-50 wsms-border wsms-border-amber-200 dark:wsms-bg-amber-900/30 dark:wsms-border-amber-800">
             <AlertTriangle className="wsms-h-4 wsms-w-4 wsms-text-amber-700 dark:wsms-text-amber-300 wsms-shrink-0 wsms-mt-0.5" aria-hidden="true" />
-            <p className="wsms-text-[12px] wsms-text-amber-800 dark:wsms-text-amber-200">
+            <p className="wsms-text-[13px] wsms-text-amber-800 dark:wsms-text-amber-200">
               {__('Your message contains Unicode characters. This reduces the character limit per segment from 160 to 70 characters.', 'wp-sms')}
             </p>
           </div>
@@ -210,14 +210,14 @@ const MessageComposer = React.forwardRef(
         {isOverLimit && (
           <div className="wsms-flex wsms-items-start wsms-gap-2 wsms-p-2.5 wsms-rounded-md wsms-bg-red-50 wsms-border wsms-border-red-200 dark:wsms-bg-red-900/30 dark:wsms-border-red-800" role="alert">
             <AlertTriangle className="wsms-h-4 wsms-w-4 wsms-text-red-700 dark:wsms-text-red-300 wsms-shrink-0 wsms-mt-0.5" aria-hidden="true" />
-            <p className="wsms-text-[12px] wsms-text-red-800 dark:wsms-text-red-200">
+            <p className="wsms-text-[13px] wsms-text-red-800 dark:wsms-text-red-200">
               {__('Message exceeds maximum of %s segments. Please shorten your message.', 'wp-sms').replace('%s', maxSegments)}
             </p>
           </div>
         )}
 
         {/* Remaining characters hint */}
-        <p className="wsms-text-[11px] wsms-text-muted-foreground">
+        <p className="wsms-text-[12px] wsms-text-muted-foreground">
           {__('%s characters remaining in current segment', 'wp-sms').replace('%s', smsInfo.remaining)}
         </p>
       </div>

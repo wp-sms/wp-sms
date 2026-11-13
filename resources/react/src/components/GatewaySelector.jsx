@@ -179,14 +179,14 @@ export default function GatewaySelector({
     return (
       <div className="wsms-flex wsms-items-center wsms-justify-center wsms-py-12 wsms-text-muted-foreground">
         <Loader2 className="wsms-h-5 wsms-w-5 wsms-animate-spin wsms-me-2" />
-        <span className="wsms-text-[12px]">{__('Loading gateways...', 'wp-sms')}</span>
+        <span className="wsms-text-[13px]">{__('Loading gateways...', 'wp-sms')}</span>
       </div>
     )
   }
 
   if (error && gateways.length === 0) {
     return (
-      <div className="wsms-py-8 wsms-text-center wsms-text-[12px] wsms-text-destructive">
+      <div className="wsms-py-8 wsms-text-center wsms-text-[13px] wsms-text-destructive">
         {__('Failed to load gateways. Please refresh the page.', 'wp-sms')}
       </div>
     )
@@ -216,7 +216,7 @@ export default function GatewaySelector({
               { value: 'all', label: __('All Regions', 'wp-sms') },
               ...regionOptions,
             ]}
-            triggerClassName="wsms-capitalize"
+            triggerClassName="wsms-capitalize wsms-h-10 wsms-rounded"
             optionClassName="wsms-capitalize"
           />
         </div>
@@ -224,14 +224,14 @@ export default function GatewaySelector({
 
       {/* Gateway List */}
       <div
-        className="wsms-overflow-y-auto wsms-rounded-md wsms-border wsms-border-border wsms-p-4 wsms-scrollbar-thin wsms-bg-muted/30"
+        className="wsms-overflow-y-auto wsms-scrollbar-thin"
         style={{ maxHeight }}
       >
         {countryGroups ? (
           <div className="wsms-space-y-5">
             {countryGroups.sortedCodes.map((code) => (
               <div key={code}>
-                <p className="wsms-mb-2 wsms-text-[12px] wsms-font-semibold wsms-text-foreground">
+                <p className="wsms-mb-2 wsms-text-[13px] wsms-font-semibold wsms-text-foreground">
                   {countryCodeToFlag(code)} {countryNameMap[code] || code}
                 </p>
                 <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
@@ -241,7 +241,7 @@ export default function GatewaySelector({
             ))}
             {countryGroups.ungrouped.length > 0 && (
               <div>
-                <p className="wsms-mb-2 wsms-text-[12px] wsms-font-semibold wsms-text-foreground">
+                <p className="wsms-mb-2 wsms-text-[13px] wsms-font-semibold wsms-text-foreground">
                   {__('Other', 'wp-sms')}
                 </p>
                 <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
@@ -255,7 +255,7 @@ export default function GatewaySelector({
             {/* Recommended */}
             {recommended.length > 0 && (
               <div>
-                <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
+                <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground">
                   <Star className="wsms-h-3 wsms-w-3 wsms-text-amber-500" />
                   {__('Recommended', 'wp-sms')}
                 </p>
@@ -268,7 +268,7 @@ export default function GatewaySelector({
             {/* Global gateways */}
             {regionGroups.globalList.length > 0 && (
               <div>
-                <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-font-semibold wsms-text-foreground">
+                <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[13px] wsms-font-semibold wsms-text-foreground">
                   {__('Global', 'wp-sms')} 🌐
                 </p>
                 <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
@@ -282,7 +282,7 @@ export default function GatewaySelector({
               const regionName = regionNameMap[slug] || slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ')
               return (
                 <div key={slug}>
-                  <p className="wsms-mb-2 wsms-text-[12px] wsms-font-semibold wsms-text-foreground">
+                  <p className="wsms-mb-2 wsms-text-[13px] wsms-font-semibold wsms-text-foreground">
                     {regionName}
                   </p>
                   <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
@@ -297,7 +297,7 @@ export default function GatewaySelector({
             {/* Recommended Section */}
             {recommended.length > 0 && (
               <div className="wsms-mb-4">
-                <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
+                <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground">
                   <Star className="wsms-h-3 wsms-w-3 wsms-text-amber-500" />
                   {__('Recommended', 'wp-sms')}
                 </p>
@@ -311,7 +311,7 @@ export default function GatewaySelector({
             {rest.length > 0 && (
               <div>
                 {recommended.length > 0 && (
-                  <p className="wsms-mb-2 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
+                  <p className="wsms-mb-2 wsms-text-[12px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground">
                     {__('All Gateways', 'wp-sms')}
                   </p>
                 )}
@@ -330,28 +330,6 @@ export default function GatewaySelector({
 
       {filteredGateways.length > 0 && (
         <MoreGatewaysNotice premiumCount={premiumCount} searchQuery={searchQuery} />
-      )}
-
-      {/* Selected Gateway */}
-      {selectedGateway && (
-        <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-px-3 wsms-py-2 wsms-rounded-md wsms-bg-primary/5 wsms-border wsms-border-primary/20">
-          {isApiSource && (() => {
-            const gw = gateways.find((g) => g.slug === selectedGateway)
-            const logoUrl = getGatewayLogo(gw)
-            return logoUrl ? (
-              <img src={logoUrl} alt="" className="wsms-h-5 wsms-w-5 wsms-rounded-sm wsms-object-contain" onError={(e) => { e.target.style.display = 'none' }} />
-            ) : (
-              <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            )
-          })()}
-          {(!isApiSource) && <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-primary" />}
-          <span className="wsms-text-[12px] wsms-text-foreground">
-            <span className="wsms-text-muted-foreground">{__('Selected:', 'wp-sms')}</span>{' '}
-            <span className="wsms-font-medium">
-              {gateways.find((g) => g.slug === selectedGateway)?.name || selectedGateway}
-            </span>
-          </span>
-        </div>
       )}
     </div>
   )

@@ -85,7 +85,7 @@ export default function Authentication() {
           </CardHeader>
           <CardContent>
             <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
-              <p className="wsms-text-[12px] wsms-text-muted-foreground">
+              <p className="wsms-text-[13px] wsms-text-muted-foreground">
                 {__('No settings available. Please ensure your add-on is up to date.', 'wp-sms')}
               </p>
             </div>

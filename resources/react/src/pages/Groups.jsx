@@ -165,7 +165,7 @@ export default function Groups() {
       accessorKey: 'id',
       header: __('ID', 'wp-sms'),
       cell: ({ row }) => (
-        <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-font-mono">
+        <span className="wsms-text-[13px] wsms-text-muted-foreground wsms-font-mono">
           {row.id}
         </span>
       ),
@@ -189,7 +189,7 @@ export default function Groups() {
                   onKeyDown={handleInlineEditKeyDown}
                   autoFocus
                   aria-label={__('Edit group name', 'wp-sms')}
-                  className="wsms-h-7 wsms-flex-1 wsms-min-w-0 wsms-text-[13px]"
+                  className="wsms-h-7 wsms-flex-1 wsms-min-w-0 wsms-text-[14px]"
                 />
                 <Button
                   size="icon"
@@ -219,7 +219,7 @@ export default function Groups() {
             ) : (
               <button
                 onClick={() => handleInlineEditStart(row)}
-                className="wsms-text-[13px] wsms-font-medium wsms-text-foreground hover:wsms-text-primary wsms-text-start wsms-transition-colors wsms-truncate wsms-block wsms-max-w-full"
+                className="wsms-text-[14px] wsms-font-medium wsms-text-foreground hover:wsms-text-primary wsms-text-start wsms-transition-colors wsms-truncate wsms-block wsms-max-w-full"
               >
                 {row.name}
               </button>
@@ -235,7 +235,7 @@ export default function Groups() {
       cell: ({ row }) => (
         <div className="wsms-flex wsms-items-center wsms-gap-2">
           <Users className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-          <span className="wsms-text-[13px] wsms-text-foreground">
+          <span className="wsms-text-[14px] wsms-text-foreground">
             {row.subscriber_count || 0}
           </span>
         </div>
@@ -277,7 +277,7 @@ export default function Groups() {
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
                 {__('Failed to load groups', 'wp-sms')}
               </h3>
-              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-4">
+              <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-mb-4">
                 {table.error}
               </p>
               <Button onClick={() => table.fetch({ page: 1 })}>
@@ -304,7 +304,7 @@ export default function Groups() {
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
                 {__('Create your first group', 'wp-sms')}
               </h3>
-              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
+              <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-mb-6">
                 {__('Groups help you organize subscribers for targeted messaging. Segment your audience by interest, location, or any criteria that matters to your communication.', 'wp-sms')}
               </p>
 
@@ -325,13 +325,13 @@ export default function Groups() {
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4 wsms-mt-8 wsms-pt-6 wsms-border-t wsms-border-border wsms-w-full">
                 <div className="wsms-text-start wsms-p-3 wsms-rounded-lg wsms-bg-muted/30">
                   <Users className="wsms-h-4 wsms-w-4 wsms-text-primary wsms-mb-2" />
-                  <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">{__('Targeted Messaging', 'wp-sms')}</p>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Send SMS to specific groups only', 'wp-sms')}</p>
+                  <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">{__('Targeted Messaging', 'wp-sms')}</p>
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Send SMS to specific groups only', 'wp-sms')}</p>
                 </div>
                 <div className="wsms-text-start wsms-p-3 wsms-rounded-lg wsms-bg-muted/30">
                   <LayoutGrid className="wsms-h-4 wsms-w-4 wsms-text-primary wsms-mb-2" />
-                  <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">{__('Easy Organization', 'wp-sms')}</p>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Manage subscribers efficiently', 'wp-sms')}</p>
+                  <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">{__('Easy Organization', 'wp-sms')}</p>
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Manage subscribers efficiently', 'wp-sms')}</p>
                 </div>
               </div>
             </div>
@@ -353,7 +353,7 @@ export default function Groups() {
             </div>
             <div>
               <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{table.pagination.total}</p>
-              <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Groups', 'wp-sms')}</p>
+              <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Groups', 'wp-sms')}</p>
             </div>
           </div>
           <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
@@ -363,7 +363,7 @@ export default function Groups() {
             </div>
             <div>
               <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{totalSubscribers}</p>
-              <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total Subscribers', 'wp-sms')}</p>
+              <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Total Subscribers', 'wp-sms')}</p>
             </div>
           </div>
         </div>
@@ -508,7 +508,7 @@ export default function Groups() {
 
                     {/* ID Badge */}
                     <div className="wsms-absolute wsms-top-2 wsms-left-2">
-                      <span className="wsms-text-[10px] wsms-font-mono wsms-text-muted-foreground wsms-bg-muted/60 wsms-px-1.5 wsms-py-0.5 wsms-rounded">
+                      <span className="wsms-text-[11px] wsms-font-mono wsms-text-muted-foreground wsms-bg-muted/60 wsms-px-1.5 wsms-py-0.5 wsms-rounded">
                         #{group.id}
                       </span>
                     </div>
@@ -521,13 +521,13 @@ export default function Groups() {
                       <div className="wsms-min-w-0">
                         <button
                           onClick={() => handleInlineEditStart(group)}
-                          className="wsms-text-[13px] wsms-font-medium wsms-text-foreground hover:wsms-text-primary wsms-text-start wsms-transition-colors wsms-truncate wsms-block wsms-w-full"
+                          className="wsms-text-[14px] wsms-font-medium wsms-text-foreground hover:wsms-text-primary wsms-text-start wsms-transition-colors wsms-truncate wsms-block wsms-w-full"
                         >
                           {group.name}
                         </button>
                         <div className="wsms-flex wsms-items-center wsms-gap-1 wsms-mt-1">
                           <Users className="wsms-h-3 wsms-w-3 wsms-text-muted-foreground" />
-                          <span className="wsms-text-[12px] wsms-text-muted-foreground">
+                          <span className="wsms-text-[13px] wsms-text-muted-foreground">
                             {group.subscriber_count || 0} subscribers
                           </span>
                         </div>
@@ -552,7 +552,7 @@ export default function Groups() {
           >
             {__('Previous', 'wp-sms')}
           </Button>
-          <span className="wsms-flex wsms-items-center wsms-px-3 wsms-text-[12px] wsms-text-muted-foreground">
+          <span className="wsms-flex wsms-items-center wsms-px-3 wsms-text-[13px] wsms-text-muted-foreground">
             Page {table.pagination.current_page} of {table.pagination.total_pages}
           </span>
           <Button
@@ -577,7 +577,7 @@ export default function Groups() {
         confirmLabel={__('Delete Group', 'wp-sms')}
       >
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-amber-500/10 wsms-border wsms-border-amber-500/20">
-          <p className="wsms-text-[12px] wsms-text-amber-700 dark:wsms-text-amber-400">
+          <p className="wsms-text-[13px] wsms-text-amber-700 dark:wsms-text-amber-400">
             {__('This will remove the group but keep all subscribers. They will become ungrouped.', 'wp-sms')}
           </p>
         </div>

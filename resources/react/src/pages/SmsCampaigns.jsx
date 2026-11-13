@@ -77,7 +77,7 @@ const StatusBadge = ({ status }) => {
 // Queue status badge
 const QueueStatusBadge = ({ queueStatus, nextSchedule }) => {
   if (!queueStatus) {
-    return <span className="wsms-text-muted-foreground wsms-text-[12px]">&mdash;</span>
+    return <span className="wsms-text-muted-foreground wsms-text-[13px]">&mdash;</span>
   }
 
   const statusConfig = {
@@ -92,12 +92,12 @@ const QueueStatusBadge = ({ queueStatus, nextSchedule }) => {
 
   return (
     <div className="wsms-flex wsms-flex-col wsms-gap-1">
-      <Badge variant="outline" className={`wsms-inline-flex wsms-w-fit wsms-items-center wsms-gap-1 wsms-text-[11px] ${config.className}`}>
+      <Badge variant="outline" className={`wsms-inline-flex wsms-w-fit wsms-items-center wsms-gap-1 wsms-text-[12px] ${config.className}`}>
         <Icon className="wsms-h-3 wsms-w-3" />
         {config.label}
       </Badge>
       {nextSchedule && (
-        <span className="wsms-text-[11px] wsms-text-muted-foreground">{nextSchedule}</span>
+        <span className="wsms-text-[12px] wsms-text-muted-foreground">{nextSchedule}</span>
       )}
     </div>
   )
@@ -117,15 +117,15 @@ const TimeSpecDisplay = ({ timeSpec, specificDate, delayedTime }) => {
 
   return (
     <div className="wsms-flex wsms-flex-col wsms-gap-1">
-      <div className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px]">
+      <div className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[13px]">
         <Icon className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
         <span>{config.label}</span>
       </div>
       {timeSpec === 'specific-date' && specificDate && (
-        <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-ms-5">{specificDate}</span>
+        <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-ms-5">{specificDate}</span>
       )}
       {timeSpec === 'after-placing-order' && delayedTime && (
-        <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-ms-5">
+        <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-ms-5">
           {delayedTime.value} {delayedTime.unit}
         </span>
       )}
@@ -292,7 +292,7 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
           <Label>{__('Conditions', 'wp-sms')}</Label>
 
           {formData.conditionGroups.length === 0 && (
-            <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-py-4 wsms-text-center wsms-border wsms-border-dashed wsms-rounded-lg">
+            <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-py-4 wsms-text-center wsms-border wsms-border-dashed wsms-rounded-lg">
               {__('No conditions added. Campaign will match all orders.', 'wp-sms')}
             </p>
           )}
@@ -314,7 +314,7 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
                   <div key={condIndex}>
                     {condIndex > 0 && (
                       <div className="wsms-flex wsms-justify-center wsms-my-1">
-                        <span className="wsms-text-[11px] wsms-font-medium wsms-text-blue-600 wsms-bg-blue-50 wsms-px-2 wsms-py-0.5 wsms-rounded">{__('AND', 'wp-sms')}</span>
+                        <span className="wsms-text-[12px] wsms-font-medium wsms-text-blue-600 wsms-bg-blue-50 wsms-px-2 wsms-py-0.5 wsms-rounded">{__('AND', 'wp-sms')}</span>
                       </div>
                     )}
                     <div className="wsms-flex wsms-items-center wsms-gap-2">
@@ -492,9 +492,9 @@ const campaignColumns = [
     header: __('Campaign', 'wp-sms'),
     cell: ({ row }) => (
       <div>
-        <p className="wsms-font-medium wsms-text-[13px]">{row.title}</p>
+        <p className="wsms-font-medium wsms-text-[14px]">{row.title}</p>
         {row.message_content && (
-          <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-truncate wsms-max-w-[300px]">
+          <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-truncate wsms-max-w-[300px]">
             {row.message_content}
           </p>
         )}
@@ -535,7 +535,7 @@ const campaignColumns = [
     accessorKey: 'created_at',
     header: __('Created', 'wp-sms'),
     cell: ({ row }) => (
-      <span className="wsms-text-[12px] wsms-text-muted-foreground">
+      <span className="wsms-text-[13px] wsms-text-muted-foreground">
         {row.created_at ? (row.created_at_formatted || formatDate(row.created_at)) : '\u2014'}
       </span>
     ),
@@ -793,7 +793,7 @@ export default function SmsCampaigns() {
                 <h2 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-1">
                   {__('SMS Campaigns', 'wp-sms')}
                 </h2>
-                <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-max-w-lg">
+                <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-max-w-lg">
                   {__('Create targeted SMS marketing campaigns based on customer behavior. Set conditions, schedule delivery, and track results.', 'wp-sms')}
                 </p>
               </div>
@@ -831,7 +831,7 @@ export default function SmsCampaigns() {
               value={filters.filters.status}
               onValueChange={(value) => filters.setFilter('status', value)}
             >
-              <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[12px]" aria-label={__('Filter by status', 'wp-sms')}>
+              <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[13px]" aria-label={__('Filter by status', 'wp-sms')}>
                 <SelectValue placeholder={__('All Statuses', 'wp-sms')} />
               </SelectTrigger>
               <SelectContent>
@@ -936,14 +936,14 @@ export default function SmsCampaigns() {
             <DialogBody>
               <div className="wsms-space-y-4">
                 <div>
-                  <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Status', 'wp-sms')}</Label>
+                  <Label className="wsms-text-[13px] wsms-text-muted-foreground">{__('Status', 'wp-sms')}</Label>
                   <div className="wsms-mt-1">
                     <StatusBadge status={selectedCampaign.status} />
                   </div>
                 </div>
 
                 <div>
-                  <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Schedule', 'wp-sms')}</Label>
+                  <Label className="wsms-text-[13px] wsms-text-muted-foreground">{__('Schedule', 'wp-sms')}</Label>
                   <div className="wsms-mt-1">
                     <TimeSpecDisplay
                       timeSpec={selectedCampaign.time_specification}
@@ -955,14 +955,14 @@ export default function SmsCampaigns() {
 
                 {selectedCampaign.conditions && selectedCampaign.conditions.length > 0 && (
                   <div>
-                    <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Conditions', 'wp-sms')}</Label>
+                    <Label className="wsms-text-[13px] wsms-text-muted-foreground">{__('Conditions', 'wp-sms')}</Label>
                     <div className="wsms-mt-1 wsms-space-y-1">
                       {normalizeConditionGroups(selectedCampaign.conditions).map((group, groupIndex) => (
                         <div key={groupIndex}>
                           {groupIndex > 0 && (
                             <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-my-1">
                               <div className="wsms-flex-1 wsms-border-t wsms-border-border" />
-                              <span className="wsms-text-[10px] wsms-font-medium wsms-text-orange-600">{__('OR', 'wp-sms')}</span>
+                              <span className="wsms-text-[11px] wsms-font-medium wsms-text-orange-600">{__('OR', 'wp-sms')}</span>
                               <div className="wsms-flex-1 wsms-border-t wsms-border-border" />
                             </div>
                           )}
@@ -970,9 +970,9 @@ export default function SmsCampaigns() {
                             {group.conditions.map((condition, condIndex) => (
                               <div key={condIndex}>
                                 {condIndex > 0 && (
-                                  <span className="wsms-text-[10px] wsms-font-medium wsms-text-blue-600 wsms-block wsms-text-center wsms-my-0.5">{__('AND', 'wp-sms')}</span>
+                                  <span className="wsms-text-[11px] wsms-font-medium wsms-text-blue-600 wsms-block wsms-text-center wsms-my-0.5">{__('AND', 'wp-sms')}</span>
                                 )}
-                                <div className="wsms-text-[12px]">
+                                <div className="wsms-text-[13px]">
                                   {condition.condition_key} = {condition.condition_value}
                                 </div>
                               </div>
@@ -985,21 +985,21 @@ export default function SmsCampaigns() {
                 )}
 
                 <div>
-                  <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Message Preview', 'wp-sms')}</Label>
+                  <Label className="wsms-text-[13px] wsms-text-muted-foreground">{__('Message Preview', 'wp-sms')}</Label>
                   <div className="wsms-mt-2 wsms-rounded-lg wsms-border wsms-border-border wsms-bg-muted/10 wsms-p-4">
                     {selectedCampaign.message_content ? (
                       <div className="wsms-max-w-[75%]">
                         <div className="wsms-bg-primary/10 wsms-rounded-xl wsms-rounded-tl-sm wsms-px-3 wsms-py-2.5">
-                          <p className="wsms-text-[13px] wsms-text-foreground wsms-whitespace-pre-wrap wsms-break-words">
+                          <p className="wsms-text-[14px] wsms-text-foreground wsms-whitespace-pre-wrap wsms-break-words">
                             {selectedCampaign.message_content}
                           </p>
                         </div>
-                        <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-1 wsms-ms-1">
+                        <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mt-1 wsms-ms-1">
                           {selectedCampaign.message_content.length} {__('characters', 'wp-sms')}
                         </p>
                       </div>
                     ) : (
-                      <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('No message content', 'wp-sms')}</p>
+                      <p className="wsms-text-[13px] wsms-text-muted-foreground">{__('No message content', 'wp-sms')}</p>
                     )}
                   </div>
                 </div>
@@ -1039,7 +1039,7 @@ export default function SmsCampaigns() {
                 {/* Queue Summary */}
                 <div className="wsms-grid wsms-grid-cols-1 sm:wsms-grid-cols-3 wsms-gap-3">
                   <div>
-                    <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Status', 'wp-sms')}</Label>
+                    <Label className="wsms-text-[13px] wsms-text-muted-foreground">{__('Status', 'wp-sms')}</Label>
                     <div className="wsms-mt-1">
                       <QueueStatusBadge
                         queueStatus={queueCampaign.queue_status}
@@ -1049,14 +1049,14 @@ export default function SmsCampaigns() {
                   </div>
                   {queueCampaign.last_execution && (
                     <div>
-                      <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Last Execution', 'wp-sms')}</Label>
-                      <p className="wsms-mt-1 wsms-text-[13px]">{queueCampaign.last_execution_formatted || formatDate(queueCampaign.last_execution)}</p>
+                      <Label className="wsms-text-[13px] wsms-text-muted-foreground">{__('Last Execution', 'wp-sms')}</Label>
+                      <p className="wsms-mt-1 wsms-text-[14px]">{queueCampaign.last_execution_formatted || formatDate(queueCampaign.last_execution)}</p>
                     </div>
                   )}
                   {queueCampaign.queue_response && (
                     <div>
-                      <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Response', 'wp-sms')}</Label>
-                      <p className="wsms-mt-1 wsms-text-[13px] wsms-text-muted-foreground">{queueCampaign.queue_response}</p>
+                      <Label className="wsms-text-[13px] wsms-text-muted-foreground">{__('Response', 'wp-sms')}</Label>
+                      <p className="wsms-mt-1 wsms-text-[14px] wsms-text-muted-foreground">{queueCampaign.queue_response}</p>
                     </div>
                   )}
                 </div>
@@ -1064,7 +1064,7 @@ export default function SmsCampaigns() {
                 {/* Target Orders */}
                 {Array.isArray(queueCampaign.target_orders) && queueCampaign.target_orders.length > 0 ? (
                   <div>
-                    <Label className="wsms-text-[12px] wsms-text-muted-foreground">
+                    <Label className="wsms-text-[13px] wsms-text-muted-foreground">
                       {__('Target Orders', 'wp-sms')} ({queueCampaign.target_orders.length})
                     </Label>
 
@@ -1078,7 +1078,7 @@ export default function SmsCampaigns() {
                         }
                         const smsStatus = statusConfig[order.status] || statusConfig.pending
                         return (
-                          <div key={index} className="wsms-rounded-lg wsms-border wsms-border-border wsms-p-3 wsms-space-y-1.5 wsms-text-[12px]">
+                          <div key={index} className="wsms-rounded-lg wsms-border wsms-border-border wsms-p-3 wsms-space-y-1.5 wsms-text-[13px]">
                             <div className="wsms-flex wsms-items-center wsms-justify-between">
                               <a
                                 href={`/wp-admin/post.php?post=${order.order_id}&action=edit`}
@@ -1095,7 +1095,7 @@ export default function SmsCampaigns() {
                               <span>{order.order_date ? (order.order_date_formatted || formatDate(order.order_date)) : '—'}</span>
                             </div>
                             {order.response && (
-                              <p className="wsms-text-muted-foreground wsms-text-[11px]">{order.response}</p>
+                              <p className="wsms-text-muted-foreground wsms-text-[12px]">{order.response}</p>
                             )}
                           </div>
                         )
@@ -1104,7 +1104,7 @@ export default function SmsCampaigns() {
 
                     {/* Desktop: Table layout */}
                     <div className="wsms-mt-2 wsms-rounded-lg wsms-border wsms-border-border wsms-overflow-hidden wsms-max-h-[400px] wsms-overflow-y-auto wsms-hidden md:wsms-block">
-                      <table className="wsms-w-full wsms-text-[12px]">
+                      <table className="wsms-w-full wsms-text-[13px]">
                         <thead className="wsms-sticky wsms-top-0">
                           <tr className="wsms-bg-muted/50 wsms-border-b wsms-border-border">
                             <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">{__('Order ID', 'wp-sms')}</th>
@@ -1148,7 +1148,7 @@ export default function SmsCampaigns() {
                 ) : (
                   <div className="wsms-text-center wsms-py-8">
                     <ListOrdered className="wsms-h-8 wsms-w-8 wsms-text-muted-foreground wsms-mx-auto wsms-mb-2" />
-                    <p className="wsms-text-[13px] wsms-text-muted-foreground">{__('No target orders found for this campaign', 'wp-sms')}</p>
+                    <p className="wsms-text-[14px] wsms-text-muted-foreground">{__('No target orders found for this campaign', 'wp-sms')}</p>
                   </div>
                 )}
               </div>
@@ -1173,7 +1173,7 @@ export default function SmsCampaigns() {
       >
         {deleteDialog.item && (
           <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
-            <p className="wsms-text-[13px] wsms-font-medium">{deleteDialog.item.title}</p>
+            <p className="wsms-text-[14px] wsms-font-medium">{deleteDialog.item.title}</p>
           </div>
         )}
       </DeleteConfirmDialog>

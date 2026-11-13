@@ -75,13 +75,13 @@ function NoticeItem({ notice, onDismiss, onAction, onRemove, onInlineLink, onNav
 
       <div className="wsms-flex-1 wsms-min-w-0">
         {notice.title && (
-          <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground wsms-mb-0.5">
+          <p className="wsms-text-[14px] wsms-font-semibold wsms-text-foreground wsms-mb-0.5">
             {notice.title}
           </p>
         )}
         <div
           className={cn(
-            'wsms-text-[12px] wsms-text-foreground/80 wsms-leading-relaxed',
+            'wsms-text-[13px] wsms-text-foreground/80 wsms-leading-relaxed',
             '[&_a]:wsms-text-primary [&_a]:wsms-font-medium [&_a]:wsms-underline [&_a]:wsms-underline-offset-2 [&_a]:hover:wsms-opacity-80'
           )}
           onClick={onInlineLink}
@@ -97,7 +97,7 @@ function NoticeItem({ notice, onDismiss, onAction, onRemove, onInlineLink, onNav
                   href={action.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-font-medium wsms-text-blue-600 dark:wsms-text-blue-400 hover:wsms-underline"
+                  className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[13px] wsms-font-medium wsms-text-blue-600 dark:wsms-text-blue-400 hover:wsms-underline"
                 >
                   {action.label}
                   <ExternalLink className="wsms-h-3 wsms-w-3 wsms-opacity-60" />
@@ -107,7 +107,7 @@ function NoticeItem({ notice, onDismiss, onAction, onRemove, onInlineLink, onNav
                   key={i}
                   type="button"
                   onClick={() => onNavigate(action.navigate)}
-                  className="wsms-inline-flex wsms-items-center wsms-px-2.5 wsms-py-1 wsms-text-[11px] wsms-font-medium wsms-rounded-md wsms-border wsms-border-border wsms-bg-card wsms-text-foreground hover:wsms-border-blue-400 hover:wsms-text-blue-600 dark:hover:wsms-text-blue-400 wsms-transition-colors"
+                  className="wsms-inline-flex wsms-items-center wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-rounded-md wsms-border wsms-border-border wsms-bg-card wsms-text-foreground hover:wsms-border-blue-400 hover:wsms-text-blue-600 dark:hover:wsms-text-blue-400 wsms-transition-colors"
                 >
                   {action.label}
                 </button>
@@ -118,7 +118,7 @@ function NoticeItem({ notice, onDismiss, onAction, onRemove, onInlineLink, onNav
                   disabled={actionState === 'loading' || actionState === 'success'}
                   onClick={() => handleActionClick(action)}
                   className={cn(
-                    'wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-px-2.5 wsms-py-1 wsms-text-[11px] wsms-font-medium wsms-rounded-md wsms-border wsms-transition-all wsms-duration-300',
+                    'wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-rounded-md wsms-border wsms-transition-all wsms-duration-300',
                     actionState === 'success'
                       ? 'wsms-border-emerald-400 wsms-bg-emerald-500 wsms-text-white dark:wsms-border-emerald-500 dark:wsms-bg-emerald-600'
                       : actionState === 'loading'

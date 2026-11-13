@@ -27,7 +27,7 @@ export function createDateColumn({
     cell: ({ row }) => {
       const value = row[accessorKey]
       if (!value) {
-        return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
+        return <span className="wsms-text-[13px] wsms-text-muted-foreground">—</span>
       }
       // Use pre-formatted date from server if available (supports i18n filters like Persian/Jalali calendars)
       const formattedKey = accessorKey + '_formatted'
@@ -35,7 +35,7 @@ export function createDateColumn({
       return (
         <div className="wsms-flex wsms-items-center wsms-gap-2">
           <Clock className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" aria-hidden="true" />
-          <span className="wsms-text-[12px] wsms-text-muted-foreground">
+          <span className="wsms-text-[13px] wsms-text-muted-foreground">
             {displayValue}
           </span>
         </div>
@@ -94,7 +94,7 @@ export function createTextColumn({
     accessorKey,
     header,
     cell: ({ row }) => (
-      <p className={`wsms-text-[12px] wsms-text-foreground wsms-line-clamp-${lineClamp} wsms-max-w-${maxWidth}`}>
+      <p className={`wsms-text-[13px] wsms-text-foreground wsms-line-clamp-${lineClamp} wsms-max-w-${maxWidth}`}>
         {row[accessorKey]}
       </p>
     ),
@@ -119,7 +119,7 @@ export function createMediaColumn({
     cell: ({ row }) => {
       const media = row[accessorKey]
       if (!media || (Array.isArray(media) && media.length === 0)) {
-        return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
+        return <span className="wsms-text-[13px] wsms-text-muted-foreground">—</span>
       }
       // Handle both array and string formats
       const mediaUrls = Array.isArray(media)
@@ -129,7 +129,7 @@ export function createMediaColumn({
           : []
 
       if (mediaUrls.length === 0) {
-        return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
+        return <span className="wsms-text-[13px] wsms-text-muted-foreground">—</span>
       }
 
       return (
@@ -140,14 +140,14 @@ export function createMediaColumn({
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className="wsms-flex wsms-items-center wsms-gap-1 wsms-px-2 wsms-py-1 wsms-rounded wsms-bg-muted/50 wsms-text-[11px] wsms-text-primary hover:wsms-bg-muted"
+              className="wsms-flex wsms-items-center wsms-gap-1 wsms-px-2 wsms-py-1 wsms-rounded wsms-bg-muted/50 wsms-text-[12px] wsms-text-primary hover:wsms-bg-muted"
               aria-label={`View media ${idx + 1}`}
             >
               <Image className="wsms-h-3 wsms-w-3" aria-hidden="true" />
             </a>
           ))}
           {mediaUrls.length > maxVisible && (
-            <span className="wsms-text-[11px] wsms-text-muted-foreground">
+            <span className="wsms-text-[12px] wsms-text-muted-foreground">
               +{mediaUrls.length - maxVisible}
             </span>
           )}
@@ -181,13 +181,13 @@ export const outboxColumns = [
       return (
         <div className="wsms-space-y-0.5">
           <span className={cn(
-            'wsms-text-[13px] wsms-font-medium',
+            'wsms-text-[14px] wsms-font-medium',
             hasRecipient ? 'wsms-text-foreground' : 'wsms-text-muted-foreground'
           )}>
             {displayRecipient}
           </span>
           {row.sender && (
-            <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('From:', 'wp-sms')} {row.sender}</p>
+            <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('From:', 'wp-sms')} {row.sender}</p>
           )}
         </div>
       )
@@ -278,12 +278,12 @@ export function getSubscriberColumns({ groups = [], countries = {} } = {}) {
       header: __('Phone Number', 'wp-sms'),
       cell: ({ row }) => (
         <div className="wsms-space-y-0.5">
-          <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground wsms-font-mono">
+          <span className="wsms-text-[14px] wsms-font-medium wsms-text-foreground wsms-font-mono">
             {/* <bdi> keeps the leading + on the left of the digits in RTL admin layouts */}
             <bdi>{row.mobile}</bdi>
           </span>
           {row.name && (
-            <p className="wsms-text-[11px] wsms-text-muted-foreground">{row.name}</p>
+            <p className="wsms-text-[12px] wsms-text-muted-foreground">{row.name}</p>
           )}
         </div>
       ),
@@ -295,7 +295,7 @@ export function getSubscriberColumns({ groups = [], countries = {} } = {}) {
       cell: ({ row }) => {
         const group = groups.find((g) => String(g.id) === String(row.group_id))
         return (
-          <span className="wsms-text-[12px] wsms-text-muted-foreground">
+          <span className="wsms-text-[13px] wsms-text-muted-foreground">
             {group?.name || __('No group', 'wp-sms')}
           </span>
         )
@@ -308,10 +308,10 @@ export function getSubscriberColumns({ groups = [], countries = {} } = {}) {
       cell: ({ row }) => {
         const country = countries[row.country_code]
         if (!country) {
-          return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
+          return <span className="wsms-text-[13px] wsms-text-muted-foreground">—</span>
         }
         return (
-          <span className="wsms-text-[12px] wsms-text-muted-foreground">
+          <span className="wsms-text-[13px] wsms-text-muted-foreground">
             {country.flag} {country.name}
           </span>
         )
@@ -411,11 +411,11 @@ export const scheduledSmsColumns = [
     header: __('Recipient', 'wp-sms'),
     cell: ({ row }) => (
       <div className="wsms-space-y-0.5">
-        <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+        <span className="wsms-text-[14px] wsms-font-medium wsms-text-foreground">
           {row.recipient_count > 1 ? `${row.recipient_count} ${__('recipients', 'wp-sms')}` : row.recipient}
         </span>
         {row.sender && (
-          <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('From:', 'wp-sms')} {row.sender}</p>
+          <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('From:', 'wp-sms')} {row.sender}</p>
         )}
       </div>
     ),
@@ -508,7 +508,7 @@ export const repeatingMessagesColumns = [
       return (
         <div className="wsms-flex wsms-items-center wsms-gap-2">
           <Repeat className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" aria-hidden="true" />
-          <span className="wsms-text-[12px] wsms-text-foreground">
+          <span className="wsms-text-[13px] wsms-text-foreground">
             {__('Every', 'wp-sms')} {row.interval} {unitLabels[row.interval_unit] || row.interval_unit}
           </span>
         </div>
@@ -526,7 +526,7 @@ export const repeatingMessagesColumns = [
     accessorKey: 'ends_at_date',
     header: __('Ends At', 'wp-sms'),
     cell: ({ row }) => (
-      <span className="wsms-text-[12px] wsms-text-muted-foreground">
+      <span className="wsms-text-[13px] wsms-text-muted-foreground">
         {row.ends_at_date ? (row.ends_at_formatted || formatDate(row.ends_at_date, true)) : __('Never', 'wp-sms')}
       </span>
     ),
@@ -537,11 +537,11 @@ export const repeatingMessagesColumns = [
     header: __('Recipient', 'wp-sms'),
     cell: ({ row }) => (
       <div className="wsms-space-y-0.5">
-        <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+        <span className="wsms-text-[14px] wsms-font-medium wsms-text-foreground">
           {row.recipient_count > 1 ? `${row.recipient_count} ${__('recipients', 'wp-sms')}` : row.recipient}
         </span>
         {row.sender && (
-          <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('From:', 'wp-sms')} {row.sender}</p>
+          <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('From:', 'wp-sms')} {row.sender}</p>
         )}
       </div>
     ),
@@ -552,7 +552,7 @@ export const repeatingMessagesColumns = [
     accessorKey: 'occurrences_sent',
     header: __('Sent', 'wp-sms'),
     cell: ({ row }) => (
-      <span className="wsms-text-[12px] wsms-text-muted-foreground">
+      <span className="wsms-text-[13px] wsms-text-muted-foreground">
         {row.occurrences_sent || 0}
         {row.max_occurrences ? ` / ${row.max_occurrences}` : ''}
       </span>

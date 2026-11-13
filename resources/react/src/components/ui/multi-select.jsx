@@ -155,7 +155,7 @@ const MultiSelect = React.forwardRef(
                 <Badge
                   key={selectedValues[index]}
                   variant="secondary"
-                  className="wsms-text-[11px] wsms-px-1.5 wsms-py-0"
+                  className="wsms-text-[12px] wsms-px-1.5 wsms-py-0"
                 >
                   {label}
                   <button
@@ -169,7 +169,7 @@ const MultiSelect = React.forwardRef(
                 </Badge>
               ))
             ) : (
-              <Badge variant="secondary" className="wsms-text-[11px] wsms-px-1.5 wsms-py-0">
+              <Badge variant="secondary" className="wsms-text-[12px] wsms-px-1.5 wsms-py-0">
                 {selectedValues.length} selected
               </Badge>
             )}
@@ -224,7 +224,7 @@ const MultiSelect = React.forwardRef(
                       type="button"
                       onClick={() => handleSelect(option.value)}
                       className={cn(
-                        'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded wsms-px-2 wsms-py-1.5 wsms-text-start wsms-text-[13px] wsms-outline-none',
+                        'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded wsms-px-2 wsms-py-1.5 wsms-text-start wsms-text-[14px] wsms-outline-none',
                         'hover:wsms-bg-accent focus:wsms-bg-accent',
                         isSelected && 'wsms-bg-accent/50'
                       )}
@@ -248,7 +248,7 @@ const MultiSelect = React.forwardRef(
 
             {/* Footer with selection count */}
             {normalizedOptions.length > 5 && (
-              <div className="wsms-border-t wsms-border-border wsms-px-2 wsms-py-1.5 wsms-text-[11px] wsms-text-muted-foreground">
+              <div className="wsms-border-t wsms-border-border wsms-px-2 wsms-py-1.5 wsms-text-[12px] wsms-text-muted-foreground">
                 {selectedValues.length} of {normalizedOptions.length} selected
               </div>
             )}

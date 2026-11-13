@@ -16,7 +16,7 @@ export function GatewayCard({ gateway, isSelected, isCurrent, onClick, showFeatu
       onClick={() => onClick(gateway.slug)}
       style={{ textAlign: 'start' }}
       className={cn(
-        'wsms-flex wsms-items-center wsms-gap-3 wsms-rounded-md wsms-border wsms-px-3.5 wsms-py-2.5 wsms-h-[58px] wsms-text-[13px] wsms-transition-colors',
+        'wsms-flex wsms-items-center wsms-gap-3 wsms-rounded-md wsms-border wsms-px-4 wsms-py-3 wsms-h-[70px] wsms-text-[15px] wsms-transition-colors',
         isSelected
           ? 'wsms-border-primary wsms-bg-primary/10 wsms-text-primary wsms-font-medium'
           : isCurrent
@@ -28,7 +28,7 @@ export function GatewayCard({ gateway, isSelected, isCurrent, onClick, showFeatu
         <img
           src={logoUrl}
           alt=""
-          className="wsms-h-7 wsms-w-7 wsms-shrink-0 wsms-rounded-sm wsms-object-contain"
+          className="wsms-h-9 wsms-w-9 wsms-shrink-0 wsms-rounded-sm wsms-object-contain"
           loading="lazy"
           onError={(e) => { e.target.style.display = 'none' }}
         />
@@ -36,7 +36,7 @@ export function GatewayCard({ gateway, isSelected, isCurrent, onClick, showFeatu
       <div className="wsms-min-w-0 wsms-flex-1">
         <span className="wsms-truncate wsms-block">{gateway.name}</span>
         {gateway.website && (
-          <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-truncate wsms-block">
+          <span className="wsms-text-[13px] wsms-text-muted-foreground wsms-truncate wsms-block">
             {displayHost(gateway.website)}
           </span>
         )}
@@ -57,7 +57,7 @@ export function GatewayCardMinimal({ gateway, isSelected, isCurrent, onClick }) 
       onClick={() => onClick(gateway.slug)}
       style={{ textAlign: 'start' }}
       className={cn(
-        'wsms-flex wsms-items-center wsms-gap-3 wsms-rounded-md wsms-border wsms-px-3.5 wsms-py-2.5 wsms-h-[58px] wsms-text-[13px] wsms-transition-colors',
+        'wsms-flex wsms-items-center wsms-gap-3 wsms-rounded-md wsms-border wsms-px-4 wsms-py-3 wsms-h-[70px] wsms-text-[15px] wsms-transition-colors',
         isSelected
           ? 'wsms-border-primary wsms-bg-primary/10 wsms-text-primary wsms-font-medium'
           : isCurrent
@@ -81,7 +81,7 @@ export function GatewayCardPro({ gateway }) {
       target="_blank"
       rel="noopener noreferrer"
       style={{ textAlign: 'start' }}
-      className="wsms-flex wsms-items-center wsms-gap-3 wsms-rounded-md wsms-border wsms-border-dashed wsms-border-border wsms-px-3.5 wsms-py-2.5 wsms-h-[58px] wsms-text-[13px] wsms-opacity-75 hover:wsms-opacity-100 wsms-transition-opacity"
+      className="wsms-flex wsms-items-center wsms-gap-3 wsms-rounded-md wsms-border wsms-border-dashed wsms-border-border wsms-px-3.5 wsms-py-2.5 wsms-h-[58px] wsms-text-[14px] wsms-opacity-75 hover:wsms-opacity-100 wsms-transition-opacity"
     >
       {gateway.logo ? (
         <img
@@ -97,12 +97,12 @@ export function GatewayCardPro({ gateway }) {
       <div className="wsms-min-w-0 wsms-flex-1">
         <span className="wsms-truncate wsms-block wsms-text-muted-foreground">{gateway.name}</span>
         {gateway.description && (
-          <span className="wsms-text-[11px] wsms-text-muted-foreground/70 wsms-truncate wsms-block">
+          <span className="wsms-text-[12px] wsms-text-muted-foreground/70 wsms-truncate wsms-block">
             {gateway.description}
           </span>
         )}
       </div>
-      <span className="wsms-shrink-0 wsms-rounded wsms-bg-muted wsms-px-1.5 wsms-py-0.5 wsms-text-[10px] wsms-font-medium wsms-uppercase wsms-text-muted-foreground">
+      <span className="wsms-shrink-0 wsms-rounded wsms-bg-muted wsms-px-1.5 wsms-py-0.5 wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-text-muted-foreground">
         {__('Pro', 'wp-sms')}
       </span>
     </a>
@@ -115,7 +115,7 @@ export function GatewayCardPro({ gateway }) {
 export function PremiumSearchResults({ gateways, searchQuery }) {
   if (gateways.length === 0) {
     return (
-      <p className="wsms-py-8 wsms-text-center wsms-text-[12px] wsms-text-muted-foreground">
+      <p className="wsms-py-8 wsms-text-center wsms-text-[13px] wsms-text-muted-foreground">
         {searchQuery ? __('No gateways found matching', 'wp-sms') + ` "${searchQuery}".` : __('No gateways found.', 'wp-sms')}
       </p>
     )
@@ -124,7 +124,7 @@ export function PremiumSearchResults({ gateways, searchQuery }) {
   return (
     <div className="wsms-space-y-4">
       {/** Keep arrow direction correct in RTL */}
-      <p className="wsms-text-center wsms-text-[12px] wsms-text-muted-foreground">
+      <p className="wsms-text-center wsms-text-[13px] wsms-text-muted-foreground">
         {__('These gateways are available with the Pro add-on:', 'wp-sms')}
       </p>
       <div className="wsms-grid wsms-grid-cols-1 wsms-gap-2.5 sm:wsms-grid-cols-2 lg:wsms-grid-cols-3">
@@ -132,7 +132,7 @@ export function PremiumSearchResults({ gateways, searchQuery }) {
           <GatewayCardPro key={g.slug} gateway={{ ...g, logo: getGatewayLogo(g) }} />
         ))}
       </div>
-      <p className="wsms-text-center wsms-text-[12px] wsms-text-muted-foreground">
+      <p className="wsms-text-center wsms-text-[13px] wsms-text-muted-foreground">
         <a
           href="https://wsms.io/gateways/"
           target="_blank"
@@ -155,7 +155,7 @@ export function MoreGatewaysNotice({ premiumCount, searchQuery }) {
 
   return (
     <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border wsms-px-4 wsms-py-2.5">
-      <p className="wsms-text-[12px] wsms-text-muted-foreground">
+      <p className="wsms-text-[13px] wsms-text-muted-foreground">
         {searchQuery
           /* translators: %d: number of gateways in the Pro add-on */
           ? sprintf(__("Can't find your gateway? We support %d+ additional gateways.", 'wp-sms'), premiumCount)
@@ -167,7 +167,7 @@ export function MoreGatewaysNotice({ premiumCount, searchQuery }) {
         href="https://wsms.io/gateways/"
         target="_blank"
         rel="noopener noreferrer"
-        className="wsms-shrink-0 wsms-text-[12px] wsms-font-medium wsms-text-primary hover:wsms-text-primary/80"
+        className="wsms-shrink-0 wsms-text-[13px] wsms-font-medium wsms-text-primary hover:wsms-text-primary/80"
       >
         {__('View all gateways', 'wp-sms')}{' '}
         <span className="wsms-inline-block rtl:wsms-scale-x-[-1]">{'\u2192'}</span>

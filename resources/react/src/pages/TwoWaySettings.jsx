@@ -165,7 +165,7 @@ export default function TwoWaySettings() {
             <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
               <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
               <h3 className="wsms-font-medium wsms-mb-2">{__('Two-Way SMS Add-on Required', 'wp-sms')}</h3>
-              <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-4">
+              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-4">
                 {__('Install and activate the WSMS Two-Way add-on to configure these settings.', 'wp-sms')}
               </p>
               <Button variant="outline" asChild>
@@ -231,10 +231,10 @@ export default function TwoWaySettings() {
                 )}
               </div>
               <div>
-                <p className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
+                <p className="wsms-text-[12px] wsms-font-medium wsms-uppercase wsms-text-muted-foreground">
                   {webhookSupported ? __('Connected Gateway', 'wp-sms') : __('Gateway Status', 'wp-sms')}
                 </p>
-                <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground">
+                <p className="wsms-text-[14px] wsms-font-semibold wsms-text-foreground">
                   {currentGateway || __('No Gateway Selected', 'wp-sms')}
                 </p>
               </div>
@@ -243,19 +243,19 @@ export default function TwoWaySettings() {
             <div className="wsms-border-t wsms-border-primary/20 wsms-px-3 wsms-py-2 wsms-bg-primary/[0.02]">
               <div className="wsms-flex wsms-items-center wsms-gap-2">
                 <span className={cn(
-                  "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
+                  "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-font-medium",
                   webhookSupported ? "wsms-text-success" : "wsms-text-muted-foreground/50"
                 )}>
                   {webhookSupported ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
                   {__('Two-Way SMS', 'wp-sms')}
                 </span>
                 {!webhookSupported && currentGateway && (
-                  <span className="wsms-text-[11px] wsms-text-muted-foreground">
+                  <span className="wsms-text-[12px] wsms-text-muted-foreground">
                     — {__('This gateway does not support incoming messages', 'wp-sms')}
                   </span>
                 )}
                 {!webhookSupported && !currentGateway && (
-                  <span className="wsms-text-[11px] wsms-text-muted-foreground">
+                  <span className="wsms-text-[12px] wsms-text-muted-foreground">
                     — {__('Configure a gateway in Gateway settings first', 'wp-sms')}
                   </span>
                 )}
@@ -359,10 +359,10 @@ export default function TwoWaySettings() {
               {/* Fallback URL for gateways that drop the ?wpsms_token part when saving */}
               {registerType !== 'api' && webhookUrlPath && (
                 <div className="wsms-space-y-2 wsms-rounded-lg wsms-border wsms-border-dashed wsms-border-border wsms-bg-muted/20 wsms-p-3">
-                  <Label className="wsms-text-[13px] wsms-font-medium">
+                  <Label className="wsms-text-[14px] wsms-font-medium">
                     {__('Alternative URL (token in the path)', 'wp-sms')}
                   </Label>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground">
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
                     {__('Some gateways remove everything after the "?" when they save a webhook URL, which makes incoming messages fail. Use this URL instead if that happens.', 'wp-sms')}
                   </p>
                   <div className="wsms-flex wsms-gap-2">
@@ -412,7 +412,7 @@ export default function TwoWaySettings() {
           />
           {smsForwardEnabled && (
             <div className="wsms-space-y-2">
-              <Label htmlFor="sms-template" className="wsms-text-[13px] wsms-font-medium">
+              <Label htmlFor="sms-template" className="wsms-text-[14px] wsms-font-medium">
                 {__('Message Template', 'wp-sms')}
               </Label>
               <TemplateTextarea

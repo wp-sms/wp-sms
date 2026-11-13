@@ -64,7 +64,7 @@ export function useNotifications() {
 
     // Optimistic update
     setNotifications(prev =>
-      prev.map(n => ({ ...n, dismissed: true }))
+      prev.map(n => (n.localOnly ? n : { ...n, dismissed: true }))
     )
 
     try {

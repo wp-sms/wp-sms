@@ -61,7 +61,7 @@ export default function WizardStepper({
               </div>
               <span
                 className={cn(
-                  'wsms-text-[11px] wsms-font-medium wsms-transition-colors wsms-whitespace-nowrap',
+                  'wsms-text-[12px] wsms-font-medium wsms-transition-colors wsms-whitespace-nowrap',
                   isCurrent && 'wsms-text-primary',
                   isCompleted && 'wsms-text-foreground',
                   !isCompleted && !isCurrent && 'wsms-text-muted-foreground'

@@ -147,7 +147,7 @@ export function ListPageLayout({
             <div>
               <h1 className="wsms-text-xl wsms-font-semibold wsms-text-foreground">{title}</h1>
               {description && (
-                <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mt-1">{description}</p>
+                <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-mt-1">{description}</p>
               )}
             </div>
             {actions && <div className="wsms-flex wsms-gap-2">{actions}</div>}
@@ -191,7 +191,7 @@ export function ListPageLayout({
           <div>
             <h1 className="wsms-text-xl wsms-font-semibold wsms-text-foreground">{title}</h1>
             {description && (
-              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mt-1">{description}</p>
+              <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-mt-1">{description}</p>
             )}
           </div>
           {actions && <div className="wsms-flex wsms-gap-2">{actions}</div>}

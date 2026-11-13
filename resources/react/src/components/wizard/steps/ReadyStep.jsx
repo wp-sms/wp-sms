@@ -66,7 +66,7 @@ export default function ReadyStep({
         <h2 className="wsms-text-xl wsms-font-bold wsms-text-foreground wsms-mb-2">
           {__("You're All Set!", 'wp-sms')}
         </h2>
-        <p className="wsms-text-[13px] wsms-text-muted-foreground">
+        <p className="wsms-text-[14px] wsms-text-muted-foreground">
           {__('Your SMS gateway is configured and ready to use.', 'wp-sms')}
         </p>
       </div>
@@ -76,7 +76,7 @@ export default function ReadyStep({
         <div className="wsms-flex wsms-justify-center wsms-mb-8">
           <div className="wsms-inline-flex wsms-items-center wsms-gap-2 wsms-px-4 wsms-py-2.5 wsms-rounded-full wsms-bg-success/10 wsms-border wsms-border-success/20">
             <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-success" />
-            <span className="wsms-text-[13px] wsms-font-medium wsms-text-success">
+            <span className="wsms-text-[14px] wsms-font-medium wsms-text-success">
               {__('Connected to', 'wp-sms')} {getGatewayDisplayName()}
             </span>
           </div>
@@ -85,7 +85,7 @@ export default function ReadyStep({
 
       {/* Quick Actions */}
       <div className="wsms-space-y-3 wsms-mb-8">
-        <p className="wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide wsms-text-center wsms-mb-4">
+        <p className="wsms-text-[13px] wsms-font-medium wsms-text-muted-foreground wsms-uppercase wsms-text-center wsms-mb-4">
           {__('What would you like to do next?', 'wp-sms')}
         </p>
         {quickActions.map((action) => {
@@ -115,13 +115,13 @@ export default function ReadyStep({
               </div>
               <div className="wsms-flex-1" style={{ textAlign: 'start' }}>
                 <p
-                  className={`wsms-text-[13px] wsms-font-semibold ${
+                  className={`wsms-text-[14px] wsms-font-semibold ${
                     action.primary ? 'wsms-text-primary' : 'wsms-text-foreground'
                   }`}
                 >
                   {action.title}
                 </p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">
                   {action.description}
                 </p>
               </div>

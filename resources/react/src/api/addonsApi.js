@@ -21,7 +21,7 @@ export const addonsApi = {
    */
   async activateLicense(addonSlug, licenseKey) {
     const response = await apiClient.post('addons/activate-license', {
-      addon_slug: addonSlug,
+      addon_slug: addonSlug || '',
       license_key: licenseKey,
     })
     return response

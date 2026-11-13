@@ -61,7 +61,7 @@ const VariableChip = ({ variable, onClick }) => (
   <button
     type="button"
     onClick={() => onClick(variable.key)}
-    className="wsms-inline-flex wsms-items-center wsms-rounded wsms-border wsms-border-border wsms-px-1.5 wsms-py-0.5 wsms-text-[11px] wsms-font-mono wsms-text-muted-foreground wsms-bg-muted/30 hover:wsms-bg-primary/10 hover:wsms-border-primary hover:wsms-text-primary wsms-transition-colors wsms-cursor-pointer focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20"
+    className="wsms-inline-flex wsms-items-center wsms-rounded wsms-border wsms-border-border wsms-px-1.5 wsms-py-0.5 wsms-text-[12px] wsms-font-mono wsms-text-muted-foreground wsms-bg-muted/30 hover:wsms-bg-primary/10 hover:wsms-border-primary hover:wsms-text-primary wsms-transition-colors wsms-cursor-pointer focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20"
     title={variable.label || variable.key}
   >
     {variable.key}
@@ -111,7 +111,7 @@ const ForminatorFormSettings = ({ form }) => {
           {hasAnyEnabled && (
             <span className="wsms-h-2 wsms-w-2 wsms-rounded-full wsms-bg-green-500" />
           )}
-          <span className="wsms-text-[13px] wsms-font-medium">{form.name}</span>
+          <span className="wsms-text-[14px] wsms-font-medium">{form.name}</span>
         </div>
         {isExpanded ? (
           <ChevronUp className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
@@ -146,7 +146,7 @@ const ForminatorFormSettings = ({ form }) => {
                     placeholder="+1234567890, +0987654321"
                     aria-label={__('Phone numbers', 'wp-sms')}
                   />
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                  <p className="wsms-text-[13px] wsms-text-muted-foreground">
                     {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms')}
                   </p>
                 </div>
@@ -207,7 +207,7 @@ const ForminatorFormSettings = ({ form }) => {
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                    <p className="wsms-text-[13px] wsms-text-muted-foreground">
                       {__('Select the field of your form.', 'wp-sms')}
                     </p>
                   </div>
@@ -289,7 +289,7 @@ const GravityFormSettings = ({ form }) => {
           {hasAnyEnabled && (
             <span className="wsms-h-2 wsms-w-2 wsms-rounded-full wsms-bg-green-500" />
           )}
-          <span className="wsms-text-[13px] wsms-font-medium">{form.name}</span>
+          <span className="wsms-text-[14px] wsms-font-medium">{form.name}</span>
         </div>
         {isExpanded ? (
           <ChevronUp className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
@@ -324,7 +324,7 @@ const GravityFormSettings = ({ form }) => {
                     placeholder="+1234567890, +0987654321"
                     aria-label={__('Phone numbers', 'wp-sms')}
                   />
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                  <p className="wsms-text-[13px] wsms-text-muted-foreground">
                     {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms')}
                   </p>
                 </div>
@@ -385,7 +385,7 @@ const GravityFormSettings = ({ form }) => {
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                    <p className="wsms-text-[13px] wsms-text-muted-foreground">
                       {__('Select the field of your form.', 'wp-sms')}
                     </p>
                   </div>
@@ -468,7 +468,7 @@ const QuformFormSettings = ({ form }) => {
           {hasAnyEnabled && (
             <span className="wsms-h-2 wsms-w-2 wsms-rounded-full wsms-bg-green-500" />
           )}
-          <span className="wsms-text-[13px] wsms-font-medium">{form.name}</span>
+          <span className="wsms-text-[14px] wsms-font-medium">{form.name}</span>
         </div>
         {isExpanded ? (
           <ChevronUp className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
@@ -503,7 +503,7 @@ const QuformFormSettings = ({ form }) => {
                     placeholder="+1234567890, +0987654321"
                     aria-label={__('Phone numbers', 'wp-sms')}
                   />
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                  <p className="wsms-text-[13px] wsms-text-muted-foreground">
                     {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms')}
                   </p>
                 </div>
@@ -564,7 +564,7 @@ const QuformFormSettings = ({ form }) => {
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                    <p className="wsms-text-[13px] wsms-text-muted-foreground">
                       {__('Select the field of your form.', 'wp-sms')}
                     </p>
                   </div>
@@ -644,7 +644,7 @@ const FluentFormSettings = ({ form }) => {
           {hasAnyEnabled && (
             <span className="wsms-h-2 wsms-w-2 wsms-rounded-full wsms-bg-green-500" />
           )}
-          <span className="wsms-text-[13px] wsms-font-medium">{form.name}</span>
+          <span className="wsms-text-[14px] wsms-font-medium">{form.name}</span>
         </div>
         {isExpanded ? (
           <ChevronUp className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
@@ -679,7 +679,7 @@ const FluentFormSettings = ({ form }) => {
                     placeholder="+1234567890, +0987654321"
                     aria-label={__('Phone numbers', 'wp-sms')}
                   />
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                  <p className="wsms-text-[13px] wsms-text-muted-foreground">
                     {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms')}
                   </p>
                 </div>
@@ -740,7 +740,7 @@ const FluentFormSettings = ({ form }) => {
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                    <p className="wsms-text-[13px] wsms-text-muted-foreground">
                       {__('Select the field of your form.', 'wp-sms')}
                     </p>
                   </div>
@@ -946,8 +946,8 @@ export default function Integrations() {
               <div className="wsms-rounded-lg wsms-border wsms-p-4">
                 <div className="wsms-flex wsms-items-center wsms-justify-between">
                   <div>
-                    <h4 className="wsms-text-[13px] wsms-font-medium">{__('SMS Notification Tab', 'wp-sms')}</h4>
-                    <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-1">
+                    <h4 className="wsms-text-[14px] wsms-font-medium">{__('SMS Notification Tab', 'wp-sms')}</h4>
+                    <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mt-1">
                       {__('Add an SMS notification settings tab to each Contact Form 7 form editor.', 'wp-sms')}
                     </p>
                   </div>
@@ -997,8 +997,8 @@ export default function Integrations() {
               <div className="wsms-rounded-lg wsms-border wsms-p-4">
                 <div className="wsms-flex wsms-items-center wsms-justify-between">
                   <div>
-                    <h4 className="wsms-text-[13px] wsms-font-medium">{__('SMS Notification Tab', 'wp-sms')}</h4>
-                    <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-1">
+                    <h4 className="wsms-text-[14px] wsms-font-medium">{__('SMS Notification Tab', 'wp-sms')}</h4>
+                    <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mt-1">
                       {__('Add an SMS notification settings tab to each Formidable form editor.', 'wp-sms')}
                     </p>
                   </div>
@@ -1048,7 +1048,7 @@ export default function Integrations() {
                 </div>
               ) : (
                 <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                  <p className="wsms-text-[13px] wsms-text-muted-foreground">
                     {__('No forms found. Create a form in Forminator to configure SMS notifications.', 'wp-sms')}
                   </p>
                 </div>
@@ -1092,7 +1092,7 @@ export default function Integrations() {
                 </div>
               ) : (
                 <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                  <p className="wsms-text-[13px] wsms-text-muted-foreground">
                     {__('No forms found. Create a form in Gravity Forms to configure SMS notifications.', 'wp-sms')}
                   </p>
                 </div>
@@ -1136,7 +1136,7 @@ export default function Integrations() {
                 </div>
               ) : (
                 <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                  <p className="wsms-text-[13px] wsms-text-muted-foreground">
                     {__('No forms found. Create a form in Quform to configure SMS notifications.', 'wp-sms')}
                   </p>
                 </div>
@@ -1180,7 +1180,7 @@ export default function Integrations() {
                 </div>
               ) : (
                 <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                  <p className="wsms-text-[13px] wsms-text-muted-foreground">
                     {__('No forms found. Create a form in Fluent Forms to configure SMS notifications.', 'wp-sms')}
                   </p>
                 </div>
@@ -1246,7 +1246,11 @@ export default function Integrations() {
                     </div>
                     <PluginStatusBadge status={pluginStatus.status} />
                   </div>
-                  <p className="wsms-text-xs wsms-text-muted-foreground wsms-mt-1 wsms-ms-6">{plugin.requirement}</p>
+                  <p className="wsms-text-xs wsms-text-muted-foreground wsms-mt-1 wsms-ms-6">
+                    {plugin.requirement === __('Requires WSMS PRO', 'wp-sms') && window.wpSmsSettings?.addons?.pro
+                      ? __('Included in your WSMS PRO', 'wp-sms')
+                      : plugin.requirement}
+                  </p>
                 </div>
               )
             })}
