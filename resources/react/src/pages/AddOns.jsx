@@ -171,7 +171,8 @@ function LicenseHero({ addons, summary, onChanged, compact = false }) {
         message: err.message || __('Failed to activate license.', 'wp-sms'),
         status: err.data?.status || '',
         renewUrl: err.data?.renewal?.renew_url || '',
-        supportUrl: err.data?.support_url || '',
+        // The server may send an email address; a web page is better for people, so a mailto link falls back to the support page.
+        supportUrl: /^https:/i.test(err.data?.support_url || '') ? err.data.support_url : 'https://wsms.io/support/?utm_source=wsms&utm_medium=plugin&utm_campaign=license-error',
       })
     } finally {
       setActivating(false)
