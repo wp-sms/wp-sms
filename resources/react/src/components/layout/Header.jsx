@@ -280,7 +280,7 @@ export default function Header({ onMenuClick, showMenuButton }) {
       </div>
 
       {/* Right: notifications and theme */}
-      <div className="wsms-flex wsms-items-center wsms-gap-1">
+      <div className="wsms-flex wsms-items-center wsms-gap-3">
         {/* LOCAL PREVIEW ONLY: hardcoded Black Friday pill, not from Horizon. Shown to non-All-in-One users; add &bf-preview=1 to the URL to see it on an All-in-One site. */}
         {showBlackFriday && (
           <a
