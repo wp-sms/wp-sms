@@ -14,6 +14,12 @@ if (!defined('ABSPATH')) exit;
  */
 class SubscriberUtil
 {
+    /** Wrong codes allowed per client and pending number in 15 minutes. */
+    const VERIFY_CLIENT_ATTEMPT_LIMIT = 10;
+
+    /** Wrong codes allowed per pending number in 15 minutes, all clients together. */
+    const VERIFY_ROW_ATTEMPT_LIMIT = 30;
+
     /**
      * Subscribe User
      *
@@ -216,15 +222,28 @@ class SubscriberUtil
         if ($check_mobile) {
 
             // Throttle guesses so the activation code cannot be enumerated. The
-            // counter is per client and number, so a third party sending wrong
-            // codes cannot lock the genuine subscriber out of confirming.
+            // counters are keyed on the subscriber row the database matched, not on
+            // the text the visitor typed: the database treats different spellings of
+            // one number as the same row, so a key built from the raw text would give
+            // one number many counters. The per-client counter keeps a third party
+            // from locking the genuine subscriber out; the per-row counter caps total
+            // guesses against one pending number from all clients together.
             $clientIp   = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '';
-            $attemptKey = 'wpsms_verify_attempts_' . hash('sha256', $clientIp . '|' . $mobile);
+            $rowId      = (int) $check_mobile->ID;
+            $attemptKey = 'wpsms_verify_attempts_' . hash('sha256', $clientIp . '|' . $rowId);
+            $rowKey     = 'wpsms_verify_row_attempts_' . hash('sha256', (string) $rowId);
             $isValid    = hash_equals((string) $check_mobile->activate_key, (string) $activation);
-            $attempt    = self::recordVerificationAttempt($attemptKey, $isValid);
+
+            $attempt = self::recordVerificationAttempt($attemptKey, $isValid, self::VERIFY_CLIENT_ATTEMPT_LIMIT);
 
             if (is_wp_error($attempt)) {
                 return $attempt;
+            }
+
+            $rowAttempt = self::recordVerificationAttempt($rowKey, $isValid, self::VERIFY_ROW_ATTEMPT_LIMIT);
+
+            if (is_wp_error($rowAttempt)) {
+                return $rowAttempt;
             }
 
             if (!$isValid) {
@@ -260,10 +279,11 @@ class SubscriberUtil
      *
      * @param string $attemptKey Transient key for the client and mobile number.
      * @param bool   $isValid    Whether the submitted activation code is valid.
+     * @param int    $limit      Failed attempts allowed in the window.
      *
      * @return int|\WP_Error The new attempt count, or an error when unavailable or limited.
      */
-    private static function recordVerificationAttempt($attemptKey, $isValid)
+    private static function recordVerificationAttempt($attemptKey, $isValid, $limit = self::VERIFY_CLIENT_ATTEMPT_LIMIT)
     {
         global $wpdb;
 
@@ -305,7 +325,7 @@ class SubscriberUtil
         try {
             $attemptCount = (int) get_transient($attemptKey);
 
-            if ($attemptCount >= 10) {
+            if ($attemptCount >= $limit) {
                 return new \WP_Error('verify_subscriber', esc_html__('Too many attempts. Please try again later.', 'wp-sms'));
             }
 
