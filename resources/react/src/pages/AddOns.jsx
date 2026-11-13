@@ -258,23 +258,21 @@ function LicenseHero({ addons, summary, onChanged, compact = false }) {
         )}
 
         {error && (
-          <div role="alert" className="wsms-mb-2 wsms-mt-4 wsms-flex wsms-items-start wsms-gap-2.5 wsms-text-start wsms-text-[14px]">
+          <div role="alert" className="wsms-mb-2 wsms-mt-4 wsms-flex wsms-w-full wsms-items-start wsms-gap-2.5 wsms-text-start wsms-text-[14px]">
             <AlertCircle className="wsms-mt-0.5 wsms-h-4 wsms-w-4 wsms-shrink-0 wsms-text-red-600" />
-            <div className="wsms-min-w-0">
+            <div className="wsms-min-w-0 wsms-flex-1">
               <p className="wsms-font-semibold wsms-text-red-700 dark:wsms-text-red-300"><ServerMessage html={error.message} /></p>
-              {!hasLink(error.message) && (
-                <p className="wsms-mt-1 wsms-text-muted-foreground">
-                  {__('Check that you copied the whole key from your account, with no spaces.', 'wp-sms')}
-                </p>
-              )}
-              {error.supportUrl && (
-                <p className="wsms-mt-1">
-                  <a href={error.supportUrl} target="_blank" rel="noopener noreferrer" className="wsms-font-semibold wsms-text-primary wsms-underline wsms-underline-offset-2 hover:wsms-no-underline">{__('Contact support', 'wp-sms')}</a>
-                </p>
-              )}
-              {error.renewUrl && (
-                <p className="wsms-mt-1">
-                  <a href={error.renewUrl} target="_blank" rel="noopener noreferrer" className="wsms-font-semibold wsms-text-primary wsms-underline wsms-underline-offset-2 hover:wsms-no-underline">{__('Renew this key', 'wp-sms')}</a>
+              {(!hasLink(error.message) || error.supportUrl || error.renewUrl) && (
+                <p className="wsms-mt-1 wsms-leading-relaxed">
+                  {!hasLink(error.message) && (
+                    <span className="wsms-text-muted-foreground">{__('Check that you copied the whole key from your account, with no spaces.', 'wp-sms')}</span>
+                  )}
+                  {error.supportUrl && (
+                    <> <a href={error.supportUrl} target="_blank" rel="noopener noreferrer" className="wsms-font-semibold wsms-text-primary wsms-underline wsms-underline-offset-2 hover:wsms-no-underline">{__('Contact support', 'wp-sms')}</a></>
+                  )}
+                  {error.renewUrl && (
+                    <> <a href={error.renewUrl} target="_blank" rel="noopener noreferrer" className="wsms-font-semibold wsms-text-primary wsms-underline wsms-underline-offset-2 hover:wsms-no-underline">{__('Renew this key', 'wp-sms')}</a></>
+                  )}
                 </p>
               )}
             </div>
@@ -371,10 +369,14 @@ const addonUtm = (url) => (url ? appendUtm(url, { source: 'wsms', medium: 'plugi
 function AddOnCard({ addon, onOpenPage }) {
   const primary = 'wsms-bg-primary wsms-text-primary-foreground hover:wsms-bg-primary/90'
   const outline = 'wsms-border wsms-border-border wsms-bg-background wsms-text-foreground hover:wsms-bg-accent'
+  // "Needs License" takes the user to the key field at the top and puts the cursor in it.
   const scrollToLicense = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    document.querySelector('#wpsms-settings-root .wsms-content')?.scrollTo({ top: 0, behavior: 'smooth' })
     const hero = document.getElementById('wsms-license-hero')
-    hero?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    hero?.querySelector('input')?.focus()
+    const input = hero?.querySelector('input')
+    hero?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    window.setTimeout(() => input?.focus({ preventScroll: true }), 350)
   }
 
   let action = null
@@ -415,7 +417,13 @@ function AddOnCard({ addon, onOpenPage }) {
             </div>
             {addon.is_installed && (
               <div className="wsms-mt-1 wsms-flex wsms-items-center wsms-gap-2">
-                <span className="wsms-shrink-0 [&_*]:wsms-whitespace-nowrap"><StatusBadge variant={STATUS_TO_VARIANT[addon.status] || 'default'} size="sm">{addon.status_label}</StatusBadge></span>
+                {['not_licensed', 'license_expired'].includes(addon.status) ? (
+                  <button type="button" onClick={scrollToLicense} title={__('Enter your license key', 'wp-sms')} className="wsms-shrink-0 wsms-cursor-pointer wsms-rounded-full focus-visible:wsms-ring-2 focus-visible:wsms-ring-ring [&_*]:wsms-whitespace-nowrap">
+                    <StatusBadge variant={STATUS_TO_VARIANT[addon.status] || 'default'} size="sm">{addon.status_label}</StatusBadge>
+                  </button>
+                ) : (
+                  <span className="wsms-shrink-0 [&_*]:wsms-whitespace-nowrap"><StatusBadge variant={STATUS_TO_VARIANT[addon.status] || 'default'} size="sm">{addon.status_label}</StatusBadge></span>
+                )}
             </div>
             )}
           </div>
