@@ -225,10 +225,13 @@ class LicenseHelper
 
         $result['attention'] = $result['missing'] + $result['expired'] + $result['inactive'];
 
-        foreach (self::getLicenses('license_expired') as $license) {
+        // One expired key: its renewal can be offered in the header and the bell. Several: each key carries its
+        // own price and offer in the Add-Ons page, so no single offer is shown for the whole site.
+        $expiredKeys = self::getLicenses('license_expired');
+        if (count($expiredKeys) === 1) {
+            $license = reset($expiredKeys);
             if (!empty($license['renewal']['renew_url'])) {
                 $result['renew'] = $license['renewal'];
-                break;
             }
         }
 
@@ -351,7 +354,7 @@ class LicenseHelper
                 // If license is expired, update the status
                 if ($e->getStatus() === 'license_expired') {
                     $data['status']  = $e->getStatus();
-                    $data['renewal'] = $e->getRenewal() ?: ($data['renewal'] ?? null);
+                    $data['renewal'] = $e->getRenewal() ?: $apiCommunicator->fetchRenewal($key, $data['products'][0] ?? '') ?: ($data['renewal'] ?? null);
                     LicenseHelper::updateLicense($key, $data);
                     continue;
                 }

@@ -110,6 +110,8 @@ function collectKeys(addons) {
 function describeExpiry(key) {
   const date = key.validUntil ? new Date(`${key.validUntil}T00:00:00`) : null
   if (!date || Number.isNaN(date.getTime())) return null
+  // The store writes 2099-01-01 for a key that never expires.
+  if (date.getFullYear() >= 2090) return { tone: 'ok', text: __('Lifetime', 'wp-sms') }
   const days = Math.ceil((date.getTime() - Date.now()) / 86400000)
   const formatted = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
   if (key.status === 'license_expired' || days < 0) return { tone: 'expired', text: sprintf(__('Expired %s', 'wp-sms'), formatted) }
@@ -187,7 +189,9 @@ function LicenseHero({ addons, summary, onChanged, compact = false }) {
   const licensedCount = summary.licensed || 0
   const total = summary.total || addons.length
   const keys = collectKeys(addons)
-  const renew = keys.find((k) => k.status === 'license_expired' && k.renewal?.renew_url)?.renewal
+  // One expired key: the banner can offer its renewal. Several: each key row carries its own price and offer, so nobody renews the wrong one.
+  const expiredKeys = keys.filter((k) => k.status === 'license_expired')
+  const renew = expiredKeys.length === 1 ? expiredKeys[0].renewal : null
 
   let tone = 'ok'
   let title = __('All your add-ons are licensed', 'wp-sms')
@@ -297,6 +301,7 @@ function LicenseHero({ addons, summary, onChanged, compact = false }) {
         {showInput ? (
           <div className="wsms-mt-6 wsms-flex wsms-flex-col wsms-gap-3 sm:wsms-flex-row">
             <input
+              autoFocus={showAdd}
               value={licenseKey}
               onChange={(e) => { setLicenseKey(e.target.value); if (error) setError(null) }}
               onKeyDown={(e) => e.key === 'Enter' && handleActivate()}
@@ -335,11 +340,9 @@ function LicenseHero({ addons, summary, onChanged, compact = false }) {
             <AlertCircle className="wsms-mt-0.5 wsms-h-4 wsms-w-4 wsms-shrink-0 wsms-text-red-600" />
             <div className="wsms-min-w-0 wsms-flex-1">
               <p className="wsms-font-semibold wsms-text-red-700 dark:wsms-text-red-300"><ServerMessage html={error.message} /></p>
-              {(!hasLink(error.message) || error.supportUrl || error.renewUrl) && (
+              {!hasLink(error.message) && (
                 <p className="wsms-mt-1 wsms-leading-relaxed">
-                  {!hasLink(error.message) && (
-                    <span className="wsms-text-muted-foreground">{__('Check that you copied the whole key from your account, with no spaces.', 'wp-sms')}</span>
-                  )}
+                  <span className="wsms-text-muted-foreground">{__('Check that you copied the whole key from your account, with no spaces.', 'wp-sms')}</span>
                   {error.supportUrl && (
                     <> <a href={error.supportUrl} target="_blank" rel="noopener noreferrer" className="wsms-font-semibold wsms-text-primary wsms-underline wsms-underline-offset-2 hover:wsms-no-underline">{__('Contact support', 'wp-sms')}</a></>
                   )}
@@ -373,7 +376,9 @@ function LicenseHero({ addons, summary, onChanged, compact = false }) {
                       <KeyRound className={cn('wsms-h-5 wsms-w-5 wsms-shrink-0', isExpired ? 'wsms-text-red-600' : 'wsms-text-emerald-600')} />
                       {(() => {
                         const expiry = describeExpiry(key)
-                        const renew = expiry && expiry.tone !== 'ok' ? describeRenewal(key) : null
+                        const rowRenew = expiry && expiry.tone !== 'ok' ? describeRenewal(key) : null
+                        // The banner button already offers this renewal; repeat it only for other keys.
+                        const showRowRenew = rowRenew && !(renew?.renew_url && expired > 0 && rowRenew.url === renew.renew_url)
                         return (
                           <>
                             <div className="wsms-min-w-0 wsms-flex-1">
@@ -386,16 +391,16 @@ function LicenseHero({ addons, summary, onChanged, compact = false }) {
                                 <div className={cn('wsms-text-[13px]', expiry.tone === 'expired' ? 'wsms-text-red-600' : expiry.tone === 'soon' ? 'wsms-text-amber-700' : 'wsms-text-muted-foreground')}>{expiry.text}</div>
                               )}
                             </div>
-                            {renew && (
+                            {showRowRenew && (
                               <a
-                                href={renew.url}
+                                href={rowRenew.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                title={[renew.was && sprintf(__('Regular price %s', 'wp-sms'), renew.was), renew.discount, renew.plusTax && __('plus tax', 'wp-sms')].filter(Boolean).join(' · ')}
+                                title={[rowRenew.was && sprintf(__('Regular price %s', 'wp-sms'), rowRenew.was), rowRenew.discount, rowRenew.plusTax && __('plus tax', 'wp-sms')].filter(Boolean).join(' · ')}
                                 className="wsms-inline-flex wsms-shrink-0 wsms-items-center wsms-gap-1.5 wsms-rounded-md wsms-bg-foreground wsms-px-3 wsms-py-1.5 wsms-text-[13px] wsms-font-medium !wsms-text-background wsms-no-underline hover:wsms-opacity-90"
                               >
-                                {renew.now ? sprintf(__('Renew %s', 'wp-sms'), renew.now) : __('Renew', 'wp-sms')}
-                                {renew.was && <span className="wsms-rounded-full wsms-bg-emerald-500 wsms-px-1.5 wsms-text-[11px] wsms-font-semibold wsms-text-white">{renew.offerShort}</span>}
+                                {rowRenew.now ? sprintf(__('Renew %s', 'wp-sms'), rowRenew.now) : __('Renew', 'wp-sms')}
+                                {rowRenew.was && <span className="wsms-rounded-full wsms-bg-emerald-500 wsms-px-1.5 wsms-text-[11px] wsms-font-semibold wsms-text-white">{rowRenew.offerShort}</span>}
                               </a>
                             )}
                           </>
