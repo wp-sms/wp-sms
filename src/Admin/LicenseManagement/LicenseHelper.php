@@ -130,6 +130,32 @@ class LicenseHelper
     }
 
     /**
+     * Days before the end when a key starts to count as "about to expire". The store's own reminder
+     * window when it sent one; 30 only for an older store that does not.
+     */
+    const EXPIRING_SOON_FALLBACK_DAYS = 30;
+
+    /**
+     * Does a key run out inside the store's reminder window?
+     *
+     * @param string|null $validUntil A date such as 2027-11-06.
+     * @param array|null  $renewal    The stored renewal block, if any.
+     * @return bool
+     */
+    public static function expiresSoon($validUntil, $renewal = null)
+    {
+        $time = $validUntil ? strtotime($validUntil) : false;
+
+        if ($time === false) {
+            return false;
+        }
+
+        $days = !empty($renewal['reminder_days']) ? (int) $renewal['reminder_days'] : self::EXPIRING_SOON_FALLBACK_DAYS;
+
+        return $time - time() <= $days * DAY_IN_SECONDS;
+    }
+
+    /**
      * Keep only the renewal fields the plugin shows: link, offer and price.
      *
      * @param object|array|null $renewal The `renewal` block from the licence server.
@@ -152,6 +178,9 @@ class LicenseHelper
             'auto_renews' => !empty($renewal['auto_renews']),
             'cancel_at_period_end' => !empty($renewal['cancel_at_period_end']),
             'renews_at'  => sanitize_text_field($renewal['renews_at'] ?? ''),
+            // The store's reminder window, and whether the Renew button is due. Null when an older store does not send them.
+            'reminder_days' => isset($renewal['reminder_days']) ? max(1, (int) $renewal['reminder_days']) : null,
+            'renewal_open'  => isset($renewal['renewal_open']) ? (bool) $renewal['renewal_open'] : null,
             'offer'     => is_array($offer) ? [
                 'code'           => sanitize_text_field($offer['code'] ?? ''),
                 'discount_type'  => sanitize_text_field($offer['discount_type'] ?? ''),
@@ -354,7 +383,7 @@ class LicenseHelper
                 // If license is expired, update the status
                 if ($e->getStatus() === 'license_expired') {
                     $data['status']  = $e->getStatus();
-                    $data['renewal'] = $e->getRenewal() ?: $apiCommunicator->fetchRenewal($key, $data['products'][0] ?? '') ?: ($data['renewal'] ?? null);
+                    $data['renewal'] = $e->getRenewal() ?: ($data['renewal'] ?? null);
                     LicenseHelper::updateLicense($key, $data);
                     continue;
                 }

@@ -25,45 +25,6 @@ class ApiCommunicator
 
     private $deactivateUrl = 'https://my.wsms.io/api/v1/license/deactivate';
 
-    private $validateUrl = 'https://my.wsms.io/api/v1/license/validate';
-
-    /**
-     * How to renew a key, from the licence server: the renew link, what it costs and any offer.
-     *
-     * The older status call the plugin uses does not carry this block, so it is asked for here.
-     * Only keys that run out within 30 days, or already have, need it. Never throws: a plugin
-     * that cannot reach the server just shows no Renew button.
-     *
-     * @param string $licenseKey
-     * @param string $addonSlug  Any add-on the key covers.
-     * @return array|null The normalized renewal block, or null.
-     */
-    public function fetchRenewal($licenseKey, $addonSlug)
-    {
-        if (empty($licenseKey) || empty($addonSlug)) {
-            return null;
-        }
-
-        $response = wp_remote_post($this->validateUrl, [
-            'timeout' => 10,
-            'headers' => ['Accept' => 'application/json'],
-            'body'    => [
-                'license_key'  => $licenseKey,
-                'product_slug' => $addonSlug,
-                'domain'       => home_url(),
-            ],
-        ]);
-
-        if (is_wp_error($response)) {
-            return null;
-        }
-
-        $body = json_decode(wp_remote_retrieve_body($response));
-
-        // A refused check (expired, suspended) carries the block beside `license`, an accepted one inside it.
-        return LicenseHelper::normalizeRenewal($body->license->renewal ?? $body->renewal ?? null);
-    }
-
     /**
      * Free this site's seat on the licence server, so the key can be used on another site.
      *
@@ -669,15 +630,6 @@ class ApiCommunicator
                     sprintf(__('The license is not related to the requested Add-On <b>%s</b>.', 'wp-sms'), esc_html($product))
                 );
                 // phpcs:enable WordPress.Security.EscapeOutput.ExceptionNotEscaped
-            }
-        }
-
-        // The status call has no renewal block. Ask for it only when the key is about to run out.
-        if (empty($licenseData->renewal) && empty($licenseData->license_details->renewal)) {
-            $until = !empty($licenseData->license_details->valid_until) ? strtotime($licenseData->license_details->valid_until) : false;
-
-            if ($until !== false && $until - time() <= 30 * DAY_IN_SECONDS && !empty($licenseData->products[0]->slug)) {
-                $licenseData->renewal = $this->fetchRenewal($licenseKey, $licenseData->products[0]->slug);
             }
         }
 

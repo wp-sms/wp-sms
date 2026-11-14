@@ -239,7 +239,7 @@ class NotificationsApi extends RestApi
 
             $days = (int) ceil(($time - time()) / DAY_IN_SECONDS);
 
-            if ($days >= 0 && $days <= 30 && ($soonest === null || $days < $soonest['days'])) {
+            if ($days >= 0 && \WP_SMS\Admin\LicenseManagement\LicenseHelper::expiresSoon($license['valid_until'], $license['renewal'] ?? null) && ($soonest === null || $days < $soonest['days'])) {
                 $soonest = ['days' => $days, 'renew_url' => $license['renewal']['renew_url'] ?? ''];
             }
         }

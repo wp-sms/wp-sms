@@ -96,7 +96,7 @@ function collectKeys(addons) {
     ;(addon.licenses || []).forEach((license) => {
       const key = license.masked_key
       if (!map.has(key)) {
-        map.set(key, { masked: key, status: license.status, covers: license.covers || 1, slug: addon.slug, renewal: license.renewal || null, sku: license.sku || null, validUntil: license.valid_until || null, maxDomains: license.max_domains })
+        map.set(key, { masked: key, status: license.status, covers: license.covers || 1, slug: addon.slug, renewal: license.renewal || null, sku: license.sku || null, validUntil: license.valid_until || null, reminderDays: license.reminder_days || license.renewal?.reminder_days || null, maxDomains: license.max_domains })
       }
     })
   })
@@ -105,7 +105,7 @@ function collectKeys(addons) {
 
 /**
  * What to say about when a key runs out, and whether it needs attention.
- * `tone` is 'ok', 'soon' (30 days or less) or 'expired'.
+ * `tone` is 'ok', 'soon' (inside the store's reminder window, 30 days if the store did not say) or 'expired'.
  */
 function describeExpiry(key) {
   const date = key.validUntil ? new Date(`${key.validUntil}T00:00:00`) : null
@@ -116,7 +116,7 @@ function describeExpiry(key) {
   const formatted = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
   if (key.status === 'license_expired' || days < 0) return { tone: 'expired', text: sprintf(__('Expired %s', 'wp-sms'), formatted) }
   if (key.renewal?.auto_renews && !key.renewal?.cancel_at_period_end) return { tone: 'ok', text: sprintf(__('Renews automatically on %s', 'wp-sms'), formatted) }
-  if (days <= 30) return { tone: 'soon', text: days === 0 ? __('Expires today', 'wp-sms') : sprintf(_n('Expires in %d day', 'Expires in %d days', days, 'wp-sms'), days) }
+  if (days <= (key.reminderDays || 30)) return { tone: 'soon', text: days === 0 ? __('Expires today', 'wp-sms') : sprintf(_n('Expires in %d day', 'Expires in %d days', days, 'wp-sms'), days) }
   return { tone: 'ok', text: sprintf(__('Expires %s', 'wp-sms'), formatted) }
 }
 

@@ -136,8 +136,9 @@ class AddonsApi extends RestApi
                             'covers'     => is_array($license['products'] ?? null) ? count($license['products']) : 1,
                             'valid_until' => $license['valid_until'] ?? null,
                             'max_domains' => $license['max_domains'] ?? null,
-                            // The renew link is needed once the key has expired or is about to (30 days).
-                            'renewal'    => (($license['status'] ?? '') === 'license_expired' || self::expiresSoon($license['valid_until'] ?? null)) ? ($license['renewal'] ?? null) : null,
+                            // The renew link is needed once the key has expired or is inside the store's reminder window.
+                            'renewal'    => (($license['status'] ?? '') === 'license_expired' || \WP_SMS\Admin\LicenseManagement\LicenseHelper::expiresSoon($license['valid_until'] ?? null, $license['renewal'] ?? null)) ? ($license['renewal'] ?? null) : null,
+                            'reminder_days' => $license['renewal']['reminder_days'] ?? null,
                         ];
                     }
                 }
@@ -208,19 +209,6 @@ class AddonsApi extends RestApi
             return self::response($e->getMessage(), 400);
         }
     }
-    /**
-     * Does a key run out within the next 30 days?
-     *
-     * @param string|null $validUntil A date such as 2027-11-06.
-     * @return bool
-     */
-    private static function expiresSoon($validUntil)
-    {
-        $time = $validUntil ? strtotime($validUntil) : false;
-
-        return $time !== false && $time - time() <= 30 * DAY_IN_SECONDS;
-    }
-
     /**
      * Remove a license for an add-on
      *
