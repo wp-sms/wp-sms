@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import { apiClient } from './client'
 
 /**
@@ -147,11 +148,11 @@ export const repeatingApi = {
    */
   getIntervalUnitOptions() {
     return [
-      { value: 'minute', label: 'Minute(s)' },
-      { value: 'hour', label: 'Hour(s)' },
-      { value: 'day', label: 'Day(s)' },
-      { value: 'week', label: 'Week(s)' },
-      { value: 'month', label: 'Month(s)' },
+      { value: 'minute', label: __('Minute(s)', 'wp-sms') },
+      { value: 'hour', label: __('Hour(s)', 'wp-sms') },
+      { value: 'day', label: __('Day(s)', 'wp-sms') },
+      { value: 'week', label: __('Week(s)', 'wp-sms') },
+      { value: 'month', label: __('Month(s)', 'wp-sms') },
     ]
   },
 

@@ -80,7 +80,7 @@ const QuickAddForm = React.forwardRef(
             )}
           />
           {error && (
-            <p className="wsms-text-[11px] wsms-text-red-500">{error}</p>
+            <p className="wsms-text-[12px] wsms-text-red-500">{error}</p>
           )}
         </div>
         <Button

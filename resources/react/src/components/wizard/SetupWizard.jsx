@@ -74,7 +74,8 @@ export default function SetupWizard() {
 
   // Initialize with correct value to avoid flash
   const [isOpen, setIsOpen] = useState(shouldAutoOpenWizard)
-  const [currentStep, setCurrentStep] = useState(0)
+  // &wizard-step=4 opens a step directly (preview only; step numbers start at 0)
+  const [currentStep, setCurrentStep] = useState(() => Number(new URLSearchParams(window.location.search).get('wizard-step')) || 0)
   const [completedSteps, setCompletedSteps] = useState([])
   const [saving, setSaving] = useState(false)
 
@@ -231,6 +232,13 @@ export default function SetupWizard() {
     }
   }, [currentStep, steps.length, completedSteps, saveStepData])
 
+  // Skip the current step: no saving and no checks, just move on
+  const handleSkip = useCallback(() => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep((prev) => prev + 1)
+    }
+  }, [currentStep, steps.length])
+
   // Go to previous step
   const handlePrev = useCallback(() => {
     if (currentStep > 0) {
@@ -354,10 +362,10 @@ export default function SetupWizard() {
             <div className="wsms-flex wsms-items-center wsms-gap-3">
               <Logo className="wsms-h-8 wsms-w-auto" />
               <div>
-                <h1 className="wsms-text-[15px] wsms-font-semibold wsms-text-foreground">
+                <h1 className="wsms-text-[16px] wsms-font-semibold wsms-text-foreground">
                   {__('WSMS Setup Wizard', 'wp-sms')}
                 </h1>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">
                   {__('Step', 'wp-sms')} {currentStep + 1} {__('of', 'wp-sms')} {steps.length}
                 </p>
               </div>
@@ -410,6 +418,12 @@ export default function SetupWizard() {
                 {__('Back', 'wp-sms')}
               </Button>
 
+              <div className="wsms-flex wsms-items-center wsms-gap-2">
+              {['sms-gateway', 'configuration', 'test-setup', 'all-in-one'].includes(steps[currentStep]?.id) && (
+                <Button variant="ghost" onClick={handleSkip} disabled={saving} className="wsms-text-muted-foreground">
+                  {__('Skip this step', 'wp-sms')}
+                </Button>
+              )}
               <Button onClick={handleNext} disabled={!canProceed || saving}>
                 {saving ? (
                   <>
@@ -423,6 +437,7 @@ export default function SetupWizard() {
                   </>
                 )}
               </Button>
+              </div>
             </div>
           )}
         </DialogPrimitive.Content>

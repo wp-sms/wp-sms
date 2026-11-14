@@ -98,9 +98,25 @@ class NotificationsApi extends RestApi
                     $notification->secondaryButtonTitle(),
                     $notification->secondaryButtonUrl()
                 ),
+                'badge'           => $notification->getBadge(),
+                'code'            => $notification->getCode(),
+                'highlight'       => $notification->getHighlight(),
+                'endsAt'          => $notification->getEndsAt(),
                 'dismissed'       => (bool) $notification->getDismiss(),
             ];
         }
+
+        // Offers come first, then licence problems (local, cannot be dismissed), then the rest.
+        $isOffer = function ($n) {
+            return ($n['backgroundColor'] ?? '') === 'promo' && empty($n['dismissed']);
+        };
+        $offers = array_values(array_filter($notifications, $isOffer));
+        $others = array_values(array_filter($notifications, function ($n) use ($isOffer) {
+            return !$isOffer($n);
+        }));
+
+        $licenseNotice = $this->licenseNotice();
+        $notifications = array_merge($offers, $licenseNotice ? [$licenseNotice] : [], $others);
 
         $unreadCount = NotificationFactory::getNewNotificationCount();
         $hasUnread = NotificationFactory::hasUpdatedNotifications();
@@ -145,6 +161,115 @@ class NotificationsApi extends RestApi
     }
 
     /**
+     * The license alert as a notification, or null when everything is in order.
+     *
+     * @return array|null
+     */
+    private function licenseNotice()
+    {
+        $alerts = \WP_SMS\Admin\LicenseManagement\LicenseHelper::getLicenseAlerts();
+
+        $addonsUrl = admin_url('admin.php?page=wsms&tab=add-ons');
+
+        // Nothing is wrong yet, but a key may run out soon: a quiet heads-up.
+        if (empty($alerts['count'])) {
+            return $this->expiringSoonNotice($addonsUrl);
+        }
+
+        $renew     = $alerts['renew'];
+        $offer     = $renew['offer'] ?? null;
+        $expired   = $alerts['expired'] > 0;
+
+        $inactive = !$expired && $alerts['missing'] === 0;
+
+        if ($expired) {
+            /* translators: %d: number of add-ons */
+            $title       = sprintf(_n('License expired for %d add-on', 'Licenses expired for %d add-ons', $alerts['expired'], 'wp-sms'), $alerts['expired']);
+            $description = __('Updates and support stop until you renew.', 'wp-sms');
+        } elseif ($inactive) {
+            /* translators: %d: number of add-ons */
+            $title       = sprintf(_n('Activate %d add-on', 'Activate %d add-ons', $alerts['inactive'], 'wp-sms'), $alerts['inactive']);
+            $description = __('It is licensed and installed, but turned off.', 'wp-sms');
+        } else {
+            /* translators: %d: number of add-ons */
+            $title       = sprintf(_n('License missing for %d add-on', 'Licenses missing for %d add-ons', $alerts['missing'], 'wp-sms'), $alerts['missing']);
+            $description = __('Enter your license key to unlock updates and support.', 'wp-sms');
+        }
+
+        if ($expired && $offer && ($offer['discount_type'] ?? '') === 'percentage' && !empty($offer['discount_value'])) {
+            /* translators: %s: discount percent */
+            $description .= ' ' . sprintf(__('Renew now and save %s%%.', 'wp-sms'), rtrim(rtrim(number_format((float) $offer['discount_value'], 2, '.', ''), '0'), '.'));
+        }
+
+        return [
+            'id'              => 'license-alert',
+            'title'           => $title,
+            'icon'            => $inactive ? '🔌' : '🔑',
+            'description'     => esc_html($description),
+            'activatedAt'     => null,
+            'backgroundColor' => $expired ? 'danger' : ($inactive ? 'info' : 'warning'),
+            'primaryButton'   => $expired && !empty($renew['renew_url'])
+                ? ['title' => __('Renew license', 'wp-sms'), 'url' => $renew['renew_url']]
+                : ['title' => $inactive ? __('Open Add-Ons', 'wp-sms') : __('Enter license', 'wp-sms'), 'url' => $addonsUrl],
+            'secondaryButton' => $expired && !empty($renew['renew_url'])
+                ? ['title' => __('Manage licenses', 'wp-sms'), 'url' => $addonsUrl]
+                : null,
+            'dismissed'       => false,
+            'localOnly'       => true,
+        ];
+    }
+
+    /**
+     * A quiet card for the key that runs out first, when it is 30 days away or less.
+     * A key that renews itself needs nothing, so it never shows one.
+     *
+     * @param string $addonsUrl
+     * @return array|null
+     */
+    private function expiringSoonNotice($addonsUrl)
+    {
+        $soonest = null;
+
+        foreach (\WP_SMS\Admin\LicenseManagement\LicenseHelper::getLicenses('valid') as $license) {
+            $time = !empty($license['valid_until']) ? strtotime($license['valid_until']) : false;
+
+            if ($time === false || !empty($license['renewal']['auto_renews'])) {
+                continue;
+            }
+
+            $days = (int) ceil(($time - time()) / DAY_IN_SECONDS);
+
+            if ($days >= 0 && $days <= 30 && ($soonest === null || $days < $soonest['days'])) {
+                $soonest = ['days' => $days, 'renew_url' => $license['renewal']['renew_url'] ?? ''];
+            }
+        }
+
+        if ($soonest === null) {
+            return null;
+        }
+
+        /* translators: %d: number of days */
+        $title = $soonest['days'] === 0 ? __('A license expires today', 'wp-sms') : sprintf(_n('A license expires in %d day', 'A license expires in %d days', $soonest['days'], 'wp-sms'), $soonest['days']);
+
+        return [
+            'id'              => 'license-soon',
+            'title'           => $title,
+            'icon'            => '⏳',
+            'description'     => esc_html__('Renew to keep updates and support.', 'wp-sms'),
+            'activatedAt'     => null,
+            'backgroundColor' => 'info',
+            'primaryButton'   => !empty($soonest['renew_url'])
+                ? ['title' => __('Renew license', 'wp-sms'), 'url' => $soonest['renew_url']]
+                : ['title' => __('Open Add-Ons', 'wp-sms'), 'url' => $addonsUrl],
+            'secondaryButton' => !empty($soonest['renew_url'])
+                ? ['title' => __('Manage licenses', 'wp-sms'), 'url' => $addonsUrl]
+                : null,
+            'dismissed'       => false,
+            'localOnly'       => true,
+        ];
+    }
+
+    /**
      * Map CSS class to color name for frontend
      *
      * @param string|null $cssClass
@@ -157,6 +282,7 @@ class NotificationsApi extends RestApi
             'wpsms-notification-sidebar__info'    => 'info',
             'wpsms-notification-sidebar__warning' => 'warning',
             'wpsms-notification-sidebar__success' => 'success',
+            'wpsms-notification-sidebar__promo'   => 'promo',
         ];
 
         return $mapping[$cssClass] ?? '';

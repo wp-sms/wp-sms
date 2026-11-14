@@ -72,11 +72,11 @@ export default function CountryStep({
           ref={headlineRef}
           tabIndex={-1}
           aria-live="polite"
-          className="wsms-text-[18px] wsms-font-semibold wsms-text-foreground wsms-mb-2 wsms-outline-none"
+          className="wsms-text-[19px] wsms-font-semibold wsms-text-foreground wsms-mb-2 wsms-outline-none"
         >
           {__('Confirm your default country', 'wp-sms')}
         </h2>
-        <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-leading-relaxed">
+        <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-leading-relaxed">
           {bodyCopy}
         </p>
       </div>
@@ -84,7 +84,7 @@ export default function CountryStep({
       <div className="wsms-max-w-md">
         <label
           htmlFor="wpsms-migration-country"
-          className="wsms-block wsms-text-[13px] wsms-font-medium wsms-text-foreground wsms-mb-1.5"
+          className="wsms-block wsms-text-[14px] wsms-font-medium wsms-text-foreground wsms-mb-1.5"
         >
           {__('Default country code', 'wp-sms')}
         </label>
@@ -99,7 +99,7 @@ export default function CountryStep({
           triggerClassName="wsms-bg-background wsms-text-foreground"
           disabled={loading}
         />
-        <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-2">
+        <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mt-2">
           <bdi>{exampleLine}</bdi>
         </p>
       </div>

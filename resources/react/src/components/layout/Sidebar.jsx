@@ -106,7 +106,7 @@ function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
       />
       <span
         className={cn(
-          'wsms-min-w-0 wsms-flex-1 wsms-text-[11px] wsms-font-medium wsms-leading-snug wsms-break-words',
+          'wsms-min-w-0 wsms-flex-1 wsms-text-[12px] wsms-font-medium wsms-leading-snug wsms-break-words',
           isConnected
             ? 'wsms-text-emerald-700 dark:wsms-text-emerald-400'
             : 'wsms-text-amber-700 dark:wsms-text-amber-400'
@@ -130,22 +130,22 @@ function NavItem({ item, isActive, onClick, isNested = false, badge }) {
         onClick={onClick}
         aria-current={isActive ? 'page' : undefined}
         className={cn(
-          'wsms-flex wsms-w-full wsms-items-center wsms-py-0.5 wsms-pe-3 wsms-ps-7 wsms-text-start wsms-transition-colors wsms-duration-150',
+          'wsms-flex wsms-w-full wsms-items-center wsms-py-0.5 wsms-ps-4 wsms-pe-1 wsms-text-start',
           isActive ? 'wsms-text-primary' : 'wsms-text-foreground/70 hover:wsms-text-foreground'
         )}
       >
         <span
           className={cn(
-            'wsms-flex wsms-flex-1 wsms-items-center wsms-gap-2.5 wsms-py-1.5 wsms-px-2.5 wsms-rounded-md wsms-transition-colors wsms-duration-150',
+            'wsms-flex wsms-flex-1 wsms-items-center wsms-gap-3 wsms-py-2 wsms-px-3 wsms-rounded-md',
             isActive
               ? 'wsms-bg-primary/[0.06] wsms-font-semibold'
               : 'hover:wsms-bg-primary/5'
           )}
         >
-          <Icon className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0" strokeWidth={1.75} />
-          <span className="wsms-text-[12px] wsms-font-medium">{item.label}</span>
+          <Icon className="wsms-h-[18px] wsms-w-[18px] wsms-shrink-0" strokeWidth={1.5} />
+          <span className="wsms-text-[14px] wsms-font-medium">{item.label}</span>
           {badge > 0 && (
-            <span className="wsms-ms-auto wsms-flex wsms-h-[18px] wsms-min-w-[18px] wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary wsms-px-1 wsms-text-[10px] wsms-font-semibold wsms-text-primary-foreground wsms-leading-none">
+            <span className="wsms-ms-auto wsms-flex wsms-h-[18px] wsms-min-w-[18px] wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary wsms-px-1 wsms-text-[11px] wsms-font-semibold wsms-text-primary-foreground wsms-leading-none">
               {badge > 99 ? '99+' : badge}
             </span>
           )}
@@ -159,7 +159,7 @@ function NavItem({ item, isActive, onClick, isNested = false, badge }) {
       onClick={onClick}
       aria-current={isActive ? 'page' : undefined}
       className={cn(
-        'wsms-flex wsms-w-full wsms-items-center wsms-gap-3 wsms-rounded-md wsms-text-[13px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start wsms-px-3 wsms-py-2.5',
+        'wsms-flex wsms-w-full wsms-items-center wsms-gap-3 wsms-rounded-md wsms-text-[14px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start wsms-px-3 wsms-py-2.5',
         isActive
           ? 'wsms-bg-primary/[0.06] wsms-text-primary wsms-font-semibold'
           : 'wsms-text-foreground/70 hover:wsms-bg-primary/5 hover:wsms-text-foreground wsms-transition-colors wsms-duration-150'
@@ -167,8 +167,13 @@ function NavItem({ item, isActive, onClick, isNested = false, badge }) {
     >
       <Icon className="wsms-h-4 wsms-w-4 wsms-shrink-0" strokeWidth={1.75} />
       <span>{item.label}</span>
+      {badge > 0 && (
+        <span className="wsms-ms-auto wsms-flex wsms-h-[18px] wsms-min-w-[18px] wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary wsms-px-1 wsms-text-[11px] wsms-font-semibold wsms-text-white wsms-leading-none" title={item.id === 'add-ons' ? __('Licenses need attention', 'wp-sms') : undefined}>
+          {badge > 99 ? '99+' : badge}
+        </span>
+      )}
       {item.badgeLabel && (
-        <span className="wsms-ms-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
+        <span className="wsms-ms-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[11px] wsms-font-medium">
           {item.badgeLabel}
         </span>
       )}
@@ -187,7 +192,7 @@ function NestedNavGroup({ group, currentPage, setCurrentPage }) {
   // Auto-expand when a child becomes active
   useEffect(() => {
     if (hasActiveChild && !isExpanded) {
-      setIsExpanded(true)
+      setIsExpandedState(true)
     }
   }, [hasActiveChild])
 
@@ -200,7 +205,7 @@ function NestedNavGroup({ group, currentPage, setCurrentPage }) {
         onClick={() => setIsExpanded(!isExpanded)}
         aria-expanded={isExpanded}
         className={cn(
-          'wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-rounded-md wsms-px-2.5 wsms-py-1.5 wsms-text-[12px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start',
+          'wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-rounded-md wsms-px-2.5 wsms-py-1.5 wsms-text-[13px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start',
           hasActiveChild
             ? 'wsms-text-primary wsms-bg-primary/[0.06]'
             : 'wsms-text-foreground/70 hover:wsms-bg-primary/5 hover:wsms-text-foreground'
@@ -240,7 +245,7 @@ function NestedNavGroup({ group, currentPage, setCurrentPage }) {
                 onClick={() => setCurrentPage(item.id)}
                 aria-current={currentPage === item.id ? 'page' : undefined}
                 className={cn(
-                  'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded-md wsms-px-2 wsms-py-1.5 wsms-text-[11px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start',
+                  'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded-md wsms-px-2 wsms-py-1.5 wsms-text-[12px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start',
                   currentPage === item.id
                     ? 'wsms-text-primary wsms-bg-primary/[0.06]'
                     : 'wsms-text-foreground/60 hover:wsms-bg-primary/5 hover:wsms-text-foreground/80'
@@ -267,14 +272,11 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions, badges = {} 
     return item.id === currentPage
   })
 
-  // Initialize expanded state - expanded if has active child or defaultExpanded
+  // Opens itself when one of its pages is shown, and never closes on its own. Only the arrow closes it.
   const [isExpanded, setIsExpanded] = useState(hasActiveChild || group.defaultExpanded || false)
 
-  // Auto-expand when a child becomes active
   useEffect(() => {
-    if (hasActiveChild && !isExpanded) {
-      setIsExpanded(true)
-    }
+    if (hasActiveChild) setIsExpanded(true)
   }, [hasActiveChild])
 
   // Filter items based on conditions
@@ -298,7 +300,7 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions, badges = {} 
         onClick={() => setIsExpanded(!isExpanded)}
         aria-expanded={isExpanded}
         className={cn(
-          'wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-rounded-md wsms-px-3 wsms-py-2.5 wsms-text-[13px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start',
+          'wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-rounded-md wsms-px-3 wsms-py-2.5 wsms-text-[14px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start',
           hasActiveChild
             ? 'wsms-text-primary wsms-bg-primary/5'
             : 'wsms-text-foreground/80 hover:wsms-bg-accent hover:wsms-text-foreground'
@@ -310,7 +312,7 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions, badges = {} 
         </div>
         <div className="wsms-flex wsms-items-center wsms-gap-1.5">
           {groupBadgeTotal > 0 && !isExpanded && (
-            <span className="wsms-flex wsms-h-[18px] wsms-min-w-[18px] wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary wsms-px-1 wsms-text-[10px] wsms-font-semibold wsms-text-primary-foreground wsms-leading-none">
+            <span className="wsms-flex wsms-h-[18px] wsms-min-w-[18px] wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary wsms-px-1 wsms-text-[11px] wsms-font-semibold wsms-text-primary-foreground wsms-leading-none">
               {groupBadgeTotal > 99 ? '99+' : groupBadgeTotal}
             </span>
           )}
@@ -333,10 +335,7 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions, badges = {} 
           isExpanded ? 'wsms-max-h-[800px] wsms-opacity-100' : 'wsms-max-h-0 wsms-opacity-0'
         )}
       >
-        <div className="wsms-relative wsms-py-1">
-          {/* Subtle connecting line */}
-          <div className="wsms-absolute wsms-start-[22px] wsms-top-2 wsms-bottom-2 wsms-w-px wsms-bg-border/50" />
-
+        <div className="wsms-relative wsms-pt-1">
           {filteredItems.map((item, index) =>
             item.type === 'separator' ? (
               <div
@@ -344,7 +343,7 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions, badges = {} 
                 className="wsms-flex wsms-items-center wsms-gap-2 wsms-px-7 wsms-py-2 wsms-mt-1"
               >
                 <div className="wsms-flex-1 wsms-h-px wsms-bg-border/60" />
-                <span className="wsms-text-[10px] wsms-font-medium wsms-text-muted-foreground/70 wsms-uppercase wsms-tracking-wider">
+                <span className="wsms-text-[11px] wsms-font-medium wsms-text-muted-foreground/70 wsms-uppercaser">
                   {item.label}
                 </span>
                 <div className="wsms-flex-1 wsms-h-px wsms-bg-border/60" />
@@ -355,7 +354,7 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions, badges = {} 
                 className="wsms-flex wsms-items-center wsms-gap-2 wsms-px-7 wsms-py-2 wsms-mt-1"
               >
                 {item.icon && <item.icon className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground/70" strokeWidth={1.75} />}
-                <span className="wsms-text-[11px] wsms-font-semibold wsms-text-muted-foreground/80 wsms-uppercase wsms-tracking-wide">
+                <span className="wsms-text-[12px] wsms-font-semibold wsms-text-muted-foreground/80 wsms-uppercase">
                   {item.label}
                 </span>
               </div>
@@ -409,7 +408,8 @@ export default function Sidebar({ onClose, showClose }) {
   const hasAnyAddon = hasWooCommercePro || hasTwoWay
 
   // Fetch inbox unread count for nav badge
-  const [navBadges, setNavBadges] = useState({})
+  const { licenseAlerts } = getWpSettings()
+  const [navBadges, setNavBadges] = useState(licenseAlerts > 0 ? { 'add-ons': licenseAlerts } : {})
   useEffect(() => {
     if (!hasTwoWay || !isAddonDashboardReady('two-way')) return
     let cancelled = false
@@ -448,7 +448,7 @@ export default function Sidebar({ onClose, showClose }) {
           <Logo className="wsms-h-7" />
           <button
             onClick={onClose}
-            aria-label="Close navigation menu"
+            aria-label={__('Close navigation menu', 'wp-sms')}
             className="wsms-flex wsms-items-center wsms-justify-center wsms-h-8 wsms-w-8 wsms-rounded-md hover:wsms-bg-accent wsms-text-muted-foreground wsms-transition-colors"
           >
             <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
@@ -466,7 +466,7 @@ export default function Sidebar({ onClose, showClose }) {
                 className="wsms-flex wsms-items-center wsms-gap-2 wsms-px-2 wsms-py-3 wsms-mt-2"
               >
                 <div className="wsms-flex-1 wsms-h-px wsms-bg-border" />
-                <span className="wsms-text-[10px] wsms-font-semibold wsms-text-muted-foreground/70 wsms-uppercase wsms-tracking-wider">
+                <span className="wsms-text-[11px] wsms-font-semibold wsms-text-muted-foreground/70 wsms-uppercaser">
                   {item.label}
                 </span>
                 <div className="wsms-flex-1 wsms-h-px wsms-bg-border" />
@@ -486,6 +486,7 @@ export default function Sidebar({ onClose, showClose }) {
                 item={item}
                 isActive={currentPage === item.id}
                 onClick={() => setCurrentPage(item.id)}
+                badge={navBadges[item.id]}
               />
             )
           )}

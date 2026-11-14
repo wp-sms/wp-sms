@@ -64,7 +64,13 @@
                         }
                         ?>>
                             <?php echo esc_html($val_item['name']); ?>
-                            (<?php echo sprintf('<b>%s</b>' . esc_html__(' Users have mobile number.', 'wp-sms'), esc_attr($val_item['count'])); ?>)
+                            (<?php
+                            echo wp_kses_post(sprintf(
+                                /* translators: %s: number of users, wrapped in bold tags */
+                                __('%s users have a mobile number.', 'wp-sms'),
+                                '<b>' . esc_html($val_item['count']) . '</b>'
+                            ));
+                            ?>)
                         </option>
                     <?php endforeach; ?>
                 </select>

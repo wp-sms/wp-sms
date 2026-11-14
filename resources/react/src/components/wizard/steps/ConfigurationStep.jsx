@@ -92,7 +92,7 @@ export default function ConfigurationStep({
         <h2 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-1">
           {__('Configure', 'wp-sms')} {getGatewayDisplayName()}
         </h2>
-        <p className="wsms-text-[12px] wsms-text-muted-foreground">
+        <p className="wsms-text-[13px] wsms-text-muted-foreground">
           {__('Enter your API credentials to connect.', 'wp-sms')}
         </p>
       </div>
@@ -101,7 +101,7 @@ export default function ConfigurationStep({
       {gatewayHelp && (
         <div className="wsms-mb-4 wsms-rounded-md wsms-border wsms-border-border wsms-bg-muted/30 wsms-p-4">
           <div
-            className="wsms-text-[12px] wsms-text-foreground [&_a]:wsms-text-primary [&_a]:wsms-underline"
+            className="wsms-text-[13px] wsms-text-foreground [&_a]:wsms-text-primary [&_a]:wsms-underline"
             dangerouslySetInnerHTML={{ __html: gatewayHelp }}
           />
           {gatewayDocumentUrl && (
@@ -109,7 +109,7 @@ export default function ConfigurationStep({
               href={gatewayDocumentUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-text-primary wsms-mt-2 hover:wsms-underline wsms-font-medium"
+              className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-text-primary wsms-mt-2 hover:wsms-underline wsms-font-medium"
             >
               <ExternalLink className="wsms-h-3 wsms-w-3" />
               {__('View Documentation', 'wp-sms')}
@@ -198,8 +198,8 @@ export default function ConfigurationStep({
         </CardContent>
         <CardFooter className="wsms-justify-between">
           <div>
-            <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">{__('Test Connection', 'wp-sms')}</p>
-            <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Verify credentials work', 'wp-sms')}</p>
+            <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">{__('Test Connection', 'wp-sms')}</p>
+            <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Verify credentials work', 'wp-sms')}</p>
           </div>
           <Button onClick={handleTestConnection} disabled={testing || !hasFields} size="sm">
             {testing ? (
@@ -221,9 +221,9 @@ export default function ConfigurationStep({
             <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-p-3 wsms-rounded-md wsms-bg-success/5 wsms-border wsms-border-success/20">
               <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-success wsms-shrink-0" />
               <div>
-                <p className="wsms-text-[12px] wsms-font-medium wsms-text-success">{__('Connection successful!', 'wp-sms')}</p>
+                <p className="wsms-text-[13px] wsms-font-medium wsms-text-success">{__('Connection successful!', 'wp-sms')}</p>
                 {testResult.credit !== undefined && (
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground">
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
                     {__('Balance:', 'wp-sms')} {testResult.credit}
                   </p>
                 )}
@@ -232,7 +232,7 @@ export default function ConfigurationStep({
           ) : (
             <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-p-3 wsms-rounded-md wsms-bg-destructive/5 wsms-border wsms-border-destructive/20">
               <XCircle className="wsms-h-4 wsms-w-4 wsms-text-destructive wsms-shrink-0" />
-              <p className="wsms-text-[12px] wsms-text-destructive">
+              <p className="wsms-text-[13px] wsms-text-destructive">
                 {testResult.error || __('Connection failed. Check your credentials.', 'wp-sms')}
               </p>
             </div>

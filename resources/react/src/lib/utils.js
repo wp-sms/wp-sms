@@ -109,6 +109,7 @@ export function getWpSettings() {
     twoWayEnabled: features.twoWayEnabled || false,
     scheduledSms: features.scheduledSms || false,
     isProActive: features.isProActive || false,
+    licenseAlerts: features.licenseAlerts || 0,
     isWooActive: features.isWooActive || false,
     isBuddyPressActive: features.isBuddyPressActive || false,
   }
@@ -274,7 +275,7 @@ export function arrayToCsv(data) {
 export function getGatewayLogo(gateway) {
   if (!gateway?.logo) return ''
   if (typeof gateway.logo === 'string') return gateway.logo
-  return gateway.logo.square || gateway.logo.rectangular || ''
+  return gateway.logo.icon || gateway.logo.square || gateway.logo.rectangular || ''
 }
 
 /**

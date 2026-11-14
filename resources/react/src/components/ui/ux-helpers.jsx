@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import * as React from 'react'
 import {
   Lightbulb,
@@ -64,7 +65,7 @@ export function Tip({ children, className, variant = 'default', dismissible = fa
       )}
     >
       <IconComponent className={cn('wsms-h-4 wsms-w-4 wsms-shrink-0 wsms-mt-0.5', icon)} />
-      <p className="wsms-text-[12px] wsms-text-foreground wsms-leading-relaxed wsms-flex-1">
+      <p className="wsms-text-[13px] wsms-text-foreground wsms-leading-relaxed wsms-flex-1">
         {children}
       </p>
       {dismissible && (
@@ -91,10 +92,10 @@ export function SetupProgress({ steps, className }) {
       {/* Progress bar */}
       <div className="wsms-space-y-2">
         <div className="wsms-flex wsms-items-center wsms-justify-between">
-          <span className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">
-            Setup Progress
+          <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+            {__('Setup Progress', 'wp-sms')}
           </span>
-          <span className="wsms-text-[12px] wsms-text-muted-foreground">
+          <span className="wsms-text-[13px] wsms-text-muted-foreground">
             {completedSteps} of {steps.length} complete
           </span>
         </div>
@@ -122,7 +123,7 @@ export function SetupProgress({ steps, className }) {
           >
             <div
               className={cn(
-                'wsms-flex wsms-h-6 wsms-w-6 wsms-items-center wsms-justify-center wsms-rounded-full wsms-text-[11px] wsms-font-semibold',
+                'wsms-flex wsms-h-6 wsms-w-6 wsms-items-center wsms-justify-center wsms-rounded-full wsms-text-[12px] wsms-font-semibold',
                 step.completed
                   ? 'wsms-bg-success wsms-text-white'
                   : 'wsms-bg-muted wsms-text-muted-foreground'
@@ -133,14 +134,14 @@ export function SetupProgress({ steps, className }) {
             <div className="wsms-flex-1 wsms-min-w-0">
               <p
                 className={cn(
-                  'wsms-text-[13px] wsms-font-medium',
+                  'wsms-text-[14px] wsms-font-medium',
                   step.completed ? 'wsms-text-success' : 'wsms-text-foreground'
                 )}
               >
                 {step.title}
               </p>
               {step.description && (
-                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-truncate">
+                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-truncate">
                   {step.description}
                 </p>
               )}
@@ -188,8 +189,8 @@ export function EmptyStateAction({
         </div>
       </div>
 
-      <h3 className="wsms-text-[15px] wsms-font-semibold wsms-text-foreground wsms-mb-2">{title}</h3>
-      <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-max-w-sm wsms-mb-6">
+      <h3 className="wsms-text-[16px] wsms-font-semibold wsms-text-foreground wsms-mb-2">{title}</h3>
+      <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-max-w-sm wsms-mb-6">
         {description}
       </p>
 
@@ -220,7 +221,7 @@ export function HelpLink({ href, children, className }) {
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-text-primary hover:wsms-underline',
+        'wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-text-primary hover:wsms-underline',
         className
       )}
     >
@@ -245,14 +246,14 @@ export function FeatureHighlight({ title, description, isNew, className }) {
       <Sparkles className="wsms-h-5 wsms-w-5 wsms-text-primary wsms-shrink-0" />
       <div>
         <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-mb-1">
-          <span className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground">{title}</span>
+          <span className="wsms-text-[14px] wsms-font-semibold wsms-text-foreground">{title}</span>
           {isNew && (
-            <span className="wsms-px-1.5 wsms-py-0.5 wsms-text-[9px] wsms-font-bold wsms-uppercase wsms-rounded wsms-bg-primary wsms-text-primary-foreground">
+            <span className="wsms-px-1.5 wsms-py-0.5 wsms-text-[10px] wsms-font-bold wsms-uppercase wsms-rounded wsms-bg-primary wsms-text-primary-foreground">
               New
             </span>
           )}
         </div>
-        <p className="wsms-text-[12px] wsms-text-muted-foreground">{description}</p>
+        <p className="wsms-text-[13px] wsms-text-muted-foreground">{description}</p>
       </div>
     </div>
   )
@@ -280,9 +281,9 @@ export function CollapsibleSection({
         )}
       >
         <div>
-          <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">{title}</span>
+          <span className="wsms-text-[14px] wsms-font-medium wsms-text-foreground">{title}</span>
           {description && (
-            <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mt-0.5">{description}</p>
+            <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-0.5">{description}</p>
           )}
         </div>
         {isOpen ? (
@@ -319,7 +320,7 @@ export function QuickHelp({ children, className }) {
             className="wsms-fixed wsms-inset-0 wsms-z-40"
             onClick={() => setIsOpen(false)}
           />
-          <div className="wsms-absolute wsms-left-1/2 wsms--translate-x-1/2 wsms-bottom-full wsms-mb-2 wsms-z-50 wsms-w-64 wsms-p-3 wsms-rounded-lg wsms-bg-popover wsms-border wsms-border-border wsms-shadow-lg wsms-text-[12px] wsms-text-popover-foreground wsms-animate-in wsms-fade-in wsms-zoom-in-95">
+          <div className="wsms-absolute wsms-left-1/2 wsms--translate-x-1/2 wsms-bottom-full wsms-mb-2 wsms-z-50 wsms-w-64 wsms-p-3 wsms-rounded-lg wsms-bg-popover wsms-border wsms-border-border wsms-shadow-lg wsms-text-[13px] wsms-text-popover-foreground wsms-animate-in wsms-fade-in wsms-zoom-in-95">
             {children}
             <div className="wsms-absolute wsms-left-1/2 wsms--translate-x-1/2 wsms-top-full wsms-border-8 wsms-border-transparent wsms-border-t-popover" />
           </div>
@@ -359,7 +360,7 @@ export function StatusIndicator({ status, label, className }) {
           statusStyles[status] || statusStyles.unknown
         )}
       />
-      <span className="wsms-text-[12px] wsms-text-muted-foreground">{label}</span>
+      <span className="wsms-text-[13px] wsms-text-muted-foreground">{label}</span>
     </div>
   )
 }
@@ -385,7 +386,7 @@ export function ValidationMessage({ type = 'error', children, className }) {
   const Icon = icons[type] || icons.error
 
   return (
-    <p className={cn('wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[11px]', styles[type], className)}>
+    <p className={cn('wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px]', styles[type], className)}>
       <Icon className="wsms-h-3 wsms-w-3" />
       {children}
     </p>

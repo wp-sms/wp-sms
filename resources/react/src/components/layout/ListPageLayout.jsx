@@ -30,7 +30,7 @@ import { cn } from '@/lib/utils'
  *   <ListPageLayout
  *     title={__('Subscribers')}
  *     description={__('Manage your SMS subscribers')}
- *     actions={<Button onClick={() => editDialog.open()}>Add New</Button>}
+ *     actions={<Button onClick={() => editDialog.open()}>{__('Add New', 'wp-sms')}</Button>}
  *     filters={<SubscriberFilters {...filters} />}
  *     table={table}
  *     columns={columns}
@@ -39,7 +39,7 @@ import { cn } from '@/lib/utils'
  *     emptyState={{
  *       icon: Users,
  *       message: __('No subscribers yet'),
- *       action: <Button onClick={() => editDialog.open()}>Add First Subscriber</Button>
+ *       action: <Button onClick={() => editDialog.open()}>{__('Add First Subscriber', 'wp-sms')}</Button>
  *     }}
  *   >
  *     <EditSubscriberDialog {...editDialog} />
@@ -147,7 +147,7 @@ export function ListPageLayout({
             <div>
               <h1 className="wsms-text-xl wsms-font-semibold wsms-text-foreground">{title}</h1>
               {description && (
-                <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mt-1">{description}</p>
+                <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-mt-1">{description}</p>
               )}
             </div>
             {actions && <div className="wsms-flex wsms-gap-2">{actions}</div>}
@@ -191,7 +191,7 @@ export function ListPageLayout({
           <div>
             <h1 className="wsms-text-xl wsms-font-semibold wsms-text-foreground">{title}</h1>
             {description && (
-              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mt-1">{description}</p>
+              <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-mt-1">{description}</p>
             )}
           </div>
           {actions && <div className="wsms-flex wsms-gap-2">{actions}</div>}

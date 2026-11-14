@@ -72,6 +72,16 @@ class AddonsApi extends RestApi
                         'type'              => 'string',
                         'sanitize_callback' => 'sanitize_text_field',
                     ],
+                    'masked_key' => [
+                        'required'          => false,
+                        'type'              => 'string',
+                        'sanitize_callback' => 'sanitize_text_field',
+                    ],
+                    'force'      => [
+                        'required' => false,
+                        'type'     => 'boolean',
+                        'default'  => false,
+                    ],
                 ],
             ],
         ]);
@@ -113,6 +123,8 @@ class AddonsApi extends RestApi
             foreach ($plugins as $plugin) {
                 $slug = $plugin->getSlug();
 
+                $needs = $plugin->isActivated() ? null : LicenseHelper::missingDependency($slug);
+
                 // Find all licenses that contain this addon
                 $licenses = [];
                 foreach ($allLicenses as $key => $license) {
@@ -120,6 +132,12 @@ class AddonsApi extends RestApi
                         $licenses[] = [
                             'masked_key' => str_repeat('•', max(0, strlen($key) - 4)) . substr($key, -4),
                             'status'     => $license['status'] ?? 'unknown',
+                            'sku'        => $license['sku'] ?? null,
+                            'covers'     => is_array($license['products'] ?? null) ? count($license['products']) : 1,
+                            'valid_until' => $license['valid_until'] ?? null,
+                            'max_domains' => $license['max_domains'] ?? null,
+                            // The renew link is needed once the key has expired or is about to (30 days).
+                            'renewal'    => (($license['status'] ?? '') === 'license_expired' || self::expiresSoon($license['valid_until'] ?? null)) ? ($license['renewal'] ?? null) : null,
                         ];
                     }
                 }
@@ -136,6 +154,7 @@ class AddonsApi extends RestApi
                     'status'              => $plugin->getStatus(),
                     'status_label'        => $plugin->getStatusLabel(),
                     'licenses'            => $licenses,
+                    'needs'               => $needs,
                     'is_installed'        => $plugin->isInstalled(),
                     'is_activated'        => $plugin->isActivated(),
                     'is_update_available' => $plugin->isUpdateAvailable(),
@@ -147,7 +166,8 @@ class AddonsApi extends RestApi
             }
 
             return self::response(__('Add-ons retrieved successfully', 'wp-sms'), 200, [
-                'addons' => $addons,
+                'addons'  => $addons,
+                'summary' => LicenseHelper::getLicenseSummary(),
             ]);
         } catch (\Exception $e) {
             return self::response($e->getMessage(), 500);
@@ -162,18 +182,45 @@ class AddonsApi extends RestApi
      */
     public function activateLicense(WP_REST_Request $request)
     {
-        $licenseKey = $request->get_param('license_key');
-        $addonSlug = $request->get_param('addon_slug');
+        $licenseKey = sanitize_text_field((string) $request->get_param('license_key'));
+        $addonSlug  = sanitize_text_field((string) $request->get_param('addon_slug'));
+
+        // The same key entered twice is not an error, and it is not a new activation either.
+        $stored = LicenseHelper::getLicenses('all');
+        if ($licenseKey !== '' && $addonSlug === '' && isset($stored[$licenseKey]) && ($stored[$licenseKey]['status'] ?? '') === 'valid') {
+            return self::response(__('This license is already active on this site.', 'wp-sms'), 200, ['already' => true]);
+        }
 
         try {
             $apiCommunicator = new ApiCommunicator();
-            $apiCommunicator->validateLicense($licenseKey, $addonSlug);
+            // No add-on slug: any valid key is accepted and unlocks whatever products it includes.
+            $apiCommunicator->validateLicense($licenseKey, $addonSlug ?: false);
 
             return self::response(__('License activated successfully.', 'wp-sms'), 200);
+        } catch (\WP_SMS\Exceptions\LicenseException $e) {
+            // Give the page enough to explain what went wrong and where to go next.
+            return self::response($e->getMessage(), 400, [
+                'status'  => $e->getStatus(),
+                'renewal' => $e->getRenewal(),
+                'support_url' => $e->getSupportUrl(),
+            ]);
         } catch (\Exception $e) {
             return self::response($e->getMessage(), 400);
         }
     }
+    /**
+     * Does a key run out within the next 30 days?
+     *
+     * @param string|null $validUntil A date such as 2027-11-06.
+     * @return bool
+     */
+    private static function expiresSoon($validUntil)
+    {
+        $time = $validUntil ? strtotime($validUntil) : false;
+
+        return $time !== false && $time - time() <= 30 * DAY_IN_SECONDS;
+    }
+
     /**
      * Remove a license for an add-on
      *
@@ -185,15 +232,57 @@ class AddonsApi extends RestApi
         $addonSlug = $request->get_param('addon_slug');
 
         try {
-            $licenseKey = LicenseHelper::getPluginLicense($addonSlug);
+            // The key the person clicked on. Two keys can cover the same add-on, so the slug alone is ambiguous.
+            $licenseKey = null;
+            $maskedKey  = (string) $request->get_param('masked_key');
+            if ($maskedKey !== '') {
+                foreach (array_keys(LicenseHelper::getLicenses('all')) as $storedKey) {
+                    if (str_repeat('•', max(0, strlen($storedKey) - 4)) . substr($storedKey, -4) === $maskedKey) {
+                        $licenseKey = $storedKey;
+                        break;
+                    }
+                }
+            }
+
+            if (empty($licenseKey)) {
+                $licenseKey = LicenseHelper::getPluginLicense($addonSlug);
+            }
 
             if (empty($licenseKey)) {
                 return self::response(__('No license found for this add-on.', 'wp-sms'), 404);
             }
 
+            $force   = (bool) $request->get_param('force');
+            $license = LicenseHelper::getLicenseInfo($licenseKey);
+            $expired = ($license['status'] ?? '') === 'license_expired';
+
+            // Free this site's seat first, so the key can be used on another site. An expired key
+            // has no seat to free, and "remove anyway" skips the server when it cannot be reached.
+            if (!$expired && !$force) {
+                try {
+                    // Name an add-on that this key really covers.
+                    $coveredSlug = !empty($license['products'][0]) ? $license['products'][0] : $addonSlug;
+                    (new ApiCommunicator())->deactivateLicense($licenseKey, $coveredSlug);
+                } catch (\Exception $e) {
+                    return self::response(
+                        sprintf(
+                            /* translators: %s: error message from the license server */
+                            __('Could not free this site on the license server: %s', 'wp-sms'),
+                            $e->getMessage()
+                        ),
+                        502
+                    );
+                }
+            }
+
             LicenseHelper::removeLicense($licenseKey);
 
-            return self::response(__('License removed successfully.', 'wp-sms'), 200);
+            return self::response(
+                $expired || $force
+                    ? __('License removed from this site.', 'wp-sms')
+                    : __('License removed. This site no longer uses a seat, so you can use the key on another site.', 'wp-sms'),
+                200
+            );
         } catch (\Exception $e) {
             return self::response($e->getMessage(), 400);
         }

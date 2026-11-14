@@ -49,7 +49,7 @@ export default function TestSetupStep({
         <h2 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-1">
           {__('Test Your Setup', 'wp-sms')}
         </h2>
-        <p className="wsms-text-[12px] wsms-text-muted-foreground">
+        <p className="wsms-text-[13px] wsms-text-muted-foreground">
           {__('Send a test message to verify everything works.', 'wp-sms')}
         </p>
       </div>
@@ -67,8 +67,8 @@ export default function TestSetupStep({
           <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-p-3 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
             <Phone className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
             <div>
-              <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Sending to', 'wp-sms')}</p>
-              <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground wsms-font-mono">
+              <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Sending to', 'wp-sms')}</p>
+              <p className="wsms-text-[14px] wsms-font-medium wsms-text-foreground wsms-font-mono">
                 {phoneNumber || __('No number', 'wp-sms')}
               </p>
             </div>
@@ -98,7 +98,7 @@ export default function TestSetupStep({
               {error && (
                 <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-3 wsms-rounded-md wsms-bg-destructive/5 wsms-border wsms-border-destructive/20">
                   <XCircle className="wsms-h-4 wsms-w-4 wsms-text-destructive wsms-shrink-0" />
-                  <p className="wsms-text-[12px] wsms-text-destructive">{error}</p>
+                  <p className="wsms-text-[13px] wsms-text-destructive">{error}</p>
                 </div>
               )}
             </div>
@@ -109,7 +109,7 @@ export default function TestSetupStep({
             <div className="wsms-space-y-4">
               <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-3 wsms-rounded-md wsms-bg-primary/5 wsms-border wsms-border-primary/20">
                 <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                <p className="wsms-text-[12px] wsms-text-foreground">{__('Test SMS sent! Did you receive it?', 'wp-sms')}</p>
+                <p className="wsms-text-[13px] wsms-text-foreground">{__('Test SMS sent! Did you receive it?', 'wp-sms')}</p>
               </div>
               <div className="wsms-flex wsms-gap-2">
                 <Button onClick={() => handleConfirmReceived(true)} className="wsms-flex-1">
@@ -129,8 +129,8 @@ export default function TestSetupStep({
             <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-p-4 wsms-rounded-md wsms-bg-success/5 wsms-border wsms-border-success/20">
               <CheckCircle className="wsms-h-5 wsms-w-5 wsms-text-success" />
               <div>
-                <p className="wsms-text-[13px] wsms-font-medium wsms-text-success">{__('Perfect!', 'wp-sms')}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Your gateway is working correctly.', 'wp-sms')}</p>
+                <p className="wsms-text-[14px] wsms-font-medium wsms-text-success">{__('Perfect!', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Your gateway is working correctly.', 'wp-sms')}</p>
               </div>
             </div>
           )}
@@ -139,8 +139,8 @@ export default function TestSetupStep({
           {confirmed === false && (
             <div className="wsms-space-y-3">
               <div className="wsms-p-3 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
-                <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground wsms-mb-2">{__('Troubleshooting:', 'wp-sms')}</p>
-                <ul className="wsms-text-[11px] wsms-text-muted-foreground wsms-space-y-1 wsms-list-disc wsms-list-inside">
+                <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground wsms-mb-2">{__('Troubleshooting:', 'wp-sms')}</p>
+                <ul className="wsms-text-[12px] wsms-text-muted-foreground wsms-space-y-1 wsms-list-disc wsms-list-inside">
                   <li>{__('Check phone signal', 'wp-sms')}</li>
                   <li>{__('Verify phone number', 'wp-sms')}</li>
                   <li>{__('Wait a few minutes', 'wp-sms')}</li>

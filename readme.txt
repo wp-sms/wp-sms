@@ -4,7 +4,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 7.2.12
+Stable tag: 7.2.13
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -190,6 +190,17 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
+= v7.2.13 - 2026-11-11 =
+- **Security:** The attempt limit on the SMS subscribe confirmation code now counts per subscriber, so it cannot be reset, and total wrong codes per pending number are capped ([#620](https://github.com/wp-sms/wp-sms/issues/620)).
+- **New:** IPPanel gateway. MdPanel and NasrPayam now use the same IPPanel API, and their errors name the panel.
+- **New:** Mediana: pattern sending, and messages go from the shared line when no sender is set.
+- **Fix:** Mediana: moved to Mediana's new API (enter the API key from your Mediana panel). A Mediana outage no longer crashes the site; the send fails with a clear message in the outbox.
+- **Fix:** UwaziiMobile: SMS sent in a burst no longer fail with "429 Too Many Requests" ([#614](https://github.com/wp-sms/wp-sms/issues/614)).
+- **Fix:** Translations shipped with the plugin now load, and about 80 dashboard labels that could not be translated now can.
+- **Fix:** The dialog close button no longer covers the title on right-to-left sites.
+- **Fix:** Melipayamak: the login fields are named as the panel names them (Username, and Password or API key), the balance shows two decimals, and Persian translations are added.
+- **Fix:** English text fixes for translators: "API Key" typo, an unclosed tag in the custom gateway headers help text, and several sentences that were split into separate pieces are now whole translatable strings.
+
 = v7.2.12 - 2026-11-06 =
 - **Enhancement:** Setup guide links for 19 more gateways.
 - **Fix:** Kavenegar: a template message without variables now shows a clear error.

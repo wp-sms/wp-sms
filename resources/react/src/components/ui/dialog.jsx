@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import * as React from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
@@ -19,7 +20,10 @@ const sizeConfig = {
 }
 
 const DialogContent = React.forwardRef(
-  ({ className, children, size = 'default', showClose = true, onInteractOutside, style, ...props }, ref) => (
+  ({ className, children, size = 'default', showClose = true, onInteractOutside, style, ...props }, ref) => {
+    // The WordPress menu covers the left edge: centre in what is left, and never run under it.
+    const menuWidth = typeof document !== 'undefined' ? (document.getElementById('adminmenuwrap')?.offsetWidth || 0) : 0
+    return (
     <DialogPrimitive.Portal container={document.getElementById('wpsms-settings-root')}>
       {/* Overlay */}
       <DialogPrimitive.Overlay
@@ -41,8 +45,9 @@ const DialogContent = React.forwardRef(
         style={{
           position: 'fixed',
           top: '50%',
-          left: '50%',
+          left: menuWidth ? `calc(50% + ${menuWidth / 2}px)` : '50%',
           transform: 'translate(-50%, -50%)',
+          maxWidth: `calc(100vw - ${menuWidth}px - 32px)`,
           zIndex: 999999,
           backgroundColor: 'hsl(var(--popover))',
           border: '1px solid hsl(var(--border))',
@@ -60,10 +65,10 @@ const DialogContent = React.forwardRef(
         {children}
         {showClose && (
           <DialogPrimitive.Close
-            aria-label="Close dialog"
+            aria-label={__('Close dialog', 'wp-sms')}
             style={{
               position: 'absolute',
-              right: '12px',
+              insetInlineEnd: '12px',
               top: '12px',
               padding: '8px',
               borderRadius: '6px',
@@ -90,7 +95,8 @@ const DialogContent = React.forwardRef(
         )}
       </DialogPrimitive.Content>
     </DialogPrimitive.Portal>
-  )
+    )
+  }
 )
 DialogContent.displayName = DialogPrimitive.Content.displayName
 

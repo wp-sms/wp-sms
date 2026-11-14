@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n'
+import { __, _n, sprintf } from '@wordpress/i18n'
 import React, { useState, useEffect, useRef } from 'react'
 import { X, Loader2, Bell, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -23,9 +23,8 @@ function TabButton({ active, onClick, children, count, id, controls }) {
       tabIndex={active ? 0 : -1}
       onClick={onClick}
       className={cn(
-        'wsms-relative wsms-px-1 wsms-py-3 wsms-text-[13px] wsms-font-medium',
-        'wsms-transition-all wsms-duration-200',
-        'focus:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-primary/50 focus-visible:wsms-ring-offset-1',
+        'wsms-relative wsms-px-1 wsms-py-3 wsms-text-[14px] wsms-font-medium',
+        'focus:wsms-outline-none focus-visible:wsms-outline-none',
         active
           ? 'wsms-text-foreground'
           : 'wsms-text-muted-foreground hover:wsms-text-foreground/80'
@@ -37,10 +36,9 @@ function TabButton({ active, onClick, children, count, id, controls }) {
           <span className={cn(
             'wsms-inline-flex wsms-items-center wsms-justify-center',
             'wsms-min-w-[18px] wsms-h-[18px] wsms-px-1.5 wsms-rounded-full',
-            'wsms-text-[10px] wsms-font-semibold wsms-tabular-nums',
-            'wsms-transition-all wsms-duration-200',
+            'wsms-text-[11px] wsms-font-semibold wsms-tabular-nums',
             active
-              ? 'wsms-bg-primary wsms-text-primary-foreground wsms-shadow-sm wsms-shadow-primary/25'
+              ? 'wsms-bg-primary wsms-text-primary-foreground'
               : 'wsms-bg-muted wsms-text-muted-foreground'
           )}>
             {count > 99 ? '99+' : count}
@@ -79,6 +77,7 @@ export function NotificationSidebar({
   const [isAnimatingOut, setIsAnimatingOut] = useState(false)
   const contentRef = useRef(null)
   const sidebarRef = useRef(null)
+  const closeButtonRef = useRef(null)
 
   // Lock body scroll when sidebar is open
   useEffect(() => {
@@ -121,10 +120,7 @@ export function NotificationSidebar({
     if (!sidebar) return
 
     // Auto-focus the close button on open
-    const closeButton = sidebar.querySelector('[aria-label="Close notifications"]')
-    if (closeButton) {
-      closeButton.focus()
-    }
+    closeButtonRef.current?.focus()
 
     // Focus trap: keep focus inside sidebar
     const handleTabKey = (e) => {
@@ -193,7 +189,7 @@ export function NotificationSidebar({
           'wsms-right-0 rtl:wsms-right-auto rtl:wsms-left-0',
           isOpen
             ? 'wsms-translate-x-0 wsms-ease-out wsms-shadow-[-20px_0_60px_-15px_rgba(0,0,0,0.2),_-8px_0_20px_-10px_rgba(0,0,0,0.1)] rtl:wsms-shadow-[20px_0_60px_-15px_rgba(0,0,0,0.2),_8px_0_20px_-10px_rgba(0,0,0,0.1)]'
-            : 'wsms-translate-x-full rtl:wsms--translate-x-full wsms-ease-in'
+            : 'wsms-translate-x-full rtl:wsms--translate-x-full wsms-ease-in wsms-pointer-events-none'
         )}
         style={{
           top: WP_ADMIN_BAR_HEIGHT,
@@ -201,13 +197,12 @@ export function NotificationSidebar({
         }}
         role="dialog"
         aria-modal="true"
-        aria-label="Notifications"
+        aria-label={__('Notifications', 'wp-sms')}
+        aria-hidden={!isOpen}
+        inert={!isOpen ? '' : undefined}
       >
         {/* Header with gradient accent */}
         <div className="wsms-relative wsms-flex-shrink-0">
-          {/* Subtle top accent line */}
-          <div className="wsms-absolute wsms-top-0 wsms-left-0 wsms-right-0 wsms-h-[2px] wsms-bg-gradient-to-r wsms-from-primary/60 wsms-via-primary wsms-to-primary/60" />
-
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-px-5 wsms-py-4 wsms-bg-card wsms-border-b wsms-border-border/50">
             <div className="wsms-flex wsms-items-center wsms-gap-3">
               <div className="wsms-flex wsms-items-center wsms-justify-center wsms-h-9 wsms-w-9 wsms-rounded-lg wsms-bg-primary/10">
@@ -215,38 +210,41 @@ export function NotificationSidebar({
               </div>
               <div>
                 <h2 className="wsms-text-base wsms-font-semibold wsms-text-foreground wsms-tracking-tight">
-                  Notifications
+                  {__('Notifications', 'wp-sms')}
                 </h2>
                 {totalCount > 0 && (
                   <p className="wsms-text-xs wsms-text-muted-foreground wsms-mt-0.5">
-                    {inboxNotifications.length} unread
+                    {sprintf(
+                      _n('%d unread notification', '%d unread notifications', inboxNotifications.length, 'wp-sms'),
+                      inboxNotifications.length
+                    )}
                   </p>
                 )}
               </div>
             </div>
 
             <button
+              ref={closeButtonRef}
               onClick={onClose}
               className={cn(
-                'wsms-flex wsms-items-center wsms-justify-center wsms-h-8 wsms-w-8 wsms-rounded-lg',
-                'wsms-text-muted-foreground wsms-transition-all wsms-duration-200',
-                'hover:wsms-bg-accent hover:wsms-text-foreground',
-                'active:wsms-scale-95',
-                'focus:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-primary/50'
+                'wsms-flex wsms-items-center wsms-justify-center wsms-h-9 wsms-w-9 wsms-rounded-full',
+                'wsms-bg-muted wsms-text-foreground wsms-transition-colors wsms-duration-150',
+                'hover:wsms-bg-foreground/10'
               )}
-              aria-label="Close notifications"
+              aria-label={__('Close notifications', 'wp-sms')}
+              title={__('Close', 'wp-sms')}
             >
-              <X className="wsms-h-[18px] wsms-w-[18px]" strokeWidth={2} />
+              <X className="wsms-h-[18px] wsms-w-[18px]" strokeWidth={2.25} />
             </button>
           </div>
         </div>
 
         {/* Tabs section */}
-        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-px-5 wsms-py-1 wsms-border-b wsms-border-border/50 wsms-bg-card/50">
+        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-px-5 wsms-pt-1 wsms-pb-0 wsms-border-b wsms-border-border/50 wsms-bg-card/50">
           <div
             role="tablist"
             aria-label={__('Notification tabs', 'wp-sms')}
-            className="wsms-flex wsms-gap-5"
+            className="wsms-relative wsms--mb-px wsms-flex wsms-gap-5"
             onKeyDown={(e) => {
               if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
                 e.preventDefault()
@@ -263,7 +261,7 @@ export function NotificationSidebar({
               id="notifications-tab-inbox"
               controls="notifications-tabpanel"
             >
-              Inbox
+              {__('Inbox', 'wp-sms')}
             </TabButton>
             <TabButton
               active={activeTab === 'dismissed'}
@@ -272,7 +270,7 @@ export function NotificationSidebar({
               id="notifications-tab-dismissed"
               controls="notifications-tabpanel"
             >
-              Dismissed
+              {__('Dismissed', 'wp-sms')}
             </TabButton>
           </div>
 
@@ -290,7 +288,7 @@ export function NotificationSidebar({
               )}
             >
               <Trash2 className="wsms-h-3.5 wsms-w-3.5" />
-              <span>Clear all</span>
+              <span>{__('Clear all', 'wp-sms')}</span>
             </button>
           )}
         </div>
@@ -312,7 +310,7 @@ export function NotificationSidebar({
                 <div className="wsms-absolute wsms-inset-0 wsms-bg-primary/20 wsms-rounded-full wsms-blur-xl wsms-animate-pulse" />
                 <Loader2 className="wsms-relative wsms-h-8 wsms-w-8 wsms-animate-spin wsms-text-primary" strokeWidth={2} />
               </div>
-              <p className="wsms-text-sm wsms-text-muted-foreground wsms-mt-4">Loading notifications...</p>
+              <p className="wsms-text-sm wsms-text-muted-foreground wsms-mt-4">{__('Loading notifications...', 'wp-sms')}</p>
             </div>
           ) : currentNotifications.length === 0 ? (
             <EmptyState tab={activeTab} />
@@ -336,13 +334,6 @@ export function NotificationSidebar({
               ))}
             </div>
           )}
-        </div>
-
-        {/* Footer with subtle branding */}
-        <div className="wsms-flex-shrink-0 wsms-px-5 wsms-py-3 wsms-border-t wsms-border-border/50 wsms-bg-card/80">
-          <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-text-center">
-            Stay updated with the latest from WSMS
-          </p>
         </div>
       </div>
     </>

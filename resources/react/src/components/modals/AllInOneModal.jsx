@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n'
+import { __, sprintf } from '@wordpress/i18n'
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import {
@@ -133,7 +133,7 @@ function getAddonStatus(addons, slug) {
 function AddonBadge({ addon }) {
   if (addon.hasLicense && addon.isActive) {
     return (
-      <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[10px] wsms-font-medium wsms-text-emerald-600 wsms-bg-emerald-50 wsms-px-1.5 wsms-py-0.5 wsms-rounded-full">
+      <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium wsms-text-emerald-600 wsms-bg-emerald-50 wsms-px-1.5 wsms-py-0.5 wsms-rounded-full">
         <Check className="wsms-h-2.5 wsms-w-2.5" />
         {__('Active', 'wp-sms')}
       </span>
@@ -141,21 +141,21 @@ function AddonBadge({ addon }) {
   }
   if (addon.hasLicense && !addon.isInstalled) {
     return (
-      <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[10px] wsms-font-medium wsms-text-amber-600 wsms-bg-amber-50 wsms-px-1.5 wsms-py-0.5 wsms-rounded-full">
+      <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium wsms-text-amber-600 wsms-bg-amber-50 wsms-px-1.5 wsms-py-0.5 wsms-rounded-full">
         {__('Not Installed', 'wp-sms')}
       </span>
     )
   }
   if (addon.hasLicense && !addon.isActive) {
     return (
-      <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[10px] wsms-font-medium wsms-text-amber-600 wsms-bg-amber-50 wsms-px-1.5 wsms-py-0.5 wsms-rounded-full">
+      <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium wsms-text-amber-600 wsms-bg-amber-50 wsms-px-1.5 wsms-py-0.5 wsms-rounded-full">
         {__('Not Activated', 'wp-sms')}
       </span>
     )
   }
   if (!addon.hasLicense && addon.isActive) {
     return (
-      <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[10px] wsms-font-medium wsms-text-red-600 wsms-bg-red-50 wsms-px-1.5 wsms-py-0.5 wsms-rounded-full">
+      <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium wsms-text-red-600 wsms-bg-red-50 wsms-px-1.5 wsms-py-0.5 wsms-rounded-full">
         {__('No License', 'wp-sms')}
       </span>
     )
@@ -173,12 +173,9 @@ function StepNotice({ addon, step }) {
     return (
       <div className="wsms-flex wsms-items-start wsms-gap-2.5 wsms-p-3 wsms-rounded-lg wsms-bg-amber-50 wsms-border wsms-border-amber-200 wsms-mt-4">
         <AlertTriangle className="wsms-h-4 wsms-w-4 wsms-text-amber-500 wsms-mt-0.5 wsms-shrink-0" />
-        <p className="wsms-text-[12px] wsms-text-amber-800 wsms-leading-relaxed">
-          {__('Your license includes the', 'wp-sms')}{' '}
-          <strong>{step.addonName}</strong>
-          {__(', but it\'s not installed yet. Go to the Add-Ons page to install and', 'wp-sms')}{' '}
-          <strong>{__('activate', 'wp-sms')}</strong>{' '}
-          {__('it, so you can start using all its features.', 'wp-sms')}
+        <p className="wsms-text-[13px] wsms-text-amber-800 wsms-leading-relaxed">
+          {/* translators: %s: add-on name */}
+          {sprintf(__("Your license includes the %s, but it's not installed yet. Go to the Add-Ons page to install and activate it, so you can start using all its features.", 'wp-sms'), step.addonName)}
         </p>
       </div>
     )
@@ -188,10 +185,8 @@ function StepNotice({ addon, step }) {
     return (
       <div className="wsms-flex wsms-items-start wsms-gap-2.5 wsms-p-3 wsms-rounded-lg wsms-bg-red-50 wsms-border wsms-border-red-200 wsms-mt-4">
         <AlertTriangle className="wsms-h-4 wsms-w-4 wsms-text-red-500 wsms-mt-0.5 wsms-shrink-0" />
-        <p className="wsms-text-[12px] wsms-text-red-800 wsms-leading-relaxed">
-          {__('This add-on does', 'wp-sms')}{' '}
-          <strong>{__('not have an active license', 'wp-sms')}</strong>
-          {__(', which means it cannot receive updates, including important security updates. For uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license.', 'wp-sms')}
+        <p className="wsms-text-[13px] wsms-text-red-800 wsms-leading-relaxed">
+          {__('This add-on does not have an active license, which means it cannot receive updates, including important security updates. For uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license.', 'wp-sms')}
         </p>
       </div>
     )
@@ -392,10 +387,10 @@ export default function AllInOneModal() {
                 <Crown className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               </div>
               <div>
-                <DialogPrimitive.Title className="wsms-text-[14px] wsms-font-semibold wsms-text-foreground wsms-leading-tight">
+                <DialogPrimitive.Title className="wsms-text-[15px] wsms-font-semibold wsms-text-foreground wsms-leading-tight">
                   {__('WSMS All-in-One', 'wp-sms')}
                 </DialogPrimitive.Title>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-leading-tight wsms-mt-0.5">
+                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-leading-tight wsms-mt-0.5">
                   {stepTitle}
                 </p>
               </div>
@@ -403,6 +398,7 @@ export default function AllInOneModal() {
 
             <button
               onClick={close}
+              aria-label={__('Close', 'wp-sms')}
               className="wsms-flex wsms-items-center wsms-justify-center wsms-h-8 wsms-w-8 wsms-rounded-lg wsms-text-muted-foreground hover:wsms-text-foreground hover:wsms-bg-accent wsms-transition-colors"
             >
               <X className="wsms-h-4 wsms-w-4" />
@@ -435,7 +431,7 @@ export default function AllInOneModal() {
                 <h2 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-leading-tight">
                   {stepTitle}
                 </h2>
-                <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-leading-relaxed wsms-mt-2">
+                <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-leading-relaxed wsms-mt-2">
                   {stepDescription}
                   {step.learnMoreSlug && (
                     <>
@@ -472,15 +468,17 @@ export default function AllInOneModal() {
               <div className="wsms-flex wsms-items-center wsms-justify-between wsms-mt-4 lg:wsms-hidden">
                 <button
                   onClick={goPrev}
+                  aria-label={__('Previous', 'wp-sms')}
                   className="wsms-flex wsms-items-center wsms-justify-center wsms-h-9 wsms-w-9 wsms-rounded-lg wsms-border wsms-border-border wsms-bg-card wsms-text-muted-foreground hover:wsms-text-foreground hover:wsms-bg-accent wsms-transition-colors"
                 >
                   <ChevronLeft className="wsms-h-4 wsms-w-4" />
                 </button>
-                <span className="wsms-text-[12px] wsms-text-muted-foreground">
+                <span className="wsms-text-[13px] wsms-text-muted-foreground">
                   {currentStep + 1} / {STEPS.length}
                 </span>
                 <button
                   onClick={goNext}
+                  aria-label={__('Next', 'wp-sms')}
                   className="wsms-flex wsms-items-center wsms-justify-center wsms-h-9 wsms-w-9 wsms-rounded-lg wsms-border wsms-border-border wsms-bg-card wsms-text-muted-foreground hover:wsms-text-foreground hover:wsms-bg-accent wsms-transition-colors"
                 >
                   <ChevronRight className="wsms-h-4 wsms-w-4" />
@@ -492,7 +490,7 @@ export default function AllInOneModal() {
             <div className="wsms-hidden lg:wsms-flex wsms-flex-col wsms-w-[260px] wsms-border-s wsms-border-border wsms-bg-muted/20">
               {/* Sidebar header */}
               <div className="wsms-px-4 wsms-py-3 wsms-border-b wsms-border-border">
-                <p className="wsms-text-[12px] wsms-font-semibold wsms-text-foreground wsms-uppercase wsms-tracking-wide">
+                <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground wsms-uppercase">
                   {__('All-in-One Includes', 'wp-sms')}
                 </p>
               </div>
@@ -532,15 +530,17 @@ export default function AllInOneModal() {
               <div className="wsms-flex wsms-items-center wsms-justify-between wsms-px-4 wsms-py-2.5 wsms-border-t wsms-border-border">
                 <button
                   onClick={goPrev}
+                  aria-label={__('Previous', 'wp-sms')}
                   className="wsms-flex wsms-items-center wsms-justify-center wsms-h-8 wsms-w-8 wsms-rounded-lg wsms-border wsms-border-border wsms-bg-card wsms-text-muted-foreground hover:wsms-text-foreground hover:wsms-bg-accent wsms-transition-colors"
                 >
                   <ChevronLeft className="wsms-h-3.5 wsms-w-3.5" />
                 </button>
-                <span className="wsms-text-[11px] wsms-text-muted-foreground">
+                <span className="wsms-text-[12px] wsms-text-muted-foreground">
                   {currentStep + 1} / {STEPS.length}
                 </span>
                 <button
                   onClick={goNext}
+                  aria-label={__('Next', 'wp-sms')}
                   className="wsms-flex wsms-items-center wsms-justify-center wsms-h-8 wsms-w-8 wsms-rounded-lg wsms-border wsms-border-border wsms-bg-card wsms-text-muted-foreground hover:wsms-text-foreground hover:wsms-bg-accent wsms-transition-colors"
                 >
                   <ChevronRight className="wsms-h-3.5 wsms-w-3.5" />
@@ -551,7 +551,7 @@ export default function AllInOneModal() {
 
           {/* Footer */}
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-px-5 wsms-py-3.5 wsms-border-t wsms-border-border wsms-bg-muted/30">
-            <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-text-[11px] wsms-text-muted-foreground">
+            <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-text-[12px] wsms-text-muted-foreground">
               <Crown className="wsms-h-3.5 wsms-w-3.5" />
               <span>{__('Unlock all premium features with one license', 'wp-sms')}</span>
             </div>

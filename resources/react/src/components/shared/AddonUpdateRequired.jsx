@@ -48,7 +48,7 @@ export function AddonUpdateRequired({ addonKey, icon: Icon }) {
             <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
               {__('Update Required', 'wp-sms')}
             </h3>
-            <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
+            <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-mb-6">
               {__('The %s add-on needs to be updated to work with the new dashboard. Please update it to the latest version.', 'wp-sms').replace('%s', info.name)}
             </p>
             <Button variant="outline" asChild>

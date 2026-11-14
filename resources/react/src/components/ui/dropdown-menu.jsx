@@ -203,7 +203,7 @@ DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName
 const DropdownMenuShortcut = ({ className, ...props }) => {
   return (
     <span
-      className={cn('wsms-ms-auto wsms-text-xs wsms-tracking-widest wsms-opacity-60', className)}
+      className={cn('wsms-ms-auto wsms-text-xsst wsms-opacity-60', className)}
       {...props}
     />
   )

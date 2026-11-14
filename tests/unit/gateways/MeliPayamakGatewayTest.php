@@ -47,6 +47,17 @@ class MeliPayamakGatewayTest extends WP_UnitTestCase
     }
 
     /**
+     * Test that the password help path remains readable after escaping.
+     */
+    public function testCredentialHelpUsesVisiblePanelPath()
+    {
+        $help = $this->gateway->gatewayFields['password']['desc'];
+
+        $this->assertStringContainsString('Developers → Web service settings', $help);
+        $this->assertStringNotContainsString('&gt;', $help);
+    }
+
+    /**
      * Test SendSMS() returns WP_Error when credentials are missing.
      */
     public function testSendSmsWithoutCredentials()

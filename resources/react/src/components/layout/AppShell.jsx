@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import React, { useState, Suspense, memo, useEffect, useCallback } from 'react'
 import Sidebar from './Sidebar'
 import Header from './Header'
@@ -67,7 +68,7 @@ const AppShell = memo(function AppShell() {
         href="#main-content"
         className="wsms-sr-only focus:wsms-not-sr-only focus:wsms-fixed focus:wsms-top-2 focus:wsms-left-2 focus:wsms-z-[100] focus:wsms-bg-primary focus:wsms-text-primary-foreground focus:wsms-px-4 focus:wsms-py-2 focus:wsms-rounded-md focus:wsms-shadow-lg focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-ring"
       >
-        Skip to main content
+        {__('Skip to main content', 'wp-sms')}
       </a>
 
       {/* Header - Full width at top */}
@@ -99,9 +100,9 @@ const AppShell = memo(function AppShell() {
 
         {/* Main content */}
         <div className="wsms-main">
-          <div id="main-content" role="region" aria-label="WP SMS content" className="wsms-content wsms-scrollbar-thin" tabIndex={-1}>
+          <div id="main-content" role="region" aria-label={__('WSMS content', 'wp-sms')} className="wsms-content wsms-scrollbar-thin" tabIndex={-1}>
             <div className="wsms-content-inner">
-              <AdminNotices />
+              {currentPage !== 'add-ons' && <AdminNotices />}
               {isLoading ? (
                 <LoadingSkeleton />
               ) : (
