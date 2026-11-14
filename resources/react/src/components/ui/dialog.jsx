@@ -23,6 +23,9 @@ const DialogContent = React.forwardRef(
   ({ className, children, size = 'default', showClose = true, onInteractOutside, style, ...props }, ref) => {
     // The WordPress menu covers the left edge: centre in what is left, and never run under it.
     const menuWidth = typeof document !== 'undefined' ? (document.getElementById('adminmenuwrap')?.offsetWidth || 0) : 0
+    // On right-to-left sites the menu is on the right, so the free space is shifted the other way.
+    const isRtl = typeof document !== 'undefined' && (document.documentElement.dir === 'rtl' || document.body.classList.contains('rtl'))
+    const shift = isRtl ? -menuWidth / 2 : menuWidth / 2
     return (
     <DialogPrimitive.Portal container={document.getElementById('wpsms-settings-root')}>
       {/* Overlay */}
@@ -45,7 +48,7 @@ const DialogContent = React.forwardRef(
         style={{
           position: 'fixed',
           top: '50%',
-          left: menuWidth ? `calc(50% + ${menuWidth / 2}px)` : '50%',
+          left: menuWidth ? `calc(50% + ${shift}px)` : '50%',
           transform: 'translate(-50%, -50%)',
           maxWidth: `calc(100vw - ${menuWidth}px - 32px)`,
           zIndex: 999999,

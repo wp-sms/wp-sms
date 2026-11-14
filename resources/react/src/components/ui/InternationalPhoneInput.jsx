@@ -64,7 +64,8 @@ export function InternationalPhoneInput({
       onChange={handleInputChange}
       placeholder={placeholder || '+1 555 123 4567'}
       disabled={disabled}
-      className={cn('wsms-font-mono', className)}
+      dir="ltr"
+      className={cn('wsms-font-mono wsms-text-left', className)}
       {...props}
     />
   )

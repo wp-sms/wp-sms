@@ -183,9 +183,9 @@ function LicenseHero({ addons, summary, onChanged, compact = false }) {
   // Every number comes from the same summary the header, menu badge and notification use.
   const expired = summary.expired || 0
   const missing = summary.missing || 0
-  // Add-ons waiting for another plugin (for example Elementor Pro) cannot be turned on from Plugins.
-  const waiting = addons.filter((a) => a.needs && a.status === 'not_activated').length
-  const inactive = Math.max(0, (summary.inactive || 0) - waiting)
+  // The server already leaves out add-ons waiting for another plugin (for example Elementor Pro),
+  // because they cannot be turned on from Plugins.
+  const inactive = summary.inactive || 0
   const licensedCount = summary.licensed || 0
   const total = summary.total || addons.length
   const keys = collectKeys(addons)

@@ -292,6 +292,7 @@ class LicenseHelper
      */
     const DEPENDENCIES = [
         'wp-sms-elementor-form' => ['elementor-pro/elementor-pro.php', 'Elementor Pro'],
+        'wp-sms-woocommerce-pro' => ['woocommerce/woocommerce.php', 'WooCommerce'],
     ];
 
     /**

@@ -211,6 +211,7 @@ const SearchableSelect = React.forwardRef(
                         optionClassName
                       )}
                     >
+                      <span className="wsms-flex-1 wsms-truncate">{option.label}</span>
                       <span
                         className={cn(
                           'wsms-flex wsms-h-4 wsms-w-4 wsms-items-center wsms-justify-center wsms-shrink-0',
@@ -219,7 +220,6 @@ const SearchableSelect = React.forwardRef(
                       >
                         <Check className="wsms-h-4 wsms-w-4" />
                       </span>
-                      <span className="wsms-flex-1 wsms-truncate">{option.label}</span>
                     </button>
                   )
                 })

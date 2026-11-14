@@ -98,7 +98,7 @@ const SelectItem = React.forwardRef(({ className, children, style, ...props }, r
     <SelectPrimitive.Item
       ref={ref}
       className={cn(
-        'wsms-relative wsms-flex wsms-w-full wsms-cursor-pointer wsms-select-none wsms-items-center wsms-rounded wsms-py-1.5 wsms-ps-7 wsms-pe-2 wsms-text-[14px] wsms-outline-none data-[disabled]:wsms-pointer-events-none data-[disabled]:wsms-opacity-50 wsms-text-start rtl:wsms-text-right',
+        'wsms-relative wsms-flex wsms-w-full wsms-cursor-pointer wsms-select-none wsms-items-center wsms-rounded wsms-py-1.5 wsms-ps-7 wsms-pe-2 rtl:wsms-ps-2 rtl:wsms-pe-7 wsms-text-[14px] wsms-outline-none data-[disabled]:wsms-pointer-events-none data-[disabled]:wsms-opacity-50 wsms-text-start rtl:wsms-text-right',
         className
       )}
       style={{
@@ -110,7 +110,7 @@ const SelectItem = React.forwardRef(({ className, children, style, ...props }, r
       onMouseLeave={() => setIsHovered(false)}
       {...props}
     >
-      <span className="wsms-absolute wsms-start-2 wsms-flex wsms-items-center wsms-justify-center wsms-w-[14px] wsms-h-[14px]">
+      <span className="wsms-absolute wsms-start-2 rtl:wsms-start-auto rtl:wsms-end-2 wsms-flex wsms-items-center wsms-justify-center wsms-w-[14px] wsms-h-[14px]">
         <SelectPrimitive.ItemIndicator>
           <Check style={{ width: '12px', height: '12px', color: '#f97316' }} />
         </SelectPrimitive.ItemIndicator>

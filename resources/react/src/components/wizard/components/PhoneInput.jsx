@@ -57,6 +57,16 @@ export default function PhoneInput({
         .iti__country-list { font-size: 12px; }
         .iti__country-name, .iti__dial-code { font-size: 12px; }
         .iti__search-input { font-size: 12px; padding: 6px 8px; }
+        /* A phone number is always left to right: the library flips the flag and padding under any
+           [dir=rtl] ancestor, so put them back on the left inside our own dir=ltr wrapper. */
+        .wsms-wizard-phone-input .iti { direction: ltr; }
+        .wsms-wizard-phone-input .iti .iti__country-container { left: 0 !important; right: auto !important; }
+        .wsms-wizard-phone-input .iti input.iti__tel-input { direction: ltr !important; text-align: left !important; padding-left: 56px !important; padding-right: 28px !important; }
+        .wsms-wizard-phone-input .iti__selected-country { direction: ltr; }
+        .wsms-wizard-phone-input .iti__arrow { margin: 0 0 0 6px !important; }
+        .wsms-wizard-phone-input .iti .iti__country-container .iti__dropdown-content { left: 0 !important; right: auto !important; inset-inline-start: auto !important; inset-inline-end: auto !important; width: 100%; min-width: 260px; max-width: 100%; direction: ltr; text-align: left; }
+        .wsms-wizard-phone-input .iti__search-input { width: 100%; direction: ltr; text-align: left; }
+        .wsms-wizard-phone-input .iti__country-list, .wsms-wizard-phone-input .iti__country { direction: ltr; text-align: left; }
         [data-theme="dark"] .wsms-wizard-phone-input .iti {
           --iti-hover-color: hsl(var(--accent));
           --iti-border-color: hsl(var(--border));
@@ -257,7 +267,7 @@ export default function PhoneInput({
   }, [value, isLoaded])
 
   return (
-    <div className={cn('wsms-wizard-phone-input wsms-relative', className)}>
+    <div dir="ltr" className={cn('wsms-wizard-phone-input wsms-relative', className)}>
       <input
         ref={inputRef}
         type="tel"
@@ -274,13 +284,10 @@ export default function PhoneInput({
           error
             ? 'wsms-border-red-500 focus-visible:wsms-ring-red-500/30'
             : 'wsms-border-input focus-visible:wsms-ring-ring',
-          // Ensure enough room for the country button on the "start" side:
-          // LTR: left, RTL: right.
-          'wsms-ps-[90px] rtl:wsms-ps-3',
-          error ? 'wsms-pe-7 rtl:wsms-pe-3 rtl:wsms-ps-7' : 'wsms-pe-3 rtl:wsms-pe-[90px]',
-          // Keep phone number direction LTR for readability, but align text to the right in RTL
-          // so the value sits next to the flag dropdown.
-          'rtl:wsms-text-right',
+          // A phone number is always left to right, also on right-to-left sites: the country
+          // button sits on the left and the number reads from the left.
+          'wsms-ps-14 wsms-text-left',
+          error ? 'wsms-pe-7' : 'wsms-pe-3',
         )}
       />
       {error && (
