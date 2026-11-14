@@ -32,9 +32,11 @@ export const addonsApi = {
    * @param {string} addonSlug - The add-on slug
    * @returns {Promise<object>} Removal result
    */
-  async removeLicense(addonSlug) {
+  async removeLicense(addonSlug, force = false, maskedKey = '') {
     const response = await apiClient.post('addons/remove-license', {
       addon_slug: addonSlug,
+      force,
+      masked_key: maskedKey,
     })
     return response
   },

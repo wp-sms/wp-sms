@@ -113,13 +113,17 @@ function LicenseHero({ addons, summary, onChanged, compact = false }) {
   const [showAdd, setShowAdd] = useState(false)
   const [confirmKey, setConfirmKey] = useState(null)
   const [removingKey, setRemovingKey] = useState(null)
+  // Set when the license server could not free this site's seat: the dialog then offers "Remove anyway".
+  const [removeError, setRemoveError] = useState(null)
   const [error, setError] = useState(null)
   const [info, setInfo] = useState('')
 
   // Every number comes from the same summary the header, menu badge and notification use.
   const expired = summary.expired || 0
   const missing = summary.missing || 0
-  const inactive = summary.inactive || 0
+  // Add-ons waiting for another plugin (for example Elementor Pro) cannot be turned on from Plugins.
+  const waiting = addons.filter((a) => a.needs && a.status === 'not_activated').length
+  const inactive = Math.max(0, (summary.inactive || 0) - waiting)
   const licensedCount = summary.licensed || 0
   const total = summary.total || addons.length
   const keys = collectKeys(addons)
@@ -179,16 +183,24 @@ function LicenseHero({ addons, summary, onChanged, compact = false }) {
     }
   }
 
-  const handleRemove = async (key) => {
+  const handleRemove = async (key, force = false) => {
     setRemovingKey(key.masked)
     try {
-      const response = await addonsApi.removeLicense(key.slug)
+      const response = await addonsApi.removeLicense(key.slug, force, key.masked)
       onChanged(response.message || __('License removed successfully.', 'wp-sms'))
+      setConfirmKey(null)
+      setRemoveError(null)
     } catch (err) {
-      toast({ title: err.message || __('Failed to remove license.', 'wp-sms'), variant: 'destructive' })
+      if (force) {
+        toast({ title: err.message || __('Failed to remove license.', 'wp-sms'), variant: 'destructive' })
+        setConfirmKey(null)
+        setRemoveError(null)
+      } else {
+        // Keep the dialog open so the person can choose to remove it here anyway.
+        setRemoveError(err.message || __('Could not free this site on the license server.', 'wp-sms'))
+      }
     } finally {
       setRemovingKey(null)
-      setConfirmKey(null)
     }
   }
 
@@ -335,21 +347,23 @@ function LicenseHero({ addons, summary, onChanged, compact = false }) {
         </div>
       </div>
 
-      <AlertDialog open={Boolean(confirmKey)} onOpenChange={(open) => { if (!open) setConfirmKey(null) }}>
+      <AlertDialog open={Boolean(confirmKey)} onOpenChange={(open) => { if (!open) { setConfirmKey(null); setRemoveError(null) } }}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{__('Remove this license?', 'wp-sms')}</AlertDialogTitle>
             <AlertDialogDescription>
-              {confirmKey && (confirmKey.covers > 1
-                ? sprintf(__('It will be removed from all %d add-ons it unlocks. You can add it again any time.', 'wp-sms'), confirmKey.covers)
-                : __('It will be removed from this add-on. You can add it again any time.', 'wp-sms'))}
+              {removeError
+                ? sprintf(__('%s Remove it here anyway? This site keeps using a seat on your account until you free it there.', 'wp-sms'), removeError)
+                : confirmKey && (confirmKey.covers > 1
+                  ? sprintf(__('It will be removed from all %d add-ons it unlocks, and this site is freed so you can use the key on another site.', 'wp-sms'), confirmKey.covers)
+                  : __('It will be removed from this add-on, and this site is freed so you can use the key on another site.', 'wp-sms'))}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setConfirmKey(null)}>{__('Keep it', 'wp-sms')}</AlertDialogCancel>
-            <Button className="!wsms-bg-red-600 !wsms-text-white hover:!wsms-bg-red-700" onClick={() => confirmKey && handleRemove(confirmKey)} disabled={Boolean(removingKey)}>
+            <AlertDialogCancel onClick={() => { setConfirmKey(null); setRemoveError(null) }}>{__('Keep it', 'wp-sms')}</AlertDialogCancel>
+            <Button className="!wsms-bg-red-600 !wsms-text-white hover:!wsms-bg-red-700" onClick={() => confirmKey && handleRemove(confirmKey, Boolean(removeError))} disabled={Boolean(removingKey)}>
               {removingKey ? <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" /> : null}
-              {__('Remove license', 'wp-sms')}
+              {removeError ? __('Remove anyway', 'wp-sms') : __('Remove license', 'wp-sms')}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -383,7 +397,9 @@ function AddOnCard({ addon, onOpenPage }) {
   let action = null
   let gear = null
   // License entry and renewal live in the band above, so cards never ask for a key.
-  if (addon.status === 'not_activated') {
+  if (addon.status === 'not_activated' && addon.needs) {
+    action = { label: sprintf(__('Needs %s', 'wp-sms'), addon.needs), tone: 'wsms-bg-muted wsms-text-muted-foreground wsms-cursor-default' }
+  } else if (addon.status === 'not_activated') {
     action = { label: __('Activate plugin', 'wp-sms'), tone: primary, href: 'plugins.php' }
   } else if (addon.status === 'activated' && SETTINGS_PAGES[addon.slug]) {
     gear = () => onOpenPage(SETTINGS_PAGES[addon.slug])
@@ -446,8 +462,10 @@ function AddOnCard({ addon, onOpenPage }) {
         <div className={cn("wsms-mt-auto wsms-flex wsms-items-center wsms-gap-3", (action || addon.is_update_available) ? "wsms-h-8 wsms-pt-4 wsms-box-content" : "wsms-hidden")}>
           {action && (action.href ? (
             <a href={action.href} {...(action.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})} className={actionClass(action.tone)}>{action.label}</a>
-          ) : (
+          ) : action.onClick ? (
             <button type="button" onClick={action.onClick} className={actionClass(action.tone)}>{action.label}</button>
+          ) : (
+            <span className={actionClass(action.tone)}>{action.label}</span>
           ))}
           {addon.is_update_available && (
             <a href="plugins.php?plugin_status=upgrade" className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-font-semibold wsms-text-amber-700 wsms-no-underline hover:wsms-underline">

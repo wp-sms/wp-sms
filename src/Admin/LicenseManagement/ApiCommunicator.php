@@ -23,6 +23,50 @@ class ApiCommunicator
 
     private $apiUrl = 'https://my.wsms.io/wp-json/wp-license-manager/v1';
 
+    private $deactivateUrl = 'https://my.wsms.io/api/v1/license/deactivate';
+
+    /**
+     * Free this site's seat on the licence server, so the key can be used on another site.
+     *
+     * The seat belongs to the licence and the site, so naming any add-on the key covers is enough.
+     *
+     * @param string $licenseKey
+     * @param string $addonSlug
+     *
+     * @return true
+     * @throws Exception When the server could not be reached or did not free the seat.
+     */
+    public function deactivateLicense($licenseKey, $addonSlug)
+    {
+        $response = wp_remote_post($this->deactivateUrl, [
+            'timeout' => 15,
+            'headers' => ['Accept' => 'application/json'],
+            'body'    => [
+                'license_key'  => $licenseKey,
+                'product_slug' => $addonSlug,
+                'domain'       => home_url(),
+            ],
+        ]);
+
+        if (is_wp_error($response)) {
+            throw new Exception(esc_html($response->get_error_message()));
+        }
+
+        $code = (int) wp_remote_retrieve_response_code($response);
+        $body = json_decode(wp_remote_retrieve_body($response));
+
+        // Already free on the server (never activated here, or freed before): the goal is reached.
+        if ($code === 404) {
+            return true;
+        }
+
+        if ($code < 200 || $code >= 300 || empty($body->success)) {
+            throw new Exception(esc_html(is_object($body) && !empty($body->message) ? $body->message : __('The license server did not free this site.', 'wp-sms')));
+        }
+
+        return true;
+    }
+
     /**
      * How long a transport failure is remembered before we try again (5 minutes).
      *

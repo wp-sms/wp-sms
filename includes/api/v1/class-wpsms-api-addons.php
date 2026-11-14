@@ -72,6 +72,16 @@ class AddonsApi extends RestApi
                         'type'              => 'string',
                         'sanitize_callback' => 'sanitize_text_field',
                     ],
+                    'masked_key' => [
+                        'required'          => false,
+                        'type'              => 'string',
+                        'sanitize_callback' => 'sanitize_text_field',
+                    ],
+                    'force'      => [
+                        'required' => false,
+                        'type'     => 'boolean',
+                        'default'  => false,
+                    ],
                 ],
             ],
         ]);
@@ -110,8 +120,18 @@ class AddonsApi extends RestApi
                 LicenseHelper::getLicenses('license_expired')
             );
 
+            // Add-ons that switch themselves off when another plugin is missing: slug => [plugin file, name].
+            $dependencies = [
+                'wp-sms-elementor-form' => ['elementor-pro/elementor-pro.php', 'Elementor Pro'],
+            ];
+
             foreach ($plugins as $plugin) {
                 $slug = $plugin->getSlug();
+
+                $needs = null;
+                if (isset($dependencies[$slug]) && !$plugin->isActivated() && !is_plugin_active($dependencies[$slug][0])) {
+                    $needs = $dependencies[$slug][1];
+                }
 
                 // Find all licenses that contain this addon
                 $licenses = [];
@@ -139,6 +159,7 @@ class AddonsApi extends RestApi
                     'status'              => $plugin->getStatus(),
                     'status_label'        => $plugin->getStatusLabel(),
                     'licenses'            => $licenses,
+                    'needs'               => $needs,
                     'is_installed'        => $plugin->isInstalled(),
                     'is_activated'        => $plugin->isActivated(),
                     'is_update_available' => $plugin->isUpdateAvailable(),
@@ -203,15 +224,57 @@ class AddonsApi extends RestApi
         $addonSlug = $request->get_param('addon_slug');
 
         try {
-            $licenseKey = LicenseHelper::getPluginLicense($addonSlug);
+            // The key the person clicked on. Two keys can cover the same add-on, so the slug alone is ambiguous.
+            $licenseKey = null;
+            $maskedKey  = (string) $request->get_param('masked_key');
+            if ($maskedKey !== '') {
+                foreach (array_keys(LicenseHelper::getLicenses('all')) as $storedKey) {
+                    if (str_repeat('•', max(0, strlen($storedKey) - 4)) . substr($storedKey, -4) === $maskedKey) {
+                        $licenseKey = $storedKey;
+                        break;
+                    }
+                }
+            }
+
+            if (empty($licenseKey)) {
+                $licenseKey = LicenseHelper::getPluginLicense($addonSlug);
+            }
 
             if (empty($licenseKey)) {
                 return self::response(__('No license found for this add-on.', 'wp-sms'), 404);
             }
 
+            $force   = (bool) $request->get_param('force');
+            $license = LicenseHelper::getLicenseInfo($licenseKey);
+            $expired = ($license['status'] ?? '') === 'license_expired';
+
+            // Free this site's seat first, so the key can be used on another site. An expired key
+            // has no seat to free, and "remove anyway" skips the server when it cannot be reached.
+            if (!$expired && !$force) {
+                try {
+                    // Name an add-on that this key really covers.
+                    $coveredSlug = !empty($license['products'][0]) ? $license['products'][0] : $addonSlug;
+                    (new ApiCommunicator())->deactivateLicense($licenseKey, $coveredSlug);
+                } catch (\Exception $e) {
+                    return self::response(
+                        sprintf(
+                            /* translators: %s: error message from the license server */
+                            __('Could not free this site on the license server: %s', 'wp-sms'),
+                            $e->getMessage()
+                        ),
+                        502
+                    );
+                }
+            }
+
             LicenseHelper::removeLicense($licenseKey);
 
-            return self::response(__('License removed successfully.', 'wp-sms'), 200);
+            return self::response(
+                $expired || $force
+                    ? __('License removed from this site.', 'wp-sms')
+                    : __('License removed. This site no longer uses a seat, so you can use the key on another site.', 'wp-sms'),
+                200
+            );
         } catch (\Exception $e) {
             return self::response($e->getMessage(), 400);
         }
