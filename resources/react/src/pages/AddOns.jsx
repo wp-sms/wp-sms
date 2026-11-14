@@ -685,8 +685,8 @@ export default function AddOns() {
     )
   }
 
-  // WSMS on its own: no add-on installed and no key stored (add &aio-preview=1 to preview it elsewhere).
-  const freeOnly = new URLSearchParams(window.location.search).has('aio-preview') || (addons.every((a) => !a.is_installed) && collectKeys(addons).length === 0)
+  // WSMS on its own: no add-on installed and no key stored.
+  const freeOnly = addons.every((a) => !a.is_installed) && collectKeys(addons).length === 0
 
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">

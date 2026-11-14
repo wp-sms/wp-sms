@@ -243,14 +243,6 @@ function ThemeToggle() {
 
 export default function Header({ onMenuClick, showMenuButton }) {
   const displayNotifications = useSavedSetting('display_notifications', '1')
-  const isAllInOne = window.wpSmsSettings?.license?.isPremium || false
-  const saleEnd = new Date('2026-12-01T23:59:00Z').getTime()
-  const daysLeft = Math.ceil((saleEnd - Date.now()) / 86400000)
-  const pillText = daysLeft <= 1 ? __('Sale ends today', 'wp-sms') : daysLeft <= 3 ? sprintf(__('Sale ends in %d days', 'wp-sms'), daysLeft) : __('Black Friday: 30% off', 'wp-sms')
-  const pillEmoji = daysLeft <= 1 ? '⏰' : '🔥'
-  const pillUrgent = daysLeft <= 1
-  const hasExpired = (window.wpSmsSettings?.features?.licenseExpired || 0) > 0
-  const showBlackFriday = (!isAllInOne && !hasExpired) || new URLSearchParams(window.location.search).has('bf-preview')
 
   return (
     <div className="wsms-flex wsms-items-center wsms-justify-between wsms-h-16 wsms-px-5 wsms-bg-card wsms-border-b wsms-border-border">
@@ -280,22 +272,6 @@ export default function Header({ onMenuClick, showMenuButton }) {
 
       {/* Right: notifications and theme */}
       <div className="wsms-flex wsms-items-center wsms-gap-3">
-        {/* LOCAL PREVIEW ONLY: hardcoded Black Friday pill, not from Horizon. Shown to non-All-in-One users; add &bf-preview=1 to the URL to see it on an All-in-One site. */}
-        {showBlackFriday && (
-          <a
-            href="https://wsms.io/pricing/?utm_source=wp-sms&utm_medium=banner&utm_campaign=black-friday-2026"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="30% off WSMS All-in-One, first year. Code BFCM2026. Ends Dec 1."
-            className={cn(
-              'wsms-me-2 wsms-hidden wsms-items-center wsms-gap-1.5 wsms-rounded-full wsms-px-3 wsms-py-1 wsms-text-xs wsms-font-semibold wsms-text-white wsms-no-underline md:wsms-flex',
-              pillUrgent ? 'wsms-bg-red-800 hover:wsms-bg-red-900' : 'wsms-bg-red-600 hover:wsms-bg-red-700'
-            )}
-          >
-            <span aria-hidden="true">{pillEmoji}</span>
-            <span>{pillText}</span>
-          </a>
-        )}
         {displayNotifications === '1' && <NotificationBell />}
         <ThemeToggle />
       </div>

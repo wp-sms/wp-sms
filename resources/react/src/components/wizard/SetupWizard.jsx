@@ -74,8 +74,7 @@ export default function SetupWizard() {
 
   // Initialize with correct value to avoid flash
   const [isOpen, setIsOpen] = useState(shouldAutoOpenWizard)
-  // &wizard-step=4 opens a step directly (preview only; step numbers start at 0)
-  const [currentStep, setCurrentStep] = useState(() => Number(new URLSearchParams(window.location.search).get('wizard-step')) || 0)
+  const [currentStep, setCurrentStep] = useState(0)
   const [completedSteps, setCompletedSteps] = useState([])
   const [saving, setSaving] = useState(false)
 

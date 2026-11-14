@@ -62,8 +62,7 @@ export default function AllInOneCompare({ compact = false, showHide = false, pre
     setTip({ text, x: r.left + r.width / 2 - (inDialog ? hr.left : 0), y: r.top - (inDialog ? hr.top : 0), host, fixed: !inDialog })
   }
 
-  // Add &aio-preview=1 to the URL to see it on a site that has All-in-One or add-ons.
-  const preview = forcePreview || new URLSearchParams(window.location.search).has('aio-preview')
+  const preview = forcePreview
   if (!preview && window.wpSmsSettings?.license?.isPremium) return null
 
   return (
