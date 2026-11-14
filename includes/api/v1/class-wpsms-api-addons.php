@@ -120,18 +120,10 @@ class AddonsApi extends RestApi
                 LicenseHelper::getLicenses('license_expired')
             );
 
-            // Add-ons that switch themselves off when another plugin is missing: slug => [plugin file, name].
-            $dependencies = [
-                'wp-sms-elementor-form' => ['elementor-pro/elementor-pro.php', 'Elementor Pro'],
-            ];
-
             foreach ($plugins as $plugin) {
                 $slug = $plugin->getSlug();
 
-                $needs = null;
-                if (isset($dependencies[$slug]) && !$plugin->isActivated() && !is_plugin_active($dependencies[$slug][0])) {
-                    $needs = $dependencies[$slug][1];
-                }
+                $needs = $plugin->isActivated() ? null : LicenseHelper::missingDependency($slug);
 
                 // Find all licenses that contain this addon
                 $licenses = [];

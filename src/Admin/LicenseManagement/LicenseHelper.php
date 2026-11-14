@@ -139,7 +139,8 @@ class LicenseHelper
     {
         $renewal = json_decode(wp_json_encode($renewal), true);
 
-        if (empty($renewal['renew_url'])) {
+        // A key that renews itself has no link to buy, but the plugin still says so.
+        if (empty($renewal['renew_url']) && empty($renewal['auto_renews'])) {
             return null;
         }
 
@@ -147,7 +148,10 @@ class LicenseHelper
         $price = $renewal['price'] ?? null;
 
         return [
-            'renew_url' => esc_url_raw($renewal['renew_url']),
+            'renew_url'  => !empty($renewal['renew_url']) ? esc_url_raw($renewal['renew_url']) : '',
+            'auto_renews' => !empty($renewal['auto_renews']),
+            'cancel_at_period_end' => !empty($renewal['cancel_at_period_end']),
+            'renews_at'  => sanitize_text_field($renewal['renews_at'] ?? ''),
             'offer'     => is_array($offer) ? [
                 'code'           => sanitize_text_field($offer['code'] ?? ''),
                 'discount_type'  => sanitize_text_field($offer['discount_type'] ?? ''),
@@ -209,7 +213,8 @@ class LicenseHelper
                     $result['expired']++;
                 } elseif (!$valid) {
                     $result['missing']++;
-                } elseif (!$plugin->isActivated()) {
+                } elseif (!$plugin->isActivated() && !self::missingDependency($plugin->getSlug())) {
+                    // An add-on waiting for another plugin cannot be turned on, so it is not "turned off".
                     $result['inactive']++;
                 }
             }
@@ -248,6 +253,32 @@ class LicenseHelper
             'inactive' => $summary['inactive'],
             'renew'    => $summary['renew'],
         ];
+    }
+
+    /**
+     * Add-ons that switch themselves off when another plugin is missing: slug => [plugin file, name].
+     */
+    const DEPENDENCIES = [
+        'wp-sms-elementor-form' => ['elementor-pro/elementor-pro.php', 'Elementor Pro'],
+    ];
+
+    /**
+     * The name of the plugin an add-on is waiting for, or null when it has what it needs.
+     *
+     * @param string $slug
+     * @return string|null
+     */
+    public static function missingDependency($slug)
+    {
+        if (!isset(self::DEPENDENCIES[$slug])) {
+            return null;
+        }
+
+        if (!function_exists('is_plugin_active')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        return is_plugin_active(self::DEPENDENCIES[$slug][0]) ? null : self::DEPENDENCIES[$slug][1];
     }
 
     /**

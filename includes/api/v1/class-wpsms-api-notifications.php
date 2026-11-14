@@ -169,11 +169,13 @@ class NotificationsApi extends RestApi
     {
         $alerts = \WP_SMS\Admin\LicenseManagement\LicenseHelper::getLicenseAlerts();
 
+        $addonsUrl = admin_url('admin.php?page=wsms&tab=add-ons');
+
+        // Nothing is wrong yet, but a key may run out soon: a quiet heads-up.
         if (empty($alerts['count'])) {
-            return null;
+            return $this->expiringSoonNotice($addonsUrl);
         }
 
-        $addonsUrl = admin_url('admin.php?page=wsms&tab=add-ons');
         $renew     = $alerts['renew'];
         $offer     = $renew['offer'] ?? null;
         $expired   = $alerts['expired'] > 0;
@@ -210,6 +212,56 @@ class NotificationsApi extends RestApi
                 ? ['title' => __('Renew license', 'wp-sms'), 'url' => $renew['renew_url']]
                 : ['title' => $inactive ? __('Open Add-Ons', 'wp-sms') : __('Enter license', 'wp-sms'), 'url' => $addonsUrl],
             'secondaryButton' => $expired && !empty($renew['renew_url'])
+                ? ['title' => __('Manage licenses', 'wp-sms'), 'url' => $addonsUrl]
+                : null,
+            'dismissed'       => false,
+            'localOnly'       => true,
+        ];
+    }
+
+    /**
+     * A quiet card for the key that runs out first, when it is 30 days away or less.
+     * A key that renews itself needs nothing, so it never shows one.
+     *
+     * @param string $addonsUrl
+     * @return array|null
+     */
+    private function expiringSoonNotice($addonsUrl)
+    {
+        $soonest = null;
+
+        foreach (\WP_SMS\Admin\LicenseManagement\LicenseHelper::getLicenses('valid') as $license) {
+            $time = !empty($license['valid_until']) ? strtotime($license['valid_until']) : false;
+
+            if ($time === false || !empty($license['renewal']['auto_renews'])) {
+                continue;
+            }
+
+            $days = (int) ceil(($time - time()) / DAY_IN_SECONDS);
+
+            if ($days >= 0 && $days <= 30 && ($soonest === null || $days < $soonest['days'])) {
+                $soonest = ['days' => $days, 'renew_url' => $license['renewal']['renew_url'] ?? ''];
+            }
+        }
+
+        if ($soonest === null) {
+            return null;
+        }
+
+        /* translators: %d: number of days */
+        $title = $soonest['days'] === 0 ? __('A license expires today', 'wp-sms') : sprintf(_n('A license expires in %d day', 'A license expires in %d days', $soonest['days'], 'wp-sms'), $soonest['days']);
+
+        return [
+            'id'              => 'license-soon',
+            'title'           => $title,
+            'icon'            => '⏳',
+            'description'     => esc_html__('Renew to keep updates and support.', 'wp-sms'),
+            'activatedAt'     => null,
+            'backgroundColor' => 'info',
+            'primaryButton'   => !empty($soonest['renew_url'])
+                ? ['title' => __('Renew license', 'wp-sms'), 'url' => $soonest['renew_url']]
+                : ['title' => __('Open Add-Ons', 'wp-sms'), 'url' => $addonsUrl],
+            'secondaryButton' => !empty($soonest['renew_url'])
                 ? ['title' => __('Manage licenses', 'wp-sms'), 'url' => $addonsUrl]
                 : null,
             'dismissed'       => false,

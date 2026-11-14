@@ -113,8 +113,48 @@ function describeExpiry(key) {
   const days = Math.ceil((date.getTime() - Date.now()) / 86400000)
   const formatted = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
   if (key.status === 'license_expired' || days < 0) return { tone: 'expired', text: sprintf(__('Expired %s', 'wp-sms'), formatted) }
+  if (key.renewal?.auto_renews && !key.renewal?.cancel_at_period_end) return { tone: 'ok', text: sprintf(__('Renews automatically on %s', 'wp-sms'), formatted) }
   if (days <= 30) return { tone: 'soon', text: days === 0 ? __('Expires today', 'wp-sms') : sprintf(_n('Expires in %d day', 'Expires in %d days', days, 'wp-sms'), days) }
   return { tone: 'ok', text: sprintf(__('Expires %s', 'wp-sms'), formatted) }
+}
+
+function formatMoney(amount, currency) {
+  const value = Number(amount)
+  if (Number.isNaN(value)) return amount
+  try {
+    return new Intl.NumberFormat(undefined, { style: 'currency', currency, minimumFractionDigits: Number.isInteger(value) ? 0 : 2 }).format(value)
+  } catch (e) {
+    return `${amount} ${currency}`
+  }
+}
+
+/**
+ * What renewing costs and the offer on it, as the licence server quotes it. Null when there is nothing to buy.
+ */
+function describeRenewal(key) {
+  const renewal = key.renewal
+  if (!renewal?.renew_url) return null
+  const price = renewal.price
+  const offer = renewal.offer
+  const hasOffer = Boolean(price?.with_offer && offer)
+  let discount = ''
+  if (hasOffer) {
+    discount = offer.discount_type === 'percentage'
+      ? sprintf(__('%s%% off', 'wp-sms'), offer.discount_value)
+      : sprintf(__('%s off', 'wp-sms'), formatMoney(offer.discount_value, price.currency))
+    const ends = offer.expires_at ? new Date(offer.expires_at) : null
+    if (ends && !Number.isNaN(ends.getTime())) {
+      discount = sprintf(__('%1$s until %2$s', 'wp-sms'), discount, ends.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }))
+    }
+  }
+  return {
+    url: renewal.renew_url,
+    now: price ? formatMoney(hasOffer ? price.with_offer : price.full, price.currency) : null,
+    was: hasOffer ? formatMoney(price.full, price.currency) : null,
+    plusTax: price ? price.tax_included === false : false,
+    discount,
+    offerShort: hasOffer ? (offer.discount_type === 'percentage' ? `-${offer.discount_value}%` : `-${formatMoney(offer.discount_value, price.currency)}`) : '',
+  }
 }
 
 function describeSites(key) {
@@ -324,43 +364,47 @@ function LicenseHero({ addons, summary, onChanged, compact = false }) {
               const notch = (r, x, y) => `radial-gradient(circle ${r}px at ${x} ${y}, #0000 97%, #000)`
               const maskOf = (r, o, cut) => [notch(r, `${-o}px`, '50%'), notch(r, `calc(100% + ${o}px)`, '50%'), notch(r, cut, `${-o}px`), notch(r, cut, `calc(100% + ${o}px)`)].join(',')
               const maskStyle = (mask) => ({ WebkitMaskImage: mask, maskImage: mask, WebkitMaskComposite: 'source-in', maskComposite: 'intersect' })
-              const outerMask = maskOf(8, 0, rtl ? '112px' : 'calc(100% - 112px)')
-              const innerMask = maskOf(9, 1, rtl ? '111px' : 'calc(100% - 111px)')
+              const outerMask = maskOf(8, 0, rtl ? '64px' : 'calc(100% - 64px)')
+              const innerMask = maskOf(9, 1, rtl ? '63px' : 'calc(100% - 63px)')
               return (
                 <li key={key.masked} className="wsms-rounded-xl wsms-p-px" style={{ background: t.border, ...maskStyle(outerMask) }}>
                   <div className="wsms-flex wsms-items-stretch wsms-rounded-[11px] wsms-bg-card" style={maskStyle(innerMask)}>
                     <div className="wsms-flex wsms-min-w-0 wsms-flex-1 wsms-items-center wsms-gap-3 wsms-px-5 wsms-py-4">
                       <KeyRound className={cn('wsms-h-5 wsms-w-5 wsms-shrink-0', isExpired ? 'wsms-text-red-600' : 'wsms-text-emerald-600')} />
-                      <div className="wsms-min-w-0 wsms-flex-1">
-                        <div className="wsms-flex wsms-flex-wrap wsms-items-baseline wsms-gap-x-2">
-                          <span className="wsms-text-[15px] wsms-font-semibold wsms-text-foreground">{kind}</span>
-                          <span className="wsms-text-[13px] wsms-text-muted-foreground" dir="ltr">…{key.masked.slice(-4)}</span>
-                          <span className={cn('wsms-text-[13px] wsms-font-semibold', isExpired ? 'wsms-text-red-600' : 'wsms-text-emerald-600')}>
-                            {isExpired ? __('Expired', 'wp-sms') : __('Valid', 'wp-sms')}
-                          </span>
-                        </div>
-                        {(() => {
-                          const expiry = describeExpiry(key)
-                          const sites = describeSites(key)
-                          return (
-                            <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-x-2 wsms-text-[13px] wsms-text-muted-foreground">
-                              <span>{sprintf(_n('Unlocks %d add-on', 'Unlocks %d add-ons', key.covers, 'wp-sms'), key.covers)}</span>
-                              {sites && <span>· {sites}</span>}
+                      {(() => {
+                        const expiry = describeExpiry(key)
+                        const renew = expiry && expiry.tone !== 'ok' ? describeRenewal(key) : null
+                        return (
+                          <>
+                            <div className="wsms-min-w-0 wsms-flex-1">
+                              <div className="wsms-flex wsms-flex-wrap wsms-items-baseline wsms-gap-x-2">
+                                <span className="wsms-text-[15px] wsms-font-semibold wsms-text-foreground">{kind}</span>
+                                <span className="wsms-text-[12px] wsms-text-muted-foreground" dir="ltr">…{key.masked.slice(-4)}</span>
+                                <span className="wsms-text-[12px] wsms-text-muted-foreground">{sprintf(_n('%d add-on', '%d add-ons', key.covers, 'wp-sms'), key.covers)}</span>
+                              </div>
                               {expiry && (
-                                <span className={cn(expiry.tone === 'expired' && 'wsms-font-semibold wsms-text-red-600', expiry.tone === 'soon' && 'wsms-font-semibold wsms-text-amber-700')}>· {expiry.text}</span>
-                              )}
-                              {expiry && expiry.tone !== 'ok' && key.renewal?.renew_url && (
-                                <a href={key.renewal.renew_url} target="_blank" rel="noopener noreferrer" className="wsms-font-semibold wsms-text-primary wsms-underline wsms-underline-offset-2 hover:wsms-no-underline">{__('Renew', 'wp-sms')}</a>
+                                <div className={cn('wsms-text-[13px]', expiry.tone === 'expired' ? 'wsms-text-red-600' : expiry.tone === 'soon' ? 'wsms-text-amber-700' : 'wsms-text-muted-foreground')}>{expiry.text}</div>
                               )}
                             </div>
-                          )
-                        })()}
-                      </div>
+                            {renew && (
+                              <a
+                                href={renew.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title={[renew.was && sprintf(__('Regular price %s', 'wp-sms'), renew.was), renew.discount, renew.plusTax && __('plus tax', 'wp-sms')].filter(Boolean).join(' · ')}
+                                className="wsms-inline-flex wsms-shrink-0 wsms-items-center wsms-gap-1.5 wsms-rounded-md wsms-bg-foreground wsms-px-3 wsms-py-1.5 wsms-text-[13px] wsms-font-medium !wsms-text-background wsms-no-underline hover:wsms-opacity-90"
+                              >
+                                {renew.now ? sprintf(__('Renew %s', 'wp-sms'), renew.now) : __('Renew', 'wp-sms')}
+                                {renew.was && <span className="wsms-rounded-full wsms-bg-emerald-500 wsms-px-1.5 wsms-text-[11px] wsms-font-semibold wsms-text-white">{renew.offerShort}</span>}
+                              </a>
+                            )}
+                          </>
+                        )
+                      })()}
                     </div>
-                    <div className="wsms-flex wsms-w-[112px] wsms-shrink-0 wsms-items-center wsms-justify-center wsms-border-s-2 wsms-border-dashed wsms-border-border">
-                      <button type="button" onClick={() => setConfirmKey(key)} className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[13px] wsms-font-medium wsms-text-muted-foreground hover:wsms-text-red-600">
-                        <TrashIcon className="wsms-h-3.5 wsms-w-3.5" />
-                        {__('Remove', 'wp-sms')}
+                    <div className="wsms-flex wsms-w-[64px] wsms-shrink-0 wsms-items-center wsms-justify-center wsms-border-s-2 wsms-border-dashed wsms-border-border">
+                      <button type="button" onClick={() => setConfirmKey(key)} title={__('Remove license', 'wp-sms')} aria-label={__('Remove license', 'wp-sms')} className="wsms-inline-flex wsms-h-8 wsms-w-8 wsms-items-center wsms-justify-center wsms-rounded-md wsms-text-muted-foreground hover:wsms-bg-muted hover:wsms-text-red-600">
+                        <TrashIcon className="wsms-h-4 wsms-w-4" />
                       </button>
                     </div>
                   </div>
