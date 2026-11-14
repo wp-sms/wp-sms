@@ -119,6 +119,7 @@ class LicenseHelper
             'type'        => $licenseData->license_details->type ?? null,
             'sku'         => $licenseData->license_details->sku ?? null,
             'max_domains' => $licenseData->license_details->max_domains ?? null,
+            'valid_until' => $licenseData->license_details->valid_until ?? null,
             'user'        => $licenseData->license_details->user ?? null,
             'products'    => isset($licenseData->products) ? wp_list_pluck($licenseData->products, 'slug') : null,
             // How to renew and what it costs, as the licence server quotes it (null when it sends none).

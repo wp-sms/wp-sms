@@ -96,11 +96,31 @@ function collectKeys(addons) {
     ;(addon.licenses || []).forEach((license) => {
       const key = license.masked_key
       if (!map.has(key)) {
-        map.set(key, { masked: key, status: license.status, covers: license.covers || 1, slug: addon.slug, renewal: license.renewal || null, sku: license.sku || null })
+        map.set(key, { masked: key, status: license.status, covers: license.covers || 1, slug: addon.slug, renewal: license.renewal || null, sku: license.sku || null, validUntil: license.valid_until || null, maxDomains: license.max_domains })
       }
     })
   })
   return [...map.values()]
+}
+
+/**
+ * What to say about when a key runs out, and whether it needs attention.
+ * `tone` is 'ok', 'soon' (30 days or less) or 'expired'.
+ */
+function describeExpiry(key) {
+  const date = key.validUntil ? new Date(`${key.validUntil}T00:00:00`) : null
+  if (!date || Number.isNaN(date.getTime())) return null
+  const days = Math.ceil((date.getTime() - Date.now()) / 86400000)
+  const formatted = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+  if (key.status === 'license_expired' || days < 0) return { tone: 'expired', text: sprintf(__('Expired %s', 'wp-sms'), formatted) }
+  if (days <= 30) return { tone: 'soon', text: days === 0 ? __('Expires today', 'wp-sms') : sprintf(_n('Expires in %d day', 'Expires in %d days', days, 'wp-sms'), days) }
+  return { tone: 'ok', text: sprintf(__('Expires %s', 'wp-sms'), formatted) }
+}
+
+function describeSites(key) {
+  const n = Number(key.maxDomains)
+  if (!key.maxDomains || Number.isNaN(n) || n <= 0) return key.maxDomains === undefined || key.maxDomains === null ? null : __('Unlimited sites', 'wp-sms')
+  return sprintf(_n('%d site', '%d sites', n, 'wp-sms'), n)
 }
 
 /**
@@ -319,7 +339,22 @@ function LicenseHero({ addons, summary, onChanged, compact = false }) {
                             {isExpired ? __('Expired', 'wp-sms') : __('Valid', 'wp-sms')}
                           </span>
                         </div>
-                        <div className="wsms-text-[13px] wsms-text-muted-foreground">{sprintf(_n('Unlocks %d add-on', 'Unlocks %d add-ons', key.covers, 'wp-sms'), key.covers)}</div>
+                        {(() => {
+                          const expiry = describeExpiry(key)
+                          const sites = describeSites(key)
+                          return (
+                            <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-x-2 wsms-text-[13px] wsms-text-muted-foreground">
+                              <span>{sprintf(_n('Unlocks %d add-on', 'Unlocks %d add-ons', key.covers, 'wp-sms'), key.covers)}</span>
+                              {sites && <span>· {sites}</span>}
+                              {expiry && (
+                                <span className={cn(expiry.tone === 'expired' && 'wsms-font-semibold wsms-text-red-600', expiry.tone === 'soon' && 'wsms-font-semibold wsms-text-amber-700')}>· {expiry.text}</span>
+                              )}
+                              {expiry && expiry.tone !== 'ok' && key.renewal?.renew_url && (
+                                <a href={key.renewal.renew_url} target="_blank" rel="noopener noreferrer" className="wsms-font-semibold wsms-text-primary wsms-underline wsms-underline-offset-2 hover:wsms-no-underline">{__('Renew', 'wp-sms')}</a>
+                              )}
+                            </div>
+                          )
+                        })()}
                       </div>
                     </div>
                     <div className="wsms-flex wsms-w-[112px] wsms-shrink-0 wsms-items-center wsms-justify-center wsms-border-s-2 wsms-border-dashed wsms-border-border">
