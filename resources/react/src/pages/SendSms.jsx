@@ -13,6 +13,7 @@ import { DuplicateNumbersDialog, findDuplicateNumbers } from '@/components/share
 import { MediaSelector } from '@/components/shared/MediaSelector'
 import { Tip } from '@/components/ui/ux-helpers'
 import { smsApi } from '@/api/smsApi'
+import { adminNoticesApi } from '@/api/adminNoticesApi'
 import { useSettings } from '@/context/SettingsContext'
 import { useCountryCheck } from '@/hooks/useCountryCheck'
 import { cn, getGatewayDisplayName, getWpSettings } from '@/lib/utils'
@@ -80,6 +81,9 @@ export default function SendSms() {
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [showPreviewDialog, setShowPreviewDialog] = useState(false)
   const [dialogStatus, setDialogStatus] = useState('preview')
+  // Review request under the success message. Whether it shows is decided by the server (first send, then once more after the 5th if postponed).
+  const [showReviewPrompt, setShowReviewPrompt] = useState(false)
+  const reviewFinishedRef = React.useRef(!!getWpSettings()?.features?.reviewPromptFinished)
   const [dialogResultMessage, setDialogResultMessage] = useState('')
   const [duplicateNumbers, setDuplicateNumbers] = useState([])
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false)
@@ -181,7 +185,20 @@ export default function SendSms() {
     }
     setDialogStatus('preview')
     setDialogResultMessage('')
+    setShowReviewPrompt(false)
   }, [dialogStatus, defaultSender])
+
+  // "Rate" and "Maybe later" are saved, and the request goes away.
+  const handleReviewChoice = useCallback(async (event) => {
+    setShowReviewPrompt(false)
+    try {
+      const response = await adminNoticesApi.reviewPrompt(event)
+      reviewFinishedRef.current = !!response?.finished
+    } catch (error) {
+      // The request is optional: a failed save only means it may be asked again
+      console.error('Failed to save the review choice:', error)
+    }
+  }, [])
 
   // Handle retry from error dialog
   const handleDialogRetry = useCallback(() => {
@@ -278,6 +295,17 @@ export default function SendSms() {
       window.dispatchEvent(new CustomEvent('wpsms:sms-sent'))
 
       setDialogStatus('success')
+
+      // Count this send for the review request. Only successful sends reach this line.
+      if (!reviewFinishedRef.current) {
+        adminNoticesApi.reviewPrompt('sent')
+          .then((response) => {
+            reviewFinishedRef.current = !!response?.finished
+            setShowReviewPrompt(!!response?.show)
+          })
+          .catch(() => {})
+      }
+
       if (blockedCount > 0) {
         setDialogResultMessage(__('Message sent. %d recipient(s) skipped — their country codes don\'t match your country restriction settings.', 'wp-sms').replace('%d', blockedCount))
       } else {
@@ -706,6 +734,7 @@ export default function SendSms() {
         isSending={isSending}
         status={dialogStatus}
         resultMessage={dialogResultMessage}
+        reviewPrompt={showReviewPrompt ? { onRate: () => handleReviewChoice('rate'), onLater: () => handleReviewChoice('later') } : null}
       />
     </div>
   )

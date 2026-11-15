@@ -11,6 +11,7 @@ import {
   DialogBody,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { ReviewPrompt } from '@/components/shared/ReviewPrompt'
 import { cn } from '@/lib/utils'
 
 /**
@@ -118,6 +119,7 @@ export function SmsPreviewDialog({
   isSending,
   status = 'preview',
   resultMessage = '',
+  reviewPrompt = null,
 }) {
   const totalSms = recipientCount * smsInfo.segments
   const { groups = [], roles = [], users = [], numbers = [] } = recipients
@@ -127,23 +129,38 @@ export function SmsPreviewDialog({
       <DialogContent size="lg" showClose={!isSending}>
         {status === 'success' ? (
           <>
-            <DialogHeader>
-              <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
-                <CheckCircle2 className="wsms-h-4 wsms-w-4 wsms-text-emerald-600" />
-                {__('Message Sent', 'wp-sms')}
+            {/* With the review request there is no visible title: the congratulation sits under the big check. */}
+            <DialogHeader style={reviewPrompt ? { padding: 0 } : undefined}>
+              <DialogTitle className={cn('wsms-flex wsms-items-center wsms-gap-2', reviewPrompt && 'wsms-sr-only')}>
+                {reviewPrompt ? (
+                  __('Message Sent', 'wp-sms')
+                ) : (
+                  <>
+                    <CheckCircle2 className="wsms-h-4 wsms-w-4 wsms-text-emerald-600" />
+                    {__('Message Sent', 'wp-sms')}
+                  </>
+                )}
               </DialogTitle>
             </DialogHeader>
-            <DialogBody>
-              <div className="wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-py-8 wsms-transition-all wsms-duration-300">
-                <div className="wsms-flex wsms-items-center wsms-justify-center wsms-w-16 wsms-h-16 wsms-rounded-full wsms-bg-emerald-100 dark:wsms-bg-emerald-900/40 wsms-mb-4">
+            <DialogBody style={reviewPrompt ? { paddingBottom: 24 } : undefined}>
+              <div className={cn('wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-transition-all wsms-duration-300', reviewPrompt ? 'wsms-pb-5 wsms-pt-4' : 'wsms-py-8')}>
+                <div className={cn('wsms-flex wsms-items-center wsms-justify-center wsms-w-16 wsms-h-16 wsms-rounded-full wsms-bg-emerald-100 dark:wsms-bg-emerald-900/40', !reviewPrompt && 'wsms-mb-4')}>
                   <CheckCircle2 className="wsms-h-8 wsms-w-8 wsms-text-emerald-600 dark:wsms-text-emerald-400" />
                 </div>
-                <p className="wsms-text-[15px] wsms-font-medium wsms-text-foreground wsms-text-center wsms-mb-1">
-                  {resultMessage}
-                </p>
+                {reviewPrompt ? (
+                  <p className="wsms-mt-4 wsms-text-[16px] wsms-font-bold wsms-text-foreground wsms-text-center">
+                    {__('🎉 Congrats! Your first SMS was sent', 'wp-sms')}
+                  </p>
+                ) : (
+                  <p className="wsms-text-[15px] wsms-font-medium wsms-text-foreground wsms-text-center wsms-mb-1">
+                    {resultMessage}
+                  </p>
+                )}
               </div>
+              {reviewPrompt && <ReviewPrompt onRate={reviewPrompt.onRate} onLater={reviewPrompt.onLater} />}
             </DialogBody>
-            <DialogFooter />
+            {/* With the review request the strip closes the popup, so there is no empty footer under it. */}
+            {!reviewPrompt && <DialogFooter />}
           </>
         ) : status === 'error' ? (
           <>

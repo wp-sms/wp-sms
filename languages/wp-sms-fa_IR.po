@@ -10602,16 +10602,18 @@ msgstr "کلید را از حساب کاربری خود کپی و اینجا و�
 #: public/dashboard/assets/dashboard-D1Pten1_.js:1
 #: public/dashboard/i18n-strings.js:547
 #: resources/react/src/pages/AddOns.jsx:215
-msgid "%d add-on is licensed but turned off"
-msgid_plural "%d add-ons are licensed but turned off"
-msgstr[0] "%d افزونه جانبی لایسنس دارد اما خاموش است"
-msgstr[1] "%d افزونه جانبی لایسنس دارند اما خاموش هستند"
+msgid "%d add-on is licensed but not activated"
+msgid_plural "%d add-ons are licensed but not activated"
+msgstr[0] "%d افزونه جانبی لایسنس دارد اما فعال نشده است"
+msgstr[1] "%d افزونه جانبی لایسنس دارند اما فعال نشده اند"
 
 #: public/dashboard/assets/dashboard-D1Pten1_.js:1
 #: public/dashboard/i18n-strings.js:548
 #: resources/react/src/pages/AddOns.jsx:216
 msgid "Activate it from the Plugins page. Nothing else is needed."
-msgstr "آن را از صفحه افزونه ها فعال کنید. به کار دیگری نیاز نیست."
+msgid_plural "Activate them from the Plugins page. Nothing else is needed."
+msgstr[0] "آن را از صفحه افزونه ها فعال کنید. به کار دیگری نیاز نیست."
+msgstr[1] "آن ها را از صفحه افزونه ها فعال کنید. به کار دیگری نیاز نیست."
 
 #: public/dashboard/assets/dashboard-D1Pten1_.js:1
 #: public/dashboard/i18n-strings.js:550
@@ -13030,8 +13032,8 @@ msgstr "افزونه جانبی پرو. به بازدیدکنندگان اجاز
 #: public/dashboard/assets/dashboard-DcGjQM9v.js:2
 #: public/dashboard/i18n-strings.js:242
 #: resources/react/src/components/shared/AllInOneCompare.jsx:20
-msgid "SMS login, 2FA and one-time passcodes (OTP)"
-msgstr "ورود با پیامک، ورود دو مرحله ای و رمز یک بار مصرف (OTP)"
+msgid "SMS login, 2FA and OTP"
+msgstr "ورود با پیامک، تایید دو مرحله ای و OTP"
 
 #: public/dashboard/assets/dashboard-DcGjQM9v.js:2
 #: public/dashboard/i18n-strings.js:243
@@ -16136,3 +16138,41 @@ msgstr "خبرنامه"
 #~ "جمله به‌روزرسانی‌های مهم امنیتی) نخواهد بود. برای دریافت مداوم به‌روزرسانی‌ها "
 #~ "و افزایش امنیت سایت، لایسنس خود را فعال کنید. از <a href=\"%s\">اینجا</a> "
 #~ "می‌توانید لایسنس را فعال کنید."
+
+#: public/dashboard/i18n-strings.js:9998
+#: resources/react/src/pages/AddOns.jsx
+msgid "Download"
+msgstr "دانلود"
+
+#: public/dashboard/i18n-strings.js:9999
+#: resources/react/src/pages/AddOns.jsx
+msgid "Included in your license. Download the ZIP from your account, then go to Plugins > Add New > Upload Plugin."
+msgstr "این افزونه جزو لایسنس شما است. فایل ZIP را از حساب کاربری خود دانلود کنید، سپس از افزونه ها > افزودن > بارگذاری افزونه نصب کنید."
+
+#: public/dashboard/i18n-strings.js:9993
+#: resources/react/src/components/shared/ReviewPrompt.jsx
+msgid "Rate on WordPress.org"
+msgstr "امتیاز دادن در WordPress.org"
+
+#: public/dashboard/i18n-strings.js:9994
+#: resources/react/src/components/shared/ReviewPrompt.jsx
+msgid "Maybe later"
+msgstr "شاید بعدا"
+
+#: public/dashboard/i18n-strings.js:9981
+#: resources/react/src/components/shared/ReviewPrompt.jsx
+msgid "🎉 Congrats! Your first SMS was sent"
+msgstr "🎉 تبریک! اولین پیامک شما ارسال شد"
+
+#: public/dashboard/i18n-strings.js:9982
+#: resources/react/src/components/shared/ReviewPrompt.jsx
+#, js-format
+msgid "Rate %d star"
+msgid_plural "Rate %d stars"
+msgstr[0] "امتیاز %d ستاره"
+msgstr[1] "امتیاز %d ستاره"
+
+#: public/dashboard/i18n-strings.js:9970
+#: resources/react/src/components/shared/ReviewPrompt.jsx
+msgid "Enjoying WSMS? Your review helps others find it."
+msgstr "از WSMS راضی هستید؟ نظر شما به دیگران کمک می کند."
