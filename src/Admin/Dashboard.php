@@ -849,6 +849,8 @@ class Dashboard extends Singleton
             'isBuddyPressActive'    => class_exists('BuddyPress'),
             // Wizard completion flag
             'wizardCompleted'       => (bool) $activationNoticeShown,
+            // The review request after the first SMS has nothing left to show.
+            'reviewPromptFinished'  => \WP_SMS\Api\V1\AdminNoticesApi::reviewPromptFinished(),
         ];
     }
 

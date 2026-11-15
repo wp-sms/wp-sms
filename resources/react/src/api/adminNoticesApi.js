@@ -21,6 +21,16 @@ export const adminNoticesApi = {
     return response.data
   },
 
+  // Review request after the first successful SMS. event: 'sent' | 'rate' | 'later'.
+  async reviewPrompt(event) {
+    const response = await apiClient.post(
+      'admin-notices/review-prompt',
+      { event },
+      { timeout: TIMEOUT }
+    )
+    return response.data
+  },
+
   async executeAction(id, action) {
     const response = await apiClient.post(
       'admin-notices/action',

@@ -134,6 +134,8 @@ export default function PhoneInput({
         .wsms-wizard-phone-input .iti__selected-country { direction: ltr; }
         .wsms-wizard-phone-input .iti__arrow { margin: 0 0 0 6px !important; }
         .wsms-wizard-phone-input .iti .iti__country-container .iti__dropdown-content { left: 0 !important; right: auto !important; inset-inline-start: auto !important; inset-inline-end: auto !important; width: 320px; min-width: 260px; max-width: min(340px, calc(100vw - 48px)); direction: ltr; text-align: left; }
+        .wsms-wizard-body.wsms-wizard-body--open-list { overflow: visible !important; position: relative; z-index: 5; }
+        .wsms-wizard-phone-input.wsms-phone-dropup .iti .iti__country-container .iti__dropdown-content { top: auto !important; bottom: calc(100% + 4px) !important; }
         .wsms-wizard-phone-input .iti__search-input { direction: ltr; text-align: left; }
         .wsms-wizard-phone-input .iti__country-list, .wsms-wizard-phone-input .iti__country { direction: ltr; text-align: left; }
         [data-theme="dark"] .wsms-wizard-phone-input .iti__dropdown-content { box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.6); }
@@ -296,12 +298,36 @@ export default function PhoneInput({
     const input = inputRef.current
     if (!input || !isLoaded) return
 
+    // Inside the setup wizard the list sat in a scrolling box and its bottom rows were cut off by the
+    // footer. While the list is open the box stops clipping, and the list opens upward when there is
+    // more room above the field than below it.
+    const handleDropdownOpen = () => {
+      const wrapper = input.closest('.wsms-wizard-phone-input')
+      const body = input.closest('.wsms-wizard-body')
+      if (!wrapper || !body) return
+      const dialog = input.closest('[role="dialog"]') || body
+      const field = input.getBoundingClientRect()
+      const bounds = dialog.getBoundingClientRect()
+      const below = bounds.bottom - field.bottom
+      const above = field.top - bounds.top
+      body.classList.add('wsms-wizard-body--open-list')
+      wrapper.classList.toggle('wsms-phone-dropup', below < 400 && above > below)
+    }
+    const handleDropdownClose = () => {
+      input.closest('.wsms-wizard-body')?.classList.remove('wsms-wizard-body--open-list')
+      input.closest('.wsms-wizard-phone-input')?.classList.remove('wsms-phone-dropup')
+    }
+
     input.addEventListener('countrychange', handleCountryChange)
     input.addEventListener('input', handleInput)
+    input.addEventListener('open:countrydropdown', handleDropdownOpen)
+    input.addEventListener('close:countrydropdown', handleDropdownClose)
 
     return () => {
       input.removeEventListener('countrychange', handleCountryChange)
       input.removeEventListener('input', handleInput)
+      input.removeEventListener('open:countrydropdown', handleDropdownOpen)
+      input.removeEventListener('close:countrydropdown', handleDropdownClose)
     }
   }, [isLoaded, handleCountryChange, handleInput])
 

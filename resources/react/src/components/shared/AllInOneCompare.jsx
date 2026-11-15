@@ -17,7 +17,7 @@ const ROWS = [
   { key: 'button', info: __('A chat button on your site that lets visitors message you.', 'wp-sms'), icon: Send, title: __('Message button for your site', 'wp-sms'), free: true },
   { key: 'notify', info: __('Get an SMS when something happens in WordPress, like a new post, comment or user.', 'wp-sms'), icon: Send, title: __('SMS notifications for WordPress events', 'wp-sms'), free: true },
   { key: 'send', info: __('Send single and bulk SMS, manage subscribers and groups. Works with 200+ gateways.', 'wp-sms'), icon: Send, title: __('Send SMS, subscribers and groups', 'wp-sms'), free: true },
-  { key: 'login', info: __('Pro add-on. Let visitors log in with an SMS code, add 2FA for admins, and verify phone numbers with one-time passcodes.', 'wp-sms'), icon: ShieldCheck, title: __('SMS login, 2FA and one-time passcodes (OTP)', 'wp-sms'), free: false },
+  { key: 'login', info: __('Pro add-on. Let visitors log in with an SMS code, add 2FA for admins, and verify phone numbers with one-time passcodes.', 'wp-sms'), icon: ShieldCheck, title: __('SMS login, 2FA and OTP', 'wp-sms'), free: false },
   { key: 'schedule', info: __('Pro add-on. Send a message later, or repeat it on a schedule.', 'wp-sms'), icon: CalendarClock, title: __('Scheduled and repeating SMS', 'wp-sms'), free: false },
   { key: 'woo', info: __('WooCommerce Pro add-on. Remind shoppers about abandoned carts and verify phone numbers at checkout.', 'wp-sms'), icon: ShoppingCart, title: __('Abandoned cart SMS and OTP at checkout', 'wp-sms'), free: false },
   { key: 'twoway', info: __('Two-Way add-on. Receive replies in an SMS inbox inside WordPress and forward them to email or phone.', 'wp-sms'), icon: MessagesSquare, title: __('Two-way SMS inbox', 'wp-sms'), free: false },

@@ -652,7 +652,8 @@ export default function Gateway() {
             )}
           </div>
 
-          {filteredGateways.length > 0 && (
+          {/* Hidden while the switch confirmation is showing, so only one bar sits under the list. */}
+          {filteredGateways.length > 0 && !pendingGateway && (
             <MoreGatewaysNotice premiumCount={premiumCount} searchQuery={searchQuery} />
           )}
 

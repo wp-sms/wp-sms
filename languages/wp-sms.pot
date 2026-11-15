@@ -13864,7 +13864,7 @@ msgstr ""
 #: public/dashboard/assets/dashboard-ljklfrM2.js:2
 #: public/dashboard/i18n-strings.js:238
 #: resources/react/src/components/shared/AllInOneCompare.jsx:20
-msgid "SMS login, 2FA and one-time passcodes (OTP)"
+msgid "SMS login, 2FA and OTP"
 msgstr ""
 
 #: public/dashboard/assets/dashboard-ljklfrM2.js:2
@@ -14407,8 +14407,8 @@ msgstr ""
 #: public/dashboard/i18n-strings.js:543
 #: resources/react/src/pages/AddOns.jsx:215
 #, js-format
-msgid "%d add-on is licensed but turned off"
-msgid_plural "%d add-ons are licensed but turned off"
+msgid "%d add-on is licensed but not activated"
+msgid_plural "%d add-ons are licensed but not activated"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -14416,7 +14416,9 @@ msgstr[1] ""
 #: public/dashboard/i18n-strings.js:544
 #: resources/react/src/pages/AddOns.jsx:216
 msgid "Activate it from the Plugins page. Nothing else is needed."
-msgstr ""
+msgid_plural "Activate them from the Plugins page. Nothing else is needed."
+msgstr[0] ""
+msgstr[1] ""
 
 #: public/dashboard/assets/dashboard-ttmBdbMt.js:1
 #: public/dashboard/i18n-strings.js:546
@@ -15127,4 +15129,42 @@ msgstr ""
 #: resources/blocks/subscribe/block.json
 msgctxt "block title"
 msgid "Subscribe"
+msgstr ""
+
+#: public/dashboard/i18n-strings.js:9998
+#: resources/react/src/pages/AddOns.jsx
+msgid "Download"
+msgstr ""
+
+#: public/dashboard/i18n-strings.js:9999
+#: resources/react/src/pages/AddOns.jsx
+msgid "Included in your license. Download the ZIP from your account, then go to Plugins > Add New > Upload Plugin."
+msgstr ""
+
+#: public/dashboard/i18n-strings.js:9993
+#: resources/react/src/components/shared/ReviewPrompt.jsx
+msgid "Rate on WordPress.org"
+msgstr ""
+
+#: public/dashboard/i18n-strings.js:9994
+#: resources/react/src/components/shared/ReviewPrompt.jsx
+msgid "Maybe later"
+msgstr ""
+
+#: public/dashboard/i18n-strings.js:9981
+#: resources/react/src/components/shared/ReviewPrompt.jsx
+msgid "🎉 Congrats! Your first SMS was sent"
+msgstr ""
+
+#: public/dashboard/i18n-strings.js:9982
+#: resources/react/src/components/shared/ReviewPrompt.jsx
+#, js-format
+msgid "Rate %d star"
+msgid_plural "Rate %d stars"
+msgstr[0] ""
+msgstr[1] ""
+
+#: public/dashboard/i18n-strings.js:9970
+#: resources/react/src/components/shared/ReviewPrompt.jsx
+msgid "Enjoying WSMS? Your review helps others find it."
 msgstr ""

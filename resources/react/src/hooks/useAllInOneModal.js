@@ -5,14 +5,12 @@ import { adminNoticesApi } from '@/api/adminNoticesApi'
 const MODAL_ID = 'welcome-premium'
 
 /**
- * Compute initial open state once (avoids flash)
+ * The popup no longer opens on its own. The setup wizard already shows the All-in-One comparison, so
+ * showing this older tour right after it repeats the same offer. It still opens from the
+ * window.wpSmsOpenAioModal() trigger.
  */
 function computeInitialOpen() {
-  const { aioModal = {}, features = {} } = getWpSettings()
-  const seen = aioModal.seen || false
-  const isPremium = aioModal.isPremium || false
-  const wizardCompleted = features.wizardCompleted || false
-  return !seen && !isPremium && wizardCompleted
+  return false
 }
 
 /**
