@@ -191,16 +191,16 @@ All premium features + all add-ons in one package.
 
 == Changelog ==
 = v7.2.13 - 2026-11-15 =
-- **Security:** The SMS subscribe confirmation code limit now counts per subscriber, and wrong codes are capped per number ([#620](https://github.com/wp-sms/wp-sms/issues/620)).
-- **New:** Add-Ons page shows each license key with its end date, sites allowed and a Renew link with price and offer. A bell notice warns before a key ends.
-- **New:** A marketing banner in the dashboard header, such as a sale, managed in Horizon under Marketing Campaigns.
-- **New:** IPPanel gateway. MdPanel and NasrPayam use its API, and their errors name the panel.
-- **Enhancement:** Add-Ons page redesigned: free-site comparison, clearer license errors, and the Elementor add-on says it needs Elementor Pro.
-- **Enhancement:** Removing a license key frees its site seat on the license server.
-- **Fix:** Mediana: new API (enter the API key from your panel), pattern sending, and an outage no longer crashes the site.
+- **Security:** Hardened the SMS subscribe confirmation code check ([#620](https://github.com/wp-sms/wp-sms/issues/620)).
+- **New:** Add-Ons page shows each license key's end date and a Renew link, with a bell notice before a key ends.
+- **New:** Marketing banner in the dashboard header.
+- **New:** IPPanel gateway. MdPanel and NasrPayam now use its API.
+- **Enhancement:** Add-Ons page redesigned, with clearer license errors.
+- **Enhancement:** Removing a license key frees its site seat.
+- **Fix:** Mediana: new API and pattern sending. An outage no longer crashes the site.
 - **Fix:** UwaziiMobile: bursts of SMS no longer fail with "429 Too Many Requests" ([#614](https://github.com/wp-sms/wp-sms/issues/614)).
-- **Fix:** Melipayamak: login fields use the panel's names and the balance shows two decimals.
-- **Fix:** The Persian translation ships with the plugin and loads, about 80 dashboard labels can now be translated, and the dialog close button no longer covers the title on right-to-left sites.
+- **Fix:** Melipayamak: login fields and balance display.
+- **Fix:** Translation fixes and updates, and the dialog close button no longer covers the title on right-to-left sites.
 
 = v7.2.12 - 2026-11-06 =
 - **Enhancement:** Setup guide links for 19 more gateways.
