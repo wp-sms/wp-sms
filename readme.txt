@@ -192,11 +192,8 @@ All premium features + all add-ons in one package.
 == Changelog ==
 = v7.2.13 - 2026-11-15 =
 - **Security:** Hardened the SMS subscribe confirmation code check ([#620](https://github.com/wp-sms/wp-sms/issues/620)).
-- **New:** Add-Ons page shows each license key's end date and a Renew link, with a bell notice before a key ends.
-- **New:** Marketing banner in the dashboard header.
+- **Enhancement:** Add-Ons page, license and notification improvements.
 - **New:** IPPanel gateway. MdPanel and NasrPayam now use its API.
-- **Enhancement:** Add-Ons page redesigned, with clearer license errors.
-- **Enhancement:** Removing a license key frees its site seat.
 - **Fix:** Mediana: new API and pattern sending. An outage no longer crashes the site.
 - **Fix:** UwaziiMobile: bursts of SMS no longer fail with "429 Too Many Requests" ([#614](https://github.com/wp-sms/wp-sms/issues/614)).
 - **Fix:** Melipayamak: login fields and balance display.
