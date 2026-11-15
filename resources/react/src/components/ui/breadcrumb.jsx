@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import * as React from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import { ChevronRight, MoreHorizontal } from 'lucide-react'
@@ -82,7 +83,7 @@ const BreadcrumbEllipsis = ({ className, ...props }) => (
     {...props}
   >
     <MoreHorizontal className="wsms-h-4 wsms-w-4" />
-    <span className="wsms-sr-only">More</span>
+    <span className="wsms-sr-only">{__('More', 'wp-sms')}</span>
   </span>
 )
 BreadcrumbEllipsis.displayName = 'BreadcrumbEllipsis'

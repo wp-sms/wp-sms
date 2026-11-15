@@ -59,7 +59,7 @@ function normalizeButtonChildren(children) {
 }
 
 const buttonVariants = cva(
-  'wsms-btn wsms-inline-flex wsms-items-center wsms-justify-center wsms-whitespace-nowrap wsms-rounded-md wsms-text-[13px] wsms-font-medium wsms-transition-all focus-visible:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-primary/20 disabled:wsms-pointer-events-none disabled:wsms-opacity-50',
+  'wsms-btn wsms-inline-flex wsms-items-center wsms-justify-center wsms-whitespace-nowrap wsms-rounded-md wsms-text-[14px] wsms-font-medium wsms-transition-all focus-visible:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-primary/20 disabled:wsms-pointer-events-none disabled:wsms-opacity-50',
   {
     variants: {
       variant: {
@@ -78,7 +78,7 @@ const buttonVariants = cva(
       },
       size: {
         default: 'wsms-h-9 wsms-px-4',
-        sm: 'wsms-h-8 wsms-px-3 wsms-text-[12px]',
+        sm: 'wsms-h-8 wsms-px-3 wsms-text-[13px]',
         lg: 'wsms-h-10 wsms-px-5',
         icon: 'wsms-h-9 wsms-w-9',
       },

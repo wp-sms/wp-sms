@@ -70,12 +70,12 @@ function SmsStatusBadge({ status, time }) {
   return (
     <div className="wsms-flex wsms-flex-col wsms-gap-1">
       <span
-        className={`wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-px-2 wsms-py-1 wsms-rounded-full wsms-text-[11px] wsms-font-medium wsms-w-fit ${config.className}`}
+        className={`wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-px-2 wsms-py-1 wsms-rounded-full wsms-text-[12px] wsms-font-medium wsms-w-fit ${config.className}`}
       >
         <Icon className="wsms-h-3 wsms-w-3" />
         {config.label}
       </span>
-      {time && <span className="wsms-text-[10px] wsms-text-muted-foreground">{time}</span>}
+      {time && <span className="wsms-text-[11px] wsms-text-muted-foreground">{time}</span>}
     </div>
   )
 }
@@ -92,7 +92,7 @@ const cartColumns = [
         <div className="wsms-flex wsms-h-8 wsms-w-8 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary/10">
           <User className="wsms-h-4 wsms-w-4 wsms-text-primary" />
         </div>
-        <span className="wsms-text-[13px] wsms-font-medium">
+        <span className="wsms-text-[14px] wsms-font-medium">
           {row.cart_owner || __('Guest', 'wp-sms')}
         </span>
       </div>
@@ -103,7 +103,7 @@ const cartColumns = [
     accessorKey: 'phone_number',
     header: __('Phone', 'wp-sms'),
     cell: ({ row }) => (
-      <div className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[13px] wsms-text-muted-foreground">
+      <div className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[14px] wsms-text-muted-foreground">
         <Phone className="wsms-h-3.5 wsms-w-3.5" />
         {row.phone_number || '-'}
       </div>
@@ -115,7 +115,7 @@ const cartColumns = [
     header: __('Cart Total', 'wp-sms'),
     cell: ({ row }) => (
       <span
-        className="wsms-text-[13px] wsms-font-medium"
+        className="wsms-text-[14px] wsms-font-medium"
         dangerouslySetInnerHTML={{ __html: row.cart_total }}
       />
     ),
@@ -126,12 +126,12 @@ const cartColumns = [
     header: __('Recovered', 'wp-sms'),
     cell: ({ row }) =>
       row.is_recovered === 'Yes' ? (
-        <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-emerald-600 wsms-text-[12px]">
+        <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-emerald-600 wsms-text-[13px]">
           <CheckCircle className="wsms-h-3.5 wsms-w-3.5" />
           {__('Yes', 'wp-sms')}
         </span>
       ) : (
-        <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-muted-foreground wsms-text-[12px]">
+        <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-muted-foreground wsms-text-[13px]">
           <XCircle className="wsms-h-3.5 wsms-w-3.5" />
           {__('No', 'wp-sms')}
         </span>
@@ -338,7 +338,7 @@ export default function CartAbandonment() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.recoverableCarts}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Recoverable', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Recoverable', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -351,7 +351,7 @@ export default function CartAbandonment() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-emerald-500">{stats.recoveredCarts}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Recovered', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Recovered', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -364,7 +364,7 @@ export default function CartAbandonment() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground" dangerouslySetInnerHTML={{ __html: stats.recoverableRevenue }} />
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Recoverable Revenue', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Recoverable Revenue', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -377,7 +377,7 @@ export default function CartAbandonment() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-green-500" dangerouslySetInnerHTML={{ __html: stats.recoveredRevenue }} />
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Recovered Revenue', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Recovered Revenue', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -390,7 +390,7 @@ export default function CartAbandonment() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.sentSMS}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Sent SMS', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Sent SMS', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -403,7 +403,7 @@ export default function CartAbandonment() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.followingSMS}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Following SMS', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Following SMS', 'wp-sms')}</p>
               </div>
             </div>
         </div>
@@ -432,7 +432,7 @@ export default function CartAbandonment() {
                 value={filters.type}
                 onValueChange={(value) => handleFilterChange('type', value)}
               >
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[12px]" aria-label={__('Filter by type', 'wp-sms')}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[13px]" aria-label={__('Filter by type', 'wp-sms')}>
                   <SelectValue placeholder={__('All Carts', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
@@ -446,7 +446,7 @@ export default function CartAbandonment() {
                 value={filters.duration}
                 onValueChange={(value) => handleFilterChange('duration', value)}
               >
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[130px] wsms-text-[12px]" aria-label={__('Filter by duration', 'wp-sms')}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[130px] wsms-text-[13px]" aria-label={__('Filter by duration', 'wp-sms')}>
                   <SelectValue placeholder={__('All Time', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
@@ -506,11 +506,11 @@ export default function CartAbandonment() {
           <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <User className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-              <span className="wsms-text-[13px] wsms-font-medium">
+              <span className="wsms-text-[14px] wsms-font-medium">
                 {deleteTarget.cart_owner || __('Guest', 'wp-sms')}
               </span>
               {deleteTarget.phone_number && (
-                <span className="wsms-text-[12px] wsms-text-muted-foreground">
+                <span className="wsms-text-[13px] wsms-text-muted-foreground">
                   ({deleteTarget.phone_number})
                 </span>
               )}

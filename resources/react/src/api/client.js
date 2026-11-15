@@ -206,6 +206,7 @@ class ApiClient {
 
         const err = new Error(errorMessage)
         err.fieldErrors = fieldErrors || null
+        err.data = data?.data || null
         throw err
       }
 
@@ -240,6 +241,7 @@ class ApiClient {
       console.error('API Error:', error)
       const rethrown = new Error(userMessage)
       rethrown.fieldErrors = error.fieldErrors || null
+      rethrown.data = error.data || null
       throw rethrown
     }
   }

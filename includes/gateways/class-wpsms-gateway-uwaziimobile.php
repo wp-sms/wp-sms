@@ -56,12 +56,11 @@ class uwaziimobile extends \WP_SMS\Gateway
 
         try {
 
-            // Get the credit.
-            $credit = $this->GetCredit();
-
-            // Check gateway credit
-            if (is_wp_error($credit)) {
-                throw new Exception($credit->get_error_message());
+            // No balance check here: UwaziiMobile checks the balance when it
+            // sends, and an extra /me call per message hits its rate limit
+            // (429 Too Many Requests) when many SMS go out at once (#614).
+            if (!$this->username || !$this->password) {
+                throw new Exception(__('The username/password is not entered.', 'wp-sms'));
             }
 
             $country_code  = $this->options['mobile_county_code'] ?? '';
@@ -70,6 +69,10 @@ class uwaziimobile extends \WP_SMS\Gateway
             }, $this->to);
 
             $token = $this->getToken();
+
+            if (is_wp_error($token)) {
+                throw new Exception($token->get_error_message());
+            }
 
             $body = [
                 [

@@ -37,7 +37,7 @@ export function DateRangePicker({
         value={from}
         onChange={(e) => onFromChange?.(e.target.value)}
         disabled={disabled}
-        className="wsms-h-9 wsms-min-w-0 wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[130px] wsms-text-[12px]"
+        className="wsms-h-9 wsms-min-w-0 wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[130px] wsms-text-[13px]"
         aria-label={__('From date', 'wp-sms')}
       />
       <span className="wsms-text-muted-foreground" aria-hidden="true">-</span>
@@ -46,7 +46,7 @@ export function DateRangePicker({
         value={to}
         onChange={(e) => onToChange?.(e.target.value)}
         disabled={disabled}
-        className="wsms-h-9 wsms-min-w-0 wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[130px] wsms-text-[12px]"
+        className="wsms-h-9 wsms-min-w-0 wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[130px] wsms-text-[13px]"
         aria-label={__('To date', 'wp-sms')}
       />
     </div>

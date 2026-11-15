@@ -94,7 +94,7 @@ export function EmptyState({ tab = 'inbox' }) {
         {isInbox ? "You're all caught up!" : 'All clear'}
       </h3>
 
-      <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-max-w-[220px] wsms-leading-relaxed">
+      <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-max-w-[220px] wsms-leading-relaxed">
         {isInbox
           ? 'No new notifications. Check back later for updates.'
           : 'Dismissed notifications are cleared. Nice and tidy!'}

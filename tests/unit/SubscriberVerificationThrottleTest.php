@@ -36,9 +36,10 @@ class SubscriberVerificationThrottleTest extends WP_UnitTestCase
     {
         global $wpdb;
 
-        $attemptKey = $this->getAttemptKey();
-        delete_transient($attemptKey);
-        delete_option($this->getLockName($attemptKey));
+        foreach (array($this->getAttemptKey(), $this->getAttemptKey('198.51.100.7'), $this->getRowKey()) as $key) {
+            delete_transient($key);
+            delete_option($this->getLockName($key));
+        }
         $wpdb->delete($wpdb->prefix . 'sms_subscribes', array('mobile' => $this->mobile), array('%s'));
         unset($_SERVER['REMOTE_ADDR']);
 
@@ -87,9 +88,65 @@ class SubscriberVerificationThrottleTest extends WP_UnitTestCase
         $this->assertFalse(get_transient($attemptKey));
     }
 
-    private function getAttemptKey()
+    public function test_other_spellings_of_the_same_number_share_one_counter()
     {
-        return 'wpsms_verify_attempts_' . hash('sha256', $this->clientIp . '|' . $this->mobile);
+        global $wpdb;
+
+        // Ten fullwidth digits for the same number. The database treats them as equal to
+        // the ASCII digits, so they must land in the same counter as the ASCII form.
+        $fullwidth = '０９１２００００１２３';
+
+        $found = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s", $fullwidth));
+        if (!$found) {
+            $this->markTestSkipped('This database does not treat Unicode digit forms as equal, so there is no bypass to test.');
+        }
+
+        for ($i = 0; $i < 10; $i++) {
+            SubscriberUtil::verifySubscriber('Pending Subscriber', $this->mobile, '9999', '0');
+        }
+
+        $result = SubscriberUtil::verifySubscriber('Pending Subscriber', $fullwidth, '1234', '0');
+
+        $this->assertWPError($result);
+        $this->assertSame('Too many attempts. Please try again later.', $result->get_error_message());
+        $this->assertSame(10, (int) get_transient($this->getAttemptKey()));
+    }
+
+    public function test_total_wrong_guesses_against_one_number_are_capped_across_clients()
+    {
+        set_transient($this->getRowKey(), 30, 15 * MINUTE_IN_SECONDS);
+        $_SERVER['REMOTE_ADDR'] = '198.51.100.7';
+
+        $result = SubscriberUtil::verifySubscriber('Pending Subscriber', $this->mobile, '1234', '0');
+
+        $this->assertWPError($result);
+        $this->assertSame('Too many attempts. Please try again later.', $result->get_error_message());
+    }
+
+    public function test_wrong_codes_from_another_client_do_not_block_the_genuine_subscriber_below_the_cap()
+    {
+        set_transient($this->getAttemptKey('198.51.100.7'), 10, 15 * MINUTE_IN_SECONDS);
+
+        $result = SubscriberUtil::verifySubscriber('Pending Subscriber', $this->mobile, '1234', '0');
+
+        $this->assertSame('Your subscription done successfully!', $result);
+    }
+
+    private function getRowId()
+    {
+        global $wpdb;
+
+        return (int) $wpdb->get_var($wpdb->prepare("SELECT ID FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s", $this->mobile));
+    }
+
+    private function getAttemptKey($ip = null)
+    {
+        return 'wpsms_verify_attempts_' . hash('sha256', ($ip ?: $this->clientIp) . '|' . $this->getRowId());
+    }
+
+    private function getRowKey()
+    {
+        return 'wpsms_verify_row_attempts_' . hash('sha256', (string) $this->getRowId());
     }
 
     private function getLockName($attemptKey)

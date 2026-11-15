@@ -72,9 +72,9 @@ export default function PhoneConfig() {
               className={cn(adminMobileError && 'wsms-border-destructive')}
             />
             {adminMobileError ? (
-              <p role="alert" className="wsms-text-[12px] wsms-text-destructive">{adminMobileError}</p>
+              <p role="alert" className="wsms-text-[13px] wsms-text-destructive">{adminMobileError}</p>
             ) : (
-              <p className="wsms-text-[12px] wsms-text-muted-foreground">
+              <p className="wsms-text-[13px] wsms-text-muted-foreground">
                 {__('Enter the full phone number including country code.', 'wp-sms')}
               </p>
             )}
@@ -151,7 +151,7 @@ export default function PhoneConfig() {
                 </SelectContent>
               </Select>
               {activeSubField.description && (
-                <p className="wsms-text-[12px] wsms-text-muted-foreground">{activeSubField.description}</p>
+                <p className="wsms-text-[13px] wsms-text-muted-foreground">{activeSubField.description}</p>
               )}
             </div>
           )}
@@ -238,11 +238,11 @@ export default function PhoneConfig() {
                   searchPlaceholder={__('Search countries...', 'wp-sms')}
                   aria-label={__('Default country code', 'wp-sms')}
                 />
-                <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                <p className="wsms-text-[13px] wsms-text-muted-foreground">
                   {__('Automatically prepend this country code to new phone numbers. Changing this will not update numbers already stored in the database.', 'wp-sms')}
                 </p>
                 {(!countryCode || countryCode === '0') && (
-                  <p className="wsms-text-[12px] wsms-text-destructive wsms-font-medium">
+                  <p className="wsms-text-[13px] wsms-text-destructive wsms-font-medium">
                     {__('Please select a country code. This is required for proper phone number storage.', 'wp-sms')}
                   </p>
                 )}
@@ -275,10 +275,10 @@ export default function PhoneConfig() {
       <Card>
         <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4">
           <div>
-            <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+            <p className="wsms-text-[14px] wsms-font-medium wsms-text-foreground">
               {__('Phone Number Improvement', 'wp-sms')}
             </p>
-            <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-0.5">
+            <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mt-0.5">
               {__('Review and update your phone numbers to include the country code for better delivery reliability.', 'wp-sms')}
             </p>
           </div>

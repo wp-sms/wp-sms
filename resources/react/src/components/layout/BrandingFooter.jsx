@@ -139,7 +139,7 @@ const BrandingFooter = memo(function BrandingFooter() {
     <div className="wsms-mt-10 wsms-mb-6 wsms-border-t wsms-border-border/60 wsms-pt-4">
       <div className="wsms-flex wsms-flex-col wsms-items-center wsms-justify-between wsms-gap-2 sm:wsms-flex-row sm:wsms-gap-4">
         {/* Logo and community message */}
-        <p className="wsms-flex wsms-items-center wsms-gap-2 wsms-text-[11px] wsms-text-muted-foreground">
+        <p className="wsms-flex wsms-items-center wsms-gap-2 wsms-text-[12px] wsms-text-muted-foreground">
           <LogoIcon className="wsms-h-4 wsms-w-auto wsms-shrink-0 wsms-text-muted-foreground/40" />
           <span className="wsms-flex wsms-items-center wsms-gap-1">
             <span>{__('Made with', 'wp-sms')}</span>
@@ -149,7 +149,7 @@ const BrandingFooter = memo(function BrandingFooter() {
         </p>
 
         {/* Help links, review link and version */}
-        <p className="wsms-flex wsms-flex-wrap wsms-items-center wsms-justify-center wsms-gap-x-2 wsms-gap-y-1 wsms-text-[11px] wsms-text-muted-foreground">
+        <p className="wsms-flex wsms-flex-wrap wsms-items-center wsms-justify-center wsms-gap-x-2 wsms-gap-y-1 wsms-text-[12px] wsms-text-muted-foreground">
           <a
             href={brandingUrls.docs}
             target="_blank"

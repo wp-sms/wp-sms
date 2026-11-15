@@ -15,10 +15,72 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Check out source code
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Run release workflow regression tests
         run: bash .github/tests/release-workflows.sh
+
+  frontend-tests:
+    name: Run focused frontend tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install Node dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run notification sidebar regression test
+        run: pnpm jest --runInBand tests/js/NotificationSidebar.test.jsx
+
+      - name: Run language catalog regression test
+        run: node --test tests/js/makeLanguageFiles.test.mjs
+
+  legacy-textdomain:
+    name: Run textdomain tests on WordPress 6.6
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      database:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: wordpress_tests
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        with:
+          php-version: '7.4'
+          tools: phpunit-polyfills:1.1, wp-cli
+
+      - name: Install required dependencies
+        run: sudo apt-get update && sudo apt-get install -y subversion
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Setup WordPress 6.6 tests
+        run: bash bin/install-wp-tests.sh wordpress_tests root root 127.0.0.1 6.6 false false
+
+      - name: Run textdomain compatibility tests
+        run: phpunit --testdox tests/unit/TextDomainTest.php
 
   phpunit:
     name: Run tests
@@ -37,7 +99,7 @@ jobs:
           - 3306:3306
     steps:
       - name: Check out source code
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup PHP
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2

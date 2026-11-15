@@ -268,7 +268,7 @@ export default function TwoWayCommands() {
       accessorKey: 'command_name',
       header: __('Name', 'wp-sms'),
       cell: ({ row }) => (
-        <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+        <span className="wsms-text-[14px] wsms-font-medium wsms-text-foreground">
           {row.command_name}
         </span>
       ),
@@ -278,7 +278,7 @@ export default function TwoWayCommands() {
       accessorKey: 'action_reference',
       header: __('Action', 'wp-sms'),
       cell: ({ row }) => (
-        <span className="wsms-text-[12px] wsms-text-muted-foreground">
+        <span className="wsms-text-[13px] wsms-text-muted-foreground">
           {row.action_reference || '—'}
         </span>
       ),
@@ -288,7 +288,7 @@ export default function TwoWayCommands() {
       accessorKey: 'response_preview',
       header: __('Response Preview', 'wp-sms'),
       cell: ({ value }) => (
-        <span className="wsms-text-[12px] wsms-max-w-xs wsms-truncate wsms-block wsms-text-muted-foreground">
+        <span className="wsms-text-[13px] wsms-max-w-xs wsms-truncate wsms-block wsms-text-muted-foreground">
           {value || '—'}
         </span>
       ),
@@ -337,7 +337,7 @@ export default function TwoWayCommands() {
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
                 {__('Two-Way SMS Add-on Required', 'wp-sms')}
               </h3>
-              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
+              <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-mb-6">
                 {__('Install and activate the WSMS Two-Way add-on to create auto-reply commands.', 'wp-sms')}
               </p>
               <Button variant="outline" asChild>
@@ -384,7 +384,7 @@ export default function TwoWayCommands() {
           <DialogBody className="wsms-scrollbar-thin">
             <div className="wsms-space-y-4">
               <div className="wsms-space-y-2">
-                <label htmlFor="command-name" className="wsms-text-[12px] wsms-font-medium">{__('Command Name', 'wp-sms')}</label>
+                <label htmlFor="command-name" className="wsms-text-[13px] wsms-font-medium">{__('Command Name', 'wp-sms')}</label>
                 <Input
                   id="command-name"
                   placeholder={__('e.g., HELP, INFO, STOP', 'wp-sms')}
@@ -392,15 +392,15 @@ export default function TwoWayCommands() {
                   onChange={(e) => commandDialog.updateField('command_name', e.target.value)}
                 />
                 {commandDialog.hasError('command_name') && (
-                  <p className="wsms-text-[11px] wsms-text-destructive">{commandDialog.getError('command_name')}</p>
+                  <p className="wsms-text-[12px] wsms-text-destructive">{commandDialog.getError('command_name')}</p>
                 )}
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">
                   {__('The keyword that triggers this command when received', 'wp-sms')}
                 </p>
               </div>
 
               <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium">{__('Action', 'wp-sms')}</label>
+                <label className="wsms-text-[13px] wsms-font-medium">{__('Action', 'wp-sms')}</label>
                 <Select
                   key={`action-${isActionsLoading}-${commandDialog.formData.action_reference}`}
                   value={commandDialog.formData.action_reference}
@@ -414,11 +414,11 @@ export default function TwoWayCommands() {
                   </SelectTrigger>
                   <SelectContent>
                     {isActionsLoading ? (
-                      <div className="wsms-px-2 wsms-py-1.5 wsms-text-[12px] wsms-text-muted-foreground">
+                      <div className="wsms-px-2 wsms-py-1.5 wsms-text-[13px] wsms-text-muted-foreground">
                         {__('Loading actions...', 'wp-sms')}
                       </div>
                     ) : actions.length === 0 ? (
-                      <div className="wsms-px-2 wsms-py-1.5 wsms-text-[12px] wsms-text-muted-foreground">
+                      <div className="wsms-px-2 wsms-py-1.5 wsms-text-[13px] wsms-text-muted-foreground">
                         {__('No actions available', 'wp-sms')}
                       </div>
                     ) : (
@@ -436,14 +436,14 @@ export default function TwoWayCommands() {
                   </SelectContent>
                 </Select>
                 {commandDialog.hasError('action_reference') && (
-                  <p className="wsms-text-[11px] wsms-text-destructive">{commandDialog.getError('action_reference')}</p>
+                  <p className="wsms-text-[12px] wsms-text-destructive">{commandDialog.getError('action_reference')}</p>
                 )}
               </div>
 
               {/* Action Option (e.g., subscriber group for signup/cancel) */}
               {selectedActionData?.options?.length > 0 && (
                 <div className="wsms-space-y-2">
-                  <label className="wsms-text-[12px] wsms-font-medium">
+                  <label className="wsms-text-[13px] wsms-font-medium">
                     {selectedActionData.optionsLabel || __('Option', 'wp-sms')}
                   </label>
                   <Select
@@ -466,7 +466,7 @@ export default function TwoWayCommands() {
               )}
 
               <div className="wsms-space-y-2">
-                <label htmlFor="success-response" className="wsms-text-[12px] wsms-font-medium">{__('Success Response', 'wp-sms')}</label>
+                <label htmlFor="success-response" className="wsms-text-[13px] wsms-font-medium">{__('Success Response', 'wp-sms')}</label>
                 <Textarea
                   id="success-response"
                   placeholder={__('Message sent when the action succeeds', 'wp-sms')}
@@ -481,12 +481,12 @@ export default function TwoWayCommands() {
                 />
                 {successVariables.length > 0 && (
                   <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-1.5 wsms-mt-2">
-                    <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-me-1">{__('Insert', 'wp-sms')}:</span>
+                    <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-me-1">{__('Insert', 'wp-sms')}:</span>
                     {successVariables.map(v => (
                       <button
                         key={v}
                         type="button"
-                        className="wsms-inline-flex wsms-items-center wsms-rounded wsms-border wsms-border-border wsms-px-1.5 wsms-py-0.5 wsms-text-[11px] wsms-font-mono wsms-text-muted-foreground wsms-bg-muted/30 hover:wsms-bg-primary/10 hover:wsms-border-primary hover:wsms-text-primary wsms-transition-colors wsms-cursor-pointer focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20"
+                        className="wsms-inline-flex wsms-items-center wsms-rounded wsms-border wsms-border-border wsms-px-1.5 wsms-py-0.5 wsms-text-[12px] wsms-font-mono wsms-text-muted-foreground wsms-bg-muted/30 hover:wsms-bg-primary/10 hover:wsms-border-primary hover:wsms-text-primary wsms-transition-colors wsms-cursor-pointer focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20"
                         onClick={() => {
                           const newText = commandDialog.formData.response_data.success.text + `{${v}}`
                           commandDialog.updateField('response_data', {
@@ -502,14 +502,14 @@ export default function TwoWayCommands() {
                   </div>
                 )}
                 {!commandDialog.formData.action_reference && (
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mt-1">
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-1">
                     {__('Select an action to see available variables', 'wp-sms')}
                   </p>
                 )}
               </div>
 
               <div className="wsms-space-y-2">
-                <label htmlFor="failure-response" className="wsms-text-[12px] wsms-font-medium">{__('Failure Response', 'wp-sms')}</label>
+                <label htmlFor="failure-response" className="wsms-text-[13px] wsms-font-medium">{__('Failure Response', 'wp-sms')}</label>
                 <Textarea
                   id="failure-response"
                   placeholder={__('Message sent when the action fails', 'wp-sms')}
@@ -524,12 +524,12 @@ export default function TwoWayCommands() {
                 />
                 {failureVariables.length > 0 && (
                   <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-1.5 wsms-mt-2">
-                    <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-me-1">{__('Insert', 'wp-sms')}:</span>
+                    <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-me-1">{__('Insert', 'wp-sms')}:</span>
                     {failureVariables.map(v => (
                       <button
                         key={v}
                         type="button"
-                        className="wsms-inline-flex wsms-items-center wsms-rounded wsms-border wsms-border-border wsms-px-1.5 wsms-py-0.5 wsms-text-[11px] wsms-font-mono wsms-text-muted-foreground wsms-bg-muted/30 hover:wsms-bg-primary/10 hover:wsms-border-primary hover:wsms-text-primary wsms-transition-colors wsms-cursor-pointer focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20"
+                        className="wsms-inline-flex wsms-items-center wsms-rounded wsms-border wsms-border-border wsms-px-1.5 wsms-py-0.5 wsms-text-[12px] wsms-font-mono wsms-text-muted-foreground wsms-bg-muted/30 hover:wsms-bg-primary/10 hover:wsms-border-primary hover:wsms-text-primary wsms-transition-colors wsms-cursor-pointer focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20"
                         onClick={() => {
                           const newText = commandDialog.formData.response_data.failure.text + `{${v}}`
                           commandDialog.updateField('response_data', {
@@ -548,8 +548,8 @@ export default function TwoWayCommands() {
 
               <div className="wsms-flex wsms-items-center wsms-justify-between">
                 <div>
-                  <label htmlFor="command-status" className="wsms-text-[12px] wsms-font-medium">{__('Status', 'wp-sms')}</label>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground">
+                  <label htmlFor="command-status" className="wsms-text-[13px] wsms-font-medium">{__('Status', 'wp-sms')}</label>
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
                     {__('Enable or disable this command', 'wp-sms')}
                   </p>
                 </div>
@@ -592,10 +592,10 @@ export default function TwoWayCommands() {
       >
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
           <div className="wsms-space-y-1">
-            <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+            <p className="wsms-text-[14px] wsms-font-medium wsms-text-foreground">
               {deleteDialog.item?.command_name}
             </p>
-            <p className="wsms-text-[12px] wsms-text-muted-foreground">
+            <p className="wsms-text-[13px] wsms-text-muted-foreground">
               {deleteDialog.item?.action_reference}
             </p>
           </div>
@@ -617,7 +617,7 @@ export default function TwoWayCommands() {
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
                 {__('No commands yet', 'wp-sms')}
               </h3>
-              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
+              <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-mb-6">
                 {__('Create auto-reply rules that trigger actions when subscribers send specific keywords via SMS.', 'wp-sms')}
               </p>
               <Button onClick={() => commandDialog.open()}>
@@ -645,7 +645,7 @@ export default function TwoWayCommands() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{commands.length}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Total', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -658,7 +658,7 @@ export default function TwoWayCommands() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-success">{enabledCount}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Enabled', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Enabled', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -671,7 +671,7 @@ export default function TwoWayCommands() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-muted-foreground">{disabledCount}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Disabled', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Disabled', 'wp-sms')}</p>
               </div>
             </div>
           </div>
@@ -706,7 +706,7 @@ export default function TwoWayCommands() {
             {/* Filters */}
             <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-2">
               <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label={__('Filter by status', 'wp-sms')}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[13px]" aria-label={__('Filter by status', 'wp-sms')}>
                   <SelectValue placeholder={__('All Status', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
@@ -717,7 +717,7 @@ export default function TwoWayCommands() {
               </Select>
 
               <Select value={filterAction} onValueChange={setFilterAction}>
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[160px] wsms-text-[12px]" aria-label={__('Filter by action', 'wp-sms')}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[160px] wsms-text-[13px]" aria-label={__('Filter by action', 'wp-sms')}>
                   <SelectValue placeholder={__('All Actions', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>

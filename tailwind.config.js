@@ -11,6 +11,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontSize: {
+        xs: ['0.8125rem', { lineHeight: '1.1rem' }],
+        sm: ['0.9375rem', { lineHeight: '1.35rem' }],
+        base: ['1.0625rem', { lineHeight: '1.6rem' }],
+        lg: ['1.1875rem', { lineHeight: '1.75rem' }],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

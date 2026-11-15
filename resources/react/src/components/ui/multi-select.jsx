@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import * as React from 'react'
 import { Check, ChevronDown, X, Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -154,7 +155,7 @@ const MultiSelect = React.forwardRef(
                 <Badge
                   key={selectedValues[index]}
                   variant="secondary"
-                  className="wsms-text-[11px] wsms-px-1.5 wsms-py-0"
+                  className="wsms-text-[12px] wsms-px-1.5 wsms-py-0"
                 >
                   {label}
                   <button
@@ -168,7 +169,7 @@ const MultiSelect = React.forwardRef(
                 </Badge>
               ))
             ) : (
-              <Badge variant="secondary" className="wsms-text-[11px] wsms-px-1.5 wsms-py-0">
+              <Badge variant="secondary" className="wsms-text-[12px] wsms-px-1.5 wsms-py-0">
                 {selectedValues.length} selected
               </Badge>
             )}
@@ -179,7 +180,7 @@ const MultiSelect = React.forwardRef(
                 type="button"
                 className="wsms-rounded-full wsms-p-0.5 hover:wsms-bg-accent"
                 onClick={handleClearAll}
-                aria-label="Clear all selections"
+                aria-label={__('Clear all selections', 'wp-sms')}
               >
                 <X className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
               </button>
@@ -212,7 +213,7 @@ const MultiSelect = React.forwardRef(
             <div className="wsms-max-h-[200px] wsms-overflow-y-auto wsms-p-1">
               {filteredOptions.length === 0 ? (
                 <div className="wsms-py-4 wsms-text-center wsms-text-sm wsms-text-muted-foreground">
-                  No results found
+                  {__('No results found', 'wp-sms')}
                 </div>
               ) : (
                 filteredOptions.map((option) => {
@@ -223,7 +224,7 @@ const MultiSelect = React.forwardRef(
                       type="button"
                       onClick={() => handleSelect(option.value)}
                       className={cn(
-                        'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded wsms-px-2 wsms-py-1.5 wsms-text-start wsms-text-[13px] wsms-outline-none',
+                        'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded wsms-px-2 wsms-py-1.5 wsms-text-start wsms-text-[14px] wsms-outline-none',
                         'hover:wsms-bg-accent focus:wsms-bg-accent',
                         isSelected && 'wsms-bg-accent/50'
                       )}
@@ -247,7 +248,7 @@ const MultiSelect = React.forwardRef(
 
             {/* Footer with selection count */}
             {normalizedOptions.length > 5 && (
-              <div className="wsms-border-t wsms-border-border wsms-px-2 wsms-py-1.5 wsms-text-[11px] wsms-text-muted-foreground">
+              <div className="wsms-border-t wsms-border-border wsms-px-2 wsms-py-1.5 wsms-text-[12px] wsms-text-muted-foreground">
                 {selectedValues.length} of {normalizedOptions.length} selected
               </div>
             )}

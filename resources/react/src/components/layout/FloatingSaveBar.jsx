@@ -162,7 +162,7 @@ export default function FloatingSaveBar() {
           aria-live="polite"
           aria-atomic="true"
         >
-          <span className="wsms-text-[13px] wsms-text-muted-foreground">
+          <span className="wsms-text-[14px] wsms-text-muted-foreground">
             {__('You have unsaved changes', 'wp-sms')}
           </span>
         </div>

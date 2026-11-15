@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import { cn } from '@/lib/utils'
 
 /**
@@ -51,7 +52,7 @@ function PageLoadingSkeleton({ className, ...props }) {
       className={cn('wsms-space-y-4', className)}
       {...props}
       role="status"
-      aria-label="Loading"
+      aria-label={__('Loading', 'wp-sms')}
     >
       {/* Card 1 - Header/stats area */}
       <div className="wsms-rounded-lg wsms-border wsms-border-border wsms-bg-card wsms-p-5">
@@ -86,7 +87,7 @@ function PageLoadingSkeleton({ className, ...props }) {
         </div>
       </div>
 
-      <span className="wsms-sr-only">Loading...</span>
+      <span className="wsms-sr-only">{__('Loading...', 'wp-sms')}</span>
     </div>
   )
 }

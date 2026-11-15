@@ -149,7 +149,7 @@ export function MediaSelector({
               ) : (
                 <Image className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
               )}
-              <span className="wsms-text-[12px] wsms-text-foreground wsms-truncate wsms-max-w-[180px]">
+              <span className="wsms-text-[13px] wsms-text-foreground wsms-truncate wsms-max-w-[180px]">
                 {value.split('/').pop().split('?')[0]}
               </span>
               <button

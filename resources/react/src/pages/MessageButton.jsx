@@ -548,14 +548,10 @@ export default function MessageButton() {
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
                 <div className="wsms-space-y-2">
                   <Label htmlFor="chatboxColor">{__('Primary Color', 'wp-sms')}</Label>
-                  <div className="wsms-flex wsms-gap-2">
-                    <Input
-                      id="chatboxColor"
-                      type="color"
-                      value={chatboxColor}
-                      onChange={(e) => setChatboxColor(e.target.value)}
-                      className="wsms-h-10 wsms-w-14 wsms-p-1"
-                    />
+                  <div className="wsms-flex wsms-items-center wsms-gap-2">
+                    <span className="wsms-relative wsms-h-6 wsms-w-6 wsms-shrink-0 wsms-overflow-hidden wsms-rounded-full wsms-ring-1 wsms-ring-inset wsms-ring-black/10" style={{ backgroundColor: chatboxColor }}>
+                      <input id="chatboxColor" type="color" value={chatboxColor} onChange={(e) => setChatboxColor(e.target.value)} aria-label={__('Pick a color', 'wp-sms')} className="wsms-absolute wsms-inset-0 wsms-h-full wsms-w-full wsms-cursor-pointer wsms-opacity-0" />
+                    </span>
                     <Input
                       value={chatboxColor}
                       onChange={(e) => setChatboxColor(e.target.value)}
@@ -563,21 +559,17 @@ export default function MessageButton() {
                       aria-label={__('Primary color hex value', 'wp-sms')}
                     />
                   </div>
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                  <p className="wsms-text-[13px] wsms-text-muted-foreground">
                     {__('Background color for the button and chat header.', 'wp-sms')}
                   </p>
                 </div>
 
                 <div className="wsms-space-y-2">
                   <Label htmlFor="chatboxTextColor">{__('Text Color', 'wp-sms')}</Label>
-                  <div className="wsms-flex wsms-gap-2">
-                    <Input
-                      id="chatboxTextColor"
-                      type="color"
-                      value={chatboxTextColor}
-                      onChange={(e) => setChatboxTextColor(e.target.value)}
-                      className="wsms-h-10 wsms-w-14 wsms-p-1"
-                    />
+                  <div className="wsms-flex wsms-items-center wsms-gap-2">
+                    <span className="wsms-relative wsms-h-6 wsms-w-6 wsms-shrink-0 wsms-overflow-hidden wsms-rounded-full wsms-ring-1 wsms-ring-inset wsms-ring-black/10" style={{ backgroundColor: chatboxTextColor }}>
+                      <input id="chatboxTextColor" type="color" value={chatboxTextColor} onChange={(e) => setChatboxTextColor(e.target.value)} aria-label={__('Pick a color', 'wp-sms')} className="wsms-absolute wsms-inset-0 wsms-h-full wsms-w-full wsms-cursor-pointer wsms-opacity-0" />
+                    </span>
                     <Input
                       value={chatboxTextColor}
                       onChange={(e) => setChatboxTextColor(e.target.value)}
@@ -585,7 +577,7 @@ export default function MessageButton() {
                       aria-label={__('Text color hex value', 'wp-sms')}
                     />
                   </div>
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                  <p className="wsms-text-[13px] wsms-text-muted-foreground">
                     {__('Text color for the button and header.', 'wp-sms')}
                   </p>
                 </div>
@@ -615,14 +607,10 @@ export default function MessageButton() {
 
               <div className="wsms-space-y-2">
                 <Label htmlFor="footerTextColor">{__('Footer Text Color', 'wp-sms')}</Label>
-                <div className="wsms-flex wsms-gap-2">
-                  <Input
-                    id="footerTextColor"
-                    type="color"
-                    value={footerTextColor || '#666666'}
-                    onChange={(e) => setFooterTextColor(e.target.value)}
-                    className="wsms-h-10 wsms-w-14 wsms-p-1"
-                  />
+                <div className="wsms-flex wsms-items-center wsms-gap-2">
+                  <span className="wsms-relative wsms-h-6 wsms-w-6 wsms-shrink-0 wsms-overflow-hidden wsms-rounded-full wsms-ring-1 wsms-ring-inset wsms-ring-black/10" style={{ backgroundColor: footerTextColor || '#666666' }}>
+                      <input id="footerTextColor" type="color" value={footerTextColor || '#666666'} onChange={(e) => setFooterTextColor(e.target.value)} aria-label={__('Pick a color', 'wp-sms')} className="wsms-absolute wsms-inset-0 wsms-h-full wsms-w-full wsms-cursor-pointer wsms-opacity-0" />
+                    </span>
                   <Input
                     value={footerTextColor}
                     onChange={(e) => setFooterTextColor(e.target.value)}

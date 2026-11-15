@@ -35,7 +35,7 @@ const FieldDescription = ({ children, className, id }) => {
         return (
           <pre
             key={index}
-            className="wsms-mt-1 wsms-rounded wsms-bg-muted wsms-p-2 wsms-font-mono wsms-text-[11px] wsms-text-foreground wsms-whitespace-pre wsms-overflow-x-auto"
+            className="wsms-mt-1 wsms-rounded wsms-bg-muted wsms-p-2 wsms-font-mono wsms-text-[12px] wsms-text-foreground wsms-whitespace-pre wsms-overflow-x-auto"
           >
             {preMatch[1]}
           </pre>
@@ -48,7 +48,7 @@ const FieldDescription = ({ children, className, id }) => {
         return (
           <code
             key={index}
-            className="wsms-px-1.5 wsms-py-0.5 wsms-mx-0.5 wsms-rounded wsms-bg-muted wsms-font-mono wsms-text-[11px] wsms-text-primary wsms-whitespace-nowrap"
+            className="wsms-px-1.5 wsms-py-0.5 wsms-mx-0.5 wsms-rounded wsms-bg-muted wsms-font-mono wsms-text-[12px] wsms-text-primary wsms-whitespace-nowrap"
           >
             {codeMatch[1]}
           </code>
@@ -81,7 +81,7 @@ const FieldDescription = ({ children, className, id }) => {
   }
 
   return (
-    <div id={id} className={cn('wsms-text-[12px] wsms-text-muted-foreground wsms-leading-relaxed', className)}>
+    <div id={id} className={cn('wsms-text-[13px] wsms-text-muted-foreground wsms-leading-relaxed', className)}>
       {renderDescription(children)}
     </div>
   )
@@ -118,7 +118,7 @@ const FormField = React.forwardRef(
           <FieldDescription id={descriptionId} className="wsms-mt-1">{description}</FieldDescription>
         )}
         {error && (
-          <p id={errorId} role="alert" className="wsms-text-[12px] wsms-text-destructive wsms-mt-1">{error}</p>
+          <p id={errorId} role="alert" className="wsms-text-[13px] wsms-text-destructive wsms-mt-1">{error}</p>
         )}
       </div>
     )
@@ -143,7 +143,7 @@ const SwitchField = React.forwardRef(
       >
         <div className="wsms-space-y-1 wsms-pe-4">
           <p className={cn(
-            'wsms-text-[13px] wsms-font-medium',
+            'wsms-text-[14px] wsms-font-medium',
             disabled ? 'wsms-text-muted-foreground' : 'wsms-text-foreground'
           )}>
             {label}
@@ -199,7 +199,7 @@ const InputField = React.forwardRef(
           <FieldDescription id={descriptionId}>{description}</FieldDescription>
         )}
         {error && (
-          <p id={errorId} role="alert" className="wsms-text-[12px] wsms-text-destructive">{error}</p>
+          <p id={errorId} role="alert" className="wsms-text-[13px] wsms-text-destructive">{error}</p>
         )}
       </div>
     )
@@ -239,7 +239,7 @@ const TextareaField = React.forwardRef(
           <FieldDescription id={descriptionId}>{description}</FieldDescription>
         )}
         {error && (
-          <p id={errorId} role="alert" className="wsms-text-[12px] wsms-text-destructive">{error}</p>
+          <p id={errorId} role="alert" className="wsms-text-[13px] wsms-text-destructive">{error}</p>
         )}
       </div>
     )
@@ -287,7 +287,7 @@ const SelectField = React.forwardRef(
           <FieldDescription id={descriptionId}>{description}</FieldDescription>
         )}
         {error && (
-          <p id={errorId} role="alert" className="wsms-text-[12px] wsms-text-destructive">{error}</p>
+          <p id={errorId} role="alert" className="wsms-text-[13px] wsms-text-destructive">{error}</p>
         )}
       </div>
     )
@@ -330,7 +330,7 @@ const MultiSelectField = React.forwardRef(
           <FieldDescription id={descriptionId}>{description}</FieldDescription>
         )}
         {error && (
-          <p id={errorId} role="alert" className="wsms-text-[12px] wsms-text-destructive">{error}</p>
+          <p id={errorId} role="alert" className="wsms-text-[13px] wsms-text-destructive">{error}</p>
         )}
       </div>
     )
@@ -355,7 +355,7 @@ const SettingRow = React.forwardRef(
         {...props}
       >
         <div className="wsms-space-y-1 wsms-pe-4">
-          <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">{title}</p>
+          <p className="wsms-text-[14px] wsms-font-medium wsms-text-foreground">{title}</p>
           {description && (
             <FieldDescription>{description}</FieldDescription>
           )}

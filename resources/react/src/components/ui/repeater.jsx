@@ -143,7 +143,7 @@ const Repeater = React.forwardRef(
                         const fieldId = `${repeaterId}-${index}-${field.name}`
                         return (
                           <div key={field.name} className="wsms-space-y-1">
-                            <Label htmlFor={fieldId} className="wsms-text-[12px]">
+                            <Label htmlFor={fieldId} className="wsms-text-[13px]">
                               {field.label}
                             </Label>
                             <RepeaterField
@@ -170,7 +170,7 @@ const Repeater = React.forwardRef(
                               field.colSpan === 2 && 'wsms-col-span-2'
                             )}
                           >
-                            <Label htmlFor={fieldId} className="wsms-text-[12px]">
+                            <Label htmlFor={fieldId} className="wsms-text-[13px]">
                               {field.label}
                             </Label>
                             <RepeaterField
@@ -266,7 +266,7 @@ function RepeaterField({ field, fieldId, value, onChange, disabled }) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
-          className="wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-card wsms-px-3 wsms-text-[13px] wsms-text-foreground wsms-shadow-sm hover:wsms-border-primary/50 focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20 focus:wsms-border-primary disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50 disabled:wsms-bg-muted"
+          className="wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-card wsms-px-3 wsms-text-[14px] wsms-text-foreground wsms-shadow-sm hover:wsms-border-primary/50 focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20 focus:wsms-border-primary disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50 disabled:wsms-bg-muted"
           style={{ minWidth: '100%' }}
         >
           <option value="">{placeholder || __('Select...', 'wp-sms')}</option>

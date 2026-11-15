@@ -12,11 +12,11 @@ export default function IntroStep({ headlineRef, loading, onStart, onCancel }) {
           ref={headlineRef}
           tabIndex={-1}
           aria-live="polite"
-          className="wsms-text-[18px] wsms-font-semibold wsms-text-foreground wsms-mb-2 wsms-outline-none"
+          className="wsms-text-[19px] wsms-font-semibold wsms-text-foreground wsms-mb-2 wsms-outline-none"
         >
           {__("Let's get your numbers ready for reliable delivery.", 'wp-sms')}
         </h2>
-        <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-leading-relaxed">
+        <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-leading-relaxed">
           {__(
             "Some of your stored numbers are in local format (like 202 555 0147) instead of the international format your SMS gateway needs (+1 202 555 0147). We'll find them, show you exactly what will change, and apply the fix in one batch."
           , 'wp-sms')}
@@ -27,7 +27,7 @@ export default function IntroStep({ headlineRef, loading, onStart, onCancel }) {
         <Card>
           <CardContent className="wsms-flex wsms-items-start wsms-gap-3 wsms-py-3">
             <Shield className="wsms-h-5 wsms-w-5 wsms-text-primary wsms-shrink-0 wsms-mt-0.5" aria-hidden="true" />
-            <span className="wsms-text-[13px] wsms-text-foreground">
+            <span className="wsms-text-[14px] wsms-text-foreground">
               {__('We back everything up', 'wp-sms')}
             </span>
           </CardContent>
@@ -35,7 +35,7 @@ export default function IntroStep({ headlineRef, loading, onStart, onCancel }) {
         <Card>
           <CardContent className="wsms-flex wsms-items-start wsms-gap-3 wsms-py-3">
             <Eye className="wsms-h-5 wsms-w-5 wsms-text-primary wsms-shrink-0 wsms-mt-0.5" aria-hidden="true" />
-            <span className="wsms-text-[13px] wsms-text-foreground">
+            <span className="wsms-text-[14px] wsms-text-foreground">
               {__('You review before we change anything', 'wp-sms')}
             </span>
           </CardContent>
@@ -43,7 +43,7 @@ export default function IntroStep({ headlineRef, loading, onStart, onCancel }) {
         <Card>
           <CardContent className="wsms-flex wsms-items-start wsms-gap-3 wsms-py-3">
             <Undo2 className="wsms-h-5 wsms-w-5 wsms-text-primary wsms-shrink-0 wsms-mt-0.5" aria-hidden="true" />
-            <span className="wsms-text-[13px] wsms-text-foreground">
+            <span className="wsms-text-[14px] wsms-text-foreground">
               {__('One-click undo, anytime', 'wp-sms')}
             </span>
           </CardContent>

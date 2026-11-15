@@ -252,7 +252,7 @@ export function DynamicField({ field }) {
         return (
           <div className="wsms-space-y-2">
             {field.label && (
-              <Label className="wsms-text-[13px] wsms-font-medium">
+              <Label className="wsms-text-[14px] wsms-font-medium">
                 {field.label}
                 {field.required && <span className="wsms-ms-1 wsms-text-destructive">*</span>}
               </Label>
@@ -297,7 +297,7 @@ export function DynamicField({ field }) {
       return (
         <div className="wsms-space-y-2">
           {field.label && (
-            <Label className="wsms-text-[13px] wsms-font-medium">
+            <Label className="wsms-text-[14px] wsms-font-medium">
               {field.label}
               {field.required && <span className="wsms-ms-1 wsms-text-destructive">*</span>}
             </Label>
@@ -341,7 +341,7 @@ export function DynamicField({ field }) {
       return (
         <div className="wsms-space-y-2">
           {field.label && (
-            <Label className="wsms-text-[13px] wsms-font-medium">
+            <Label className="wsms-text-[14px] wsms-font-medium">
               {field.label}
               {field.required && <span className="wsms-ms-1 wsms-text-destructive">*</span>}
             </Label>
@@ -366,7 +366,7 @@ export function DynamicField({ field }) {
       return (
         <div className="wsms-space-y-2">
           {field.label && (
-            <Label className="wsms-text-[13px] wsms-font-medium">
+            <Label className="wsms-text-[14px] wsms-font-medium">
               {field.label}
               {field.required && <span className="wsms-ms-1 wsms-text-destructive">*</span>}
             </Label>
@@ -423,7 +423,7 @@ export function DynamicField({ field }) {
       return (
         <div className="wsms-space-y-2">
           {field.label && (
-            <Label className="wsms-text-[13px] wsms-font-medium">
+            <Label className="wsms-text-[14px] wsms-font-medium">
               {field.label}
               {field.required && <span className="wsms-ms-1 wsms-text-destructive">*</span>}
             </Label>

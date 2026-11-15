@@ -5,6 +5,7 @@ namespace WP_SMS\Services;
 use WP_SMS\Components\Event;
 use WP_SMS\Option;
 use WP_SMS\Components\DateTime;
+use WP_SMS\Admin\MarketingCampaign\MarketingCampaignFetcher;
 use WP_SMS\Admin\Notification\NotificationFetcher;
 use WP_SMS\Admin\SmsStorage\SmsStorageCleaner;
 
@@ -26,6 +27,7 @@ class CronEventManager
     {
         if (Option::getOption('display_notifications')) {
             $this->fetchNotification();
+            $this->fetchMarketingCampaigns();
         }
     }
 
@@ -39,6 +41,15 @@ class CronEventManager
     {
         $notificationFetcher = new NotificationFetcher();
         $notificationFetcher->fetchNotification();
+    }
+
+    /**
+     * Fetches the marketing banner for the dashboard header, managed in Horizon under Marketing Campaigns.
+     */
+    private function fetchMarketingCampaigns()
+    {
+        $fetcher = new MarketingCampaignFetcher();
+        $fetcher->fetchMarketingCampaigns();
     }
 
     /**

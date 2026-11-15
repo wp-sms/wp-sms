@@ -178,7 +178,59 @@ class DashboardHandler extends BaseAssets
             $this->getVersion() . ($mtime !== false ? '.' . $mtime : ''),
             false
         );
-        wp_set_script_translations($handle, 'wp-sms');
+        wp_set_script_translations($handle, 'wp-sms', WP_SMS_DIR . 'languages');
+        add_filter('load_script_translations', [$this, 'mergeLanguagePackScriptTranslations'], 10, 4);
+    }
+
+    /**
+     * Add the WordPress.org language pack on top of the dashboard strings shipped in languages/.
+     *
+     * When languages/ has a file for this handle, WordPress loads only that file. The
+     * matching pack file for public/dashboard/i18n-strings.js is merged over it, so
+     * the pack wins and the shipped file only fills strings the pack does not have.
+     *
+     * @param string|false $translations JSON translations, or false.
+     * @param string       $file         Path of the file that was loaded.
+     * @param string       $handle       Script handle.
+     * @param string       $domain       Text domain.
+     * @return string|false
+     */
+    public function mergeLanguagePackScriptTranslations($translations, $file, $handle, $domain)
+    {
+        if ($domain !== 'wp-sms' || $handle !== 'wsms-dashboard-i18n' || !is_string($translations)) {
+            return $translations;
+        }
+
+        if (strpos(wp_normalize_path($file), wp_normalize_path(WP_SMS_DIR . 'languages/')) !== 0) {
+            return $translations;
+        }
+
+        if (!preg_match('/^wp-sms-(.+)-wsms-dashboard-i18n\.json$/', basename($file), $matches)) {
+            return $translations;
+        }
+
+        $shipped = json_decode($translations, true);
+        if (!isset($shipped['locale_data']['messages'])) {
+            return $translations;
+        }
+
+        $packFile = WP_LANG_DIR . '/plugins/wp-sms-' . $matches[1] . '-' . md5('public/dashboard/i18n-strings.js') . '.json';
+        // Nothing to merge: hand back the shipped file as it is, without decoding
+        // and encoding it again (which would also escape every non-Latin letter).
+        if (!is_readable($packFile)) {
+            return $translations;
+        }
+
+        $fromPack = json_decode((string)file_get_contents($packFile), true);
+        if (!isset($fromPack['locale_data']['messages']) || !is_array($fromPack['locale_data']['messages'])) {
+            return $translations;
+        }
+
+        $messages = $fromPack['locale_data']['messages'];
+        unset($messages['']);
+        $shipped['locale_data']['messages'] = array_merge($shipped['locale_data']['messages'], $messages);
+
+        return wp_json_encode($shipped, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
     /**

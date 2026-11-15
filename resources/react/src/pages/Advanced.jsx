@@ -71,7 +71,7 @@ export default function Advanced() {
               placeholder="https://your-app.com/webhooks/new-subscriber"
               rows={2}
             />
-            <p className="wsms-text-[12px] wsms-text-muted-foreground">
+            <p className="wsms-text-[13px] wsms-text-muted-foreground">
               {__('Called when someone subscribes to your SMS newsletter.', 'wp-sms')}
             </p>
           </div>
@@ -85,7 +85,7 @@ export default function Advanced() {
               placeholder="https://your-app.com/webhooks/sms-received"
               rows={2}
             />
-            <p className="wsms-text-[12px] wsms-text-muted-foreground">
+            <p className="wsms-text-[13px] wsms-text-muted-foreground">
               {__('Called when you receive an SMS reply. Requires Two-Way SMS add-on.', 'wp-sms')}
             </p>
           </div>

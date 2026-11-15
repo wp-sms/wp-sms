@@ -1,3 +1,12 @@
+v7.2.13 - 2026-11-15
+- **Security:** Hardened the SMS subscribe confirmation code check ([#620](https://github.com/wp-sms/wp-sms/issues/620)).
+- **Enhancement:** Add-Ons page, license and notification improvements.
+- **New:** IPPanel gateway. MdPanel and NasrPayam now use its API.
+- **Fix:** Mediana: new API and pattern sending. An outage no longer crashes the site.
+- **Fix:** UwaziiMobile: bursts of SMS no longer fail with "429 Too Many Requests" ([#614](https://github.com/wp-sms/wp-sms/issues/614)).
+- **Fix:** Melipayamak: login fields and balance display.
+- **Fix:** Translation fixes and updates, and the dialog close button no longer covers the title on right-to-left sites.
+
 v7.2.12 - 2026-11-06
 - **Enhancement:** Setup guide links for 19 more gateways.
 - **Fix:** Kavenegar: a template message without variables now shows a clear error.

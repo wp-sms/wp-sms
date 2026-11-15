@@ -97,13 +97,13 @@ class melipayamak extends Gateway
         $this->gatewayFields = [
             'username' => [
                 'id' => 'gateway_username',
-                'name' => esc_html__('API Username', 'wp-sms'),
-                'desc' => esc_html__('Enter the API username provided by your SMS gateway.', 'wp-sms'),
+                'name' => esc_html__('Username', 'wp-sms'),
+                'desc' => esc_html__('The username you use to log in to the Melipayamak panel.', 'wp-sms'),
             ],
             'password' => [
                 'id' => 'gateway_password',
-                'name' => esc_html__('API Password', 'wp-sms'),
-                'desc' => esc_html__('Enter the API password provided by your SMS gateway.', 'wp-sms'),
+                'name' => esc_html__('Password or API key', 'wp-sms'),
+                'desc' => esc_html__('Your Melipayamak panel password, or the API key from Developers → Web service settings in the panel.', 'wp-sms'),
             ],
             'from' => [
                 'id' => 'gateway_sender_id',
@@ -176,7 +176,7 @@ class melipayamak extends Gateway
     public function SendSMS()
     {
         if (empty($this->username) || empty($this->password)) {
-            return new WP_Error('missing-credentials', esc_html__('API Username and API Password are required.', 'wp-sms'));
+            return new WP_Error('missing-credentials', esc_html__('Username and password (or API key) are required.', 'wp-sms'));
         }
 
         $this->setTemplateIdAndMessageBody();
@@ -251,7 +251,7 @@ class melipayamak extends Gateway
 
             if (isset($response->RetStatus)) {
                 if ($response->RetStatus == 1) {
-                    return isset($response->Value) ? (float)$response->Value : 0;
+                    return isset($response->Value) ? round((float)$response->Value, 2) : 0;
                 }
 
                 throw new Exception($this->getErrorMessage($response->RetStatus));

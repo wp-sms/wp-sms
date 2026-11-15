@@ -52,11 +52,11 @@ export default function DoneStep({
           ref={headlineRef}
           tabIndex={-1}
           aria-live="polite"
-          className="wsms-text-[18px] wsms-font-semibold wsms-text-foreground wsms-mb-2 wsms-outline-none"
+          className="wsms-text-[19px] wsms-font-semibold wsms-text-foreground wsms-mb-2 wsms-outline-none"
         >
           {__('Done. Your numbers now use the standard format.', 'wp-sms')}
         </h2>
-        <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-leading-relaxed wsms-max-w-lg wsms-mx-auto">
+        <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-leading-relaxed wsms-max-w-lg wsms-mx-auto">
           {body}
         </p>
       </div>
@@ -68,7 +68,7 @@ export default function DoneStep({
             return (
               <span
                 key={key}
-                className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-rounded-full wsms-bg-green-50 wsms-text-green-700 wsms-px-3 wsms-py-1 wsms-text-[12px] wsms-font-medium"
+                className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-rounded-full wsms-bg-green-50 wsms-text-green-700 wsms-px-3 wsms-py-1 wsms-text-[13px] wsms-font-medium"
               >
                 <span className="wsms-font-semibold">{count}</span>
                 <span className="wsms-opacity-80">{key.replace(/_/g, ' ')}</span>
@@ -83,7 +83,7 @@ export default function DoneStep({
           <AlertDescription>
             <div className="wsms-flex wsms-flex-col wsms-gap-2">
               <span>{sprintf(__("%d records couldn't be updated.", 'wp-sms'), errors.length)}</span>
-              <div className="wsms-flex wsms-gap-3 wsms-text-[12px]">
+              <div className="wsms-flex wsms-gap-3 wsms-text-[13px]">
                 <button
                   type="button"
                   onClick={() => setShowErrors((v) => !v)}
@@ -105,7 +105,7 @@ export default function DoneStep({
                 </button>
               </div>
               {showErrors && (
-                <ul className="wsms-list-disc wsms-ps-5 wsms-space-y-0.5 wsms-text-[12px] wsms-max-h-40 wsms-overflow-y-auto">
+                <ul className="wsms-list-disc wsms-ps-5 wsms-space-y-0.5 wsms-text-[13px] wsms-max-h-40 wsms-overflow-y-auto">
                   {errors.map((err, i) => (
                     <li key={i}>{err}</li>
                   ))}
@@ -118,7 +118,7 @@ export default function DoneStep({
 
       <Card>
         <CardContent className="wsms-py-4">
-          <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground wsms-mb-3">
+          <p className="wsms-text-[14px] wsms-font-medium wsms-text-foreground wsms-mb-3">
             {__("What's next?", 'wp-sms')}
           </p>
           <div className="wsms-flex wsms-flex-wrap wsms-gap-2">
@@ -138,7 +138,7 @@ export default function DoneStep({
         <button
           type="button"
           onClick={onRequestRevert}
-          className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-underline-offset-2 hover:wsms-underline"
+          className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[13px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-underline-offset-2 hover:wsms-underline"
         >
           <Undo2 className="wsms-h-3.5 wsms-w-3.5" aria-hidden="true" />
           {__('Undo this update', 'wp-sms')}
@@ -147,7 +147,7 @@ export default function DoneStep({
           <button
             type="button"
             onClick={onRescan}
-            className="wsms-text-[12px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-underline-offset-2 hover:wsms-underline"
+            className="wsms-text-[13px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-underline-offset-2 hover:wsms-underline"
           >
             {__('Did we miss something? Re-scan to check', 'wp-sms')}
           </button>

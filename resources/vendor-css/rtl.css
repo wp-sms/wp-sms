@@ -43,21 +43,18 @@ body.rtl .wpsms-chatbox.wpsms-chatbox--left-side .wpsms-chatbox__arrow {
 
 /*
  * intl-tel-input (PhoneInput) in RTL:
- * Ensure the dropdown aligns inside the viewport and the list/search align properly.
+ * A phone number is always left to right, so the flag, the number and the country list keep their
+ * left-to-right layout and the dropdown opens under the flag.
  */
 body.rtl #wpsms-settings-root[dir="rtl"] .iti--inline-dropdown .iti__dropdown-content {
-  left: auto !important;
-  right: 0 !important;
+  left: 0 !important;
+  right: auto !important;
 }
 
 body.rtl #wpsms-settings-root[dir="rtl"] .iti__country-list,
-body.rtl #wpsms-settings-root[dir="rtl"] .iti__search-input {
-  text-align: right;
-}
-
-/* Align the phone value to the right in RTL so it appears next to the flag dropdown. */
+body.rtl #wpsms-settings-root[dir="rtl"] .iti__search-input,
 body.rtl #wpsms-settings-root[dir="rtl"] .iti input.iti__tel-input {
-  text-align: right;
+  text-align: left;
 }
 
 /*

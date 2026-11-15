@@ -288,8 +288,8 @@ const RecipientSelector = React.forwardRef(
         className={cn('wsms-space-y-3', className)}
         {...props}
       >
-        {/* Tab Navigation - Compact Pill Style */}
-        <div className="wsms-flex wsms-gap-1 wsms-p-1 wsms-rounded-lg wsms-bg-muted/50">
+        {/* Tab Navigation - four equal columns, icon over label, so nothing is ever cut off */}
+        <div className="wsms-grid wsms-grid-cols-4 wsms-border-b wsms-border-border" role="tablist">
           {TABS.map((tab) => {
             const Icon = tab.icon
             const count =
@@ -306,30 +306,25 @@ const RecipientSelector = React.forwardRef(
               <button
                 key={tab.id}
                 type="button"
+                role="tab"
+                aria-selected={isActive}
                 onClick={() => setActiveTab(tab.id)}
                 disabled={disabled}
                 className={cn(
-                  'wsms-flex-1 wsms-flex wsms-flex-col sm:wsms-flex-row wsms-items-center wsms-justify-center wsms-gap-0.5 sm:wsms-gap-1.5 wsms-px-2 wsms-py-2 sm:wsms-px-3',
-                  'wsms-rounded-md wsms-text-[12px] wsms-font-medium wsms-transition-colors',
-                  isActive
-                    ? 'wsms-bg-card wsms-text-foreground wsms-shadow-sm'
-                    : 'wsms-text-muted-foreground hover:wsms-text-foreground'
+                  'wsms-relative wsms-flex wsms-min-w-0 wsms-flex-col wsms-items-center wsms-gap-1 wsms-px-1 wsms-pb-2 wsms-pt-1 wsms-text-[13px] wsms-font-medium',
+                  isActive ? 'wsms-text-foreground' : 'wsms-text-muted-foreground hover:wsms-text-foreground'
                 )}
               >
-                <Icon className={cn('wsms-h-3.5 wsms-w-3.5', isActive && 'wsms-text-primary')} />
-                <span className="wsms-text-[10px] sm:wsms-text-[12px]">{tab.label}</span>
-                {count > 0 && (
-                  <span
-                    className={cn(
-                      'wsms-px-1.5 wsms-py-0.5 wsms-text-[10px] wsms-rounded-full wsms-font-medium',
-                      isActive
-                        ? 'wsms-bg-primary wsms-text-primary-foreground'
-                        : 'wsms-bg-muted wsms-text-muted-foreground'
-                    )}
-                  >
-                    {count}
-                  </span>
-                )}
+                <span className="wsms-relative">
+                  <Icon className={cn('wsms-h-[18px] wsms-w-[18px]', isActive && 'wsms-text-primary')} />
+                  {count > 0 && (
+                    <span className="wsms-absolute wsms--end-3 wsms--top-2 wsms-flex wsms-h-4 wsms-min-w-4 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary wsms-px-1 wsms-text-[10px] wsms-font-semibold wsms-leading-none wsms-text-primary-foreground">
+                      {count > 99 ? '99+' : count}
+                    </span>
+                  )}
+                </span>
+                <span className="wsms-max-w-full wsms-truncate">{tab.label}</span>
+                {isActive && <span className="wsms-absolute wsms-inset-x-0 wsms--bottom-px wsms-h-0.5 wsms-bg-primary" />}
               </button>
             )
           })}
@@ -346,7 +341,7 @@ const RecipientSelector = React.forwardRef(
               placeholder={activeTab === 'groups' ? __('Search groups...', 'wp-sms') : __('Search roles...', 'wp-sms')}
               aria-label={activeTab === 'groups' ? __('Search groups', 'wp-sms') : __('Search roles', 'wp-sms')}
               disabled={disabled}
-              className="wsms-ps-8 wsms-h-8 wsms-text-[12px]"
+              className="wsms-ps-8 wsms-h-8 wsms-text-[13px]"
             />
           </div>
         )}
@@ -361,7 +356,7 @@ const RecipientSelector = React.forwardRef(
               onChange={(e) => setUserSearchQuery(e.target.value)}
               placeholder={__('Search by name, email, or user ID...', 'wp-sms')}
               disabled={disabled}
-              className="wsms-ps-8 wsms-h-8 wsms-text-[12px]"
+              className="wsms-ps-8 wsms-h-8 wsms-text-[13px]"
             />
           </div>
         )}
@@ -400,11 +395,11 @@ const RecipientSelector = React.forwardRef(
                               aria-label={group.name}
                             />
                             <Users className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
-                            <span className="wsms-flex-1 wsms-text-[12px] wsms-text-foreground wsms-truncate">
+                            <span className="wsms-flex-1 wsms-text-[13px] wsms-text-foreground wsms-truncate">
                               {group.name}
                             </span>
                             {group.count !== undefined && (
-                              <span className="wsms-text-[11px] wsms-text-muted-foreground">
+                              <span className="wsms-text-[12px] wsms-text-muted-foreground">
                                 {isSelected && excludedInGroup > 0 && members
                                   ? `${members.length - excludedInGroup}/${members.length}`
                                   : group.count}
@@ -436,13 +431,13 @@ const RecipientSelector = React.forwardRef(
                                 <Loader2 className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-animate-spin" />
                               </div>
                             ) : !members || members.length === 0 ? (
-                              <p className="wsms-py-2 wsms-text-[11px] wsms-text-muted-foreground">
+                              <p className="wsms-py-2 wsms-text-[12px] wsms-text-muted-foreground">
                                 {__('No active subscribers in this group', 'wp-sms')}
                               </p>
                             ) : (
                               <>
                                 <div className="wsms-flex wsms-items-center wsms-justify-between wsms-py-1">
-                                  <p className="wsms-text-[10px] wsms-text-muted-foreground">
+                                  <p className="wsms-text-[11px] wsms-text-muted-foreground">
                                     {isSelected
                                       ? __('Untick members who should not get this message', 'wp-sms')
                                       : __('Select the group to pick members', 'wp-sms')}
@@ -453,7 +448,7 @@ const RecipientSelector = React.forwardRef(
                                         type="button"
                                         onClick={() => handleSelectAllMembers(group.id, true)}
                                         disabled={disabled}
-                                        className="wsms-text-[10px] wsms-text-primary hover:wsms-underline"
+                                        className="wsms-text-[11px] wsms-text-primary hover:wsms-underline"
                                       >
                                         {__('All', 'wp-sms')}
                                       </button>
@@ -461,7 +456,7 @@ const RecipientSelector = React.forwardRef(
                                         type="button"
                                         onClick={() => handleSelectAllMembers(group.id, false)}
                                         disabled={disabled}
-                                        className="wsms-text-[10px] wsms-text-primary hover:wsms-underline"
+                                        className="wsms-text-[11px] wsms-text-primary hover:wsms-underline"
                                       >
                                         {__('None', 'wp-sms')}
                                       </button>
@@ -483,10 +478,10 @@ const RecipientSelector = React.forwardRef(
                                         disabled={disabled || !isSelected}
                                         aria-label={member.name || member.mobile}
                                       />
-                                      <span className="wsms-flex-1 wsms-text-[11px] wsms-text-foreground wsms-truncate">
+                                      <span className="wsms-flex-1 wsms-text-[12px] wsms-text-foreground wsms-truncate">
                                         {member.name || __('(no name)', 'wp-sms')}
                                       </span>
-                                      <span className="wsms-text-[11px] wsms-font-mono wsms-text-muted-foreground" dir="ltr">
+                                      <span className="wsms-text-[12px] wsms-font-mono wsms-text-muted-foreground" dir="ltr">
                                         {member.mobile}
                                       </span>
                                     </label>
@@ -524,13 +519,13 @@ const RecipientSelector = React.forwardRef(
                           aria-label={type.label}
                         />
                         <Icon className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
-                        <span className="wsms-flex-1 wsms-text-[12px] wsms-text-foreground wsms-truncate">
+                        <span className="wsms-flex-1 wsms-text-[13px] wsms-text-foreground wsms-truncate">
                           {type.label}
                         </span>
                         {isLoading ? (
                           <Loader2 className="wsms-h-3 wsms-w-3 wsms-animate-spin wsms-text-muted-foreground" />
                         ) : count !== undefined ? (
-                          <span className="wsms-text-[11px] wsms-text-muted-foreground">
+                          <span className="wsms-text-[12px] wsms-text-muted-foreground">
                             {count}
                           </span>
                         ) : null}
@@ -543,7 +538,7 @@ const RecipientSelector = React.forwardRef(
                 {filteredGroups.length === 0 && filteredAdditionalTypes.length === 0 && (
                   <div className="wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-py-8 wsms-text-center">
                     <Users className="wsms-h-8 wsms-w-8 wsms-text-muted-foreground/30 wsms-mb-2" />
-                    <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                    <p className="wsms-text-[13px] wsms-text-muted-foreground">
                       {searchQuery ? __('No groups match your search', 'wp-sms') : __('No subscriber groups available', 'wp-sms')}
                     </p>
                   </div>
@@ -557,7 +552,7 @@ const RecipientSelector = React.forwardRef(
                 {filteredRoles.length === 0 ? (
                   <div className="wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-py-8 wsms-text-center">
                     <UserCog className="wsms-h-8 wsms-w-8 wsms-text-muted-foreground/30 wsms-mb-2" />
-                    <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                    <p className="wsms-text-[13px] wsms-text-muted-foreground">
                       {searchQuery ? __('No roles match your search', 'wp-sms') : __('No user roles available', 'wp-sms')}
                     </p>
                   </div>
@@ -581,7 +576,7 @@ const RecipientSelector = React.forwardRef(
                             disabled={disabled}
                             aria-label={role.name}
                           />
-                          <span className="wsms-text-[12px] wsms-text-foreground wsms-truncate">
+                          <span className="wsms-text-[13px] wsms-text-foreground wsms-truncate">
                             {role.name}
                           </span>
                         </label>
@@ -604,7 +599,7 @@ const RecipientSelector = React.forwardRef(
                       </div>
                     ) : userSearchResults.length === 0 ? (
                       <div className="wsms-py-4 wsms-text-center">
-                        <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                        <p className="wsms-text-[13px] wsms-text-muted-foreground">
                           {__('No users found', 'wp-sms')}
                         </p>
                       </div>
@@ -632,18 +627,18 @@ const RecipientSelector = React.forwardRef(
                                 <User className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
                               </div>
                               <div className="wsms-flex-1 wsms-min-w-0">
-                                <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground wsms-truncate">
+                                <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground wsms-truncate">
                                   {user.name}
                                   <span className="wsms-text-muted-foreground wsms-font-normal wsms-ms-1">
                                     #{user.id}
                                   </span>
                                 </p>
-                                <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-truncate">
+                                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-truncate">
                                   {user.hasMobile ? user.mobile : __('No mobile number', 'wp-sms')}
                                 </p>
                               </div>
                               {isAlreadySelected && (
-                                <span className="wsms-text-[10px] wsms-text-primary wsms-font-medium">
+                                <span className="wsms-text-[11px] wsms-text-primary wsms-font-medium">
                                   {__('Selected', 'wp-sms')}
                                 </span>
                               )}
@@ -659,14 +654,14 @@ const RecipientSelector = React.forwardRef(
                 {(value.users?.length || 0) > 0 && (
                   <div className="wsms-space-y-2 wsms-pt-2 wsms-border-t wsms-border-border">
                     <div className="wsms-flex wsms-items-center wsms-justify-between">
-                      <p className="wsms-text-[11px] wsms-font-medium wsms-text-muted-foreground">
+                      <p className="wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground">
                         {value.users.length} {value.users.length !== 1 ? __('users', 'wp-sms') : __('user', 'wp-sms')} {__('selected', 'wp-sms')}
                       </p>
                       <button
                         type="button"
                         onClick={handleClearAllUsers}
                         disabled={disabled}
-                        className="wsms-text-[10px] wsms-text-red-600 hover:wsms-text-red-700"
+                        className="wsms-text-[11px] wsms-text-red-600 hover:wsms-text-red-700"
                       >
                         {__('Clear', 'wp-sms')}
                       </button>
@@ -677,7 +672,7 @@ const RecipientSelector = React.forwardRef(
                         return (
                           <span
                             key={userId}
-                            className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-text-foreground"
+                            className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[12px] wsms-text-foreground"
                           >
                             <User className="wsms-h-3 wsms-w-3 wsms-text-muted-foreground" />
                             {userDetails?.name || `#${userId}`}
@@ -700,7 +695,7 @@ const RecipientSelector = React.forwardRef(
                 {!userSearchQuery && (value.users?.length || 0) === 0 && (
                   <div className="wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-py-6 wsms-text-center">
                     <User className="wsms-h-6 wsms-w-6 wsms-text-muted-foreground/30 wsms-mb-1.5" />
-                    <p className="wsms-text-[11px] wsms-text-muted-foreground">
+                    <p className="wsms-text-[12px] wsms-text-muted-foreground">
                       {__('Search for users above', 'wp-sms')}
                     </p>
                   </div>
@@ -722,7 +717,7 @@ const RecipientSelector = React.forwardRef(
                     placeholder={__('Enter phone number...', 'wp-sms')}
                     aria-label={__('Phone number', 'wp-sms')}
                     disabled={disabled}
-                    className="wsms-flex-1 wsms-h-8 wsms-text-[12px] wsms-font-mono"
+                    className="wsms-flex-1 wsms-h-8 wsms-text-[13px] wsms-font-mono"
                   />
                   <Button
                     type="button"
@@ -735,7 +730,7 @@ const RecipientSelector = React.forwardRef(
                     <Plus className="wsms-h-3.5 wsms-w-3.5" />
                   </Button>
                 </div>
-                <p className="wsms-text-[10px] wsms-text-muted-foreground">
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">
                   {__('Separate multiple with commas', 'wp-sms')}
                 </p>
 
@@ -743,14 +738,14 @@ const RecipientSelector = React.forwardRef(
                 {value.numbers.length > 0 && (
                   <div className="wsms-space-y-2 wsms-pt-2 wsms-border-t wsms-border-border">
                     <div className="wsms-flex wsms-items-center wsms-justify-between">
-                      <p className="wsms-text-[11px] wsms-font-medium wsms-text-muted-foreground">
+                      <p className="wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground">
                         {value.numbers.length} {value.numbers.length !== 1 ? __('numbers', 'wp-sms') : __('number', 'wp-sms')}
                       </p>
                       <button
                         type="button"
                         onClick={handleClearAllNumbers}
                         disabled={disabled}
-                        className="wsms-text-[10px] wsms-text-red-600 hover:wsms-text-red-700"
+                        className="wsms-text-[11px] wsms-text-red-600 hover:wsms-text-red-700"
                       >
                         {__('Clear', 'wp-sms')}
                       </button>
@@ -759,7 +754,7 @@ const RecipientSelector = React.forwardRef(
                       {value.numbers.map((number) => (
                         <span
                           key={number}
-                          className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-font-mono wsms-text-foreground"
+                          className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[12px] wsms-font-mono wsms-text-foreground"
                         >
                           {number}
                           <button
@@ -780,7 +775,7 @@ const RecipientSelector = React.forwardRef(
                 {value.numbers.length === 0 && (
                   <div className="wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-py-6 wsms-text-center">
                     <Phone className="wsms-h-6 wsms-w-6 wsms-text-muted-foreground/30 wsms-mb-1.5" />
-                    <p className="wsms-text-[11px] wsms-text-muted-foreground">
+                    <p className="wsms-text-[12px] wsms-text-muted-foreground">
                       {__('No numbers added', 'wp-sms')}
                     </p>
                   </div>

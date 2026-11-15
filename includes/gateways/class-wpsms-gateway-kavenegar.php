@@ -85,7 +85,7 @@ class kavenegar extends Gateway
     {
         parent::__construct();
 
-        $this->validateNumber = "The correct formats for the recipient's phone number are as follows: 09121234567, 00989121234567, +989121234567, 9121234567";
+        $this->validateNumber = __("The correct formats for the recipient's phone number are as follows: 09121234567, 00989121234567, +989121234567, 9121234567", 'wp-sms');
 
         $this->gatewayFields = [
             'from' => [

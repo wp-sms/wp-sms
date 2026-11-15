@@ -185,12 +185,34 @@ class WP_SMS
      *
      * Must run on `init` (or later). Since WordPress 6.7 translations loaded
      * before `init` are ignored, which previously left wp-sms strings untranslated.
-     * load_plugin_textdomain() already checks WP_LANG_DIR/plugins/ (where the
-     * auto-updated .mo files live) before falling back to the bundled path.
+     *
+     * The WordPress.org language pack (WP_LANG_DIR/plugins/) is loaded first, so its
+     * strings win. The files shipped in languages/ are loaded after it and only fill
+     * the strings the pack does not have yet; on a site without the pack they are the
+     * only translation. The third argument of load_plugin_textdomain() is relative to
+     * the plugins folder, which also registers languages/ for script translations.
      */
     private function loadTextDomain()
     {
-        load_plugin_textdomain('wp-sms', false, WP_SMS_DIR . 'resources/languages');
+        $locale = function_exists('determine_locale') ? determine_locale() : get_locale();
+        $locale = apply_filters('plugin_locale', $locale, 'wp-sms');
+
+        $relativePath = dirname(plugin_basename(WP_SMS_MAIN_FILE)) . '/languages';
+        $packFile     = WP_LANG_DIR . '/plugins/wp-sms-' . $locale . '.mo';
+        $bundledFile  = WP_SMS_DIR . 'languages/wp-sms-' . $locale . '.mo';
+
+        // Registers languages/ for script translations and loads the catalog on
+        // WordPress before 6.7.
+        load_plugin_textdomain('wp-sms', false, $relativePath);
+
+        if ($locale === 'en_US') {
+            return;
+        }
+
+        // The WordPress.org language pack goes first so it wins; the shipped
+        // file only fills the strings the pack does not have.
+        load_textdomain('wp-sms', $packFile, $locale);
+        load_textdomain('wp-sms', $bundledFile, $locale);
     }
 
     private function initGateway()

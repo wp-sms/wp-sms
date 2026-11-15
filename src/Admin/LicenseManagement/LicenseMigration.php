@@ -120,7 +120,7 @@ class LicenseMigration
         } catch (\Exception $e) {
             $notice = NoticeManager::getInstance();
             /* translators: 1: Add-on slug 2: error message */
-            $notice->registerNotice('license_migration', sprintf(__('Failed to migrate license for %1$s: %2$s', 'wp-sms'), $addonSlug, $e->getMessage()));
+            $notice->registerNotice('license_migration', sprintf(__('Failed to migrate license for %1$s: %2$s', 'wp-sms'), $addonSlug, wp_strip_all_tags($e->getMessage())));
             return false;
         }
 

@@ -32,7 +32,7 @@ class prosms extends \WP_SMS\Gateway
             ],
             'has_key' => [
                 'id'   => 'gateway_key',
-                'name' => esc_html__('API Iey', 'wp-sms'),
+                'name' => esc_html__('API Key', 'wp-sms'),
                 'desc' => esc_html__('Enter API key of gateway', 'wp-sms')
             ]
         ];

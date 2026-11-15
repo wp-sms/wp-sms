@@ -4,7 +4,7 @@ import { CheckCircle, XCircle, Clock, AlertCircle, Send, Ban } from 'lucide-reac
 import { cn } from '@/lib/utils'
 
 const statusBadgeVariants = cva(
-  'wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-rounded-full wsms-px-2.5 wsms-py-0.5 wsms-text-[11px] wsms-font-medium wsms-transition-colors',
+  'wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-rounded-full wsms-px-2.5 wsms-py-0.5 wsms-text-[12px] wsms-font-medium wsms-transition-colors',
   {
     variants: {
       variant: {
@@ -18,9 +18,9 @@ const statusBadgeVariants = cva(
         default: 'wsms-bg-gray-500/10 wsms-text-gray-700 dark:wsms-text-gray-400',
       },
       size: {
-        sm: 'wsms-text-[10px] wsms-px-2 wsms-py-0.5',
-        default: 'wsms-text-[11px] wsms-px-2.5 wsms-py-0.5',
-        lg: 'wsms-text-[12px] wsms-px-3 wsms-py-1',
+        sm: 'wsms-text-[11px] wsms-px-2 wsms-py-0.5',
+        default: 'wsms-text-[12px] wsms-px-2.5 wsms-py-0.5',
+        lg: 'wsms-text-[13px] wsms-px-3 wsms-py-1',
       },
     },
     defaultVariants: {

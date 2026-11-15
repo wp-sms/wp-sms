@@ -69,11 +69,11 @@ export default function ReviewStep({
           ref={headlineRef}
           tabIndex={-1}
           aria-live="polite"
-          className="wsms-text-[18px] wsms-font-semibold wsms-text-foreground wsms-mb-2 wsms-outline-none"
+          className="wsms-text-[19px] wsms-font-semibold wsms-text-foreground wsms-mb-2 wsms-outline-none"
         >
           {headline}
         </h2>
-        <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-leading-relaxed">{sub}</p>
+        <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-leading-relaxed">{sub}</p>
       </div>
 
       {backupExists && (
@@ -94,15 +94,15 @@ export default function ReviewStep({
                 <button
                   type="button"
                   onClick={onRevertOldBackup}
-                  className="wsms-text-[12px] wsms-font-medium wsms-underline wsms-text-inherit"
+                  className="wsms-text-[13px] wsms-font-medium wsms-underline wsms-text-inherit"
                 >
                   {__('Revert the old update first?', 'wp-sms')}
                 </button>
-                <span className="wsms-text-[12px] wsms-text-inherit/60">•</span>
+                <span className="wsms-text-[13px] wsms-text-inherit/60">•</span>
                 <button
                   type="button"
                   onClick={onClearOldBackup}
-                  className="wsms-text-[12px] wsms-font-medium wsms-underline wsms-text-inherit"
+                  className="wsms-text-[13px] wsms-font-medium wsms-underline wsms-text-inherit"
                 >
                   {__('Clear old backup', 'wp-sms')}
                 </button>
@@ -150,7 +150,7 @@ export default function ReviewStep({
               <button
                 type="button"
                 onClick={() => setShowSources((v) => !v)}
-                className="wsms-w-full wsms-flex wsms-items-center wsms-justify-between wsms-px-4 wsms-py-2.5 wsms-text-[13px] wsms-font-medium wsms-bg-muted/40 hover:wsms-bg-muted/60"
+                className="wsms-w-full wsms-flex wsms-items-center wsms-justify-between wsms-px-4 wsms-py-2.5 wsms-text-[14px] wsms-font-medium wsms-bg-muted/40 hover:wsms-bg-muted/60"
                 aria-expanded={showSources}
               >
                 <span>{__('View by source', 'wp-sms')}</span>
@@ -167,10 +167,10 @@ export default function ReviewStep({
                     return (
                       <li
                         key={key}
-                        className="wsms-flex wsms-items-center wsms-justify-between wsms-px-4 wsms-py-2.5 wsms-text-[13px]"
+                        className="wsms-flex wsms-items-center wsms-justify-between wsms-px-4 wsms-py-2.5 wsms-text-[14px]"
                       >
                         <span className="wsms-font-medium wsms-text-foreground">{source.label}</span>
-                        <span className="wsms-flex wsms-items-center wsms-gap-3 wsms-text-[12px]">
+                        <span className="wsms-flex wsms-items-center wsms-gap-3 wsms-text-[13px]">
                           <span className="wsms-text-warning">
                             {sprintf(__('%d need update', 'wp-sms'), source.need_fix)}
                           </span>
@@ -192,7 +192,7 @@ export default function ReviewStep({
               <button
                 type="button"
                 onClick={() => setShowSamples((v) => !v)}
-                className="wsms-w-full wsms-flex wsms-items-center wsms-justify-between wsms-px-4 wsms-py-2.5 wsms-text-[13px] wsms-font-medium wsms-bg-muted/40 hover:wsms-bg-muted/60"
+                className="wsms-w-full wsms-flex wsms-items-center wsms-justify-between wsms-px-4 wsms-py-2.5 wsms-text-[14px] wsms-font-medium wsms-bg-muted/40 hover:wsms-bg-muted/60"
                 aria-expanded={showSamples}
               >
                 <span>{__('What kind of numbers need fixing?', 'wp-sms')}</span>
@@ -203,7 +203,7 @@ export default function ReviewStep({
                 )}
               </button>
               {showSamples && (
-                <div className="wsms-px-4 wsms-py-3 wsms-text-[12px] wsms-text-muted-foreground wsms-space-y-1">
+                <div className="wsms-px-4 wsms-py-3 wsms-text-[13px] wsms-text-muted-foreground wsms-space-y-1">
                   {samples.map((sample, i) => (
                     <div key={i} className="wsms-font-mono">
                       <bdi>{sample}</bdi>
@@ -215,7 +215,7 @@ export default function ReviewStep({
           )}
 
           {!isAlreadyMigrated && countryCode && (
-            <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-text-[12px] wsms-text-muted-foreground">
+            <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-text-[13px] wsms-text-muted-foreground">
               <Info className="wsms-h-3.5 wsms-w-3.5" aria-hidden="true" />
               <span>
                 {sprintf(__('Using country code %s.', 'wp-sms'), countryCode)}{' '}
@@ -268,8 +268,8 @@ function StatTile({ value, label, tone = 'default' }) {
   }
   return (
     <div className={`wsms-rounded-lg wsms-p-4 wsms-text-center ${toneClasses[tone]}`}>
-      <div className="wsms-text-[24px] wsms-font-semibold wsms-leading-none">{value}</div>
-      <div className="wsms-text-[12px] wsms-mt-1.5 wsms-opacity-80">{label}</div>
+      <div className="wsms-text-[25px] wsms-font-semibold wsms-leading-none">{value}</div>
+      <div className="wsms-text-[13px] wsms-mt-1.5 wsms-opacity-80">{label}</div>
     </div>
   )
 }

@@ -27,7 +27,7 @@ export default function GettingStartedStep({
         <h2 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-1">
           {__('Welcome to WSMS', 'wp-sms')}
         </h2>
-        <p className="wsms-text-[12px] wsms-text-muted-foreground">
+        <p className="wsms-text-[13px] wsms-text-muted-foreground">
           {__("Let's get your SMS gateway configured in just a few steps.", 'wp-sms')}
         </p>
       </div>
@@ -39,7 +39,7 @@ export default function GettingStartedStep({
           return (
             <div key={index} className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-muted-foreground">
               <Icon className="wsms-h-3.5 wsms-w-3.5 wsms-text-primary" />
-              <span className="wsms-text-[11px] wsms-font-medium">{feature.label}</span>
+              <span className="wsms-text-[12px] wsms-font-medium">{feature.label}</span>
             </div>
           )
         })}
@@ -66,7 +66,7 @@ export default function GettingStartedStep({
           {isValid && phoneNumber && (
             <div className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-mt-3 wsms-text-success">
               <CheckCircle className="wsms-h-3.5 wsms-w-3.5" />
-              <span className="wsms-text-[11px] wsms-font-medium">
+              <span className="wsms-text-[12px] wsms-font-medium">
                 {__('Valid phone number', 'wp-sms')}
               </span>
             </div>

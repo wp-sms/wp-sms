@@ -56,10 +56,10 @@ import { useToast } from '@/components/ui/toaster'
  */
 function SubscriberImportDialog({ open, onOpenChange, onImport, isLoading }) {
   const importFields = [
-    { name: 'name', label: 'Name', required: false },
-    { name: 'mobile', label: 'Phone Number', required: true },
-    { name: 'status', label: 'Status', required: false },
-    { name: 'group_id', label: 'Group ID', required: false },
+    { name: 'name', label: __('Name', 'wp-sms'), required: false },
+    { name: 'mobile', label: __('Phone Number', 'wp-sms'), required: true },
+    { name: 'status', label: __('Status', 'wp-sms'), required: false },
+    { name: 'group_id', label: __('Group ID', 'wp-sms'), required: false },
   ]
 
   return (
@@ -67,8 +67,8 @@ function SubscriberImportDialog({ open, onOpenChange, onImport, isLoading }) {
       open={open}
       onOpenChange={onOpenChange}
       mode="import"
-      title="Import Subscribers"
-      description="Upload a CSV file with subscriber data"
+      title={__('Import Subscribers', 'wp-sms')}
+      description={__('Upload a CSV file with subscriber data', 'wp-sms')}
       onImport={onImport}
       isLoading={isLoading}
       importFields={importFields}
@@ -362,7 +362,7 @@ export default function Subscribers() {
       header: __('Name', 'wp-sms'),
       sortable: true,
       cell: ({ row }) => (
-        <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+        <span className="wsms-text-[14px] wsms-font-medium wsms-text-foreground">
           {row.name || '—'}
         </span>
       ),
@@ -373,7 +373,7 @@ export default function Subscribers() {
       header: __('Phone Number', 'wp-sms'),
       sortable: true,
       cell: ({ row }) => (
-        <span className="wsms-text-[13px] wsms-font-mono wsms-text-foreground">
+        <span className="wsms-text-[14px] wsms-font-mono wsms-text-foreground">
           {row.mobile}
         </span>
       ),
@@ -383,7 +383,7 @@ export default function Subscribers() {
       accessorKey: 'group_name',
       header: __('Group', 'wp-sms'),
       cell: ({ row }) => (
-        <span className="wsms-text-[12px] wsms-text-muted-foreground">
+        <span className="wsms-text-[13px] wsms-text-muted-foreground">
           {row.group_name || '—'}
         </span>
       ),
@@ -394,7 +394,7 @@ export default function Subscribers() {
       header: __('Custom Fields', 'wp-sms'),
       cell: ({ row }) => {
         if (!row.custom_fields || Object.keys(row.custom_fields).length === 0) {
-          return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
+          return <span className="wsms-text-[13px] wsms-text-muted-foreground">—</span>
         }
         const entries = Object.entries(row.custom_fields)
         return (
@@ -402,14 +402,14 @@ export default function Subscribers() {
             {entries.slice(0, 2).map(([key, value]) => (
               <span
                 key={key}
-                className="wsms-inline-flex wsms-items-center wsms-px-2 wsms-py-0.5 wsms-rounded wsms-text-[10px] wsms-bg-muted wsms-text-muted-foreground"
+                className="wsms-inline-flex wsms-items-center wsms-px-2 wsms-py-0.5 wsms-rounded wsms-text-[11px] wsms-bg-muted wsms-text-muted-foreground"
                 title={`${key}: ${value}`}
               >
                 {key}: {String(value).substring(0, 15)}{String(value).length > 15 ? '...' : ''}
               </span>
             ))}
             {entries.length > 2 && (
-              <span className="wsms-text-[10px] wsms-text-muted-foreground">
+              <span className="wsms-text-[11px] wsms-text-muted-foreground">
                 +{entries.length - 2} {__('more', 'wp-sms')}
               </span>
             )}
@@ -434,7 +434,7 @@ export default function Subscribers() {
             accessorKey: 'activate_key',
             header: __('Activate Code', 'wp-sms'),
             cell: ({ row }) => (
-              <span className="wsms-text-[12px] wsms-font-mono wsms-text-muted-foreground">
+              <span className="wsms-text-[13px] wsms-font-mono wsms-text-muted-foreground">
                 {row.activate_key || '—'}
               </span>
             ),
@@ -447,7 +447,7 @@ export default function Subscribers() {
       header: __('Subscribed', 'wp-sms'),
       sortable: true,
       cell: ({ row }) => (
-        <span className="wsms-text-[12px] wsms-text-muted-foreground">
+        <span className="wsms-text-[13px] wsms-text-muted-foreground">
           {row.date_formatted || formatDate(row.date)}
         </span>
       ),
@@ -531,7 +531,7 @@ export default function Subscribers() {
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
                 {__('Failed to load subscribers', 'wp-sms')}
               </h3>
-              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-4">
+              <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-mb-4">
                 {table.error}
               </p>
               <Button onClick={() => table.fetch({ page: 1 })}>
@@ -561,7 +561,7 @@ export default function Subscribers() {
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
                 {__('No subscribers yet', 'wp-sms')}
               </h3>
-              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
+              <p className="wsms-text-[14px] wsms-text-muted-foreground wsms-mb-6">
                 {__('Start building your SMS audience. Add subscribers manually, import from CSV, or let users subscribe through your website forms.', 'wp-sms')}
               </p>
 
@@ -648,7 +648,7 @@ export default function Subscribers() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Total', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -661,7 +661,7 @@ export default function Subscribers() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.active}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Active', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Active', 'wp-sms')}</p>
               </div>
             </div>
 
@@ -674,7 +674,7 @@ export default function Subscribers() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-muted-foreground">{stats.inactive}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Inactive', 'wp-sms')}</p>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('Inactive', 'wp-sms')}</p>
               </div>
             </div>
           </div>
@@ -714,7 +714,7 @@ export default function Subscribers() {
             {/* Filters */}
             <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-2">
               <Select value={filters.filters.group_id} onValueChange={(v) => filters.setFilter('group_id', v)}>
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label={__('Filter by group', 'wp-sms')}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[13px]" aria-label={__('Filter by group', 'wp-sms')}>
                   <SelectValue placeholder={__('All Groups', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
@@ -728,7 +728,7 @@ export default function Subscribers() {
               </Select>
 
               <Select value={filters.filters.status} onValueChange={(v) => filters.setFilter('status', v)}>
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[12px]" aria-label={__('Filter by status', 'wp-sms')}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[13px]" aria-label={__('Filter by status', 'wp-sms')}>
                   <SelectValue placeholder={__('Status', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
@@ -792,7 +792,7 @@ export default function Subscribers() {
 
           {/* Row 2: Quick Add */}
           <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-3 wsms-p-3">
-            <span className="wsms-text-[11px] wsms-font-medium wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide wsms-shrink-0">
+            <span className="wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground wsms-uppercase wsms-shrink-0">
               {__('Quick Add', 'wp-sms')}
             </span>
 
@@ -803,7 +803,7 @@ export default function Subscribers() {
                 onChange={(e) => setQuickAddName(e.target.value)}
                 placeholder={__('Name (optional)', 'wp-sms')}
                 aria-label={__('Subscriber name', 'wp-sms')}
-                className="wsms-h-9 wsms-w-full sm:wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[140px] wsms-text-[13px]"
+                className="wsms-h-9 wsms-w-full sm:wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[140px] wsms-text-[14px]"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && quickAddPhone.trim()) {
                     handleQuickAdd(quickAddName, quickAddPhone)
@@ -830,7 +830,7 @@ export default function Subscribers() {
                   />
                 ) : (
                   <Select value={quickAddGroup || 'none'} onValueChange={(v) => setQuickAddGroup(v === 'none' ? '' : v)}>
-                    <SelectTrigger className="wsms-h-9 wsms-text-[13px]" aria-label={__('Select group', 'wp-sms')}>
+                    <SelectTrigger className="wsms-h-9 wsms-text-[14px]" aria-label={__('Select group', 'wp-sms')}>
                       <SelectValue placeholder={__('No Group', 'wp-sms')} />
                     </SelectTrigger>
                     <SelectContent>
@@ -898,23 +898,23 @@ export default function Subscribers() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <Edit className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              Edit Subscriber
+              {__('Edit Subscriber', 'wp-sms')}
             </DialogTitle>
-            <DialogDescription>Update subscriber information</DialogDescription>
+            <DialogDescription>{__('Update subscriber information', 'wp-sms')}</DialogDescription>
           </DialogHeader>
           <DialogBody overflow="visible">
             <div className="wsms-space-y-4">
               <div className="wsms-space-y-2">
-                <label htmlFor="edit-subscriber-name" className="wsms-text-[12px] wsms-font-medium">Name</label>
+                <label htmlFor="edit-subscriber-name" className="wsms-text-[13px] wsms-font-medium">{__('Name', 'wp-sms')}</label>
                 <Input
                   id="edit-subscriber-name"
                   value={editDialog.formData.name}
                   onChange={(e) => editDialog.updateField('name', e.target.value)}
-                  placeholder="Subscriber name"
+                  placeholder={__('Subscriber name', 'wp-sms')}
                 />
               </div>
               <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium">{__('Phone Number', 'wp-sms')}</label>
+                <label className="wsms-text-[13px] wsms-font-medium">{__('Phone Number', 'wp-sms')}</label>
                 <InternationalPhoneInput
                   value={editDialog.formData.mobile}
                   onChange={(value) => editDialog.updateField('mobile', value)}
@@ -923,21 +923,21 @@ export default function Subscribers() {
                   className={editDialog.hasError('mobile') ? 'wsms-border-destructive' : ''}
                 />
                 {editDialog.getError('mobile') && (
-                  <p className="wsms-text-[11px] wsms-text-destructive">{editDialog.getError('mobile')}</p>
+                  <p className="wsms-text-[12px] wsms-text-destructive">{editDialog.getError('mobile')}</p>
                 )}
               </div>
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
                 <div className="wsms-space-y-2">
-                  <label className="wsms-text-[12px] wsms-font-medium">Group</label>
+                  <label className="wsms-text-[13px] wsms-font-medium">{__('Group', 'wp-sms')}</label>
                   <Select
                     value={editDialog.formData.group_id || 'none'}
                     onValueChange={(v) => editDialog.updateField('group_id', v === 'none' ? '' : v)}
                   >
                     <SelectTrigger aria-label={__('Group', 'wp-sms')}>
-                      <SelectValue placeholder="Select group" />
+                      <SelectValue placeholder={__('Select group', 'wp-sms')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">No Group</SelectItem>
+                      <SelectItem value="none">{__('No Group', 'wp-sms')}</SelectItem>
                       {groups.map((group) => (
                         <SelectItem key={group.id} value={group.id.toString()}>
                           {group.name}
@@ -947,7 +947,7 @@ export default function Subscribers() {
                   </Select>
                 </div>
                 <div className="wsms-space-y-2">
-                  <label className="wsms-text-[12px] wsms-font-medium">Status</label>
+                  <label className="wsms-text-[13px] wsms-font-medium">{__('Status', 'wp-sms')}</label>
                   <Select
                     value={editDialog.formData.status}
                     onValueChange={(v) => editDialog.updateField('status', v)}
@@ -956,8 +956,8 @@ export default function Subscribers() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1">Active</SelectItem>
-                      <SelectItem value="0">Inactive</SelectItem>
+                      <SelectItem value="1">{__('Active', 'wp-sms')}</SelectItem>
+                      <SelectItem value="0">{__('Inactive', 'wp-sms')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -966,13 +966,13 @@ export default function Subscribers() {
           </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={editDialog.close}>
-              Cancel
+              {__('Cancel', 'wp-sms')}
             </Button>
             <Button onClick={editDialog.save} disabled={editDialog.isSaving}>
               {editDialog.isSaving ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
-                  Saving...
+                  {__('Saving...', 'wp-sms')}
                 </>
               ) : (
                 'Save Changes'
@@ -1002,7 +1002,7 @@ export default function Subscribers() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              Quick Reply
+              {__('Quick Reply', 'wp-sms')}
             </DialogTitle>
             <DialogDescription>
               Send a message to {quickReplyTo?.name || quickReplyTo?.mobile}
@@ -1011,22 +1011,22 @@ export default function Subscribers() {
           <DialogBody>
             <div className="wsms-space-y-4">
               <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/50 wsms-border wsms-border-border">
-                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-1">Recipient</p>
-                <p className="wsms-text-[13px] wsms-font-mono wsms-text-foreground">
+                <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-1">{__('Recipient', 'wp-sms')}</p>
+                <p className="wsms-text-[14px] wsms-font-mono wsms-text-foreground">
                   {quickReplyTo?.mobile}
                 </p>
               </div>
               <div className="wsms-space-y-2">
-                <label htmlFor="quick-reply-message" className="wsms-text-[12px] wsms-font-medium">Message</label>
+                <label htmlFor="quick-reply-message" className="wsms-text-[13px] wsms-font-medium">{__('Message', 'wp-sms')}</label>
                 <textarea
                   id="quick-reply-message"
                   value={quickReplyMessage}
                   onChange={(e) => setQuickReplyMessage(e.target.value)}
-                  placeholder="Type your message..."
+                  placeholder={__('Type your message...', 'wp-sms')}
                   rows={4}
-                  className="wsms-w-full wsms-px-3 wsms-py-2 wsms-text-[13px] wsms-text-foreground wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-resize-none placeholder:wsms-text-muted-foreground focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-ring focus:wsms-ring-offset-2"
+                  className="wsms-w-full wsms-px-3 wsms-py-2 wsms-text-[14px] wsms-text-foreground wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-resize-none placeholder:wsms-text-muted-foreground focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-ring focus:wsms-ring-offset-2"
                 />
-                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-text-right">
+                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-text-right">
                   {quickReplyMessage.length} characters
                 </p>
               </div>
@@ -1040,7 +1040,7 @@ export default function Subscribers() {
                 setQuickReplyMessage('')
               }}
             >
-              Cancel
+              {__('Cancel', 'wp-sms')}
             </Button>
             <Button
               onClick={handleQuickReply}
@@ -1049,12 +1049,12 @@ export default function Subscribers() {
               {isSendingReply ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
-                  Sending...
+                  {__('Sending...', 'wp-sms')}
                 </>
               ) : (
                 <>
                   <Send className="wsms-h-4 wsms-w-4 wsms-me-2" />
-                  Send Message
+                  {__('Send Message', 'wp-sms')}
                 </>
               )}
             </Button>
@@ -1074,7 +1074,7 @@ export default function Subscribers() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <FolderOpen className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              Move to Group
+              {__('Move to Group', 'wp-sms')}
             </DialogTitle>
             <DialogDescription>
               Move {table.selectedIds.length} selected subscriber(s) to a group
@@ -1085,17 +1085,17 @@ export default function Subscribers() {
               {groups.length === 0 ? (
                 <div className="wsms-p-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-dashed wsms-text-center">
                   <FolderOpen className="wsms-h-8 wsms-w-8 wsms-text-muted-foreground wsms-mx-auto wsms-mb-2" />
-                  <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground wsms-mb-1">
+                  <p className="wsms-text-[14px] wsms-font-medium wsms-text-foreground wsms-mb-1">
                     {__('No groups available', 'wp-sms')}
                   </p>
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                  <p className="wsms-text-[13px] wsms-text-muted-foreground">
                     {__('Create a group first in the Groups page to organize your subscribers.', 'wp-sms')}
                   </p>
                 </div>
               ) : (
                 <>
                   <div className="wsms-space-y-2">
-                    <label className="wsms-text-[12px] wsms-font-medium">{__('Select Group', 'wp-sms')}</label>
+                    <label className="wsms-text-[13px] wsms-font-medium">{__('Select Group', 'wp-sms')}</label>
                     <Select value={moveToGroupId} onValueChange={setMoveToGroupId}>
                       <SelectTrigger aria-label={__('Select group', 'wp-sms')}>
                         <SelectValue placeholder={__('Choose a group...', 'wp-sms')} />
@@ -1110,7 +1110,7 @@ export default function Subscribers() {
                     </Select>
                   </div>
                   <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/50 wsms-border wsms-border-border">
-                    <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                    <p className="wsms-text-[13px] wsms-text-muted-foreground">
                       {__('This will move %d subscriber(s) to the selected group.', 'wp-sms').replace('%d', table.selectedIds.length)}
                     </p>
                   </div>
@@ -1156,11 +1156,11 @@ export default function Subscribers() {
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
           <div className="wsms-space-y-1">
             {deleteDialog.item?.name && (
-              <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+              <p className="wsms-text-[14px] wsms-font-medium wsms-text-foreground">
                 {deleteDialog.item.name}
               </p>
             )}
-            <p className="wsms-text-[13px] wsms-font-mono wsms-text-muted-foreground">
+            <p className="wsms-text-[14px] wsms-font-mono wsms-text-muted-foreground">
               {deleteDialog.item?.mobile}
             </p>
           </div>
@@ -1177,7 +1177,7 @@ export default function Subscribers() {
         description={__('Are you sure you want to delete the selected subscribers?', 'wp-sms')}
       >
         <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
-          <p className="wsms-text-[13px] wsms-text-foreground">
+          <p className="wsms-text-[14px] wsms-text-foreground">
             {__('%d subscriber(s) will be permanently deleted.', 'wp-sms').replace('%d', table.selectedIds.length)}
           </p>
         </div>

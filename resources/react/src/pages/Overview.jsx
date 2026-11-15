@@ -44,8 +44,8 @@ function StatusRow({ icon: Icon, title, value, status, onClick }) {
         )} strokeWidth={1.5} />
       </div>
       <div className="wsms-flex-1 wsms-min-w-0">
-        <p className="wsms-text-[13px] wsms-font-medium">{title}</p>
-        <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-truncate">{value}</p>
+        <p className="wsms-text-[14px] wsms-font-medium">{title}</p>
+        <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-truncate">{value}</p>
       </div>
       {status === 'configured' ? (
         <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-success wsms-shrink-0" />
@@ -63,7 +63,7 @@ function QuickLink({ icon: Icon, title, onClick }) {
       className="wsms-flex wsms-flex-col wsms-items-center wsms-gap-2 wsms-p-3 wsms-rounded wsms-border wsms-border-border wsms-bg-card hover:wsms-bg-accent wsms-transition-colors"
     >
       <Icon className="wsms-h-5 wsms-w-5 wsms-text-muted-foreground" strokeWidth={1.5} />
-      <span className="wsms-text-[12px] wsms-font-medium">{title}</span>
+      <span className="wsms-text-[13px] wsms-font-medium">{title}</span>
     </button>
   )
 }
@@ -236,23 +236,23 @@ export default function Overview() {
                 )
               })()}
               <div>
-                <p className="wsms-text-[13px] wsms-font-semibold">
+                <p className="wsms-text-[14px] wsms-font-semibold wsms-leading-relaxed">
                   {gatewayKey ? gatewayName : __('No Gateway Selected', 'wp-sms')}
                 </p>
                 {(() => {
                   const gw = gatewayKey ? gateways.find(g => g.slug === gatewayKey) : null
                   return gw?.description ? (
-                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-line-clamp-1 wsms-mt-0.5">{gw.description}</p>
+                    <p className="wsms-text-[13px] wsms-leading-relaxed wsms-text-muted-foreground wsms-line-clamp-1 wsms-mt-1">{gw.description}</p>
                   ) : null
                 })()}
-                <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-mt-0.5">
+                <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-mt-1.5">
                   {gatewayKey ? (
                     gatewayStatus.status === 'connected' ? (
                       <>
                         <span className="wsms-h-2 wsms-w-2 wsms-rounded-full wsms-bg-success" />
-                        <span className="wsms-text-[12px] wsms-text-success">{__('Connected', 'wp-sms')}</span>
+                        <span className="wsms-text-[13px] wsms-text-success">{__('Connected', 'wp-sms')}</span>
                         {gatewayStatus.credit && (
-                          <span className="wsms-text-[12px] wsms-text-muted-foreground">
+                          <span className="wsms-text-[13px] wsms-text-muted-foreground">
                             {__('Credit:', 'wp-sms')} {gatewayStatus.credit}
                           </span>
                         )}
@@ -260,13 +260,13 @@ export default function Overview() {
                     ) : gatewayStatus.status === 'error' ? (
                       <>
                         <AlertCircle className="wsms-h-3 wsms-w-3 wsms-text-destructive" />
-                        <span className="wsms-text-[12px] wsms-text-destructive">{__('Connection failed', 'wp-sms')}</span>
+                        <span className="wsms-text-[13px] wsms-text-destructive">{__('Connection failed', 'wp-sms')}</span>
                       </>
                     ) : (
-                      <span className="wsms-text-[12px] wsms-text-muted-foreground">{__('Click to test', 'wp-sms')}</span>
+                      <span className="wsms-text-[13px] wsms-text-muted-foreground">{__('Click to test', 'wp-sms')}</span>
                     )
                   ) : (
-                    <span className="wsms-text-[12px] wsms-text-muted-foreground">
+                    <span className="wsms-text-[13px] wsms-text-muted-foreground">
                       {__('Configure a gateway to send SMS', 'wp-sms')}
                     </span>
                   )}
@@ -345,10 +345,10 @@ export default function Overview() {
       <Card>
         <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4">
           <div>
-            <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+            <p className="wsms-text-[14px] wsms-font-medium wsms-text-foreground">
               {(Array.isArray(gateways) ? gateways.length : 0) || '200'}+ {__('SMS Gateways Available', 'wp-sms')}
             </p>
-            <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-0.5">
+            <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mt-0.5">
               {__('Providers from around the world', 'wp-sms')}
             </p>
           </div>
@@ -365,12 +365,12 @@ export default function Overview() {
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4">
             <div>
               <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-mb-1">
-                <span className="wsms-text-[10px] wsms-font-medium wsms-uppercase wsms-px-1.5 wsms-py-0.5 wsms-rounded wsms-bg-primary/10 wsms-text-primary">
+                <span className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-px-1.5 wsms-py-0.5 wsms-rounded wsms-bg-primary/10 wsms-text-primary">
                   {__('Pro', 'wp-sms')}
                 </span>
-                <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">{__('Upgrade to WSMS Pro', 'wp-sms')}</p>
+                <p className="wsms-text-[14px] wsms-font-medium wsms-text-foreground">{__('Upgrade to WSMS Pro', 'wp-sms')}</p>
               </div>
-              <p className="wsms-text-[12px] wsms-text-muted-foreground">
+              <p className="wsms-text-[13px] wsms-text-muted-foreground">
                 {__('OTP authentication, WooCommerce integration, and more', 'wp-sms')}
               </p>
             </div>
