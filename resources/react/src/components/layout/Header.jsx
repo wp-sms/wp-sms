@@ -166,7 +166,6 @@ function NotificationBell() {
   // An unread offer (promo notice) turns the red count into a rainbow one, so it reads as different.
   const offer = inboxNotifications.find(n => n.backgroundColor === 'promo')
   const hasOffer = Boolean(offer)
-  const offerText = (offer?.badge || '-30%').replace(/[\u2600-\u27BF\uFE0F]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDC00-\uDFFF]/g, '').trim() || '-30%'
 
   const handleOpenSidebar = () => {
     setIsSidebarOpen(true)

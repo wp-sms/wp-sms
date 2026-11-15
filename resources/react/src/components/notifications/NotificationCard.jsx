@@ -58,6 +58,8 @@ function Countdown({ endsAt }) {
   }, [])
 
   const left = Math.max(0, new Date(endsAt).getTime() - now)
+  // An offer that has ended shows no countdown.
+  if (left === 0) return null
   const d = Math.floor(left / 86400000)
   const h = Math.floor((left % 86400000) / 3600000)
   const m = Math.floor((left % 3600000) / 60000)
@@ -133,9 +135,10 @@ export function NotificationCard({ notification, onDismiss, showDismiss = true }
     highlight,
   } = notification
 
-  const isPromo = backgroundColor === 'promo'
+  // A dismissed offer is history: a plain card, with no countdown, code or button, so it never looks live.
+  const isPromo = backgroundColor === 'promo' && showDismiss
 
-  const variant = colorVariants[backgroundColor] || colorVariants['']
+  const variant = (backgroundColor === 'promo' && !showDismiss ? colorVariants[''] : colorVariants[backgroundColor]) || colorVariants['']
 
   const handleDismiss = (e) => {
     e.preventDefault()
@@ -205,7 +208,7 @@ export function NotificationCard({ notification, onDismiss, showDismiss = true }
           {isPromo && (
             <div className="wsms-mb-2">
               <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-3 wsms-pe-7">
-                <span className="wsms-text-[11px] wsms-font-bold wsms-uppercase wsms-text-amber-200/80">{__('Black Friday', 'wp-sms')}</span>
+                <span className="wsms-text-[11px] wsms-font-bold wsms-uppercase wsms-text-amber-200/80">{title}</span>
                 {endsAt && <Countdown endsAt={endsAt} />}
               </div>
               {highlight && (

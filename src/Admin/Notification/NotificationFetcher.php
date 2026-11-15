@@ -26,7 +26,7 @@ class NotificationFetcher
             $pluginSlug = basename(dirname(WP_SMS_MAIN_FILE));
             $url        = $this->apiUrl . '/api/v1/notifications';
             $method     = 'GET';
-            $args       = ['plugin_slug' => $pluginSlug, 'per_page' => 20, 'sortby' => 'activated_at-desc', 'include_upcoming' => 1];
+            $args       = ['plugin_slug' => $pluginSlug, 'per_page' => 20, 'sortby' => 'activated_at-desc'];
             $params     = [
                 'timeout'     => 45,
                 'redirection' => 5,
