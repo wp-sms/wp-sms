@@ -193,6 +193,7 @@ All premium features + all add-ons in one package.
 = v7.2.13 - 2026-11-15 =
 - **Security:** The SMS subscribe confirmation code limit now counts per subscriber, and wrong codes are capped per number ([#620](https://github.com/wp-sms/wp-sms/issues/620)).
 - **New:** Add-Ons page shows each license key with its end date, sites allowed and a Renew link with price and offer. A bell notice warns before a key ends.
+- **New:** A marketing banner in the dashboard header, such as a sale, managed in Horizon under Marketing Campaigns.
 - **New:** IPPanel gateway. MdPanel and NasrPayam use its API, and their errors name the panel.
 - **Enhancement:** Add-Ons page redesigned: free-site comparison, clearer license errors, and the Elementor add-on says it needs Elementor Pro.
 - **Enhancement:** Removing a license key frees its site seat on the license server.

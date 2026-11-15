@@ -240,6 +240,46 @@ function ThemeToggle() {
   )
 }
 
+/**
+ * The marketing banner in the header. Its text, link, icon and colours come from Horizon (Marketing
+ * Campaigns), never from this file, and it shows only while the campaign runs for this site.
+ */
+const bannerBackground = {
+  danger: 'wsms-bg-red-600 hover:wsms-bg-red-700',
+  info: 'wsms-bg-blue-600 hover:wsms-bg-blue-700',
+  warning: 'wsms-bg-amber-500 hover:wsms-bg-amber-600',
+  success: 'wsms-bg-emerald-600 hover:wsms-bg-emerald-700',
+  inherit: 'wsms-bg-muted hover:wsms-bg-accent',
+}
+
+const bannerText = {
+  light: '!wsms-text-white',
+  dark: '!wsms-text-foreground',
+  inherit: '!wsms-text-foreground',
+}
+
+function MarketingBanner() {
+  const banner = window.wpSmsSettings?.features?.marketingBanner
+  if (!banner?.url || !banner?.title) return null
+
+  return (
+    <a
+      href={banner.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={banner.tooltip || undefined}
+      className={cn(
+        'wsms-me-2 wsms-hidden wsms-items-center wsms-gap-1.5 wsms-rounded-full wsms-px-3 wsms-py-1 wsms-text-xs wsms-font-semibold wsms-no-underline wsms-transition-colors md:wsms-flex',
+        bannerBackground[banner.background] || bannerBackground.danger,
+        bannerText[banner.text] || bannerText.light
+      )}
+    >
+      {banner.icon && <span aria-hidden="true">{banner.icon}</span>}
+      <span>{banner.title}</span>
+    </a>
+  )
+}
+
 export default function Header({ onMenuClick, showMenuButton }) {
   const displayNotifications = useSavedSetting('display_notifications', '1')
 
@@ -271,6 +311,7 @@ export default function Header({ onMenuClick, showMenuButton }) {
 
       {/* Right: notifications and theme */}
       <div className="wsms-flex wsms-items-center wsms-gap-3">
+        {displayNotifications === '1' && <MarketingBanner />}
         {displayNotifications === '1' && <NotificationBell />}
         <ThemeToggle />
       </div>

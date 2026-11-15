@@ -842,6 +842,8 @@ class Dashboard extends Singleton
             'licenseMissing'        => $licenseAlerts['missing'],
             'licenseExpired'        => $licenseAlerts['expired'],
             'licenseRenew'          => $this->getLicenseRenewSummary(),
+            // The marketing banner in the header, from Horizon (Marketing Campaigns). Null when none runs for this site.
+            'marketingBanner'       => Option::getOption('display_notifications') ? \WP_SMS\Admin\MarketingCampaign\MarketingCampaignFactory::getHeaderBanner() : null,
             'hasProAddon'           => $isProActive, // Alias for sidebar navigation
             'isWooActive'           => class_exists('WooCommerce'),
             'isBuddyPressActive'    => class_exists('BuddyPress'),
