@@ -1,6 +1,6 @@
 import { __, _n, sprintf } from '@wordpress/i18n'
 import React, { useState, useEffect, useRef } from 'react'
-import { X, Loader2, Bell, Trash2 } from 'lucide-react'
+import { X, Loader2, Bell, CheckCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { NotificationCard } from './NotificationCard'
 import { EmptyState } from './EmptyState'
@@ -278,7 +278,7 @@ export function NotificationSidebar({
           {activeTab === 'inbox' && inboxNotifications.length > 1 && (
             <button
               onClick={onDismissAll}
-              aria-label={__('Clear all %s notifications', 'wp-sms').replace('%s', String(inboxNotifications.length))}
+              aria-label={__('Dismiss all %s notifications', 'wp-sms').replace('%s', String(inboxNotifications.length))}
               className={cn(
                 'wsms-flex wsms-items-center wsms-gap-1.5 wsms-px-2.5 wsms-py-1.5',
                 'wsms-text-xs wsms-font-medium wsms-text-muted-foreground wsms-rounded-md',
@@ -287,8 +287,8 @@ export function NotificationSidebar({
                 'active:wsms-scale-95'
               )}
             >
-              <Trash2 className="wsms-h-3.5 wsms-w-3.5" />
-              <span>{__('Clear all', 'wp-sms')}</span>
+              <CheckCheck className="wsms-h-3.5 wsms-w-3.5" />
+              <span>{__('Dismiss all', 'wp-sms')}</span>
             </button>
           )}
         </div>
