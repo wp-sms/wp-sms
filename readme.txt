@@ -4,7 +4,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 7.2.13
+Stable tag: 7.2.14
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -190,6 +190,12 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
+= v7.2.14 - 2026-11-16 =
+- **Enhancement:** Onboarding, Add-Ons and send popup polish: the Add-Ons table and phone number dropdown now display correctly on right-to-left sites, licensed add-ons show a clearer card with download help, and a review request appears after your first successful send.
+- **Enhancement:** The notifications button "Clear all" is now "Dismiss all".
+- **Fix:** The empty state of the notifications sidebar, list placeholders and the phone number country picker could not be translated. They now can, and the country picker shows country names and its search text in the admin language.
+- **Fix:** The Persian label of the API Key field read as an instruction ("enter the API key"). It now reads "کلید API".
+
 = v7.2.13 - 2026-11-15 =
 - **Security:** Hardened the SMS subscribe confirmation code check ([#620](https://github.com/wp-sms/wp-sms/issues/620)).
 - **Enhancement:** Add-Ons page, license and notification improvements.
