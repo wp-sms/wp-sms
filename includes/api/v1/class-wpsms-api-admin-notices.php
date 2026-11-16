@@ -90,6 +90,23 @@ class AdminNoticesApi extends RestApi
             ],
         ]);
 
+        // Review request after the first successful SMS (one state for the whole site)
+        register_rest_route($this->namespace . '/v1', '/admin-notices/review-prompt', [
+            [
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => [$this, 'reviewPrompt'],
+                'permission_callback' => [$this, 'checkPermission'],
+                'args'                => [
+                    'event' => [
+                        'required'          => true,
+                        'type'              => 'string',
+                        'sanitize_callback' => 'sanitize_text_field',
+                        'enum'              => ['sent', 'rate', 'later'],
+                    ],
+                ],
+            ],
+        ]);
+
         // Execute an action on a notice (e.g. enable anonymous data)
         register_rest_route($this->namespace . '/v1', '/admin-notices/action', [
             [
@@ -205,6 +222,82 @@ class AdminNoticesApi extends RestApi
 
         return self::response(__('Modal marked as seen', 'wp-sms'), 200, [
             'modal' => $id,
+        ]);
+    }
+
+    /**
+     * Whether the review request has nothing left to show (rated, or it was already asked a second time).
+     *
+     * @return bool
+     */
+    public static function reviewPromptFinished()
+    {
+        $state = self::reviewPromptState();
+
+        return $state['done'] || $state['asked'] >= 2;
+    }
+
+    /**
+     * @return array{sends:int,asked:int,later:bool,done:bool}
+     */
+    private static function reviewPromptState()
+    {
+        $state = get_option('wp_sms_review_prompt', []);
+
+        return wp_parse_args(is_array($state) ? $state : [], [
+            'sends' => 0,
+            'asked' => 0,
+            'later' => false,
+            'done'  => false,
+        ]);
+    }
+
+    /**
+     * Ask for a review on WordPress.org after the first successful SMS.
+     *
+     * - "sent": a message went out. The first one asks. The 5th asks once more after "Maybe later",
+     *   and the 20th asks once more when the strip was closed without a choice. Two asks at most.
+     * - "rate": the admin went to WordPress.org. Never ask again.
+     * - "later": ask again on the 5th message, unless this already was the second ask.
+     *
+     * @param WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function reviewPrompt(WP_REST_Request $request)
+    {
+        $event = $request->get_param('event');
+        $state = self::reviewPromptState();
+        $show  = false;
+
+        if (!$state['done']) {
+            if ($event === 'rate') {
+                $state['done'] = true;
+            } elseif ($event === 'later') {
+                if ($state['asked'] >= 2) {
+                    $state['done'] = true;
+                } else {
+                    $state['later'] = true;
+                }
+            } else {
+                $state['sends']++;
+
+                if ($state['asked'] === 0) {
+                    $show            = true;
+                    $state['asked']  = 1;
+                } elseif ($state['asked'] === 1 && (($state['later'] && $state['sends'] >= 5) || (!$state['later'] && $state['sends'] >= 20))) {
+                    $show            = true;
+                    $state['asked']  = 2;
+                    $state['later']  = false;
+                }
+            }
+
+            update_option('wp_sms_review_prompt', $state, false);
+        }
+
+        return self::response(__('Saved', 'wp-sms'), 200, [
+            'show'     => $show,
+            'first'    => $show && $state['asked'] === 1,
+            'finished' => self::reviewPromptFinished(),
         ]);
     }
 

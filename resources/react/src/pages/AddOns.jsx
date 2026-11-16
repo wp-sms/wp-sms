@@ -50,11 +50,12 @@ const TONES = {
     icon: AlertCircle,
     iconClass: 'wsms-bg-red-500/10 wsms-text-red-600',
   },
+  // Licensed and only waiting to be turned on: green, not a warning.
   off: {
-    tint: 'linear-gradient(135deg, rgba(245,158,11,.12), rgba(245,158,11,0) 65%)',
-    border: 'rgba(245,180,60,.5)',
+    tint: 'linear-gradient(135deg, rgba(16,185,129,.10), rgba(16,185,129,0) 65%)',
+    border: 'rgba(52,190,140,.45)',
     icon: Power,
-    iconClass: 'wsms-bg-amber-500/15 wsms-text-amber-600',
+    iconClass: 'wsms-bg-emerald-500/10 wsms-text-emerald-600',
   },
   ok: {
     tint: 'linear-gradient(135deg, rgba(16,185,129,.10), rgba(16,185,129,0) 65%)',
@@ -212,11 +213,13 @@ function LicenseHero({ addons, summary, onChanged, compact = false }) {
     needsInput = true
   } else if (inactive > 0) {
     tone = 'off'
-    title = sprintf(_n('%d add-on is licensed but turned off', '%d add-ons are licensed but turned off', inactive, 'wp-sms'), inactive)
-    text = __('Activate it from the Plugins page. Nothing else is needed.', 'wp-sms')
+    title = sprintf(_n('%d add-on is licensed but not activated', '%d add-ons are licensed but not activated', inactive, 'wp-sms'), inactive)
+    text = _n('Activate it from the Plugins page. Nothing else is needed.', 'Activate them from the Plugins page. Nothing else is needed.', inactive, 'wp-sms')
   }
 
   const t = TONES[tone]
+  // Links inside a green card are green too, so they match the card.
+  const linkTone = tone === 'ok' || tone === 'off' ? 'wsms-text-emerald-700 dark:wsms-text-emerald-400' : 'wsms-text-primary'
   const showInput = needsInput || showAdd
 
   const handleActivate = async () => {
@@ -419,16 +422,19 @@ function LicenseHero({ addons, summary, onChanged, compact = false }) {
           </ul>
         )}
 
+        {/* Only for a site with no license key: they help someone find a plan or their key, so they leave once a key is entered. */}
+        {keys.length === 0 && licensedCount === 0 && (
         <div className={cn('wsms-mt-4 wsms-flex wsms-flex-wrap wsms-gap-x-8 wsms-gap-y-2 wsms-pt-2 wsms-text-[14px]', compact ? 'wsms-justify-start' : 'wsms-mx-auto wsms-mt-8 wsms-max-w-[620px] wsms-justify-center')}>
-          <a href="https://wsms.io/pricing/?utm_source=wp-sms&utm_medium=add-ons&utm_campaign=license-help" target="_blank" rel="noopener noreferrer" className="wsms-inline-flex wsms-items-center wsms-gap-2 wsms-font-medium wsms-text-primary wsms-no-underline hover:wsms-underline">
+          <a href="https://wsms.io/pricing/?utm_source=wp-sms&utm_medium=add-ons&utm_campaign=license-help" target="_blank" rel="noopener noreferrer" className={cn('wsms-inline-flex wsms-items-center wsms-gap-2 wsms-font-medium wsms-no-underline hover:wsms-underline', linkTone)}>
             <ShoppingCart className="wsms-h-4 wsms-w-4" />
             {__('No license yet? See plans', 'wp-sms')}
           </a>
-          <a href="https://my.wsms.io/" target="_blank" rel="noopener noreferrer" className="wsms-inline-flex wsms-items-center wsms-gap-2 wsms-font-medium wsms-text-primary wsms-no-underline hover:wsms-underline">
+          <a href="https://my.wsms.io/" target="_blank" rel="noopener noreferrer" className={cn('wsms-inline-flex wsms-items-center wsms-gap-2 wsms-font-medium wsms-no-underline hover:wsms-underline', linkTone)}>
             <User className="wsms-h-4 wsms-w-4" />
             {__('Already bought one? Find your key', 'wp-sms')}
           </a>
         </div>
+        )}
       </div>
 
       <AlertDialog open={Boolean(confirmKey)} onOpenChange={(open) => { if (!open) { setConfirmKey(null); setRemoveError(null) } }}>
@@ -489,6 +495,12 @@ function AddOnCard({ addon, onOpenPage }) {
     gear = () => onOpenPage(SETTINGS_PAGES[addon.slug])
   }
 
+  // Covered by a valid license but not on this site yet: point to the download and say how to install it.
+  const needsDownload = !addon.is_installed && (addon.licenses || []).some((l) => l.status === 'valid')
+  if (needsDownload) {
+    action = { label: __('Download', 'wp-sms'), tone: primary, href: addonUtm('https://my.wsms.io/account/downloads') }
+  }
+
   const actionClass = (tone) => cn('wsms-inline-flex wsms-h-8 wsms-items-center wsms-justify-center wsms-rounded-md wsms-px-3 wsms-text-[13px] wsms-font-semibold wsms-no-underline', tone)
 
   return (
@@ -516,8 +528,7 @@ function AddOnCard({ addon, onOpenPage }) {
               )}
               {addon.is_installed && addon.version && <span className="wsms-shrink-0 wsms-text-[12px] wsms-text-muted-foreground" dir="ltr">v{addon.version}</span>}
             </div>
-            {addon.is_installed && (
-              <div className="wsms-mt-1 wsms-flex wsms-items-center wsms-gap-2">
+            <div className="wsms-mt-1 wsms-flex wsms-items-center wsms-gap-2">
                 {['not_licensed', 'license_expired'].includes(addon.status) ? (
                   <button type="button" onClick={scrollToLicense} title={__('Enter your license key', 'wp-sms')} className="wsms-shrink-0 wsms-cursor-pointer wsms-rounded-full focus-visible:wsms-ring-2 focus-visible:wsms-ring-ring [&_*]:wsms-whitespace-nowrap">
                     <StatusBadge variant={STATUS_TO_VARIANT[addon.status] || 'default'} size="sm">{addon.status_label}</StatusBadge>
@@ -526,7 +537,6 @@ function AddOnCard({ addon, onOpenPage }) {
                   <span className="wsms-shrink-0 [&_*]:wsms-whitespace-nowrap"><StatusBadge variant={STATUS_TO_VARIANT[addon.status] || 'default'} size="sm">{addon.status_label}</StatusBadge></span>
                 )}
             </div>
-            )}
           </div>
           {gear && (
             <button
@@ -542,6 +552,11 @@ function AddOnCard({ addon, onOpenPage }) {
         </div>
 
         <p className="wsms-mt-3 wsms-line-clamp-5 wsms-text-[14px] wsms-leading-relaxed wsms-text-muted-foreground">{addon.short_description}</p>
+        {needsDownload && (
+          <p className="wsms-mt-2 wsms-text-[13px] wsms-leading-relaxed wsms-text-muted-foreground">
+            {__('Included in your license. Download the ZIP from your account, then go to Plugins > Add New > Upload Plugin.', 'wp-sms')}
+          </p>
+        )}
 
         <div className={cn("wsms-mt-auto wsms-flex wsms-items-center wsms-gap-3", (action || addon.is_update_available) ? "wsms-h-8 wsms-pt-4 wsms-box-content" : "wsms-hidden")}>
           {action && (action.href ? (

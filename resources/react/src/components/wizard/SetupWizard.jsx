@@ -400,7 +400,7 @@ export default function SetupWizard() {
           </div>
 
           {/* Content */}
-          <div className="wsms-flex-1 wsms-overflow-y-auto wsms-p-6 lg:wsms-p-8">
+          <div className="wsms-wizard-body wsms-flex-1 wsms-overflow-y-auto wsms-p-6 lg:wsms-p-8">
             {renderStepContent()}
           </div>
 
@@ -423,6 +423,8 @@ export default function SetupWizard() {
                   {__('Skip this step', 'wp-sms')}
                 </Button>
               )}
+              {/* The All-in-One step is an offer: its only way forward is "Skip this step". */}
+              {steps[currentStep]?.id !== 'all-in-one' && (
               <Button onClick={handleNext} disabled={!canProceed || saving}>
                 {saving ? (
                   <>
@@ -436,6 +438,7 @@ export default function SetupWizard() {
                   </>
                 )}
               </Button>
+              )}
               </div>
             </div>
           )}

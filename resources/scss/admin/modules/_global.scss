@@ -432,7 +432,8 @@
 }
 
 .sms_page_wsms.rtl {
-  table {
+  // Old PHP screens only. The React dashboard sets its own alignment with its utility classes.
+  table:not(#wpsms-settings-root table) {
     td, th {
       text-align: right !important;
     }
