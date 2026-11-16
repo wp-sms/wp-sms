@@ -1,4 +1,6 @@
 v7.2.14 - unreleased
+- **Enhancement:** Onboarding, Add-Ons and send popup polish: the Add-Ons table and phone number dropdown now display correctly on right-to-left sites, licensed add-ons show a clearer card with download help, and a review request appears after your first successful send.
+- **Enhancement:** The notifications button "Clear all" is now "Dismiss all".
 - **Fix:** The empty state of the notifications sidebar, list placeholders and the phone number country picker could not be translated. They now can, and the country picker shows country names and its search text in the admin language.
 - **Fix:** The Persian label of the API Key field read as an instruction ("enter the API key"). It now reads "کلید API".
 
