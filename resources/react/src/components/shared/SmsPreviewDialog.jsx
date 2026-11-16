@@ -148,9 +148,18 @@ export function SmsPreviewDialog({
                   <CheckCircle2 className="wsms-h-8 wsms-w-8 wsms-text-emerald-600 dark:wsms-text-emerald-400" />
                 </div>
                 {reviewPrompt ? (
-                  <p className="wsms-mt-4 wsms-text-[16px] wsms-font-bold wsms-text-foreground wsms-text-center">
-                    {__('🎉 Congrats! Your first SMS was sent', 'wp-sms')}
-                  </p>
+                  <>
+                    {/* wp-exclude-emoji: keep the native emoji, WordPress would swap it for an image. */}
+                    <p className="wp-exclude-emoji wsms-mt-4 wsms-text-[16px] wsms-font-bold wsms-text-foreground wsms-text-center">
+                      {reviewPrompt.first ? __('🎉 Congrats! Your first SMS was sent', 'wp-sms') : __('Message Sent', 'wp-sms')}
+                    </p>
+                    {/* Only a warning (skipped recipients) is shown here; the plain success text would repeat the heading. */}
+                    {reviewPrompt.showResult && resultMessage && (
+                      <p className="wsms-mt-1 wsms-text-[13px] wsms-text-muted-foreground wsms-text-center">
+                        {resultMessage}
+                      </p>
+                    )}
+                  </>
                 ) : (
                   <p className="wsms-text-[15px] wsms-font-medium wsms-text-foreground wsms-text-center wsms-mb-1">
                     {resultMessage}

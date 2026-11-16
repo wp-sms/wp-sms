@@ -296,6 +296,7 @@ class AdminNoticesApi extends RestApi
 
         return self::response(__('Saved', 'wp-sms'), 200, [
             'show'     => $show,
+            'first'    => $show && $state['asked'] === 1,
             'finished' => self::reviewPromptFinished(),
         ]);
     }
