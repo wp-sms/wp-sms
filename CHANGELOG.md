@@ -1,3 +1,7 @@
+v7.2.14 - unreleased
+- **Fix:** The empty state of the notifications sidebar, list placeholders and the phone number country picker could not be translated. They now can, and the country picker shows country names and its search text in the admin language.
+- **Fix:** The Persian label of the API Key field read as an instruction ("enter the API key"). It now reads "کلید API".
+
 v7.2.13 - 2026-11-15
 - **Security:** Hardened the SMS subscribe confirmation code check ([#620](https://github.com/wp-sms/wp-sms/issues/620)).
 - **Enhancement:** Add-Ons page, license and notification improvements.
