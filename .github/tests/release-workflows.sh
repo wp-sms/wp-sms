@@ -193,7 +193,8 @@ check_release_metadata() {
     plugin_version=$(sed -nE 's/^[[:space:]]*\* Version:[[:space:]]*//p' "$PLUGIN_FILE" | head -1)
     stable_tag=$(sed -nE 's/^Stable tag:[[:space:]]*//p' "$README_FILE" | head -1)
     pot_version=$(grep -m1 'Project-Id-Version:' "$POT_FILE" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
-    changelog_heading=$(head -1 "$CHANGELOG_FILE")
+    # An unreleased section may sit on top; the release check reads the latest released heading.
+    changelog_heading=$(awk '/^v[0-9]+\.[0-9]+\.[0-9]+ - [Uu]nreleased$/ { next } /^v/ { print; exit }' "$CHANGELOG_FILE")
     changelog_version=$(sed -nE 's/^v([0-9]+\.[0-9]+\.[0-9]+) - [0-9]{4}-[0-9]{2}-[0-9]{2}$/\1/p' <<< "$changelog_heading")
     changelog_date=$(sed -nE 's/^v[0-9]+\.[0-9]+\.[0-9]+ - ([0-9]{4}-[0-9]{2}-[0-9]{2})$/\1/p' <<< "$changelog_heading")
     readme_heading=$(awk '$0 == "== Changelog ==" { in_changelog = 1; next } in_changelog && /^= v/ { print; exit }' "$README_FILE")
@@ -215,7 +216,12 @@ check_release_changelog_parity() {
     local tmp
 
     tmp=$(mktemp -d)
-    awk 'NR == 1 { next } /^- / { print; next } { exit }' "$CHANGELOG_FILE" > "$tmp/changelog"
+    awk '
+        /^v[0-9]+\.[0-9]+\.[0-9]+ - [Uu]nreleased$/ { next }
+        !in_release && /^v/ { in_release = 1; next }
+        in_release && /^- / { print; next }
+        in_release { exit }
+    ' "$CHANGELOG_FILE" > "$tmp/changelog"
     awk '
         $0 == "== Changelog ==" { in_changelog = 1; next }
         in_changelog && /^= v/ { in_release = 1; next }
