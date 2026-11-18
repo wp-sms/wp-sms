@@ -1,5 +1,5 @@
 v7.2.15 - Unreleased
-- **Security:** Only users allowed to send SMS can send the new post SMS, and only from the post editor box. Thanks to Wordfence for reporting it.
+- **Security:** Improved permission checks for SMS notifications. Thanks to Wordfence for reporting it.
 
 v7.2.14 - 2026-11-16
 - **Enhancement:** Onboarding, Add-Ons and notification improvements.
