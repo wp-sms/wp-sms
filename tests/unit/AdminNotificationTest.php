@@ -4,6 +4,7 @@ namespace unit;
 
 use WP_SMS\Admin\Notification\NotificationFactory;
 use WP_SMS\Admin\Notification\NotificationProcessor;
+use WP_SMS\Decorators\NotificationDecorator;
 use WP_UnitTestCase;
 
 class AdminNotificationTest extends WP_UnitTestCase
@@ -537,5 +538,38 @@ class AdminNotificationTest extends WP_UnitTestCase
         $result = NotificationProcessor::annotateNewNotificationCount($newNotifications);
 
         $this->assertEquals(0, $result['count']);
+    }
+
+    private function promoDecorator(array $extraData)
+    {
+        return new NotificationDecorator((object) ['id' => 1, 'extra_data' => $extraData]);
+    }
+
+    /**
+     * The countdown is hidden unless extra_data countdown is '1' or 'on'.
+     */
+    public function testPromoCountdownIsOffByDefault()
+    {
+        $this->assertFalse($this->promoDecorator([])->showCountdown());
+        $this->assertFalse($this->promoDecorator(['countdown' => '0'])->showCountdown());
+        $this->assertFalse($this->promoDecorator(['countdown' => 'off'])->showCountdown());
+        $this->assertFalse($this->promoDecorator(['countdown' => ''])->showCountdown());
+    }
+
+    public function testPromoCountdownTurnsOnWithOneOrOn()
+    {
+        $this->assertTrue($this->promoDecorator(['countdown' => '1'])->showCountdown());
+        $this->assertTrue($this->promoDecorator(['countdown' => 'on'])->showCountdown());
+        $this->assertTrue($this->promoDecorator(['countdown' => ' ON '])->showCountdown());
+    }
+
+    /**
+     * The eyebrow is optional; an empty value means the card keeps showing the title.
+     */
+    public function testPromoEyebrowIsOptional()
+    {
+        $this->assertSame('Black Friday', $this->promoDecorator(['eyebrow' => 'Black Friday'])->getEyebrow());
+        $this->assertNull($this->promoDecorator([])->getEyebrow());
+        $this->assertNull($this->promoDecorator(['eyebrow' => '  '])->getEyebrow());
     }
 }

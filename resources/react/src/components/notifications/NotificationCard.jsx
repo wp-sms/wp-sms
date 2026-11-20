@@ -109,6 +109,17 @@ const promoStyle = {
   border: '1px solid rgba(255,176,120,.35)',
 }
 
+// Our own sites: the button keeps opening in a new tab but gets no external-link arrow.
+const OWN_HOSTS = ['wsms.io', 'www.wsms.io', 'my.wsms.io', 'wp-statistics.com']
+
+const isOwnSite = (url) => {
+  try {
+    return OWN_HOSTS.includes(new URL(url, window.location.href).hostname.toLowerCase())
+  } catch (e) {
+    return false
+  }
+}
+
 const isInternalUrl = (url) => {
   try {
     return new URL(url, window.location.href).origin === window.location.origin
@@ -133,6 +144,8 @@ export function NotificationCard({ notification, onDismiss, showDismiss = true }
     code,
     endsAt,
     highlight,
+    eyebrow,
+    countdown,
   } = notification
 
   // A dismissed offer is history: a plain card, with no countdown, code or button, so it never looks live.
@@ -208,8 +221,8 @@ export function NotificationCard({ notification, onDismiss, showDismiss = true }
           {isPromo && (
             <div className="wsms-mb-2">
               <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-3 wsms-pe-7">
-                <span className="wsms-text-[11px] wsms-font-bold wsms-uppercase wsms-text-amber-200/80">{title}</span>
-                {endsAt && <Countdown endsAt={endsAt} />}
+                <span className="wsms-text-[11px] wsms-font-bold wsms-uppercase wsms-text-amber-200/80">{eyebrow || title}</span>
+                {endsAt && countdown && <Countdown endsAt={endsAt} />}
               </div>
               {highlight && (
                 <div
@@ -272,7 +285,7 @@ export function NotificationCard({ notification, onDismiss, showDismiss = true }
                   )}
                 >
                   {primaryButton.title}
-                  {!isInternalUrl(primaryButton.url) && <ExternalLink className="wsms-h-3 wsms-w-3 wsms-opacity-70" strokeWidth={2.5} />}
+                  {!isInternalUrl(primaryButton.url) && !isOwnSite(primaryButton.url) && <ExternalLink className="wsms-h-3 wsms-w-3 wsms-opacity-70" strokeWidth={2.5} />}
                 </a>
               )}
 
@@ -289,7 +302,7 @@ export function NotificationCard({ notification, onDismiss, showDismiss = true }
                   )}
                 >
                   {secondaryButton.title}
-                  {!isInternalUrl(secondaryButton.url) && <ExternalLink className="wsms-h-3 wsms-w-3 wsms-opacity-50" strokeWidth={2} />}
+                  {!isInternalUrl(secondaryButton.url) && !isOwnSite(secondaryButton.url) && <ExternalLink className="wsms-h-3 wsms-w-3 wsms-opacity-50" strokeWidth={2} />}
                 </a>
               )}
             </div>

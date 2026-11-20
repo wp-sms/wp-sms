@@ -1,3 +1,6 @@
+v7.2.16 - Unreleased
+- **Enhancement:** Improved offer cards in the notification inbox.
+
 v7.2.15 - 2026-11-20
 - **Security:** Improved permission checks for SMS notifications. Thanks to Wordfence for reporting it.
 

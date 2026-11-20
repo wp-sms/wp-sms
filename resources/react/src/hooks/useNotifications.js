@@ -12,7 +12,13 @@ export function useNotifications() {
   const [error, setError] = useState(null)
 
   // Separate notifications into inbox and dismissed
-  const inboxNotifications = notifications.filter(n => !n.dismissed)
+  // Live offers (promo cards) always come first; the rest keep their order.
+  const isOffer = n => n.backgroundColor === 'promo'
+  const unreadNotifications = notifications.filter(n => !n.dismissed)
+  const inboxNotifications = [
+    ...unreadNotifications.filter(isOffer),
+    ...unreadNotifications.filter(n => !isOffer(n)),
+  ]
   const dismissedNotifications = notifications.filter(n => n.dismissed)
   const unreadCount = inboxNotifications.length
   const hasUnread = unreadCount > 0
