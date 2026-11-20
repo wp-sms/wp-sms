@@ -1,4 +1,4 @@
-v7.2.15 - Unreleased
+v7.2.15 - 2026-11-20
 - **Security:** Improved permission checks for SMS notifications. Thanks to Wordfence for reporting it.
 
 v7.2.14 - 2026-11-16
