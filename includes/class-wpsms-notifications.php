@@ -234,6 +234,11 @@ class Notifications
      */
     public function notification_meta_box()
     {
+        // Sending SMS is limited to users with the plugin's send capability.
+        if (!current_user_can('wpsms_sendsms')) {
+            return;
+        }
+
         foreach ($this->extractPostTypeFromOption('notif_publish_new_post_type') as $postType) {
             add_meta_box('subscribe-meta-box', esc_html__('SMS Notification', 'wp-sms'), [$this, 'notification_meta_box_handler'], $postType, 'normal', 'high');
         }
@@ -286,7 +291,17 @@ class Notifications
         }
 
         // Validate required request params
-        if (!isset($_REQUEST['wpsms_text_template']) || $_REQUEST['wps_send_to'] == '0') {
+        if (!isset($_REQUEST['wpsms_text_template']) || !isset($_REQUEST['wps_send_to']) || $_REQUEST['wps_send_to'] == '0') {
+            return;
+        }
+
+        // Only users allowed to send SMS may trigger it, and only from the meta box form.
+        if (!current_user_can('wpsms_sendsms')) {
+            return;
+        }
+
+        $nonce = isset($_REQUEST['wpsms_post_notification_nonce']) ? sanitize_text_field(wp_unslash($_REQUEST['wpsms_post_notification_nonce'])) : '';
+        if (!wp_verify_nonce($nonce, 'wpsms_post_notification')) {
             return;
         }
 

@@ -1,3 +1,6 @@
+v7.2.15 - Unreleased
+- **Security:** Improved permission checks for SMS notifications. Thanks to Wordfence for reporting it.
+
 v7.2.14 - 2026-11-16
 - **Enhancement:** Onboarding, Add-Ons and notification improvements.
 - **Fix:** Translation fixes, including the notifications empty state, the phone country picker and the API Key label.

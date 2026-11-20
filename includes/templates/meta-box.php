@@ -1,4 +1,5 @@
 <?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
+<?php wp_nonce_field('wpsms_post_notification', 'wpsms_post_notification_nonce'); ?>
 <table class="form-table send-sms-post">
 
     <!-- Send Message and Receiver Row -->
