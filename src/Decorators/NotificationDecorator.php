@@ -185,6 +185,36 @@ class NotificationDecorator
     }
 
     /**
+     * Small uppercase line above the highlight on promo cards (optional, from extra_data).
+     * When empty, the card falls back to the notification title.
+     *
+     * @return string|null
+     */
+    public function getEyebrow()
+    {
+        $eyebrow = $this->notification->extra_data['eyebrow'] ?? null;
+
+        return is_string($eyebrow) && trim($eyebrow) !== '' ? $eyebrow : null;
+    }
+
+    /**
+     * Whether a promo card shows its "Ends in" countdown. Off unless extra_data
+     * countdown is '1' or 'on' (the offer still stops at ends_at either way).
+     *
+     * @return bool
+     */
+    public function showCountdown()
+    {
+        $value = $this->notification->extra_data['countdown'] ?? null;
+
+        if (is_string($value)) {
+            $value = strtolower(trim($value));
+        }
+
+        return in_array($value, ['1', 'on', 1, true], true);
+    }
+
+    /**
      * End time in UTC (ISO 8601), used for the countdown.
      *
      * @return string|null

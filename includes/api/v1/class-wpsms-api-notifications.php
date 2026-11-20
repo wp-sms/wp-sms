@@ -101,6 +101,8 @@ class NotificationsApi extends RestApi
                 'badge'           => $notification->getBadge(),
                 'code'            => $notification->getCode(),
                 'highlight'       => $notification->getHighlight(),
+                'eyebrow'         => $notification->getEyebrow(),
+                'countdown'       => $notification->showCountdown(),
                 'endsAt'          => $notification->getEndsAt(),
                 'dismissed'       => (bool) $notification->getDismiss(),
             ];
