@@ -4,6 +4,8 @@ namespace unit;
 
 use WP_SMS\Notifications;
 
+require_once __DIR__ . '/WPSMSTestCase.php';
+
 /**
  * The new-post SMS can only be sent by users with the wpsms_sendsms capability,
  * from the meta box form (nonce), never from request parameters alone.

@@ -51,11 +51,23 @@ class NewSubscriberWebhookTest extends WP_UnitTestCase
     {
         Newsletter::addSubscriber('Pending Person', '+15555550102', 0, '0');
         $this->assertCount(0, $this->requests);
+        $subscriber = Newsletter::getSubscriberByMobile('+15555550102');
 
-        do_action('wp_sms_verify_subscriber', 'Pending Person', '+15555550102', 1, 1);
+        do_action('wp_sms_verify_subscriber', 'Pending Person', '+15555550102', 1, $subscriber->ID);
 
         $this->assertCount(1, $this->requests);
         $this->assertSame(['name' => 'Pending Person', 'mobile' => '+15555550102'], $this->requests[0]);
+    }
+
+    public function test_verified_webhook_uses_saved_subscriber_name()
+    {
+        Newsletter::addSubscriber('Saved Person', '+15555550104', 0, '0');
+        $subscriber = Newsletter::getSubscriberByMobile('+15555550104');
+
+        do_action('wp_sms_verify_subscriber', 'Other Name', '+15555550104', 1, $subscriber->ID);
+
+        $this->assertCount(1, $this->requests);
+        $this->assertSame(['name' => 'Saved Person', 'mobile' => '+15555550104'], $this->requests[0]);
     }
 
     public function test_active_subscriber_sends_webhook()
