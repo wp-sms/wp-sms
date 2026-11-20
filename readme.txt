@@ -192,6 +192,8 @@ All premium features + all add-ons in one package.
 == Changelog ==
 = v7.2.15 - 2026-11-20 =
 - **Security:** Improved permission checks for SMS notifications. Thanks to Wordfence for reporting it.
+- **Enhancement:** Improved offer cards in the notification inbox.
+- **Fix:** The Zapier "New Subscriber" trigger and the new subscriber webhook now wait until the subscriber confirms the verification code ([#634](https://github.com/wp-sms/wp-sms/issues/634)).
 
 = v7.2.14 - 2026-11-16 =
 - **Enhancement:** Onboarding, Add-Ons and notification improvements.
