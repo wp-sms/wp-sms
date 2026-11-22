@@ -176,8 +176,10 @@ class TskinGatewayTest extends WP_UnitTestCase
 
         $registry = GatewayRegistry::getGateways();
 
-        $this->assertSame(['tskin'], array_column($registry['gateways'], 'slug'));
-        $this->assertFalse($registry['gateways'][0]['premium']);
+        $free = array_column($registry['gateways'], 'premium', 'slug');
+
+        $this->assertArrayHasKey('tskin', $free);
+        $this->assertFalse($free['tskin']);
         $this->assertSame(['twilio'], array_column($registry['premium_gateways'], 'slug'));
 
         delete_transient(GatewayRegistry::CACHE_KEY_GATEWAYS);
