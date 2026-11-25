@@ -1,6 +1,7 @@
 v7.2.16 - 2026-11-25
 - **New:** TSKIN WhatsApp is now in the free plugin. You no longer need WSMS Pro to send WhatsApp messages through TSKIN. Sites that already use it through Pro keep their settings ([#517](https://github.com/wp-sms/wp-sms/issues/517)).
 - **Fix:** Confirming a subscription with the code now works when the visitor types a local number (for example 0412 345 678).
+- **Fix:** Sites that updated from 7.2.9 or earlier to 7.2.10 or later now run the database upgrade steps ([#639](https://github.com/wp-sms/wp-sms/issues/639)).
 
 v7.2.15 - 2026-11-20
 - **Security:** Improved permission checks for SMS notifications. Thanks to Wordfence for reporting it.
