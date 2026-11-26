@@ -6,10 +6,10 @@ use WP_UnitTestCase;
 
 class CompatibilityMetadataTest extends WP_UnitTestCase
 {
-    public function testReadmeDeclaresWordPress71Compatibility(): void
+    public function testReadmeDeclaresWordPress72Compatibility(): void
     {
         $readme = file_get_contents(dirname(__DIR__, 2) . '/readme.txt');
 
-        $this->assertMatchesRegularExpression('/^Tested up to:\s*7\.1$/m', $readme);
+        $this->assertMatchesRegularExpression('/^Tested up to:\s*7\.2$/m', $readme);
     }
 }

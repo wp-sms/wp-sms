@@ -56,9 +56,9 @@ class CsvHelper
             // Add a header row if not included
             if (!$header_included) {
                 // Use the keys as titles
-                fputcsv($file_data, array_map(array(self::class, 'neutralizeFormula'), array_keys($line)));
+                fputcsv($file_data, array_map(array(self::class, 'neutralizeFormula'), array_keys($line)), ',', '"', '\\');
             }
-            fputcsv($file_data, array_map(array(self::class, 'neutralizeFormula'), $line));
+            fputcsv($file_data, array_map(array(self::class, 'neutralizeFormula'), $line), ',', '"', '\\');
         }
         fclose($file_data); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
         exit;

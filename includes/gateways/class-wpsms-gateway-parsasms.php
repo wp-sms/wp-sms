@@ -12,6 +12,7 @@ class parsasms extends \WP_SMS\Gateway
     public $unit;
     public $flash = "disable";
     public $isflash = false;
+    public $client;
 
     public function __construct()
     {

@@ -148,9 +148,9 @@ class PrivacyDataAjax extends AjaxControllerAbstract
         $i = 0;
         foreach ($data as $fields) {
             if ($i == 0) {
-                fputcsv($fp, array_map(array(CsvHelper::class, 'neutralizeFormula'), array_keys($fields)));
+                fputcsv($fp, array_map(array(CsvHelper::class, 'neutralizeFormula'), array_keys($fields)), ',', '"', '\\');
             }
-            fputcsv($fp, array_map(array(CsvHelper::class, 'neutralizeFormula'), array_values($fields)));
+            fputcsv($fp, array_map(array(CsvHelper::class, 'neutralizeFormula'), array_values($fields)), ',', '"', '\\');
             $i++;
         }
         fclose($fp); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose

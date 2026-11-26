@@ -25,6 +25,7 @@ class AfricasTalkingGateway
 {
     protected $_username;
     protected $_apiKey;
+    protected $_environment;
 
     protected $_requestBody;
     protected $_requestUrl;
