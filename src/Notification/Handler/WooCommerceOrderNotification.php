@@ -49,9 +49,7 @@ class WooCommerceOrderNotification extends Notification
                 return;
             }
 
-            $optInStatus = $this->order->get_meta(WooCommerceCheckout::FIELD_ORDER_NOTIFICATION);
-
-            if ($optInStatus and $optInStatus == 'no') {
+            if (WooCommerceCheckout::getOrderOptInStatus($this->order) == 'no') {
                 $this->optIn = false;
             }
         }

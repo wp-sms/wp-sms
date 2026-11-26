@@ -265,10 +265,14 @@ class Newsletter
             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above via $wpdb->prepare()
             $normalizedMatches = $wpdb->get_results($normalizedMatchQuery);
 
-            // Merge results without duplicates (based on ID or mobile)
+            // Merge results without duplicates (based on ID)
+            $foundIds = wp_list_pluck($results, 'ID');
+
             if (!empty($normalizedMatches)) {
                 foreach ($normalizedMatches as $row) {
-                    $results[] = $row;
+                    if (!in_array($row->ID, $foundIds)) {
+                        $results[] = $row;
+                    }
                 }
             }
 

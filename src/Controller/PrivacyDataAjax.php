@@ -107,7 +107,7 @@ class PrivacyDataAjax extends AjaxControllerAbstract
             foreach ($get_user as $user) {
                 //Get User Data
                 $result[] = array(
-                    'ID'            => $user->ID,
+                    'ID'            => $user['ID'],
                     'Table'         => "{$wpdb->prefix}sms_subscribes",
                     'Display Name'  => $user['name'],
                     'Mobile Number' => $user['mobile'],
