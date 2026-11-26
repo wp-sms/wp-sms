@@ -10,7 +10,6 @@ class WooMobileField extends WooBlockAbstract
     protected $blockLocation = 'address';
     protected $blockRequired = false;
     protected $blockAttributes = array(
-        'autocomplete'     => '',
         'aria-describedby' => 'Mobile Field',
         'aria-label'       => 'Mobile Field',
         'title'            => 'Mobile Field',

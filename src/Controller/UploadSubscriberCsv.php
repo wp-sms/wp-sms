@@ -52,10 +52,10 @@ class UploadSubscriberCsv extends AjaxControllerAbstract
         // choose the first line as an index to show to client
         if (isset($has_header) and $has_header == 'true') {
             for ($i = 0; $i <= 1; $i++) {
-                $first_row = fgetcsv($csvFile);
+                $first_row = fgetcsv($csvFile, 0, ',', '"', '\\');
             }
         } else {
-            $first_row = fgetcsv($csvFile);
+            $first_row = fgetcsv($csvFile, 0, ',', '"', '\\');
         }
 
         // Call wp_handle_upload() to handle file upload

@@ -11,7 +11,6 @@ class WooSmsOptInBlock extends WooBlockAbstract
     protected $blockRequired = false;
     protected $blockType = 'checkbox';
     protected $blockAttributes = array(
-        'autocomplete'     => '',
         'aria-describedby' => 'SMS Opt-In',
         'aria-label'       => 'SMS Opt-In',
         'title'            => 'SMS Opt-In',

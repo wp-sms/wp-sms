@@ -157,7 +157,7 @@ class Install
         $subscribersTable      = $wpdb->prefix . 'sms_subscribes';
         $subscribersGroupTable = $wpdb->prefix . 'sms_subscribes_group';
 
-        if ($installer_wpsms_ver < WP_SMS_VERSION) {
+        if (!$installer_wpsms_ver || version_compare($installer_wpsms_ver, WP_SMS_VERSION, '<')) {
             // Add response and status for outbox
             $column = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s ",

@@ -43,8 +43,10 @@ class MessenteGatewayTest extends WP_UnitTestCase
 
         $registry = GatewayRegistry::getGateways();
 
-        $this->assertSame(['messente'], array_column($registry['gateways'], 'slug'));
-        $this->assertFalse($registry['gateways'][0]['premium']);
+        $free = array_column($registry['gateways'], 'premium', 'slug');
+
+        $this->assertArrayHasKey('messente', $free);
+        $this->assertFalse($free['messente']);
         $this->assertSame(['twilio'], array_column($registry['premium_gateways'], 'slug'));
         $this->assertSame(1, $registry['premium_count']);
     }

@@ -16,7 +16,7 @@ class GatewayRegistry
      * Gateways moved from Pro into the free plugin. They are free from the release
      * that ships them, whatever an older registry entry or cache says.
      */
-    const MOVED_TO_FREE = ['messente'];
+    const MOVED_TO_FREE = ['messente', 'tskin'];
 
     const GATEWAY_METADATA_OVERRIDES = [
         'instantalerts' => [

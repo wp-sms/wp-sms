@@ -41,11 +41,30 @@ class WooCommerceCheckout
     {
         echo sprintf("<p style='margin-bottom: 0'><strong>%s</strong></p>", esc_html__('Status Update SMS Notifications:', 'wp-sms'));
 
-        if ($order->get_meta(self::FIELD_ORDER_NOTIFICATION) && $order->get_meta(self::FIELD_ORDER_NOTIFICATION) == 'yes') {
+        if (self::getOrderOptInStatus($order) == 'yes') {
             echo esc_html__('Enabled', 'wp-sms');
         } else {
             echo esc_html__('Disabled', 'wp-sms');
         }
+    }
+
+    /**
+     * Get the SMS notification choice saved on an order.
+     *
+     * @param \WC_Order $order
+     * @return string `yes`, `no`, or an empty string when nothing was saved.
+     */
+    public static function getOrderOptInStatus($order)
+    {
+        $status = $order->get_meta(self::FIELD_ORDER_NOTIFICATION);
+
+        if (!$status) {
+            // Earlier versions saved the classic checkout choice as post meta, which
+            // the order object does not read when orders use their own tables (HPOS).
+            $status = get_post_meta($order->get_id(), self::FIELD_ORDER_NOTIFICATION, true);
+        }
+
+        return (string)$status;
     }
 
     /**
@@ -71,11 +90,14 @@ class WooCommerceCheckout
      */
     public function registerStoreCheckboxCallback($orderId, $data)
     {
-        if (isset($_POST[self::FIELD_ORDER_NOTIFICATION]) && $_POST[self::FIELD_ORDER_NOTIFICATION]) {
-            update_post_meta($orderId, self::FIELD_ORDER_NOTIFICATION, 'yes');
-        } else {
-            update_post_meta($orderId, self::FIELD_ORDER_NOTIFICATION, 'no');
+        $order = wc_get_order($orderId);
+
+        if (!$order) {
+            return;
         }
+
+        $order->update_meta_data(self::FIELD_ORDER_NOTIFICATION, !empty($_POST[self::FIELD_ORDER_NOTIFICATION]) ? 'yes' : 'no');
+        $order->save();
     }
 
     /**
@@ -88,9 +110,10 @@ class WooCommerceCheckout
     public function registerStoreCheckboxBlockBasedCallback($key, $value, $group, $order)
     {
         if ($key == 'wpsms/opt-in') {
-            $order->update_meta_data(self::FIELD_ORDER_NOTIFICATION, 'yes', true);
-        } else {
-            $order->update_meta_data(self::FIELD_ORDER_NOTIFICATION, 'no', true);
+            $order->update_meta_data(self::FIELD_ORDER_NOTIFICATION, $value ? 'yes' : 'no');
+        } elseif (!$order->get_meta(self::FIELD_ORDER_NOTIFICATION)) {
+            // Another field is being saved: default to "no" without replacing the choice.
+            $order->update_meta_data(self::FIELD_ORDER_NOTIFICATION, 'no');
         }
     }
 }
