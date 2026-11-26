@@ -61,8 +61,9 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
         $requestedGroupIds = is_array($group_id) ? $group_id : array($group_id);
         $groupIds          = array();
 
-        foreach ($subscribers as $subscriber) {
-            $subscriberNumber = $subscriber->mobile;
+        // One number can have several rows (one per group), and deleting by number
+        // removes them together, so handle each stored number only once.
+        foreach (array_unique(wp_list_pluck($subscribers, 'mobile')) as $subscriberNumber) {
             $subscriberGroups = Newsletter::getSubscriberGroupsByNumber($subscriberNumber);
             $unsubscribeGroupIds = $requestedGroupIds;
 

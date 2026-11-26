@@ -730,7 +730,7 @@ class SubscribersApi extends RestApi
         $allowed_types = ['text/csv', 'text/plain', 'application/csv', 'application/vnd.ms-excel'];
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mime_type = finfo_file($finfo, $file['tmp_name']);
-        finfo_close($finfo);
+        unset($finfo);
 
         // Also check extension as fallback
         $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
@@ -754,7 +754,7 @@ class SubscribersApi extends RestApi
         $row_num = 0;
         $header = null;
 
-        while (($row = fgetcsv($handle)) !== false) {
+        while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
             $row_num++;
 
             // First row is header
